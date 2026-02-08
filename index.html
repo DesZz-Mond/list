@@ -3,212 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Реєстр вибіркових дисциплін студентів</title>
+    <title>Система Студента 2026 | Реєстр та Розклад</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .custom-scroll::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #d6d3d1;
-            border-radius: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #a8a29e;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #fbfbf9; }
+        .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .day-card { transition: all 0.3s ease; }
+        .day-card:hover { transform: translateY(-2px); }
+        .pair-item { border-left-width: 4px; }
+        .pair-general { border-left-color: #6366f1; background-color: #f5f3ff; }
+        .pair-elective { border-left-color: #f59e0b; background-color: #fffbeb; }
+        .pair-lang { border-left-color: #10b981; background-color: #ecfdf5; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body class="text-stone-800">
 
-    <!-- Chosen Palette: Stone/Warm Neutrals with Indigo Accents -->
+    <!-- Chosen Palette: Warm Stone, Indigo Accents, Soft Emerald/Amber for types -->
     <!-- Application Structure Plan:
-         1. Header: Minimalist title.
-         2. Intro: Brief context of the register.
-         3. Search & Filter Bar: Core interaction tools.
-         4. Student Table: The primary data display.
-         Rationale: User requested the removal of all analytics and AI. The focus is purely on "Information Organization" and "Exploration" of individual student records.
+         1. Navigation: Switch between "Register" and "My Schedule".
+         2. Search: Single global search that affects the table and identifies the active student.
+         3. Student Register: Detailed table of electives.
+         4. Personal Schedule View:
+            - Week Selector (24-27).
+            - Personalized grid of classes based on the chosen student's electives.
+            - Logical mapping: General subjects (all) + Electives (matches table) + Languages (matches table).
+         Rationale: Users need to see their specific burden. Merging the schedule from images with the register data creates a "Smart Calendar".
     -->
     <!-- Visualization & Content Choices:
-         1. Student Records -> Organize -> HTML Table with Tailwind -> Justification: Standard professional way to view tabular data.
-         2. Search/Filter -> Interact -> Vanilla JS filters -> Justification: High performance for quick lookups.
+         1. Schedule -> Organize -> Interactive Grid -> JS Filtering -> Shows only what's relevant to the person.
+         2. Electives -> Compare -> Tag-based Table -> Visual clarity.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <nav class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center h-16">
-                <span class="text-xl font-bold text-stone-900 tracking-tight">📋 Реєстр студентів 2024</span>
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🎓</span>
+                    <span class="text-xl font-bold text-stone-900 tracking-tight">Навчальний Портал 2026</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="switchView('register')" id="nav-register" class="px-4 py-2 rounded-lg font-medium text-indigo-600 bg-indigo-50 transition">Реєстр</button>
+                    <button onclick="switchView('schedule')" id="nav-schedule" class="px-4 py-2 rounded-lg font-medium text-stone-500 hover:text-indigo-600 transition">Мій Розклад</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Search Bar (Global) -->
+        <div class="mb-10 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+            <h2 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3">Персоналізація</h2>
+            <div class="relative max-w-xl">
+                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Введіть ПІБ студента для розкладу..." 
+                    class="w-full pl-12 pr-4 py-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
+                <span class="absolute left-4 top-3.5 text-xl">👤</span>
+            </div>
+            <p id="search-feedback" class="mt-2 text-sm text-stone-500 italic">Почніть вводити прізвище, щоб побачити свій розклад</p>
+        </div>
 
-        <section class="max-w-3xl">
-            <h1 class="text-3xl font-bold text-stone-900 mb-2">Перелік вибіркових дисциплін</h1>
-            <p class="text-stone-600">
-                Нижче наведено повний список студентів та обраних ними курсів. Ви можете скористатися пошуком за прізвищем або відфільтрувати список за конкретною дисципліною.
-            </p>
-        </section>
-
-        <!-- Search and Filter Bar -->
-        <section class="flex flex-col md:flex-row gap-4 items-end">
-            <div class="flex-grow w-full md:w-auto">
-                <label for="search-input" class="block text-sm font-medium text-stone-600 mb-1 ml-1">Пошук за прізвищем</label>
-                <div class="relative">
-                    <input type="text" id="search-input" placeholder="Введіть ПІБ..." 
-                        class="w-full pl-10 pr-4 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition shadow-sm">
-                    <span class="absolute left-3 top-3 text-stone-400">🔍</span>
+        <!-- View: Register -->
+        <div id="view-register" class="animate-fade">
+            <div class="mb-6 flex justify-between items-end">
+                <div>
+                    <h1 class="text-3xl font-bold text-stone-900">Реєстр вибіркових дисциплін</h1>
+                    <p class="text-stone-500">Списки студентів та обрані ними предмети на 2026 рік</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600 font-bold uppercase">Всього: <span id="reg-count">0</span></span>
                 </div>
             </div>
-            <div class="w-full md:w-64">
-                <label for="course-filter" class="block text-sm font-medium text-stone-600 mb-1 ml-1">Фільтр за курсом</label>
-                <select id="course-filter" class="w-full py-2.5 pl-3 pr-10 border border-stone-300 rounded-xl focus:ring-2 focus:ring-indigo-500 bg-white transition shadow-sm">
-                    <option value="all">Всі дисципліни</option>
-                    <!-- Options populated by JS -->
-                </select>
-            </div>
-        </section>
 
-        <!-- Table Container -->
-        <section class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-            <div class="overflow-x-auto custom-scroll">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-stone-50 text-stone-500 text-xs uppercase tracking-wider border-b border-stone-200">
-                            <th class="p-4 font-semibold w-16">№</th>
-                            <th class="p-4 font-semibold">ПІБ Студента</th>
-                            <th class="p-4 font-semibold">Іноземна мова</th>
-                            <th class="p-4 font-semibold">Обрані дисципліни</th>
-                            <th class="p-4 font-semibold text-center w-24">Всього</th>
-                        </tr>
-                    </thead>
-                    <tbody id="students-table-body" class="divide-y divide-stone-100 text-sm">
-                        <!-- Rows populated by JS -->
-                    </tbody>
-                </table>
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-stone-50 text-stone-500 text-xs uppercase border-b border-stone-200">
+                                <th class="p-4 w-12 text-center">№</th>
+                                <th class="p-4">Студент</th>
+                                <th class="p-4">Дисципліни</th>
+                                <th class="p-4 text-center">Дія</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reg-table-body" class="divide-y divide-stone-100 text-sm">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="p-4 bg-stone-50 border-t border-stone-200 flex justify-between items-center text-xs text-stone-500">
-                <span>Всього в базі: <strong id="total-count">0</strong></span>
-                <span>Знайдено записів: <strong id="showing-count" class="text-indigo-600">0</strong></span>
+        </div>
+
+        <!-- View: Schedule -->
+        <div id="view-schedule" class="hidden animate-fade">
+            <div id="no-student-selected" class="text-center py-20 bg-stone-100 rounded-3xl border-2 border-dashed border-stone-300">
+                <span class="text-6xl block mb-4">🔍</span>
+                <h2 class="text-2xl font-bold text-stone-600">Студента не обрано</h2>
+                <p class="text-stone-500 mt-2">Будь ласка, введіть ПІБ у пошуку вище або оберіть студента з реєстру</p>
             </div>
-        </section>
+
+            <div id="schedule-content" class="hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-stone-900">Мій розклад лекцій</h1>
+                        <p class="text-indigo-600 font-medium mt-1" id="active-student-name"></p>
+                    </div>
+                    <div class="flex gap-2 p-1 bg-stone-200 rounded-xl">
+                        <button onclick="setWeek(24)" id="btn-w24" class="px-4 py-2 rounded-lg text-sm font-bold transition">Н24</button>
+                        <button onclick="setWeek(25)" id="btn-w25" class="px-4 py-2 rounded-lg text-sm font-bold transition">В25</button>
+                        <button onclick="setWeek(26)" id="btn-w26" class="px-4 py-2 rounded-lg text-sm font-bold transition">Н26</button>
+                        <button onclick="setWeek(27)" id="btn-w27" class="px-4 py-2 rounded-lg text-sm font-bold transition">В27</button>
+                    </div>
+                </div>
+
+                <div id="schedule-grid" class="schedule-grid">
+                    <!-- JS populated daily cards -->
+                </div>
+            </div>
+        </div>
 
     </main>
 
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center text-stone-400 text-xs border-t border-stone-200 mt-10">
-        Дані актуальні на 2024 навчальний рік • Реєстр вибіркових дисциплін
-    </footer>
-
     <script>
-        const rawData = [
-            { id: 1, name: "Бельтюкова Анастасія Дмитрівна", courses: ["Друга іноз. (німецька)", "Політологія", "Публічне адміністр."] },
-            { id: 2, name: "Великоконь Дар'я Андріївна", courses: ["Друга іноз. (французька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 3, name: "Галабудська Софія Костянтинівна", courses: ["Друга іноз. (польська)", "Політологія", "Соціальне підпр."] },
-            { id: 4, name: "Гіткіс Ілля Михайлович", courses: ["Публічне адміністр.", "Соціальне підпр.", "БЗВП"] },
-            { id: 5, name: "Гордієнко Катерина Володимирівна", courses: ["Друга іноз. (французька)", "Публічне адміністр.", "Соціологія"] },
-            { id: 6, name: "Гуменюк Анна Володимирівна", courses: ["Друга іноз. (німецька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 7, name: "Жидченко Анастасія Костянтинівна", courses: ["Друга іноз. (німецька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 8, name: "Кельвич Катерина Костянтинівна", courses: ["Політологія", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 9, name: "Кисленко Наталія Іванівна", courses: ["Друга іноз. (французька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 10, name: "Клічук Михайло Васильович", courses: ["Друга іноз. (німецька)", "Публічне адміністр.", "БЗВП"] },
-            { id: 11, name: "Колодій Юлія Василівна", courses: ["Друга іноз. (німецька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 12, name: "Кохан Олексій Віталійович", courses: ["Друга іноз. (німецька)", "БЗВП", "Друга іноз. (китайська)"] },
-            { id: 13, name: "Май Денис Вікторович", courses: ["Друга іноз. (німецька)", "Соціальне підпр.", "БЗВП"] },
-            { id: 14, name: "Мартин Максим Андрійович", courses: ["Друга іноз. (французька)", "Соціальне підпр.", "БЗВП"] },
-            { id: 15, name: "Масяєв Ярослав Олександрович", courses: ["Друга іноз. (німецька)", "Політологія", "БЗВП"] },
-            { id: 16, name: "Могилянська Софія Олегівна", courses: ["Публічне адміністр.", "Соціальне підпр.", "Друга іноз. (китайська)"] },
-            { id: 17, name: "Мурін Андрій Олексійович", courses: ["Друга іноз. (французька)", "Соціальне підпр.", "БЗВП"] },
-            { id: 18, name: "Петричка Валерія Сергіївна", courses: ["Друга іноз. (французька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 19, name: "Пилипенко Даніїл Олександрович", courses: ["Друга іноз. (німецька)", "Соціальне підпр.", "БЗВП"] },
-            { id: 20, name: "Поправка Анастасія Юріївна", courses: ["Друга іноз. (польська)", "Політологія", "Соціальне підпр."] },
-            { id: 21, name: "Рижук Анна Сергіївна", courses: ["Друга іноз. (французька)", "Політологія", "Публічне адміністр."] },
-            { id: 22, name: "Солярик Владислав Ярославович", courses: ["Друга іноз. (німецька)", "Політологія", "БЗВП"] },
-            { id: 23, name: "Степаненко Максим Юрійович", courses: ["Друга іноз. (польська)", "Соціальне підпр.", "БЗВП"] },
-            { id: 24, name: "Тимощук Владислав Володимирович", courses: ["Друга іноз. (французька)", "Соціальне підпр.", "Соціологія"] },
-            { id: 25, name: "Троцька Діана Русланівна", courses: ["Друга іноз. (німецька)", "Публічне адміністр.", "Соціологія"] },
-            { id: 26, name: "Устименко Даяна Віталіївна", courses: ["Політологія", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 27, name: "Черняк Діана Іванівна", courses: ["Друга іноз. (французька)", "Політологія", "Публічне адміністр."] },
-            { id: 28, name: "Чуприна Аріна Олексіївна", courses: ["Друга іноз. (французька)", "Публічне адміністр.", "Соціальне підпр."] },
-            { id: 29, name: "Шелепа Михайло Владиславович", courses: ["Друга іноз. (польська)", "Соціальне підпр.", "БЗВП"] }
+        // --- DATA ---
+        const students = [
+            { id: 1, name: "Бельтюкова Анастасія Дмитрівна", electives: ["Німецька", "Політологія", "Публічне адміністрування"] },
+            { id: 2, name: "Великоконь Дар'я Андріївна", electives: ["Французька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 3, name: "Галабудська Софія Костянтинівна", electives: ["Польська", "Політологія", "Соціальне підприємництво"] },
+            { id: 4, name: "Гіткіс Ілля Михайлович", electives: ["Публічне адміністрування", "Соціальне підприємництво", "БЗВП"] },
+            { id: 5, name: "Гордієнко Катерина Володимирівна", electives: ["Французька", "Публічне адміністрування", "Соціологія"] },
+            { id: 6, name: "Гуменюк Анна Володимирівна", electives: ["Німецька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 7, name: "Жидченко Анастасія Костянтинівна", electives: ["Німецька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 8, name: "Кельвич Катерина Костянтинівна", electives: ["Політологія", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 9, name: "Кисленко Наталія Іванівна", electives: ["Французька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 10, name: "Клічук Михайло Васильович", electives: ["Німецька", "Публічне адміністрування", "БЗВП"] },
+            { id: 11, name: "Колодій Юлія Василівна", electives: ["Німецька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 12, name: "Кохан Олексій Віталійович", electives: ["Німецька", "БЗВП", "Китайська"] },
+            { id: 13, name: "Май Денис Вікторович", electives: ["Німецька", "Соціальне підприємництво", "БЗВП"] },
+            { id: 14, name: "Мартин Максим Андрійович", electives: ["Французька", "Соціальне підприємництво", "БЗВП"] },
+            { id: 15, name: "Масяєв Ярослав Олександрович", electives: ["Німецька", "Політологія", "БЗВП"] },
+            { id: 16, name: "Могилянська Софія Олегівна", electives: ["Публічне адміністрування", "Соціальне підприємництво", "Китайська"] },
+            { id: 17, name: "Мурін Андрій Олексійович", electives: ["Французька", "Соціальне підприємництво", "БЗВП"] },
+            { id: 18, name: "Петричка Валерія Сергіївна", electives: ["Французька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 19, name: "Пилипенко Даніїл Олександрович", electives: ["Німецька", "Соціальне підприємництво", "БЗВП"] },
+            { id: 20, name: "Поправка Анастасія Юріївна", electives: ["Польська", "Політологія", "Соціальне підприємництво"] },
+            { id: 21, name: "Рижук Анна Сергіївна", electives: ["Французька", "Політологія", "Публічне адміністрування"] },
+            { id: 22, name: "Солярик Владислав Ярославович", electives: ["Німецька", "Політологія", "БЗВП"] },
+            { id: 23, name: "Степаненко Максим Юрійович", electives: ["Польська", "Соціальне підприємництво", "БЗВП"] },
+            { id: 24, name: "Тимощук Владислав Володимирович", electives: ["Французька", "Соціальне підприємництво", "Соціологія"] },
+            { id: 25, name: "Троцька Діана Русланівна", electives: ["Німецька", "Публічне адміністрування", "Соціологія"] },
+            { id: 26, name: "Устименко Даяна Віталіївна", electives: ["Політологія", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 27, name: "Черняк Діана Іванівна", electives: ["Французька", "Політологія", "Публічне адміністрування"] },
+            { id: 28, name: "Чуприна Аріна Олексіївна", electives: ["Французька", "Публічне адміністрування", "Соціальне підприємництво"] },
+            { id: 29, name: "Шелепа Михайло Владиславович", electives: ["Польська", "Соціальне підприємництво", "БЗВП"] }
         ];
 
-        const allCourses = [
-            "Друга іноз. (німецька)", "Друга іноз. (польська)", "Друга іноз. (французька)", 
-            "Політологія", "Публічне адміністр.", "Соціальне підпр.", 
-            "Соціологія", "БЗВП", "Друга іноз. (китайська)"
-        ];
-
-        let state = {
-            search: "",
-            filter: "all"
+        // Global Schedule (Condensed from screenshots)
+        // types: 'general' (all), 'elective' (by name), 'lang' (any foreign lang)
+        const scheduleData = {
+            24: [ // Lower Week
+                { day: "Понеділок", date: "09.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general" }
+                ]},
+                { day: "Вівторок", date: "10.02.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
+                    { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "13:00-14:15", num: 4, subj: "Політологія В Л", type: "elective", map: "Політологія" }
+                ]},
+                { day: "Середа", date: "11.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Екаунтинг-2 Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Екаунтинг-2 Л", type: "general" },
+                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                ]},
+                { day: "Четвер", date: "12.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                ]},
+                { day: "П'ятниця", date: "13.02.2026", pairs: [
+                    { time: "11:30-12:45", num: 3, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "13:00-14:15", num: 4, subj: "Соціологія В Л", type: "elective", map: "Соціологія" }
+                ]},
+                { day: "Субота", date: "14.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" },
+                    { time: "11:30-12:45", num: 3, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" }
+                ]}
+            ],
+            25: [ // Upper Week
+                { day: "Понеділок", date: "16.02.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
+                    { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Підприємництво Л", type: "general" }
+                ]},
+                { day: "Вівторок", date: "17.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general" }
+                ]},
+                { day: "Середа", date: "18.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Екаунтинг-2 Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Екаунтинг-2 Л", type: "general" }
+                ]},
+                { day: "Четвер", date: "19.02.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Політологія В Л", type: "elective", map: "Політологія" }
+                ]},
+                { day: "П'ятниця", date: "20.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "13:00-14:15", num: 4, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "14:30-15:45", num: 5, subj: "Соціологія В Л", type: "elective", map: "Соціологія" }
+                ]},
+                { day: "Субота", date: "21.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" },
+                    { time: "11:30-12:45", num: 3, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" }
+                ]}
+            ],
+            26: [ // Lower Week 2
+                { day: "Понеділок", date: "23.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
+                    { time: "11:30-12:45", num: 3, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
+                    { time: "13:00-14:15", num: 4, subj: "Іноземна мова п", type: "lang" },
+                    { time: "14:30-15:45", num: 5, subj: "Екаунтинг-2 Л", type: "general" },
+                    { time: "16:00-17:15", num: 6, subj: "Екаунтинг-2 Л", type: "general" }
+                ]},
+                { day: "Вівторок", date: "24.02.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Іноземна мова п", type: "lang" },
+                    { time: "11:30-12:45", num: 3, subj: "Іноземна мова п", type: "lang" }
+                ]},
+                { day: "Середа", date: "25.02.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "13:00-14:15", num: 4, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" }
+                ]},
+                { day: "Четвер", date: "26.02.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general" },
+                    { time: "13:00-14:15", num: 4, subj: "Маркетинг Л", type: "general" }
+                ]},
+                { day: "П'ятниця", date: "27.02.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
+                    { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Підприємництво Л", type: "general" },
+                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                ]}
+            ],
+            27: [ // Upper Week 2
+                { day: "Понеділок", date: "02.03.2026", pairs: [
+                    { time: "10:00-11:15", num: 2, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
+                    { time: "11:30-12:45", num: 3, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
+                    { time: "13:00-14:15", num: 4, subj: "Іноземна мова п", type: "lang" },
+                    { time: "14:30-15:45", num: 5, subj: "Іноземна мова п", type: "lang" }
+                ]},
+                { day: "Вівторок", date: "03.03.2026", pairs: [
+                    { time: "11:30-12:45", num: 3, subj: "Іноземна мова п", type: "lang" },
+                    { time: "13:00-14:15", num: 4, subj: "Екаунтинг-2 Л", type: "general" },
+                    { time: "14:30-15:45", num: 5, subj: "Екаунтинг-2 Л", type: "general" }
+                ]},
+                { day: "Середа", date: "04.03.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
+                    { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "13:00-14:15", num: 4, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" }
+                ]},
+                { day: "Четвер", date: "05.03.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "11:30-12:45", num: 3, subj: "Підприємництво Л", type: "general" },
+                    { time: "13:00-14:15", num: 4, subj: "Підприємництво Л", type: "general" }
+                ]},
+                { day: "П'ятниця", date: "06.03.2026", pairs: [
+                    { time: "08:30-09:45", num: 1, subj: "Маркетинг Л", type: "general" },
+                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general" },
+                    { time: "11:30-12:45", num: 3, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "13:00-14:15", num: 4, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
+                    { time: "16:00-17:15", num: 6, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                ]}
+            ]
         };
 
+        // --- STATE ---
+        let state = {
+            currentView: 'register',
+            selectedStudent: null,
+            activeWeek: 24,
+            searchTerm: ''
+        };
+
+        // --- CORE FUNCTIONS ---
+
         function init() {
-            renderFilters();
-            renderTable();
-
-            document.getElementById('search-input').addEventListener('input', (e) => {
-                state.search = e.target.value.toLowerCase();
-                renderTable();
-            });
-
-            document.getElementById('course-filter').addEventListener('change', (e) => {
-                state.filter = e.target.value;
-                renderTable();
-            });
+            renderRegister();
+            updateRegisterCount();
         }
 
-        function renderFilters() {
-            const select = document.getElementById('course-filter');
-            allCourses.forEach(course => {
-                const opt = document.createElement('option');
-                opt.value = course;
-                opt.textContent = course;
-                select.appendChild(opt);
-            });
+        function switchView(view) {
+            state.currentView = view;
+            
+            const vReg = document.getElementById('view-register');
+            const vSch = document.getElementById('view-schedule');
+            const navReg = document.getElementById('nav-register');
+            const navSch = document.getElementById('nav-schedule');
+
+            if (view === 'register') {
+                vReg.classList.remove('hidden');
+                vSch.classList.add('hidden');
+                navReg.classList.add('bg-indigo-50', 'text-indigo-600');
+                navSch.classList.remove('bg-indigo-50', 'text-indigo-600');
+                navSch.classList.add('text-stone-500');
+            } else {
+                vReg.classList.add('hidden');
+                vSch.classList.remove('hidden');
+                navSch.classList.add('bg-indigo-50', 'text-indigo-600');
+                navReg.classList.remove('bg-indigo-50', 'text-indigo-600');
+                navReg.classList.add('text-stone-500');
+                renderPersonalSchedule();
+            }
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('students-table-body');
-            tbody.innerHTML = '';
+        function handleSearch() {
+            state.searchTerm = document.getElementById('global-search').value.toLowerCase();
+            const found = students.find(s => s.name.toLowerCase().includes(state.searchTerm) && state.searchTerm.length > 5);
+            
+            if (found) {
+                state.selectedStudent = found;
+                document.getElementById('search-feedback').innerHTML = `✅ Знайдено: <span class="font-bold text-indigo-600">${found.name}</span>. Натисніть "Мій Розклад"`;
+            } else {
+                document.getElementById('search-feedback').innerHTML = `Почніть вводити прізвище, щоб побачити свій розклад`;
+            }
+            renderRegister();
+        }
 
-            const filtered = rawData.filter(s => {
-                const nameMatch = s.name.toLowerCase().includes(state.search);
-                const courseMatch = state.filter === 'all' || s.courses.includes(state.filter);
-                return nameMatch && courseMatch;
-            });
+        function selectStudent(id) {
+            const s = students.find(x => x.id === id);
+            state.selectedStudent = s;
+            document.getElementById('global-search').value = s.name;
+            handleSearch();
+            switchView('schedule');
+        }
 
-            filtered.forEach((student, idx) => {
-                const languages = student.courses.filter(c => c.includes("іноз."));
-                const specialities = student.courses.filter(c => !c.includes("іноз."));
+        function setWeek(w) {
+            state.activeWeek = w;
+            renderPersonalSchedule();
+        }
 
+        function renderRegister() {
+            const body = document.getElementById('reg-table-body');
+            body.innerHTML = '';
+            
+            const filtered = students.filter(s => s.name.toLowerCase().includes(state.searchTerm));
+
+            filtered.forEach(s => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-stone-50 transition border-b border-stone-100 last:border-0";
+                
+                const isSelected = state.selectedStudent && state.selectedStudent.id === s.id;
+                if (isSelected) tr.classList.add('bg-indigo-50/30');
+
                 tr.innerHTML = `
-                    <td class="p-4 text-stone-400 font-mono text-xs">${idx + 1}</td>
-                    <td class="p-4 font-semibold text-stone-900">${student.name}</td>
-                    <td class="p-4">
-                        ${languages.map(l => `<span class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[11px] font-bold rounded-md mr-1 mb-1 border border-indigo-100 uppercase tracking-tighter">${l.replace("Друга іноз. ", "")}</span>`).join('')}
-                    </td>
+                    <td class="p-4 text-center font-mono text-stone-400 text-xs">${s.id}</td>
+                    <td class="p-4 font-bold text-stone-800">${s.name}</td>
                     <td class="p-4">
                         <div class="flex flex-wrap gap-1">
-                            ${specialities.map(c => `<span class="px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-md">${c}</span>`).join('')}
+                            ${s.electives.map(e => {
+                                let colorClass = 'bg-stone-100 text-stone-600';
+                                if (e.includes('іноз') || ['Німецька','Польська','Французька','Китайська'].includes(e)) colorClass = 'bg-emerald-50 text-emerald-700 border border-emerald-100';
+                                else colorClass = 'bg-amber-50 text-amber-700 border border-amber-100';
+                                return `<span class="px-2 py-0.5 rounded-full text-[10px] uppercase font-bold ${colorClass}">${e}</span>`;
+                            }).join('')}
                         </div>
                     </td>
-                    <td class="p-4 text-center text-stone-400 font-medium">${student.courses.length}</td>
+                    <td class="p-4 text-center">
+                        <button onclick="selectStudent(${s.id})" class="text-xs font-bold text-indigo-600 hover:underline">Розклад →</button>
+                    </td>
                 `;
-                tbody.appendChild(tr);
+                body.appendChild(tr);
+            });
+        }
+
+        function renderPersonalSchedule() {
+            const noSel = document.getElementById('no-student-selected');
+            const content = document.getElementById('schedule-content');
+            const grid = document.getElementById('schedule-grid');
+            
+            if (!state.selectedStudent) {
+                noSel.classList.remove('hidden');
+                content.classList.add('hidden');
+                return;
+            }
+
+            noSel.classList.add('hidden');
+            content.classList.remove('hidden');
+            document.getElementById('active-student-name').textContent = `Студент: ${state.selectedStudent.name}`;
+
+            // Update buttons
+            [24, 25, 26, 27].forEach(w => {
+                const btn = document.getElementById(`btn-w${w}`);
+                if (state.activeWeek === w) {
+                    btn.className = "px-4 py-2 rounded-lg text-sm font-bold transition bg-white text-indigo-600 shadow-sm";
+                } else {
+                    btn.className = "px-4 py-2 rounded-lg text-sm font-bold transition text-stone-500 hover:text-stone-800";
+                }
             });
 
-            document.getElementById('total-count').textContent = rawData.length;
-            document.getElementById('showing-count').textContent = filtered.length;
+            grid.innerHTML = '';
+            const weekData = scheduleData[state.activeWeek];
+
+            weekData.forEach(day => {
+                // Filter pairs for this student
+                const personalPairs = day.pairs.filter(p => {
+                    if (p.type === 'general') return true;
+                    if (p.type === 'lang') {
+                        // Language pair - check if student has any lang elective
+                        return state.selectedStudent.electives.some(el => ['Німецька','Польська','Французька'].includes(el));
+                    }
+                    if (p.type === 'elective') {
+                        return state.selectedStudent.electives.includes(p.map);
+                    }
+                    return false;
+                });
+
+                if (personalPairs.length > 0) {
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-2xl p-6 shadow-sm border border-stone-200 day-card animate-fade";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-stone-100">
+                            <h3 class="font-bold text-stone-900">${day.day}</h3>
+                            <span class="text-xs font-bold text-stone-400">${day.date}</span>
+                        </div>
+                        <div class="space-y-3">
+                            ${personalPairs.map(p => {
+                                let typeLabel = p.type === 'general' ? 'Загальна' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
+                                let typeClass = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
+                                return `
+                                    <div class="pair-item ${typeClass} p-3 rounded-lg border-l-4">
+                                        <div class="flex justify-between text-[10px] font-bold text-stone-400 mb-1">
+                                            <span>${p.num} ПАРА | ${p.time}</span>
+                                            <span class="uppercase">${typeLabel}</span>
+                                        </div>
+                                        <div class="text-sm font-bold text-stone-800">${p.subj}</div>
+                                        <div class="text-[11px] text-stone-500 mt-1">🖥️ online</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+
+            if (grid.innerHTML === '') {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-stone-400">На цьому тижні занять немає. Відпочивайте!</div>`;
+            }
+        }
+
+        function updateRegisterCount() {
+            document.getElementById('reg-count').textContent = students.length;
         }
 
         window.onload = init;
