@@ -20,22 +20,12 @@
         .pair-lang { border-left-color: #10b981; background-color: #ecfdf5; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
-        .zoom-link { transition: all 0.2s; }
-        .zoom-link:hover { transform: scale(1.05); background-color: #2D8CFF; color: white; }
     </style>
 </head>
 <body class="text-stone-800">
 
-    <!-- Chosen Palette: Warm Stone, Indigo Accents, Zoom Blue -->
-    <!-- Application Structure Plan:
-         1. Navigation: Links to Register/General/Personal.
-         2. Search: Global student identifier.
-         3. View 1: Register + General Master Schedule (as requested, after the register).
-         4. View 2: Personal Schedule (Filtered by student electives).
-         5. Logic: Enhanced schedule data with Zoom URL mapping.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
+    <!-- Chosen Palette: Warm Stone, Indigo Accents, High-Visibility Zoom Blue -->
+    
     <nav class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -53,7 +43,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- Search Bar (Global) -->
+        <!-- Global Search -->
         <div class="mb-10 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex-grow">
@@ -94,15 +84,13 @@
                                     <th class="p-4 text-center">Дія</th>
                                 </tr>
                             </thead>
-                            <tbody id="reg-table-body" class="divide-y divide-stone-100 text-sm">
-                                <!-- JS populated -->
-                            </tbody>
+                            <tbody id="reg-table-body" class="divide-y divide-stone-100 text-sm"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- General Schedule Section (Master View) -->
+            <!-- General Schedule Section -->
             <section id="general-schedule-section">
                 <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                     <div>
@@ -116,10 +104,7 @@
                         <button onclick="setWeek(27, 'general')" id="gen-btn-w27" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">В27</button>
                     </div>
                 </div>
-
-                <div id="general-schedule-grid" class="schedule-grid">
-                    <!-- Master Schedule populated by JS -->
-                </div>
+                <div id="general-schedule-grid" class="schedule-grid"></div>
             </section>
         </div>
 
@@ -144,17 +129,12 @@
                         <button onclick="setWeek(27, 'personal')" id="btn-w27" class="px-4 py-2 rounded-lg text-sm font-bold transition">В27</button>
                     </div>
                 </div>
-
-                <div id="schedule-grid" class="schedule-grid">
-                    <!-- Personalized cards populated by JS -->
-                </div>
+                <div id="schedule-grid" class="schedule-grid"></div>
             </div>
         </div>
-
     </main>
 
     <script>
-        // --- ZOOM LINKS MAPPING ---
         const zoomLinks = {
             "Маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1#success",
             "Політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1&omn=81642694735#success",
@@ -195,7 +175,6 @@
             { id: 29, name: "Шелепа Михайло Владиславович", electives: ["Польська", "Соціальне підприємництво", "БЗВП"] }
         ];
 
-        // Global Schedule mapping types: 'general', 'elective', 'lang'
         const scheduleData = {
             24: [
                 { day: "Понеділок", date: "09.02.2026", pairs: [
@@ -325,7 +304,6 @@
             ]
         };
 
-        // --- STATE ---
         let state = {
             currentView: 'register',
             selectedStudent: null,
@@ -333,8 +311,6 @@
             generalWeek: 24,
             searchTerm: ''
         };
-
-        // --- CORE FUNCTIONS ---
 
         function init() {
             renderRegister();
@@ -435,7 +411,6 @@
             grid.innerHTML = '';
             const weekData = scheduleData[state.generalWeek];
 
-            // Update UI buttons
             [24, 25, 26, 27].forEach(w => {
                 const btn = document.getElementById(`gen-btn-w${w}`);
                 btn.className = state.generalWeek === w 
@@ -513,12 +488,12 @@
             let typeLabel = p.type === 'general' ? 'Загальна' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
             let typeClass = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
             
-            // Check for Zoom Link
             let zoomBtn = '';
             if (p.zoomKey && zoomLinks[p.zoomKey]) {
                 zoomBtn = `
-                    <a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-[#2D8CFF]/10 text-[#2D8CFF] rounded-lg text-xs font-bold zoom-link border border-[#2D8CFF]/20">
-                        <span>📹 Join Zoom</span>
+                    <a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-3 inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#2D8CFF] text-white rounded-xl text-xs font-black shadow-lg shadow-blue-200 hover:bg-[#1a73e8] hover:shadow-blue-300 transition-all active:scale-95 group">
+                        <span class="text-base group-hover:rotate-12 transition-transform">📹</span>
+                        <span class="uppercase tracking-wider">Приєднатися до Zoom</span>
                     </a>
                 `;
             }
