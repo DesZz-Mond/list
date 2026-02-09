@@ -11,33 +11,28 @@
         .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
-        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
         .day-card { transition: all 0.3s ease; }
         .day-card:hover { transform: translateY(-2px); }
-        .pair-item { border-left-width: 4px; }
+        .pair-item { border-left-width: 4px; position: relative; }
         .pair-general { border-left-color: #6366f1; background-color: #f5f3ff; }
         .pair-elective { border-left-color: #f59e0b; background-color: #fffbeb; }
         .pair-lang { border-left-color: #10b981; background-color: #ecfdf5; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        .zoom-link { transition: all 0.2s; }
+        .zoom-link:hover { transform: scale(1.05); background-color: #2D8CFF; color: white; }
     </style>
 </head>
 <body class="text-stone-800">
 
-    <!-- Chosen Palette: Warm Stone, Indigo Accents, Soft Emerald/Amber for types -->
+    <!-- Chosen Palette: Warm Stone, Indigo Accents, Zoom Blue -->
     <!-- Application Structure Plan:
-         1. Navigation: Switch between "Register" and "My Schedule".
-         2. Search: Single global search that affects the table and identifies the active student.
-         3. Student Register: Detailed table of electives.
-         4. Personal Schedule View:
-            - Week Selector (24-27).
-            - Personalized grid of classes based on the chosen student's electives.
-            - Logical mapping: General subjects (all) + Electives (matches table) + Languages (matches table).
-         Rationale: Users need to see their specific burden. Merging the schedule from images with the register data creates a "Smart Calendar".
-    -->
-    <!-- Visualization & Content Choices:
-         1. Schedule -> Organize -> Interactive Grid -> JS Filtering -> Shows only what's relevant to the person.
-         2. Electives -> Compare -> Tag-based Table -> Visual clarity.
+         1. Navigation: Links to Register/General/Personal.
+         2. Search: Global student identifier.
+         3. View 1: Register + General Master Schedule (as requested, after the register).
+         4. View 2: Personal Schedule (Filtered by student electives).
+         5. Logic: Enhanced schedule data with Zoom URL mapping.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
@@ -49,7 +44,7 @@
                     <span class="text-xl font-bold text-stone-900 tracking-tight">Навчальний Портал 2026</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button onclick="switchView('register')" id="nav-register" class="px-4 py-2 rounded-lg font-medium text-indigo-600 bg-indigo-50 transition">Реєстр</button>
+                    <button onclick="switchView('register')" id="nav-register" class="px-4 py-2 rounded-lg font-medium text-indigo-600 bg-indigo-50 transition">Головна</button>
                     <button onclick="switchView('schedule')" id="nav-schedule" class="px-4 py-2 rounded-lg font-medium text-stone-500 hover:text-indigo-600 transition">Мій Розклад</button>
                 </div>
             </div>
@@ -60,47 +55,75 @@
         
         <!-- Search Bar (Global) -->
         <div class="mb-10 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
-            <h2 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3">Персоналізація</h2>
-            <div class="relative max-w-xl">
-                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Введіть ПІБ студента для розкладу..." 
-                    class="w-full pl-12 pr-4 py-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
-                <span class="absolute left-4 top-3.5 text-xl">👤</span>
-            </div>
-            <p id="search-feedback" class="mt-2 text-sm text-stone-500 italic">Почніть вводити прізвище, щоб побачити свій розклад</p>
-        </div>
-
-        <!-- View: Register -->
-        <div id="view-register" class="animate-fade">
-            <div class="mb-6 flex justify-between items-end">
-                <div>
-                    <h1 class="text-3xl font-bold text-stone-900">Реєстр вибіркових дисциплін</h1>
-                    <p class="text-stone-500">Списки студентів та обрані ними предмети на 2026 рік</p>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex-grow">
+                    <h2 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3">Персоналізація</h2>
+                    <div class="relative max-w-xl">
+                        <input type="text" id="global-search" oninput="handleSearch()" placeholder="Введіть ПІБ студента для розкладу..." 
+                            class="w-full pl-12 pr-4 py-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
+                        <span class="absolute left-4 top-3.5 text-xl">👤</span>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600 font-bold uppercase">Всього: <span id="reg-count">0</span></span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-                <div class="overflow-x-auto custom-scroll">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-stone-50 text-stone-500 text-xs uppercase border-b border-stone-200">
-                                <th class="p-4 w-12 text-center">№</th>
-                                <th class="p-4">Студент</th>
-                                <th class="p-4">Дисципліни</th>
-                                <th class="p-4 text-center">Дія</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reg-table-body" class="divide-y divide-stone-100 text-sm">
-                            <!-- JS populated -->
-                        </tbody>
-                    </table>
-                </div>
+                <div id="search-feedback" class="text-sm text-stone-500 italic md:mt-8">Введіть прізвище для фільтрації</div>
             </div>
         </div>
 
-        <!-- View: Schedule -->
+        <!-- View: Register & General Schedule -->
+        <div id="view-register" class="animate-fade space-y-16">
+            
+            <!-- Register Section -->
+            <section>
+                <div class="mb-6 flex justify-between items-end">
+                    <div>
+                        <h1 class="text-3xl font-bold text-stone-900">Реєстр вибіркових дисциплін</h1>
+                        <p class="text-stone-500">Списки студентів на 2026 рік</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600 font-bold uppercase tracking-tight">Всього: <span id="reg-count">0</span></span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                    <div class="overflow-x-auto custom-scroll">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-stone-50 text-stone-500 text-xs uppercase border-b border-stone-200">
+                                    <th class="p-4 w-12 text-center">№</th>
+                                    <th class="p-4">Студент</th>
+                                    <th class="p-4">Дисципліни</th>
+                                    <th class="p-4 text-center">Дія</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reg-table-body" class="divide-y divide-stone-100 text-sm">
+                                <!-- JS populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- General Schedule Section (Master View) -->
+            <section id="general-schedule-section">
+                <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-stone-900">Загальний розклад занять</h1>
+                        <p class="text-stone-500">Повний графік лекцій та практик для всіх груп</p>
+                    </div>
+                    <div class="flex gap-2 p-1 bg-stone-200 rounded-xl">
+                        <button onclick="setWeek(24, 'general')" id="gen-btn-w24" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">Н24</button>
+                        <button onclick="setWeek(25, 'general')" id="gen-btn-w25" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">В25</button>
+                        <button onclick="setWeek(26, 'general')" id="gen-btn-w26" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">Н26</button>
+                        <button onclick="setWeek(27, 'general')" id="gen-btn-w27" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">В27</button>
+                    </div>
+                </div>
+
+                <div id="general-schedule-grid" class="schedule-grid">
+                    <!-- Master Schedule populated by JS -->
+                </div>
+            </section>
+        </div>
+
+        <!-- View: Personal Schedule -->
         <div id="view-schedule" class="hidden animate-fade">
             <div id="no-student-selected" class="text-center py-20 bg-stone-100 rounded-3xl border-2 border-dashed border-stone-300">
                 <span class="text-6xl block mb-4">🔍</span>
@@ -111,19 +134,19 @@
             <div id="schedule-content" class="hidden">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-stone-900">Мій розклад лекцій</h1>
-                        <p class="text-indigo-600 font-medium mt-1" id="active-student-name"></p>
+                        <h1 class="text-3xl font-bold text-stone-900">Мій персональний розклад</h1>
+                        <p class="text-indigo-600 font-bold mt-1 text-lg" id="active-student-name"></p>
                     </div>
-                    <div class="flex gap-2 p-1 bg-stone-200 rounded-xl">
-                        <button onclick="setWeek(24)" id="btn-w24" class="px-4 py-2 rounded-lg text-sm font-bold transition">Н24</button>
-                        <button onclick="setWeek(25)" id="btn-w25" class="px-4 py-2 rounded-lg text-sm font-bold transition">В25</button>
-                        <button onclick="setWeek(26)" id="btn-w26" class="px-4 py-2 rounded-lg text-sm font-bold transition">Н26</button>
-                        <button onclick="setWeek(27)" id="btn-w27" class="px-4 py-2 rounded-lg text-sm font-bold transition">В27</button>
+                    <div class="flex gap-2 p-1 bg-stone-200 rounded-xl shadow-inner">
+                        <button onclick="setWeek(24, 'personal')" id="btn-w24" class="px-4 py-2 rounded-lg text-sm font-bold transition">Н24</button>
+                        <button onclick="setWeek(25, 'personal')" id="btn-w25" class="px-4 py-2 rounded-lg text-sm font-bold transition">В25</button>
+                        <button onclick="setWeek(26, 'personal')" id="btn-w26" class="px-4 py-2 rounded-lg text-sm font-bold transition">Н26</button>
+                        <button onclick="setWeek(27, 'personal')" id="btn-w27" class="px-4 py-2 rounded-lg text-sm font-bold transition">В27</button>
                     </div>
                 </div>
 
                 <div id="schedule-grid" class="schedule-grid">
-                    <!-- JS populated daily cards -->
+                    <!-- Personalized cards populated by JS -->
                 </div>
             </div>
         </div>
@@ -131,7 +154,15 @@
     </main>
 
     <script>
-        // --- DATA ---
+        // --- ZOOM LINKS MAPPING ---
+        const zoomLinks = {
+            "Маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1#success",
+            "Політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1&omn=81642694735#success",
+            "Екаунтинг": "https://us02web.zoom.us/j/86814364953?pwd=YjJTSTd0czAzbkNGdmNXRlRqalZOQT09#success",
+            "Публічне адміністрування": "https://us02web.zoom.us/j/83636582974?pwd=RbIos5kRtplFa04mJ3U5BnZUaaoueF.1#success",
+            "Соціологія": "https://us04web.zoom.us/j/75469263830?pwd=VlsIwYIMbBLQWpYCDtbq15tzyLhkTu.1#success"
+        };
+
         const students = [
             { id: 1, name: "Бельтюкова Анастасія Дмитрівна", electives: ["Німецька", "Політологія", "Публічне адміністрування"] },
             { id: 2, name: "Великоконь Дар'я Андріївна", electives: ["Французька", "Публічне адміністрування", "Соціальне підприємництво"] },
@@ -164,103 +195,102 @@
             { id: 29, name: "Шелепа Михайло Владиславович", electives: ["Польська", "Соціальне підприємництво", "БЗВП"] }
         ];
 
-        // Global Schedule (Condensed from screenshots)
-        // types: 'general' (all), 'elective' (by name), 'lang' (any foreign lang)
+        // Global Schedule mapping types: 'general', 'elective', 'lang'
         const scheduleData = {
-            24: [ // Lower Week
+            24: [
                 { day: "Понеділок", date: "09.02.2026", pairs: [
-                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general" },
-                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general" }
+                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" },
+                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" }
                 ]},
                 { day: "Вівторок", date: "10.02.2026", pairs: [
                     { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
                     { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
-                    { time: "11:30-12:45", num: 3, subj: "Політологія В Л", type: "elective", map: "Політологія" },
-                    { time: "13:00-14:15", num: 4, subj: "Політологія В Л", type: "elective", map: "Політологія" }
+                    { time: "11:30-12:45", num: 3, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" },
+                    { time: "13:00-14:15", num: 4, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" }
                 ]},
                 { day: "Середа", date: "11.02.2026", pairs: [
-                    { time: "10:00-11:15", num: 2, subj: "Екаунтинг-2 Л", type: "general" },
-                    { time: "11:30-12:45", num: 3, subj: "Екаунтинг-2 Л", type: "general" },
-                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
-                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                    { time: "10:00-11:15", num: 2, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" },
+                    { time: "11:30-12:45", num: 3, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" },
+                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" }
                 ]},
                 { day: "Четвер", date: "12.02.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
-                    { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
-                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
-                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                    { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В L", type: "elective", map: "Соціальне підприємництво" },
+                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" }
                 ]},
                 { day: "П'ятниця", date: "13.02.2026", pairs: [
-                    { time: "11:30-12:45", num: 3, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
-                    { time: "13:00-14:15", num: 4, subj: "Соціологія В Л", type: "elective", map: "Соціологія" }
+                    { time: "11:30-12:45", num: 3, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" },
+                    { time: "13:00-14:15", num: 4, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" }
                 ]},
                 { day: "Субота", date: "14.02.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" },
                     { time: "11:30-12:45", num: 3, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" }
                 ]}
             ],
-            25: [ // Upper Week
+            25: [
                 { day: "Понеділок", date: "16.02.2026", pairs: [
                     { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
                     { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
                     { time: "11:30-12:45", num: 3, subj: "Підприємництво Л", type: "general" }
                 ]},
                 { day: "Вівторок", date: "17.02.2026", pairs: [
-                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general" },
-                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general" }
+                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" },
+                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" }
                 ]},
                 { day: "Середа", date: "18.02.2026", pairs: [
-                    { time: "10:00-11:15", num: 2, subj: "Екаунтинг-2 Л", type: "general" },
-                    { time: "11:30-12:45", num: 3, subj: "Екаунтинг-2 Л", type: "general" }
+                    { time: "10:00-11:15", num: 2, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" },
+                    { time: "11:30-12:45", num: 3, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" }
                 ]},
                 { day: "Четвер", date: "19.02.2026", pairs: [
-                    { time: "08:30-09:45", num: 1, subj: "Політологія В Л", type: "elective", map: "Політологія" },
-                    { time: "10:00-11:15", num: 2, subj: "Політологія В Л", type: "elective", map: "Політологія" }
+                    { time: "08:30-09:45", num: 1, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" }
                 ]},
                 { day: "П'ятниця", date: "20.02.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
                     { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
-                    { time: "13:00-14:15", num: 4, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
-                    { time: "14:30-15:45", num: 5, subj: "Соціологія В Л", type: "elective", map: "Соціологія" }
+                    { time: "13:00-14:15", num: 4, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" },
+                    { time: "14:30-15:45", num: 5, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" }
                 ]},
                 { day: "Субота", date: "21.02.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" },
                     { time: "11:30-12:45", num: 3, subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "БЗВП" }
                 ]}
             ],
-            26: [ // Lower Week 2
+            26: [
                 { day: "Понеділок", date: "23.02.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
                     { time: "11:30-12:45", num: 3, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
                     { time: "13:00-14:15", num: 4, subj: "Іноземна мова п", type: "lang" },
-                    { time: "14:30-15:45", num: 5, subj: "Екаунтинг-2 Л", type: "general" },
-                    { time: "16:00-17:15", num: 6, subj: "Екаунтинг-2 Л", type: "general" }
+                    { time: "14:30-15:45", num: 5, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" },
+                    { time: "16:00-17:15", num: 6, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" }
                 ]},
                 { day: "Вівторок", date: "24.02.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Іноземна мова п", type: "lang" },
                     { time: "11:30-12:45", num: 3, subj: "Іноземна мова п", type: "lang" }
                 ]},
                 { day: "Середа", date: "25.02.2026", pairs: [
-                    { time: "08:30-09:45", num: 1, subj: "Політологія В Л", type: "elective", map: "Політологія" },
-                    { time: "10:00-11:15", num: 2, subj: "Політологія В Л", type: "elective", map: "Політологія" },
+                    { time: "08:30-09:45", num: 1, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" },
                     { time: "11:30-12:45", num: 3, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" },
                     { time: "13:00-14:15", num: 4, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" }
                 ]},
                 { day: "Четвер", date: "26.02.2026", pairs: [
-                    { time: "08:30-09:45", num: 1, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
-                    { time: "10:00-11:15", num: 2, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
-                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general" },
-                    { time: "13:00-14:15", num: 4, subj: "Маркетинг Л", type: "general" }
+                    { time: "08:30-09:45", num: 1, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" },
+                    { time: "11:30-12:45", num: 3, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" },
+                    { time: "13:00-14:15", num: 4, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" }
                 ]},
                 { day: "П'ятниця", date: "27.02.2026", pairs: [
                     { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
                     { time: "10:00-11:15", num: 2, subj: "Підприємництво Л", type: "general" },
                     { time: "11:30-12:45", num: 3, subj: "Підприємництво Л", type: "general" },
-                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
-                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                    { time: "13:00-14:15", num: 4, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" }
                 ]}
             ],
-            27: [ // Upper Week 2
+            27: [
                 { day: "Понеділок", date: "02.03.2026", pairs: [
                     { time: "10:00-11:15", num: 2, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
                     { time: "11:30-12:45", num: 3, subj: "Китайська (В п)", type: "elective", map: "Китайська" },
@@ -269,8 +299,8 @@
                 ]},
                 { day: "Вівторок", date: "03.03.2026", pairs: [
                     { time: "11:30-12:45", num: 3, subj: "Іноземна мова п", type: "lang" },
-                    { time: "13:00-14:15", num: 4, subj: "Екаунтинг-2 Л", type: "general" },
-                    { time: "14:30-15:45", num: 5, subj: "Екаунтинг-2 Л", type: "general" }
+                    { time: "13:00-14:15", num: 4, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" },
+                    { time: "14:30-15:45", num: 5, subj: "Екаунтинг-2 Л", type: "general", zoomKey: "Екаунтинг" }
                 ]},
                 { day: "Середа", date: "04.03.2026", pairs: [
                     { time: "08:30-09:45", num: 1, subj: "Підприємництво Л", type: "general" },
@@ -279,18 +309,18 @@
                     { time: "13:00-14:15", num: 4, subj: "Соціальне підприємництво В Л", type: "elective", map: "Соціальне підприємництво" }
                 ]},
                 { day: "Четвер", date: "05.03.2026", pairs: [
-                    { time: "08:30-09:45", num: 1, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
-                    { time: "10:00-11:15", num: 2, subj: "Соціологія В Л", type: "elective", map: "Соціологія" },
+                    { time: "08:30-09:45", num: 1, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" },
+                    { time: "10:00-11:15", num: 2, subj: "Соціологія В Л", type: "elective", map: "Соціологія", zoomKey: "Соціологія" },
                     { time: "11:30-12:45", num: 3, subj: "Підприємництво Л", type: "general" },
                     { time: "13:00-14:15", num: 4, subj: "Підприємництво Л", type: "general" }
                 ]},
                 { day: "П'ятниця", date: "06.03.2026", pairs: [
-                    { time: "08:30-09:45", num: 1, subj: "Маркетинг Л", type: "general" },
-                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general" },
-                    { time: "11:30-12:45", num: 3, subj: "Політологія В Л", type: "elective", map: "Політологія" },
-                    { time: "13:00-14:15", num: 4, subj: "Політологія В Л", type: "elective", map: "Політологія" },
-                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" },
-                    { time: "16:00-17:15", num: 6, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування" }
+                    { time: "08:30-09:45", num: 1, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" },
+                    { time: "10:00-11:15", num: 2, subj: "Маркетинг Л", type: "general", zoomKey: "Маркетинг" },
+                    { time: "11:30-12:45", num: 3, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" },
+                    { time: "13:00-14:15", num: 4, subj: "Політологія В Л", type: "elective", map: "Політологія", zoomKey: "Політологія" },
+                    { time: "14:30-15:45", num: 5, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" },
+                    { time: "16:00-17:15", num: 6, subj: "Публічне адміністрування В Л", type: "elective", map: "Публічне адміністрування", zoomKey: "Публічне адміністрування" }
                 ]}
             ]
         };
@@ -300,6 +330,7 @@
             currentView: 'register',
             selectedStudent: null,
             activeWeek: 24,
+            generalWeek: 24,
             searchTerm: ''
         };
 
@@ -308,11 +339,11 @@
         function init() {
             renderRegister();
             updateRegisterCount();
+            renderGeneralSchedule();
         }
 
         function switchView(view) {
             state.currentView = view;
-            
             const vReg = document.getElementById('view-register');
             const vSch = document.getElementById('view-schedule');
             const navReg = document.getElementById('nav-register');
@@ -340,9 +371,9 @@
             
             if (found) {
                 state.selectedStudent = found;
-                document.getElementById('search-feedback').innerHTML = `✅ Знайдено: <span class="font-bold text-indigo-600">${found.name}</span>. Натисніть "Мій Розклад"`;
+                document.getElementById('search-feedback').innerHTML = `✅ Обрано: <span class="font-bold text-indigo-600">${found.name}</span>. Дивіться вкладку "Мій Розклад"`;
             } else {
-                document.getElementById('search-feedback').innerHTML = `Почніть вводити прізвище, щоб побачити свій розклад`;
+                document.getElementById('search-feedback').innerHTML = `Введіть прізвище для фільтрації`;
             }
             renderRegister();
         }
@@ -355,23 +386,28 @@
             switchView('schedule');
         }
 
-        function setWeek(w) {
-            state.activeWeek = w;
-            renderPersonalSchedule();
+        function setWeek(w, type) {
+            if (type === 'general') {
+                state.generalWeek = w;
+                renderGeneralSchedule();
+            } else {
+                state.activeWeek = w;
+                renderPersonalSchedule();
+            }
         }
 
         function renderRegister() {
             const body = document.getElementById('reg-table-body');
             body.innerHTML = '';
-            
             const filtered = students.filter(s => s.name.toLowerCase().includes(state.searchTerm));
 
             filtered.forEach(s => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-stone-50 transition border-b border-stone-100 last:border-0";
+                tr.className = "hover:bg-stone-50 transition border-b border-stone-100 last:border-0 cursor-pointer";
+                tr.onclick = () => selectStudent(s.id);
                 
                 const isSelected = state.selectedStudent && state.selectedStudent.id === s.id;
-                if (isSelected) tr.classList.add('bg-indigo-50/30');
+                if (isSelected) tr.classList.add('bg-indigo-50/50');
 
                 tr.innerHTML = `
                     <td class="p-4 text-center font-mono text-stone-400 text-xs">${s.id}</td>
@@ -387,10 +423,39 @@
                         </div>
                     </td>
                     <td class="p-4 text-center">
-                        <button onclick="selectStudent(${s.id})" class="text-xs font-bold text-indigo-600 hover:underline">Розклад →</button>
+                        <span class="text-xs font-bold text-indigo-600 hover:underline">Розклад →</span>
                     </td>
                 `;
                 body.appendChild(tr);
+            });
+        }
+
+        function renderGeneralSchedule() {
+            const grid = document.getElementById('general-schedule-grid');
+            grid.innerHTML = '';
+            const weekData = scheduleData[state.generalWeek];
+
+            // Update UI buttons
+            [24, 25, 26, 27].forEach(w => {
+                const btn = document.getElementById(`gen-btn-w${w}`);
+                btn.className = state.generalWeek === w 
+                    ? "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-indigo-600 shadow-sm"
+                    : "px-3 py-1.5 rounded-lg text-xs font-bold transition text-stone-500 hover:text-stone-800";
+            });
+
+            weekData.forEach(day => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl p-6 shadow-sm border border-stone-200 day-card animate-fade";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-stone-100">
+                        <h3 class="font-bold text-stone-900">${day.day}</h3>
+                        <span class="text-xs font-bold text-stone-400">${day.date}</span>
+                    </div>
+                    <div class="space-y-3">
+                        ${day.pairs.map(p => renderPair(p, true)).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
             });
         }
 
@@ -407,32 +472,23 @@
 
             noSel.classList.add('hidden');
             content.classList.remove('hidden');
-            document.getElementById('active-student-name').textContent = `Студент: ${state.selectedStudent.name}`;
+            document.getElementById('active-student-name').textContent = state.selectedStudent.name;
 
-            // Update buttons
             [24, 25, 26, 27].forEach(w => {
                 const btn = document.getElementById(`btn-w${w}`);
-                if (state.activeWeek === w) {
-                    btn.className = "px-4 py-2 rounded-lg text-sm font-bold transition bg-white text-indigo-600 shadow-sm";
-                } else {
-                    btn.className = "px-4 py-2 rounded-lg text-sm font-bold transition text-stone-500 hover:text-stone-800";
-                }
+                btn.className = state.activeWeek === w 
+                    ? "px-4 py-2 rounded-lg text-sm font-bold transition bg-white text-indigo-600 shadow-sm"
+                    : "px-4 py-2 rounded-lg text-sm font-bold transition text-stone-500 hover:text-stone-800";
             });
 
             grid.innerHTML = '';
             const weekData = scheduleData[state.activeWeek];
 
             weekData.forEach(day => {
-                // Filter pairs for this student
                 const personalPairs = day.pairs.filter(p => {
                     if (p.type === 'general') return true;
-                    if (p.type === 'lang') {
-                        // Language pair - check if student has any lang elective
-                        return state.selectedStudent.electives.some(el => ['Німецька','Польська','Французька'].includes(el));
-                    }
-                    if (p.type === 'elective') {
-                        return state.selectedStudent.electives.includes(p.map);
-                    }
+                    if (p.type === 'lang') return state.selectedStudent.electives.some(el => ['Німецька','Польська','Французька'].includes(el));
+                    if (p.type === 'elective') return state.selectedStudent.electives.includes(p.map);
                     return false;
                 });
 
@@ -445,29 +501,41 @@
                             <span class="text-xs font-bold text-stone-400">${day.date}</span>
                         </div>
                         <div class="space-y-3">
-                            ${personalPairs.map(p => {
-                                let typeLabel = p.type === 'general' ? 'Загальна' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
-                                let typeClass = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
-                                return `
-                                    <div class="pair-item ${typeClass} p-3 rounded-lg border-l-4">
-                                        <div class="flex justify-between text-[10px] font-bold text-stone-400 mb-1">
-                                            <span>${p.num} ПАРА | ${p.time}</span>
-                                            <span class="uppercase">${typeLabel}</span>
-                                        </div>
-                                        <div class="text-sm font-bold text-stone-800">${p.subj}</div>
-                                        <div class="text-[11px] text-stone-500 mt-1">🖥️ online</div>
-                                    </div>
-                                `;
-                            }).join('')}
+                            ${personalPairs.map(p => renderPair(p)).join('')}
                         </div>
                     `;
                     grid.appendChild(card);
                 }
             });
+        }
 
-            if (grid.innerHTML === '') {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-stone-400">На цьому тижні занять немає. Відпочивайте!</div>`;
+        function renderPair(p, isGeneral = false) {
+            let typeLabel = p.type === 'general' ? 'Загальна' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
+            let typeClass = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
+            
+            // Check for Zoom Link
+            let zoomBtn = '';
+            if (p.zoomKey && zoomLinks[p.zoomKey]) {
+                zoomBtn = `
+                    <a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-[#2D8CFF]/10 text-[#2D8CFF] rounded-lg text-xs font-bold zoom-link border border-[#2D8CFF]/20">
+                        <span>📹 Join Zoom</span>
+                    </a>
+                `;
             }
+
+            return `
+                <div class="pair-item ${typeClass} p-3 rounded-xl border-l-4">
+                    <div class="flex justify-between text-[10px] font-bold text-stone-400 mb-1">
+                        <span>${p.num} ПАРА | ${p.time}</span>
+                        <span class="uppercase">${typeLabel}</span>
+                    </div>
+                    <div class="text-sm font-bold text-stone-800 leading-tight">${p.subj}</div>
+                    <div class="text-[10px] text-stone-500 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> online
+                    </div>
+                    ${zoomBtn}
+                </div>
+            `;
         }
 
         function updateRegisterCount() {
