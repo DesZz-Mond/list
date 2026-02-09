@@ -58,18 +58,19 @@
             .mobile-stack-table, .mobile-stack-table tbody, .mobile-stack-table tr, .mobile-stack-table td { display: block; width: 100%; }
             .mobile-stack-table tr { 
                 margin-bottom: 1rem; 
-                padding: 1rem;
+                padding: 1.25rem;
                 background: white;
                 border: 1px solid #e2e8f0;
                 border-radius: 1rem;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             }
             .dark .mobile-stack-table tr { background: #18181b; border-color: #27272a; }
-            .mobile-stack-table td { padding: 0.25rem 0; border: none !important; }
+            .mobile-stack-table td { padding: 0.15rem 0; border: none !important; }
             .mobile-stack-table td:first-child { color: #94a3b8; font-size: 0.75rem; font-weight: 800; margin-bottom: 0.25rem; }
-            .mobile-stack-table td:nth-child(2) { font-size: 1.125rem; font-weight: 800; color: #0f172a; }
+            .mobile-stack-table td:nth-child(2) { font-size: 1.125rem; font-weight: 800; color: #0f172a; line-height: 1.3; }
             .dark .mobile-stack-table td:nth-child(2) { color: #f8fafc; }
             .mobile-stack-table td:nth-child(3) { margin: 0.5rem 0; }
-            .mobile-stack-table td:last-child { margin-top: 0.5rem; text-align: left !important; }
+            .mobile-stack-table td:last-child { margin-top: 0.75rem; text-align: left !important; }
         }
     </style>
 </head>
@@ -113,7 +114,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6">
         
-        <!-- Live Widget -->
+        <!-- Smart Live Widget -->
         <div id="live-widget" class="bg-white dark:bg-zinc-900 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 shadow-sm animate-fade">
             <div class="flex flex-col md:flex-row items-center justify-between gap-5">
                 <div class="flex items-center gap-4 w-full md:w-auto">
@@ -124,7 +125,7 @@
                     </div>
                 </div>
                 <div class="w-full md:w-auto border-t md:border-t-0 md:border-l border-slate-100 dark:border-zinc-800 pt-4 md:pt-0 md:pl-8">
-                    <div class="bg-indigo-600 text-white px-6 py-2 rounded-2xl text-center shadow-lg shadow-indigo-500/20">
+                    <div class="bg-indigo-600 text-white px-6 py-2.5 rounded-2xl text-center shadow-lg shadow-indigo-500/20">
                         <p id="timer-label" class="text-[9px] font-black uppercase opacity-80 mb-0.5 tracking-widest">Тривалість</p>
                         <p id="elapsed-timer" class="text-xl sm:text-2xl font-mono font-black tracking-tighter">00:00:00</p>
                     </div>
@@ -136,12 +137,12 @@
         <div class="bg-white dark:bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-grow relative">
-                    <input type="text" id="global-search" oninput="handleSearch()" placeholder="Почніть вводити ПІБ..." 
-                        class="w-full pl-10 pr-4 py-3 border border-slate-100 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-indigo-500/20 transition outline-none bg-slate-50 dark:bg-zinc-950 font-medium">
+                    <input type="text" id="global-search" oninput="handleSearch()" placeholder="Почніть вводити прізвище..." 
+                        class="w-full pl-10 pr-4 py-3 border border-slate-100 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-indigo-500/20 transition outline-none bg-slate-50 dark:bg-zinc-950 font-medium text-sm sm:text-base">
                     <span class="absolute left-3.5 top-3 sm:top-3.5 opacity-40">🔍</span>
                 </div>
                 <div class="w-full md:w-64">
-                    <select id="lang-filter" onchange="handleSearch()" class="w-full p-3 border border-slate-100 dark:border-zinc-800 rounded-xl bg-slate-50 dark:bg-zinc-950 outline-none focus:ring-2 focus:ring-indigo-500/20 font-medium text-slate-600 dark:text-zinc-300">
+                    <select id="lang-filter" onchange="handleSearch()" class="w-full p-3 border border-slate-100 dark:border-zinc-800 rounded-xl bg-slate-50 dark:bg-zinc-950 outline-none focus:ring-2 focus:ring-indigo-500/20 font-medium text-sm text-slate-600 dark:text-zinc-300">
                         <option value="all">Усі групи</option>
                         <option value="німецька">Німецька</option>
                         <option value="польська">Польська</option>
@@ -156,16 +157,15 @@
         <div id="view-register" class="space-y-10 animate-fade">
             <section>
                 <div class="flex justify-between items-center mb-4 px-1">
-                    <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white uppercase tracking-tight">Реєстр студентів</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white uppercase tracking-tight text-center sm:text-left">Реєстр студентів</h2>
                     <span id="reg-count" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">0 осіб</span>
                 </div>
-                <!-- Контейнер для таблиці, що трансформується -->
                 <div class="sm:bg-white sm:dark:bg-zinc-900 sm:rounded-2xl sm:border sm:border-slate-200 sm:dark:border-zinc-800 sm:overflow-hidden sm:shadow-sm">
                     <table class="w-full text-left mobile-stack-table">
                         <thead class="bg-slate-50 dark:bg-zinc-800/50 text-slate-500 dark:text-zinc-500 text-[10px] uppercase font-bold tracking-widest border-b border-slate-200 dark:border-zinc-800">
                             <tr>
                                 <th class="p-4 w-12 text-center">№</th>
-                                <th class="p-4">Студент</th>
+                                <th class="p-4">Студент (ПІБ повністю)</th>
                                 <th class="p-4">Дисципліни</th>
                                 <th class="p-4 text-center">Дія</th>
                             </tr>
@@ -196,10 +196,10 @@
             </div>
             
             <div id="schedule-content" class="hidden space-y-6">
-                <div class="bg-white dark:bg-zinc-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
-                    <div class="text-center md:text-left min-w-0">
-                        <h2 id="active-student-name" class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight leading-none mb-1 truncate"></h2>
-                        <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 italic">Персональний розклад</span>
+                <div class="bg-white dark:bg-zinc-900 p-5 sm:p-8 rounded-2xl border border-slate-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+                    <div class="text-center md:text-left w-full md:min-w-0">
+                        <h2 id="active-student-name" class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight leading-tight mb-2"></h2>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">Персональний розклад</span>
                     </div>
                     <div id="week-selector-pers" class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-xl border border-slate-200 dark:border-zinc-700 shadow-inner">
                         <!-- JS Buttons -->
@@ -212,7 +212,7 @@
     </main>
 
     <script>
-        // --- DATA ---
+        // --- ДАНІ ---
         const zoomLinks = {
             "маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1#success",
             "політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1&omn=81642694735#success",
@@ -304,7 +304,7 @@
             ]
         };
 
-        // --- LOGIC ---
+        // --- ЛОГІКА ---
         let state = {
             view: 'register',
             selectedStudent: null,
@@ -345,7 +345,6 @@
             document.getElementById(`nav-${view}-pc`)?.classList.remove('text-slate-500');
             document.getElementById(`nav-${view}-pc`)?.classList.add('text-indigo-600', 'bg-slate-100', 'dark:bg-zinc-800');
             
-            // Update Mobile Icons
             document.getElementById('mob-icon-reg').style.opacity = view === 'register' ? '1' : '0.4';
             document.getElementById('mob-icon-sch').style.opacity = view === 'schedule' ? '1' : '0.4';
 
@@ -446,7 +445,7 @@
 
                 tr.innerHTML = `
                     <td class="p-3 sm:p-4 text-center font-semibold text-slate-400 text-xs">${i + 1}</td>
-                    <td class="p-3 sm:p-4 font-bold text-slate-800 dark:text-zinc-200 group-hover:text-indigo-600 transition truncate max-w-[200px] sm:max-w-none">${s.name}</td>
+                    <td class="p-3 sm:p-4 font-bold text-slate-800 dark:text-zinc-200 group-hover:text-indigo-600 transition break-words whitespace-normal min-w-[140px]">${s.name}</td>
                     <td class="p-3 sm:p-4"><div class="flex flex-wrap gap-1">${badges}</div></td>
                     <td class="p-3 sm:p-4 text-center">
                         <button class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 opacity-100 sm:opacity-0 group-hover:opacity-100 transition px-3 py-1.5 rounded-lg border border-indigo-100 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950 sm:bg-transparent">Відкрити</button>
@@ -488,7 +487,7 @@
                 card.className = "bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 day-card animate-fade";
                 card.innerHTML = `
                     <h3 class="font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-zinc-800 pb-3 flex justify-between items-center">
-                        <span class="uppercase tracking-tight text-lg italic">${day.day}</span>
+                        <span class="uppercase tracking-tight text-lg italic font-black">${day.day}</span>
                         <span class="text-[10px] font-mono text-slate-400">${day.date}</span>
                     </h3>
                     <div class="space-y-3">${day.pairs.map(p => renderPair(p, true)).join('')}</div>
