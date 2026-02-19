@@ -2,108 +2,430 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПОРТАЛ МБ-202 | II-семестр</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
+    <title>MB-202 | Hub</title>
+    
+    <!-- Phosphor Icons for premium look -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { zoom: '#2D8CFF' },
-                    borderRadius: { '3xl': '1.5rem' }
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' },
+                        surface: { light: '#f8fafc', dark: '#09090b' },
+                        card: { light: '#ffffff', dark: '#18181b' }
+                    },
+                    boxShadow: {
+                        'ios': '0 8px 30px rgba(0,0,0,0.04)',
+                        'ios-dark': '0 8px 30px rgba(0,0,0,0.2)',
+                        'float': '0 20px 40px -10px rgba(99,102,241,0.15)',
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } }
+                    }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-        .schedule-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1rem; }
-        @media (min-width: 768px) { .schedule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; } }
-        @media (min-width: 1280px) { .schedule-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
-        .pair-item { border-left-width: 4px; transition: all 0.2s ease; border-radius: 0.75rem; }
-        .pair-general { border-left-color: #6366f1; background-color: #f8fafc; border: 1px solid #e2e8f0; }
-        .pair-elective { border-left-color: #f59e0b; background-color: #fffdfa; border: 1px solid #fef3c7; }
-        .pair-lang { border-left-color: #10b981; background-color: #f0fdf4; border: 1px solid #d1fae5; }
+        body { 
+            -webkit-tap-highlight-color: transparent; 
+            overscroll-behavior-y: none; /* Запобігає pull-to-refresh ефекту браузера */
+        }
         
-        .dark .pair-general { background-color: rgba(30, 41, 59, 0.4); border-color: #334155; }
-        .dark .pair-elective { background-color: rgba(69, 39, 0, 0.1); border-color: #78350f; }
-        .dark .pair-lang { background-color: rgba(6, 78, 59, 0.1); border-color: #064e3b; }
-        
-        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
-
+        /* Скролбари в стилі Mac */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(82, 82, 91, 0.5); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
+        /* Сітки */
+        .schedule-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .schedule-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
+        @media (min-width: 1280px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* Картки пар */
+        .pair-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .pair-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+            border-radius: 4px 0 0 4px;
+        }
+        .pair-general::before { background-color: #6366f1; }
+        .pair-elective::before { background-color: #f59e0b; }
+        .pair-lang::before { background-color: #10b981; }
+
+        /* Ефекти скла */
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .dark .glass { background: rgba(24, 24, 27, 0.8); border-color: rgba(63, 63, 70, 0.3); }
+        
+        /* Нижня панель для iOS (з урахуванням полоски) */
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 20px); }
+
+        /* Анімація вкладок */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* Мобільні модалки (з'являються знизу) */
         @media (max-width: 639px) {
-            .mobile-stack-table thead { display: none; }
-            .mobile-stack-table tr { margin-bottom: 1rem; padding: 1.25rem; background: white; border: 1px solid #e2e8f0; border-radius: 1rem; display: block; }
-            .dark .mobile-stack-table tr { background: #18181b; border-color: #27272a; }
-            .mobile-stack-table td { display: block; padding: 0.25rem 0; border: none !important; }
+            .mobile-bottom-sheet {
+                align-items: flex-end;
+                padding: 0;
+            }
+            .mobile-bottom-sheet > div {
+                border-radius: 2rem 2rem 0 0;
+                animation: sheetUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-300 min-h-screen pb-28 md:pb-12">
+<body class="bg-surface-light text-slate-900 dark:bg-surface-dark dark:text-zinc-100 transition-colors duration-300 antialiased h-screen overflow-hidden flex flex-col md:flex-row">
 
     <!-- Екран авторизації -->
-    <div id="auth-screen" class="fixed inset-0 z-[100] bg-slate-50 dark:bg-zinc-950 flex items-center justify-center p-4 hidden">
-        <div class="max-w-md w-full bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-200 dark:border-zinc-800 text-center animate-fade">
-            <div class="text-5xl mb-6">👋</div>
-            <h1 class="text-2xl font-black mb-2 uppercase tracking-tight">Вітаємо в Порталі</h1>
-            <p class="text-slate-500 text-sm mb-8 text-balance">Для входу, будь ласка, оберіть своє ПІБ</p>
-            <div class="relative mb-6 text-left">
-                <input type="text" id="auth-search" oninput="filterAuthList()" placeholder="Почніть вводити ПІБ..." 
-                    class="w-full p-4 bg-slate-100 dark:bg-zinc-800 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm">
-                <div id="auth-list" class="absolute left-0 right-0 mt-2 max-h-64 overflow-y-auto bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-2xl shadow-xl z-10 hidden custom-scroll"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальне вікно для додавання ДЗ -->
-    <div id="hw-modal" class="fixed inset-0 z-[110] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="max-w-md w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-zinc-800 animate-fade relative">
-            <button onclick="closeHwModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 transition">✕</button>
-            <div class="text-3xl mb-4">✍️</div>
-            <h2 class="text-xl font-black mb-1 uppercase tracking-tight">Додати ДЗ</h2>
-            <p id="hw-modal-title" class="text-indigo-600 dark:text-indigo-400 font-bold text-sm mb-4"></p>
-            <textarea id="hw-textarea" placeholder="Напишіть завдання тут (напр. Прочитати сторінки 10-15...)" class="w-full p-4 bg-slate-100 dark:bg-zinc-800/50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium text-sm border border-transparent dark:border-zinc-700 h-32 resize-none mb-3 custom-scroll"></textarea>
-            <div class="mb-4 text-left">
-                <label class="block text-[10px] font-black uppercase text-slate-500 mb-1.5 ml-1">Дедлайн (необов'язково)</label>
-                <input type="text" id="hw-deadline" placeholder="Напр. 25.02 або 'Наступна пара'" class="w-full p-3.5 bg-slate-100 dark:bg-zinc-800/50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm border border-transparent dark:border-zinc-700">
-            </div>
-            <div class="flex gap-2">
-                <button onclick="closeHwModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-zinc-700 transition">Скасувати</button>
-                <button onclick="saveHw()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">Зберегти ДЗ</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальне вікно для додавання Матеріалів -->
-    <div id="material-modal" class="fixed inset-0 z-[110] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="max-w-md w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-zinc-800 animate-fade relative">
-            <button onclick="closeMaterialModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 transition">✕</button>
-            <div class="text-3xl mb-4">🔗</div>
-            <h2 class="text-xl font-black mb-4 uppercase tracking-tight">Додати матеріал</h2>
+    <div id="auth-screen" class="fixed inset-0 z-[200] bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 hidden">
+        <div class="w-full max-w-md bg-card-light dark:bg-card-dark rounded-[2.5rem] shadow-ios dark:shadow-ios-dark border border-slate-100 dark:border-zinc-800 text-center animate-slide-up relative">
             
-            <div class="space-y-4 mb-6 text-left">
-                <div>
-                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1.5 ml-1">Назва (напр. Диск з лекціями)</label>
-                    <input type="text" id="mat-title" placeholder="Коротка назва..." class="w-full p-3.5 bg-slate-100 dark:bg-zinc-800/50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm border border-transparent dark:border-zinc-700">
+            <!-- Background blurs (separated to avoid clipping the dropdown) -->
+            <div class="absolute inset-0 overflow-hidden rounded-[2.5rem] pointer-events-none">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 blur-3xl rounded-full"></div>
+                <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-500/20 blur-3xl rounded-full"></div>
+            </div>
+            
+            <div class="relative z-10 p-8 sm:p-10">
+                <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-violet-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-float transform rotate-3">
+                    <span class="text-5xl drop-shadow-md">🎓</span>
+                </div>
+                <h1 class="text-3xl font-extrabold mb-3 tracking-tight">MB-202 Hub</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-8 font-medium">Знайдіть себе у списку для входу</p>
+                
+                <div class="relative text-left">
+                    <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400"></i>
+                    <input type="text" id="auth-search" oninput="filterAuthList()" placeholder="Пошук ПІБ..." 
+                        class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-zinc-800/80 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-base border border-slate-200 dark:border-zinc-700 placeholder-slate-400 shadow-inner relative z-10">
+                    <div id="auth-list" class="absolute left-0 right-0 mt-2 max-h-[35vh] overflow-y-auto bg-card-light dark:bg-card-dark border border-slate-200 dark:border-zinc-700 rounded-2xl shadow-xl z-50 hidden custom-scroll divide-y divide-slate-100 dark:divide-zinc-800"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR (ДЛЯ ПК) -->
+    <aside class="hidden md:flex flex-col w-72 bg-card-light dark:bg-card-dark border-r border-slate-200 dark:border-zinc-800 h-full relative z-40 transition-colors">
+        <!-- Лого та Профіль -->
+        <div class="p-6 border-b border-slate-100 dark:border-zinc-800/80">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-md">
+                    <span class="text-lg font-black">M</span>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1.5 ml-1">Посилання (URL)</label>
-                    <input type="url" id="mat-url" placeholder="https://..." class="w-full p-3.5 bg-slate-100 dark:bg-zinc-800/50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium text-sm border border-transparent dark:border-zinc-700">
+                    <h1 class="font-extrabold text-lg tracking-tight leading-none">Портал</h1>
+                    <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">MB-202</span>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 dark:bg-zinc-800/50 p-3 rounded-2xl border border-slate-200/50 dark:border-zinc-700/50 flex items-center gap-3">
+                <div id="pc-user-avatar" class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-sm shrink-0"></div>
+                <div class="overflow-hidden">
+                    <div id="pc-user-name" class="text-xs font-bold truncate text-slate-800 dark:text-zinc-200"></div>
+                    <div id="pc-user-role" class="text-[10px] text-slate-500 dark:text-slate-400">Студент</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Навігація ПК -->
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1 custom-scroll">
+            <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 mt-2">Розклад</p>
+            <button onclick="switchView('schedule')" id="nav-pc-schedule" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800 transition">
+                <i class="ph ph-user text-xl"></i> Мій Розклад
+            </button>
+            <button onclick="switchView('main')" id="nav-pc-main" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800 transition">
+                <i class="ph ph-calendar-blank text-xl"></i> Основний
+            </button>
+            <button onclick="switchView('lectures')" id="nav-pc-lectures" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800 transition">
+                <i class="ph ph-books text-xl"></i> Начитка
+            </button>
+
+            <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 mt-6">Ресурси групи</p>
+            <button onclick="switchView('homework')" id="nav-pc-homework" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800 transition">
+                <i class="ph ph-pencil-simple-line text-xl"></i> Історія Д/з
+            </button>
+            <button onclick="switchView('materials')" id="nav-pc-materials" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800 transition">
+                <i class="ph ph-folder text-xl"></i> Матеріали
+            </button>
+            <button onclick="switchView('register')" id="nav-pc-register" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800 transition">
+                <i class="ph ph-users text-xl"></i> Реєстр групи
+            </button>
+        </nav>
+
+        <!-- Низ Sidebar -->
+        <div class="p-4 border-t border-slate-100 dark:border-zinc-800/80 flex gap-2">
+            <button onclick="toggleDarkMode()" class="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-zinc-700 transition flex items-center justify-center gap-2 font-bold text-xs">
+                <i class="ph ph-moon text-lg" id="pc-dark-icon"></i> Тема
+            </button>
+            <button onclick="logout()" class="py-3 px-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition flex items-center justify-center">
+                <i class="ph ph-sign-out text-lg"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ГОЛОВНА РОБОЧА ЗОНА -->
+    <div class="flex-1 flex flex-col h-full relative overflow-hidden">
+        
+        <!-- МОБІЛЬНИЙ ХЕДЕР -->
+        <header class="md:hidden glass border-b border-slate-200/50 dark:border-zinc-800/50 sticky top-0 z-30 px-4 py-3 flex justify-between items-center safe-top">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                    <span class="text-sm font-black">M</span>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1.5 ml-1">Дисципліна</label>
-                    <select id="mat-subj" class="w-full p-3.5 bg-slate-100 dark:bg-zinc-800/50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm border border-transparent dark:border-zinc-700 cursor-pointer appearance-none">
+                    <h1 class="font-extrabold text-sm tracking-tight leading-none text-slate-800 dark:text-zinc-100">MB-202</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                    <i class="ph ph-moon text-lg" id="mob-dark-icon"></i>
+                </button>
+                <div id="mob-user-avatar" onclick="logout()" class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs cursor-pointer"></div>
+            </div>
+        </header>
+
+        <!-- ЗОНА КОНТЕНТУ (Скролиться) -->
+        <main class="flex-1 overflow-y-auto custom-scroll p-4 sm:p-6 lg:p-8 pb-32 md:pb-8 relative scroll-smooth" id="main-scroll-area">
+            
+            <!-- Live Widget (Premium Apple Watch Style) -->
+            <div id="live-widget" class="bg-card-light dark:bg-card-dark p-6 sm:p-8 rounded-[2rem] shadow-ios dark:shadow-ios-dark mb-8 border border-slate-100 dark:border-zinc-800 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-indigo-500/10 dark:bg-indigo-500/5 blur-3xl rounded-full pointer-events-none"></div>
+                
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+                    <div class="flex items-center gap-5 w-full">
+                        <div class="relative w-16 h-16 shrink-0">
+                            <div class="absolute inset-0 bg-indigo-500 rounded-2xl animate-pulse opacity-20"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                                <i class="ph ph-lightning text-3xl"></i>
+                            </div>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                <h3 class="text-slate-500 dark:text-slate-400 text-[10px] font-extrabold uppercase tracking-[0.2em]">Поточний статус</h3>
+                            </div>
+                            <div id="current-pair-text" class="text-xl sm:text-2xl font-extrabold text-slate-800 dark:text-zinc-100 leading-tight truncate">...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 dark:bg-zinc-800/50 px-8 py-4 rounded-2xl text-center min-w-[180px] w-full md:w-auto border border-slate-100 dark:border-zinc-700/50 shadow-inner">
+                        <p id="timer-label" class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">До події</p>
+                        <p id="elapsed-timer" class="text-3xl font-mono font-black text-indigo-600 dark:text-indigo-400 tracking-tight">00:00:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ЗОНИ В КЛАДОК (Рендеряться тут) -->
+            <div id="views-container">
+                
+                <!-- ПЕРСОНАЛЬНИЙ РОЗКЛАД -->
+                <div id="view-schedule" class="tab-content active">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                        <div>
+                            <span id="date-today-label" class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-500 mb-2 block">Сьогодні</span>
+                            <h2 class="text-3xl font-extrabold tracking-tight" id="active-student-name-title">Розклад</h2>
+                        </div>
+                        <div class="flex bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl w-full md:w-auto shadow-inner">
+                            <button onclick="setPersonalMode('lectures')" id="btn-mode-lec" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg text-[11px] font-bold uppercase transition">Начитка</button>
+                            <button onclick="setPersonalMode('main')" id="btn-mode-main" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg text-[11px] font-bold uppercase transition">Основний</button>
+                        </div>
+                    </div>
+                    <div id="personal-week-area" class="mb-6"></div>
+                    <div id="schedule-grid" class="schedule-grid"></div>
+                </div>
+
+                <!-- ОСНОВНИЙ РОЗКЛАД -->
+                <div id="view-main" class="tab-content">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                        <div>
+                            <h2 class="text-3xl font-extrabold tracking-tight mb-1">Основний</h2>
+                            <p class="text-sm text-slate-500 font-medium">Семестровий розклад групи</p>
+                        </div>
+                        <div class="flex bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl w-full md:w-auto shadow-inner" id="main-week-toggle">
+                            <button onclick="setMainViewWeek('upper')" id="btn-upper" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg text-[11px] font-bold uppercase transition">Верхній</button>
+                            <button onclick="setMainViewWeek('lower')" id="btn-lower" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg text-[11px] font-bold uppercase transition">Нижній</button>
+                        </div>
+                    </div>
+                    <div id="main-schedule-grid" class="schedule-grid"></div>
+                </div>
+
+                <!-- НАЧИТКА -->
+                <div id="view-lectures" class="tab-content">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                        <div>
+                            <h2 class="text-3xl font-extrabold tracking-tight mb-1">Начитка</h2>
+                            <p class="text-sm text-slate-500 font-medium">Тимчасовий розклад лекцій</p>
+                        </div>
+                        <div id="week-selector-gen" class="flex gap-2 p-1 bg-slate-100 dark:bg-zinc-800 rounded-xl overflow-x-auto w-full md:w-auto no-scrollbar shadow-inner"></div>
+                    </div>
+                    <div id="general-schedule-grid" class="schedule-grid"></div>
+                </div>
+
+                <!-- ГРУПА -->
+                <div id="view-register" class="tab-content">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-extrabold tracking-tight mb-1">Реєстр групи</h2>
+                        <p class="text-sm text-slate-500 font-medium">Список та вибіркові дисципліни</p>
+                    </div>
+                    
+                    <div class="bg-card-light dark:bg-card-dark rounded-[2rem] shadow-ios dark:shadow-ios-dark border border-slate-100 dark:border-zinc-800 overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/50 flex flex-col md:flex-row gap-4">
+                            <div class="relative flex-1">
+                                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Пошук студента..." class="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm">
+                            </div>
+                            <select id="lang-filter" onchange="handleSearch()" class="py-3 px-4 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer min-w-[200px] appearance-none">
+                                <option value="all">Усі підгрупи</option>
+                                <option value="німецька">Німецька</option>
+                                <option value="польська">Польська</option>
+                                <option value="французька">Французька</option>
+                                <option value="китайська">Китайська</option>
+                            </select>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left mobile-stack-table">
+                                <tbody id="reg-table-body" class="divide-y divide-slate-100 dark:divide-zinc-800/50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ІСТОРІЯ ДЗ -->
+                <div id="view-homework" class="tab-content">
+                    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-3xl font-extrabold tracking-tight mb-1">Історія Д/з</h2>
+                            <p class="text-sm text-slate-500 font-medium">Стрічка доданих завдань</p>
+                        </div>
+                    </div>
+                    <div id="homework-history-list" class="space-y-4"></div>
+                </div>
+
+                <!-- МАТЕРІАЛИ -->
+                <div id="view-materials" class="tab-content">
+                    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-3xl font-extrabold tracking-tight mb-1">Матеріали</h2>
+                            <p class="text-sm text-slate-500 font-medium">Корисні посилання та диски</p>
+                        </div>
+                        <button onclick="openMaterialModal()" class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-float transition flex items-center justify-center gap-2">
+                            <i class="ph ph-plus-circle text-lg"></i> Додати лінк
+                        </button>
+                    </div>
+                    <div class="flex gap-2 mb-8 overflow-x-auto custom-scroll pb-2" id="material-filters"></div>
+                    <div id="materials-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+                </div>
+
+            </div> <!-- End Views Container -->
+        </main>
+    </div>
+
+    <!-- Мобільний Bottom Navigation (IOS Style) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-200/50 dark:border-zinc-800/50 z-50 safe-bottom">
+        <div class="flex justify-around items-center px-2 py-2">
+            <button onclick="switchView('schedule')" id="nav-mob-schedule" class="nav-btn-mob flex flex-col items-center p-2 rounded-xl transition-colors text-slate-400 w-16">
+                <i class="ph ph-user text-2xl mb-1"></i>
+                <span class="text-[8px] font-extrabold uppercase tracking-tight">Мій</span>
+            </button>
+            <button onclick="switchView('main')" id="nav-mob-main" class="nav-btn-mob flex flex-col items-center p-2 rounded-xl transition-colors text-slate-400 w-16">
+                <i class="ph ph-calendar-blank text-2xl mb-1"></i>
+                <span class="text-[8px] font-extrabold uppercase tracking-tight">Осн.</span>
+            </button>
+            <button onclick="switchView('lectures')" id="nav-mob-lectures" class="nav-btn-mob flex flex-col items-center p-2 rounded-xl transition-colors text-slate-400 w-16">
+                <i class="ph ph-books text-2xl mb-1"></i>
+                <span class="text-[8px] font-extrabold uppercase tracking-tight">Нач.</span>
+            </button>
+            <button onclick="switchView('homework')" id="nav-mob-homework" class="nav-btn-mob flex flex-col items-center p-2 rounded-xl transition-colors text-slate-400 w-16">
+                <i class="ph ph-pencil-simple-line text-2xl mb-1"></i>
+                <span class="text-[8px] font-extrabold uppercase tracking-tight">Д/з</span>
+            </button>
+            <button onclick="switchView('materials')" id="nav-mob-materials" class="nav-btn-mob flex flex-col items-center p-2 rounded-xl transition-colors text-slate-400 w-16">
+                <i class="ph ph-folder text-2xl mb-1"></i>
+                <span class="text-[8px] font-extrabold uppercase tracking-tight">Мат.</span>
+            </button>
+            <button onclick="switchView('register')" id="nav-mob-register" class="nav-btn-mob flex flex-col items-center p-2 rounded-xl transition-colors text-slate-400 w-16">
+                <i class="ph ph-users text-2xl mb-1"></i>
+                <span class="text-[8px] font-extrabold uppercase tracking-tight">Група</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- МОДАЛКИ (Залишаються, але з оновленим CSS) -->
+    <!-- Модалка ДЗ -->
+    <div id="hw-modal" class="fixed inset-0 z-[200] bg-slate-900/40 dark:bg-black/60 backdrop-blur-md flex items-center justify-center p-4 mobile-bottom-sheet hidden">
+        <div class="w-full max-w-md bg-card-light dark:bg-card-dark rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-zinc-800 relative">
+            <button onclick="closeHwModal()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-slate-800 dark:hover:text-white transition">
+                <i class="ph ph-x font-bold"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500">
+                    <i class="ph ph-pencil-simple text-xl"></i>
+                </div>
+                <h2 class="text-xl font-extrabold tracking-tight">Додати ДЗ</h2>
+            </div>
+            <p id="hw-modal-title" class="text-indigo-600 dark:text-indigo-400 font-bold text-xs mb-4 px-3 py-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg inline-block"></p>
+            <textarea id="hw-textarea" placeholder="Опишіть завдання..." class="w-full p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium text-sm border border-slate-200 dark:border-zinc-700 h-32 resize-none mb-4 custom-scroll"></textarea>
+            <div class="mb-6">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 ml-1">Дедлайн <span class="text-slate-400 lowercase">(необов'язково)</span></label>
+                <input type="text" id="hw-deadline" placeholder="Напр. 25.02 або Наступна пара" class="w-full p-3.5 bg-slate-50 dark:bg-zinc-950 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm border border-slate-200 dark:border-zinc-700">
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeHwModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">Скасувати</button>
+                <button onclick="saveHw()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-float">Зберегти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка Матеріалів -->
+    <div id="material-modal" class="fixed inset-0 z-[200] bg-slate-900/40 dark:bg-black/60 backdrop-blur-md flex items-center justify-center p-4 mobile-bottom-sheet hidden">
+        <div class="w-full max-w-md bg-card-light dark:bg-card-dark rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-zinc-800 relative">
+            <button onclick="closeMaterialModal()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-slate-800 dark:hover:text-white transition">
+                <i class="ph ph-x font-bold"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500">
+                    <i class="ph ph-link text-xl"></i>
+                </div>
+                <h2 class="text-xl font-extrabold tracking-tight">Додати матеріал</h2>
+            </div>
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 ml-1">Назва</label>
+                    <input type="text" id="mat-title" placeholder="Коротко і зрозуміло..." class="w-full p-3.5 bg-slate-50 dark:bg-zinc-950 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm border border-slate-200 dark:border-zinc-700">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 ml-1">Посилання (URL)</label>
+                    <input type="url" id="mat-url" placeholder="https://..." class="w-full p-3.5 bg-slate-50 dark:bg-zinc-950 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium text-sm border border-slate-200 dark:border-zinc-700">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 ml-1">Дисципліна</label>
+                    <select id="mat-subj" class="w-full p-3.5 bg-slate-50 dark:bg-zinc-950 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm border border-slate-200 dark:border-zinc-700 cursor-pointer appearance-none">
                         <option value="Загальне">Загальне (Орг. питання)</option>
                         <option value="Маркетинг">Маркетинг</option>
                         <option value="Політологія">Політологія</option>
@@ -118,231 +440,20 @@
                     </select>
                 </div>
             </div>
-
-            <div class="flex gap-2">
-                <button onclick="closeMaterialModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-zinc-700 transition">Скасувати</button>
-                <button onclick="saveMaterial()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">Зберегти лінк</button>
+            <div class="flex gap-3">
+                <button onclick="closeMaterialModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">Скасувати</button>
+                <button onclick="saveMaterial()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-float">Зберегти</button>
             </div>
         </div>
     </div>
-
-    <!-- Навігація -->
-    <nav class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16 sm:h-20">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <span class="text-xl font-black">M</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[9px] font-black tracking-[0.2em] text-indigo-600 dark:text-indigo-400 uppercase leading-none">MB-202</span>
-                        <span class="text-sm sm:text-base font-bold tracking-tighter uppercase leading-tight">Портал</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="hidden lg:flex items-center gap-1 mr-4 border-r border-slate-200 dark:border-zinc-800 pr-4 font-black">
-                        <button onclick="switchView('schedule')" id="nav-schedule-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Мій Розклад</button>
-                        <button onclick="switchView('main')" id="nav-main-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Основний</button>
-                        <button onclick="switchView('lectures')" id="nav-lectures-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Начитка</button>
-                        <button onclick="switchView('register')" id="nav-register-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Група</button>
-                        <!-- НОВА КНОПКА ПК: Історія ДЗ -->
-                        <button onclick="switchView('homework')" id="nav-homework-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Історія Д/з</button>
-                        <!-- НОВА КНОПКА ПК: Матеріали -->
-                        <button onclick="switchView('materials')" id="nav-materials-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Матеріали</button>
-                    </div>
-                    <button onclick="logout()" class="hidden sm:block p-2 text-[9px] font-black text-slate-400 hover:text-red-500 transition uppercase tracking-tighter">Вийти</button>
-                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm">
-                        <span id="dark-mode-icon">🌙</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Мобільне меню -->
-    <div class="sm:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-zinc-800/50 z-50 flex justify-around p-1 rounded-3xl shadow-2xl ring-1 ring-black/5">
-        <button onclick="switchView('schedule')" id="mob-nav-sch" class="flex flex-col items-center gap-1 flex-1 py-2">
-            <span class="text-base">👤</span>
-            <span class="text-[7px] font-black uppercase">Мій</span>
-        </button>
-        <button onclick="switchView('main')" id="mob-nav-main" class="flex flex-col items-center gap-1 flex-1 py-2">
-            <span class="text-base">🗓️</span>
-            <span class="text-[7px] font-black uppercase">Осн.</span>
-        </button>
-        <button onclick="switchView('lectures')" id="mob-nav-lec" class="flex flex-col items-center gap-1 flex-1 py-2">
-            <span class="text-base">📚</span>
-            <span class="text-[7px] font-black uppercase">Нач.</span>
-        </button>
-        <button onclick="switchView('register')" id="mob-nav-reg" class="flex flex-col items-center gap-1 flex-1 py-2">
-            <span class="text-base">👥</span>
-            <span class="text-[7px] font-black uppercase">Група</span>
-        </button>
-        <!-- НОВА КНОПКА МОБ: Історія ДЗ -->
-        <button onclick="switchView('homework')" id="mob-nav-hw" class="flex flex-col items-center gap-1 flex-1 py-2">
-            <span class="text-base">✍️</span>
-            <span class="text-[7px] font-black uppercase">Д/з</span>
-        </button>
-        <!-- НОВА КНОПКА МОБ: Матеріали -->
-        <button onclick="switchView('materials')" id="mob-nav-mat" class="flex flex-col items-center gap-1 flex-1 py-2">
-            <span class="text-base">📁</span>
-            <span class="text-[7px] font-black uppercase">Мат.</span>
-        </button>
-    </div>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        
-        <!-- Live Widget -->
-        <div id="live-widget" class="bg-indigo-600 text-white p-6 rounded-[2.5rem] shadow-xl animate-fade overflow-hidden relative">
-            <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl font-black italic">LIVE</div>
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                <div class="flex items-center gap-5 w-full">
-                    <div id="status-icon" class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl shrink-0">⚡</div>
-                    <div class="min-w-0">
-                        <h3 id="status-title" class="text-white/60 text-[9px] font-black uppercase tracking-[0.2em] mb-1">Поточний стан</h3>
-                        <div id="current-pair-text" class="text-base sm:text-xl font-bold leading-tight truncate">...</div>
-                    </div>
-                </div>
-                <div class="bg-black/20 backdrop-blur-md px-6 py-3 rounded-2xl text-center min-w-[160px] w-full md:w-auto">
-                    <p id="timer-label" class="text-[8px] font-black uppercase opacity-60 mb-0.5">До події</p>
-                    <p id="elapsed-timer" class="text-2xl font-mono font-black">00:00:00</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Вкладка Основний розклад -->
-        <div id="view-main" class="hidden animate-fade space-y-6">
-            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div>
-                    <h2 class="text-xl font-black uppercase tracking-tighter">Основний семестровий розклад</h2>
-                    <p class="text-xs text-slate-400 font-medium">Діє на постійній основі до червня</p>
-                </div>
-                <div id="main-week-toggle" class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-xl font-black">
-                    <button onclick="setMainViewWeek('upper')" id="btn-upper" class="px-4 py-2 rounded-lg text-[10px] uppercase transition">Верхній</button>
-                    <button onclick="setMainViewWeek('lower')" id="btn-lower" class="px-4 py-2 rounded-lg text-[10px] uppercase transition">Нижній</button>
-                </div>
-            </div>
-            <div id="main-schedule-grid" class="schedule-grid"></div>
-        </div>
-
-        <!-- Вкладка Начитка -->
-        <div id="view-lectures" class="hidden animate-fade space-y-4">
-            <section class="space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div>
-                        <h2 class="text-xl font-black uppercase italic tracking-tighter text-slate-800 dark:text-white">Сітка начитки</h2>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">Тимчасовий розклад лекцій</p>
-                    </div>
-                    <div id="week-selector-gen" class="flex gap-1 p-1 bg-slate-200 dark:bg-zinc-800 rounded-xl overflow-x-auto max-w-full no-scrollbar"></div>
-                </div>
-                <div id="general-schedule-grid" class="schedule-grid"></div>
-            </section>
-        </div>
-
-        <!-- Вкладка Група -->
-        <div id="view-register" class="hidden animate-fade space-y-4">
-            <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm">
-                <button onclick="toggleRegistry()" class="w-full p-6 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="text-2xl">👥</span>
-                        <div>
-                            <h2 class="text-lg font-black uppercase tracking-tight text-slate-800 dark:text-white">Реєстр групи</h2>
-                            <p class="text-xs text-slate-400 font-medium">Список студентів та вибіркових дисциплін</p>
-                        </div>
-                    </div>
-                    <span id="registry-arrow" class="text-xl transition-transform">▼</span>
-                </button>
-                <div id="registry-content" class="hidden border-t dark:border-zinc-800">
-                    <div class="p-4 bg-slate-50/50 dark:bg-zinc-950/30 flex flex-col md:flex-row gap-3 border-b dark:border-zinc-800">
-                        <input type="text" id="global-search" oninput="handleSearch()" placeholder="Пошук студента..." class="flex-grow p-3 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl text-sm font-bold shadow-sm">
-                        <select id="lang-filter" onchange="handleSearch()" class="p-3 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl text-sm font-bold cursor-pointer">
-                            <option value="all">Усі підгрупи</option>
-                            <option value="німецька">Німецька</option>
-                            <option value="польська">Польська</option>
-                            <option value="французька">Французька</option>
-                            <option value="китайська">Китайська</option>
-                        </select>
-                    </div>
-                    <table class="w-full text-left mobile-stack-table">
-                        <tbody id="reg-table-body" class="divide-y dark:divide-zinc-800"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- НОВА ВКЛАДКА: Історія ДЗ -->
-        <div id="view-homework" class="hidden animate-fade space-y-6">
-            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b dark:border-zinc-800 pb-4">
-                    <div class="flex items-center gap-3">
-                        <span class="text-3xl">📝</span>
-                        <div>
-                            <h2 class="text-xl font-black uppercase tracking-tighter">Історія Д/з</h2>
-                            <p class="text-xs text-slate-400 font-medium">Завдання, додані студентами в Основний розклад</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Список всіх ДЗ -->
-                <div id="homework-history-list" class="space-y-4">
-                    <!-- Заповнюється через JS -->
-                </div>
-            </div>
-        </div>
-
-        <!-- НОВА ВКЛАДКА: Матеріали -->
-        <div id="view-materials" class="hidden animate-fade space-y-6">
-            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b dark:border-zinc-800 pb-4">
-                    <div class="flex items-center gap-3">
-                        <span class="text-3xl">📁</span>
-                        <div>
-                            <h2 class="text-xl font-black uppercase tracking-tighter">База матеріалів</h2>
-                            <p class="text-xs text-slate-400 font-medium">Посилання на диски, чати, підручники</p>
-                        </div>
-                    </div>
-                    <button onclick="openMaterialModal()" class="w-full sm:w-auto px-5 py-3 bg-indigo-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition whitespace-nowrap active:scale-95">+ Додати лінк</button>
-                </div>
-                
-                <div class="flex gap-2 mb-6 overflow-x-auto custom-scroll pb-2" id="material-filters">
-                    <!-- Фільтри генеруються JS -->
-                </div>
-
-                <div id="materials-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Картки матеріалів -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Персональний розклад -->
-        <div id="view-schedule" class="animate-fade space-y-6">
-            <div class="bg-white dark:bg-zinc-900 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-2 h-full bg-indigo-600"></div>
-                <div class="text-center md:text-left">
-                    <span id="date-today-label" class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-2 block italic">Сьогодні...</span>
-                    <h2 id="active-student-name" class="text-2xl sm:text-4xl font-black tracking-tighter text-slate-900 dark:text-white mb-4"></h2>
-                    
-                    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl w-fit mx-auto md:mx-0">
-                        <button onclick="setPersonalMode('lectures')" id="btn-mode-lec" class="px-4 py-2 rounded-xl text-[9px] font-black uppercase transition shadow-sm">Начитка</button>
-                        <button onclick="setPersonalMode('main')" id="btn-mode-main" class="px-4 py-2 rounded-xl text-[9px] font-black uppercase transition shadow-sm">Основний</button>
-                    </div>
-                </div>
-
-                <div id="personal-week-area"></div>
-            </div>
-            <div id="schedule-grid" class="schedule-grid"></div>
-        </div>
-
-    </main>
 
     <script>
-        // --- ДАНІ ДОМАШНІХ ЗАВДАНЬ ---
+        // --- ДАНІ ---
         let globalHomeworks = JSON.parse(localStorage.getItem('portal-homeworks')) || [];
         let currentHwContext = null;
-
-        // --- ДАНІ МАТЕРІАЛІВ ---
         let globalMaterials = JSON.parse(localStorage.getItem('portal-materials')) || [];
         let currentMaterialFilter = 'Всі';
 
-        // --- ПОВНІ ДАНІ (Тільки для Начитки) ---
         const zoomLinks = {
             "маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1",
             "політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1",
@@ -404,7 +515,6 @@
             { start: "17:30", end: "18:45" }
         ];
 
-        // --- ОСНОВНИЙ РОЗКЛАД (БЕЗ ПОСИЛАНЬ ZOOM) ---
         const mainScheduleData = {
             upper: [
                 { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
@@ -422,7 +532,6 @@
             ]
         };
 
-        // --- ДАНІ НАЧИТКИ (4 ТИЖНІ) ---
         const scheduleData = {
             24: [
                 { day: "Понеділок", date: "09.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }]},
@@ -456,7 +565,6 @@
             ]
         };
 
-        // --- ЛОГІКА ---
         let state = {
             view: 'schedule',
             personalMode: 'lectures',
@@ -465,34 +573,47 @@
             genWeek: 25,
             mainViewWeek: 'upper',
             persMainWeek: 'upper',
-            isRegistryOpen: false,
             isDark: false
         };
 
+        // --- ІНІЦІАЛІЗАЦІЯ ---
         window.onload = () => {
             state.week = detectCurrentWeek();
             state.genWeek = state.week;
+            
             const savedDark = localStorage.getItem('darkMode') === 'true';
-            if (savedDark) { state.isDark = true; document.documentElement.classList.add('dark'); document.getElementById('dark-mode-icon').textContent = '☀️'; }
+            if (savedDark) { 
+                state.isDark = true; 
+                document.documentElement.classList.add('dark'); 
+                document.getElementById('pc-dark-icon').classList.replace('ph-moon', 'ph-sun');
+                document.getElementById('mob-dark-icon').classList.replace('ph-moon', 'ph-sun');
+            }
+            
             const savedId = localStorage.getItem('selectedStudentId');
             if (savedId) {
                 state.selectedStudent = students.find(s => s.id == savedId);
                 initApp();
-            } else { showAuthScreen(); }
+            } else { 
+                showAuthScreen(); 
+            }
         };
-
-        function detectCurrentWeek() {
-            const today = new Date();
-            if (today >= new Date(2026, 1, 9) && today <= new Date(2026, 1, 15)) return 24;
-            if (today >= new Date(2026, 1, 16) && today <= new Date(2026, 1, 22)) return 25;
-            if (today >= new Date(2026, 1, 23) && today <= new Date(2026, 2, 1)) return 26;
-            if (today >= new Date(2026, 2, 2) && today <= new Date(2026, 2, 8)) return 27;
-            return 25;
-        }
 
         function initApp() {
             document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('date-today-label').innerText = `${new Date().toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+            
+            // Налаштування UI профілю
+            const nameEl = document.getElementById('pc-user-name');
+            const avatarPc = document.getElementById('pc-user-avatar');
+            const avatarMob = document.getElementById('mob-user-avatar');
+            
+            nameEl.textContent = state.selectedStudent.name;
+            avatarPc.textContent = state.selectedStudent.name.charAt(0);
+            avatarMob.textContent = state.selectedStudent.name.charAt(0);
+            
+            if (state.selectedStudent.isStarosta) {
+                document.getElementById('pc-user-role').innerHTML = `<span class="text-amber-500 font-bold">Староста</span>`;
+            }
+
             renderRegister();
             switchView('schedule');
             updateLiveStatus();
@@ -500,8 +621,7 @@
         }
 
         function showAuthScreen() {
-            const screen = document.getElementById('auth-screen');
-            screen.classList.remove('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
             filterAuthList();
         }
 
@@ -510,13 +630,14 @@
             const list = document.getElementById('auth-list');
             list.innerHTML = '';
             const filtered = students.filter(s => s.name.toLowerCase().includes(q));
+            
             if (filtered.length > 0) {
                 list.classList.remove('hidden');
                 filtered.forEach(s => {
                     const d = document.createElement('div');
-                    d.className = "p-4 hover:bg-slate-50 dark:hover:bg-zinc-700 cursor-pointer font-bold text-sm border-b dark:border-zinc-700 last:border-0";
-                    const starostaBadge = s.isStarosta ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[8px] font-black uppercase rounded border border-amber-200 dark:border-amber-800/50 align-middle">👑 Староста</span>` : '';
-                    d.innerHTML = `<span>${s.name}</span>${starostaBadge}`;
+                    d.className = "px-6 py-4 hover:bg-slate-50 dark:hover:bg-zinc-800/50 cursor-pointer font-bold text-sm transition-colors flex items-center justify-between";
+                    const starostaBadge = s.isStarosta ? `<span class="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[9px] font-extrabold uppercase rounded-lg border border-amber-200 dark:border-amber-800">Староста</span>` : '';
+                    d.innerHTML = `<span class="text-slate-800 dark:text-zinc-200">${s.name}</span>${starostaBadge}`;
                     d.onclick = () => { localStorage.setItem('selectedStudentId', s.id); state.selectedStudent = s; initApp(); };
                     list.appendChild(d);
                 });
@@ -525,26 +646,60 @@
 
         function logout() { localStorage.removeItem('selectedStudentId'); location.reload(); }
 
-        function toggleRegistry() {
-            state.isRegistryOpen = !state.isRegistryOpen;
-            document.getElementById('registry-content').classList.toggle('hidden', !state.isRegistryOpen);
-            document.getElementById('registry-arrow').style.transform = state.isRegistryOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        function toggleDarkMode() {
+            state.isDark = !state.isDark;
+            document.documentElement.classList.toggle('dark', state.isDark);
+            
+            const pcIcon = document.getElementById('pc-dark-icon');
+            const mobIcon = document.getElementById('mob-dark-icon');
+            
+            if(state.isDark) {
+                pcIcon.classList.replace('ph-moon', 'ph-sun');
+                mobIcon.classList.replace('ph-moon', 'ph-sun');
+            } else {
+                pcIcon.classList.replace('ph-sun', 'ph-moon');
+                mobIcon.classList.replace('ph-sun', 'ph-moon');
+            }
+            localStorage.setItem('darkMode', state.isDark);
         }
 
+        // --- НАВІГАЦІЯ ---
         function switchView(view) {
             state.view = view;
-            const sections = ['view-schedule', 'view-main', 'view-lectures', 'view-register', 'view-homework', 'view-materials'];
-            sections.forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(`view-${view === 'schedule' ? 'schedule' : view}`).classList.remove('hidden');
+            
+            // Ховаємо всі таби
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Показуємо потрібний
+            document.getElementById(`view-${view}`).classList.add('active');
+            
+            // Скрол до верху при перемиканні
+            document.getElementById('main-scroll-area').scrollTop = 0;
 
-            const navIds = ['schedule', 'main', 'lectures', 'register', 'homework', 'materials'];
-            navIds.forEach(id => {
-                const pc = document.getElementById(`nav-${id}-pc`);
-                const mob = document.getElementById(`mob-nav-${id === 'schedule' ? 'sch' : (id === 'lectures' ? 'lec' : (id === 'homework' ? 'hw' : (id === 'materials' ? 'mat' : id)))}`);
-                if(pc) pc.className = id === view ? "px-3 py-2 rounded-xl text-[10px] uppercase font-black bg-indigo-600 text-white shadow-lg" : "px-3 py-2 rounded-xl text-[10px] uppercase font-bold text-slate-400";
-                if(mob) {
-                    if(id === view) { mob.classList.add('text-indigo-600', 'scale-110'); mob.classList.remove('opacity-40'); }
-                    else { mob.classList.remove('text-indigo-600', 'scale-110'); mob.classList.add('opacity-40'); }
+            // Оновлюємо стилі кнопок ПК
+            document.querySelectorAll('.nav-btn-pc').forEach(btn => {
+                if(btn.id === `nav-pc-${view}`) {
+                    btn.classList.add('bg-indigo-50', 'dark:bg-indigo-500/10', 'text-indigo-600', 'dark:text-indigo-400');
+                    btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+                    btn.querySelector('i').classList.replace('ph', 'ph-fill'); // Зміна іконки на зафарбовану
+                } else {
+                    btn.classList.remove('bg-indigo-50', 'dark:bg-indigo-500/10', 'text-indigo-600', 'dark:text-indigo-400');
+                    btn.classList.add('text-slate-600', 'dark:text-slate-400');
+                    btn.querySelector('i').classList.replace('ph-fill', 'ph');
+                }
+            });
+
+            // Оновлюємо стилі кнопок Мобайл
+            document.querySelectorAll('.nav-btn-mob').forEach(btn => {
+                if(btn.id === `nav-mob-${view}`) {
+                    btn.classList.add('text-indigo-600', 'dark:text-indigo-400');
+                    btn.classList.remove('text-slate-400');
+                    btn.querySelector('i').classList.replace('ph', 'ph-fill');
+                    btn.querySelector('i').classList.add('scale-110');
+                } else {
+                    btn.classList.remove('text-indigo-600', 'dark:text-indigo-400');
+                    btn.classList.add('text-slate-400');
+                    btn.querySelector('i').classList.replace('ph-fill', 'ph');
+                    btn.querySelector('i').classList.remove('scale-110');
                 }
             });
 
@@ -553,6 +708,16 @@
             if(view === 'lectures') renderGeneralSchedule();
             if(view === 'homework') renderHomeworkHistory();
             if(view === 'materials') renderMaterials();
+        }
+
+        // --- ЛОГІКА РОЗКЛАДУ ---
+        function detectCurrentWeek() {
+            const today = new Date();
+            if (today >= new Date(2026, 1, 9) && today <= new Date(2026, 1, 15)) return 24;
+            if (today >= new Date(2026, 1, 16) && today <= new Date(2026, 1, 22)) return 25;
+            if (today >= new Date(2026, 1, 23) && today <= new Date(2026, 2, 1)) return 26;
+            if (today >= new Date(2026, 2, 2) && today <= new Date(2026, 2, 8)) return 27;
+            return 25;
         }
 
         function setPersonalMode(mode) {
@@ -575,13 +740,13 @@
             const btnUp = document.getElementById('btn-upper');
             const btnLo = document.getElementById('btn-lower');
             
-            btnUp.className = state.mainViewWeek === 'upper' ? "px-4 py-2 rounded-lg text-[10px] uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-lg text-[10px] uppercase text-slate-400";
-            btnLo.className = state.mainViewWeek === 'lower' ? "px-4 py-2 rounded-lg text-[10px] uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-lg text-[10px] uppercase text-slate-400";
+            btnUp.className = state.mainViewWeek === 'upper' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-extrabold uppercase bg-card-light dark:bg-card-dark shadow-sm transition" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition";
+            btnLo.className = state.mainViewWeek === 'lower' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-extrabold uppercase bg-card-light dark:bg-card-dark shadow-sm transition" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition";
 
             mainScheduleData[state.mainViewWeek].forEach(day => {
                 const card = document.createElement('div');
-                card.className = "bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800 shadow-sm animate-fade";
-                card.innerHTML = `<h3 class="font-black text-lg uppercase italic border-b dark:border-zinc-800 pb-2 mb-4">${day.day}</h3><div class="space-y-3">${day.pairs.map(p => renderPair(p, true, false, { isMainTab: true, day: day.day, week: state.mainViewWeek })).join('')}</div>`;
+                card.className = "bg-card-light dark:bg-card-dark rounded-3xl p-6 md:p-8 border border-slate-100 dark:border-zinc-800/80 shadow-sm flex flex-col hover:shadow-md transition-shadow";
+                card.innerHTML = `<h3 class="font-extrabold text-xl uppercase tracking-tight border-b border-slate-100 dark:border-zinc-800 pb-4 mb-5 flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-indigo-500"></div>${day.day}</h3><div class="space-y-4 flex-grow">${day.pairs.map(p => renderPair(p, true, false, { isMainTab: true, day: day.day, week: state.mainViewWeek })).join('')}</div>`;
                 grid.appendChild(card);
             });
         }
@@ -590,24 +755,22 @@
             const grid = document.getElementById('schedule-grid'); grid.innerHTML = '';
             const weekArea = document.getElementById('personal-week-area');
             if(!state.selectedStudent) return;
-            
-            const starostaBadge = state.selectedStudent.isStarosta ? `<span class="inline-block ml-2 align-middle px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[10px] sm:text-xs font-black uppercase rounded-lg border border-amber-200 dark:border-amber-800/50 shadow-sm">👑 Староста</span>` : '';
-            document.getElementById('active-student-name').innerHTML = `${state.selectedStudent.name} ${starostaBadge}`;
 
             const bLec = document.getElementById('btn-mode-lec');
             const bMain = document.getElementById('btn-mode-main');
-            bLec.className = state.personalMode === 'lectures' ? "px-4 py-2 rounded-xl text-[9px] font-black uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-xl text-[9px] font-black uppercase text-slate-400";
-            bMain.className = state.personalMode === 'main' ? "px-4 py-2 rounded-xl text-[9px] font-black uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-xl text-[9px] font-black uppercase text-slate-400";
+            
+            bLec.className = state.personalMode === 'lectures' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase bg-card-light dark:bg-card-dark shadow-sm transition" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition";
+            bMain.className = state.personalMode === 'main' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase bg-card-light dark:bg-card-dark shadow-sm transition" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition";
 
             if (state.personalMode === 'lectures') {
-                weekArea.innerHTML = `<div id="week-selector-pers" class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700"></div>`;
+                weekArea.innerHTML = `<div id="week-selector-pers" class="flex gap-2 p-1.5 bg-slate-100 dark:bg-zinc-800 rounded-xl w-full overflow-x-auto no-scrollbar shadow-inner"></div>`;
                 updateWeekSelectors();
                 (scheduleData[state.week] || []).forEach(day => {
                     const pairs = filterPairs(day.pairs);
                     if(pairs.length > 0) appendCard(grid, day.day, day.date, pairs);
                 });
             } else {
-                weekArea.innerHTML = `<div class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700 font-black"><button onclick="setPersMainWeek('upper')" class="px-3 py-1.5 rounded-xl text-[8px] uppercase ${state.persMainWeek === 'upper' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400'}">Верхній</button><button onclick="setPersMainWeek('lower')" class="px-3 py-1.5 rounded-xl text-[8px] uppercase ${state.persMainWeek === 'lower' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400'}">Нижній</button></div>`;
+                weekArea.innerHTML = `<div class="flex gap-1.5 p-1.5 bg-slate-100 dark:bg-zinc-800 rounded-xl font-bold w-full md:w-auto shadow-inner"><button onclick="setPersMainWeek('upper')" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] uppercase transition ${state.persMainWeek === 'upper' ? 'bg-card-light dark:bg-card-dark shadow-sm font-extrabold' : 'text-slate-500'}">Верхній</button><button onclick="setPersMainWeek('lower')" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] uppercase transition ${state.persMainWeek === 'lower' ? 'bg-card-light dark:bg-card-dark shadow-sm font-extrabold' : 'text-slate-500'}">Нижній</button></div>`;
                 (mainScheduleData[state.persMainWeek] || []).forEach(day => {
                     const pairs = filterPairs(day.pairs);
                     if(pairs.length > 0) appendCard(grid, day.day, null, pairs);
@@ -628,8 +791,8 @@
 
         function appendCard(grid, day, date, pairs) {
             const card = document.createElement('div');
-            card.className = "bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800 shadow-sm animate-fade";
-            card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b dark:border-zinc-800 pb-2"><h3 class="font-black text-indigo-600 dark:text-indigo-400 text-lg uppercase italic">${day}</h3>${date ? `<span class="text-[10px] font-mono font-bold text-slate-400">${date}</span>` : ''}</div><div class="space-y-3">${pairs.map(p => renderPair(p, true, true)).join('')}</div>`;
+            card.className = "bg-card-light dark:bg-card-dark rounded-3xl p-6 md:p-8 border border-slate-100 dark:border-zinc-800/80 shadow-sm flex flex-col hover:shadow-md transition-shadow";
+            card.innerHTML = `<div class="flex justify-between items-center mb-5 border-b border-slate-100 dark:border-zinc-800 pb-4"><h3 class="font-extrabold text-indigo-500 text-xl uppercase tracking-tight flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-indigo-500/30"></div>${day}</h3>${date ? `<span class="text-[11px] font-mono font-bold text-slate-400 px-3 py-1 bg-slate-50 dark:bg-zinc-800 rounded-lg">${date}</span>` : ''}</div><div class="space-y-4 flex-grow">${pairs.map(p => renderPair(p, true, true)).join('')}</div>`;
             grid.appendChild(card);
         }
 
@@ -639,33 +802,34 @@
                 const sLang = state.selectedStudent.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
                 if (sLang) displaySubj = `Друга іноземна мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
             }
-            let z = showZoom && p.zoomKey && zoomLinks[p.zoomKey] ? `<a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-3 block w-full py-2 bg-zoom text-white text-center rounded-xl text-[10px] font-black shadow-lg">ZOOM 🚀</a>` : '';
-            let n = isPersonal ? `<textarea oninput="localStorage.setItem('note-${state.selectedStudent.id}-${p.num}-${p.subj}', this.value)" placeholder="Особисті нотатки..." class="mt-2 w-full p-2 text-[9px] bg-slate-50 dark:bg-zinc-800/50 rounded-lg outline-none border border-transparent focus:border-indigo-300 h-14 resize-none">${localStorage.getItem(`note-${state.selectedStudent.id}-${p.num}-${p.subj}`) || ''}</textarea>` : '';
             
-            // --- ЛОГІКА ДОМАШНІХ ЗАВДАНЬ У ЗАГАЛЬНОМУ РОЗКЛАДІ ---
+            let z = showZoom && p.zoomKey && zoomLinks[p.zoomKey] ? `<a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-4 flex items-center justify-center gap-2 w-full py-2.5 bg-[#2D8CFF]/10 text-[#2D8CFF] hover:bg-[#2D8CFF]/20 rounded-xl text-[11px] font-extrabold transition-colors uppercase tracking-wider"><i class="ph-fill ph-video-camera text-base"></i> Zoom Meeting</a>` : '';
+            
+            let n = isPersonal ? `<textarea oninput="localStorage.setItem('note-${state.selectedStudent.id}-${p.num}-${p.subj}', this.value)" placeholder="Додати нотатку..." class="mt-3 w-full p-3 text-[11px] bg-slate-50 dark:bg-zinc-800/50 rounded-xl outline-none border border-transparent focus:border-indigo-300 dark:focus:border-indigo-500/50 h-16 resize-none custom-scroll transition-colors font-medium text-slate-600 dark:text-slate-300 placeholder-slate-400/70 block">${localStorage.getItem(`note-${state.selectedStudent.id}-${p.num}-${p.subj}`) || ''}</textarea>` : '';
+            
             let hwHtml = '';
             if (hwContext && hwContext.isMainTab) {
                 const currentHwList = globalHomeworks.filter(h => h.subj === p.subj && h.week === hwContext.week && h.day === hwContext.day && h.num === p.num);
                 
                 if (currentHwList.length > 0) {
-                    hwHtml += `<div class="mt-3 space-y-1.5">`;
+                    hwHtml += `<div class="mt-4 space-y-2">`;
                     currentHwList.forEach(h => {
                         const authorObj = students.find(s => s.name === h.author);
-                        const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="ml-1 px-1 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[7px] font-black uppercase rounded border border-amber-200 dark:border-amber-800/50 align-middle">👑</span>` : '';
+                        const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-500 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
                         
                         const canDelete = state.selectedStudent && (state.selectedStudent.name === h.author || state.selectedStudent.isStarosta);
-                        const deleteBtn = canDelete ? `<button onclick="deleteHw(${h.id})" class="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-white/80 dark:bg-zinc-800/80 hover:bg-red-100 dark:hover:bg-red-900/50 text-slate-400 hover:text-red-500 rounded-md transition shadow-sm border border-slate-200 dark:border-zinc-700" title="Видалити">✕</button>` : '';
+                        const deleteBtn = canDelete ? `<button onclick="deleteHw(${h.id})" class="absolute top-2.5 right-2 w-6 h-6 flex items-center justify-center bg-white dark:bg-zinc-800 text-slate-400 hover:text-red-500 rounded-lg transition shadow-sm border border-slate-200 dark:border-zinc-700 active:scale-90"><i class="ph ph-trash"></i></button>` : '';
 
-                        const deadlineHtml = h.deadline && h.deadline !== 'Не вказано' ? `<div class="text-[9px] font-black text-rose-500 dark:text-rose-400 mb-1">⏰ ДЕДЛАЙН: ${h.deadline}</div>` : '';
+                        const deadlineHtml = h.deadline && h.deadline !== 'Не вказано' ? `<div class="text-[9px] font-extrabold tracking-wide text-rose-500 mb-1.5 flex items-center gap-1"><i class="ph ph-clock"></i> ${h.deadline}</div>` : '';
 
                         hwHtml += `
-                            <div class="bg-indigo-50/50 dark:bg-indigo-900/20 p-2.5 rounded-xl border border-indigo-100 dark:border-indigo-800/50 relative pr-8">
+                            <div class="bg-indigo-50/50 dark:bg-indigo-500/10 p-3 rounded-2xl border border-indigo-100 dark:border-indigo-500/20 relative pr-10">
                                 ${deleteBtn}
                                 ${deadlineHtml}
-                                <p class="text-[11px] text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">${h.text.replace(/\n/g, '<br>')}</p>
-                                <div class="text-[8px] text-slate-400 mt-2 flex justify-between items-center border-t border-indigo-100 dark:border-indigo-800/50 pt-1.5">
-                                    <span class="font-bold inline-flex items-center">✍️ ${h.author} ${starostaBadge}</span>
-                                    <span>${h.date}</span>
+                                <p class="text-[12px] text-slate-700 dark:text-slate-300 font-medium leading-relaxed">${h.text.replace(/\n/g, '<br>')}</p>
+                                <div class="text-[9px] text-slate-500 dark:text-slate-400 mt-2 flex justify-between items-center pt-2 border-t border-indigo-100/50 dark:border-indigo-500/20">
+                                    <span class="font-bold flex items-center"><i class="ph ph-pencil-simple mr-1"></i> ${h.author.split(' ')[0]} ${starostaBadge}</span>
+                                    <span class="font-mono">${h.date.split(',')[0]}</span>
                                 </div>
                             </div>
                         `;
@@ -673,155 +837,110 @@
                     hwHtml += `</div>`;
                 }
 
-                // Кнопка додати ДЗ
-                hwHtml += `<button onclick="openHwModal('${p.subj}', '${hwContext.week}', '${hwContext.day}', ${p.num})" class="mt-2 w-full py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 text-slate-500 dark:text-slate-400 text-[9px] font-black uppercase rounded-lg transition border border-dashed border-slate-300 dark:border-zinc-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400">+ Додати ДЗ</button>`;
+                hwHtml += `<button onclick="openHwModal('${p.subj}', '${hwContext.week}', '${hwContext.day}', ${p.num})" class="mt-3 w-full py-2.5 bg-slate-50 dark:bg-zinc-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-extrabold uppercase tracking-wide rounded-xl transition border border-dashed border-slate-300 dark:border-zinc-700 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 flex items-center justify-center gap-2"><i class="ph ph-plus"></i> Додати ДЗ</button>`;
             }
 
             const c = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
-            return `<div class="pair-item ${c} p-4 shadow-sm"><div class="flex justify-between items-center text-[8px] font-black text-slate-400 mb-1"><span>${p.num} ПАРА • ${p.time}</span><span class="px-1 bg-white dark:bg-zinc-800 rounded border border-slate-100 dark:border-zinc-700 uppercase">${p.type}</span></div><div class="text-sm font-bold leading-tight text-slate-800 dark:text-zinc-200">${displaySubj}</div>${z}${n}${hwHtml}</div>`;
+            return `<div class="pair-card pair-item ${c} p-5 shadow-sm"><div class="flex justify-between items-center text-[9px] font-extrabold uppercase tracking-wider text-slate-400 mb-2"><span>${p.num} ПАРА • ${p.time}</span><span class="px-2 py-0.5 bg-white dark:bg-zinc-800 rounded-md border border-slate-100 dark:border-zinc-700 shadow-sm">${p.type}</span></div><div class="text-base font-bold leading-tight text-slate-800 dark:text-zinc-100 tracking-tight">${displaySubj}</div>${z}${n}${hwHtml}</div>`;
         }
 
-        // --- ФУНКЦІЇ ДЛЯ ДОМАШНІХ ЗАВДАНЬ ---
+        // --- ДЗ ТА МАТЕРІАЛИ (Логіка збережена) ---
         function openHwModal(subj, week, day, num) {
             currentHwContext = { subj, week, day, num };
             document.getElementById('hw-modal').classList.remove('hidden');
             document.getElementById('hw-textarea').value = '';
             document.getElementById('hw-deadline').value = '';
             document.getElementById('hw-modal-title').innerText = `${day}, ${num} пара: ${subj}`;
-            document.getElementById('hw-textarea').focus();
+            setTimeout(() => document.getElementById('hw-textarea').focus(), 100);
         }
 
-        function closeHwModal() {
-            document.getElementById('hw-modal').classList.add('hidden');
-            currentHwContext = null;
-        }
+        function closeHwModal() { document.getElementById('hw-modal').classList.add('hidden'); currentHwContext = null; }
 
         function saveHw() {
             const text = document.getElementById('hw-textarea').value.trim();
             if(!text) return;
-            
             const deadline = document.getElementById('hw-deadline').value.trim() || 'Не вказано';
-
             const newHw = {
-                id: Date.now(),
-                ...currentHwContext,
-                text: text,
-                deadline: deadline,
+                id: Date.now(), ...currentHwContext, text: text, deadline: deadline,
                 author: state.selectedStudent.name,
                 date: new Date().toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             };
-
-            globalHomeworks.unshift(newHw); // Додаємо на початок
+            globalHomeworks.unshift(newHw);
             localStorage.setItem('portal-homeworks', JSON.stringify(globalHomeworks));
-            
             closeHwModal();
-            renderMainTabSchedule(); // Оновлюємо Основний розклад
-            if(state.view === 'homework') renderHomeworkHistory(); // Оновлюємо вкладку історії, якщо ми там
+            renderMainTabSchedule(); 
+            if(state.view === 'homework') renderHomeworkHistory(); 
         }
 
         function deleteHw(id) {
             globalHomeworks = globalHomeworks.filter(hw => hw.id !== id);
             localStorage.setItem('portal-homeworks', JSON.stringify(globalHomeworks));
-            renderMainTabSchedule(); // Оновлюємо Основний розклад
-            if (state.view === 'homework') renderHomeworkHistory(); // Оновлюємо вкладку історії, якщо ми там
+            renderMainTabSchedule();
+            if (state.view === 'homework') renderHomeworkHistory();
         }
 
         function renderHomeworkHistory() {
             const list = document.getElementById('homework-history-list');
             list.innerHTML = '';
-
             if (globalHomeworks.length === 0) {
-                list.innerHTML = `<div class="text-center p-10 text-slate-400 text-sm font-bold">Ще немає жодного доданого домашнього завдання.</div>`;
+                list.innerHTML = `<div class="text-center p-12 text-slate-400 text-sm font-bold border-2 border-dashed border-slate-200 dark:border-zinc-800 rounded-[2rem]">Тут поки порожньо.</div>`;
                 return;
             }
-
             globalHomeworks.forEach(hw => {
                 const item = document.createElement('div');
-                item.className = "bg-slate-50 dark:bg-zinc-800/50 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-700/50 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition";
+                item.className = "bg-card-light dark:bg-card-dark p-6 rounded-[2rem] border border-slate-100 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md relative";
                 
                 const weekLabel = hw.week === 'upper' ? 'Верхній тиждень' : 'Нижній тиждень';
                 const authorObj = students.find(s => s.name === hw.author);
-                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="ml-1.5 px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[8px] font-black uppercase rounded border border-amber-200 dark:border-amber-800/50 align-middle">👑 Староста</span>` : '';
-                
+                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-500 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
                 const canDelete = state.selectedStudent && (state.selectedStudent.name === hw.author || state.selectedStudent.isStarosta);
-                const deleteBtn = canDelete ? `<button onclick="deleteHw(${hw.id})" class="px-2 py-1 bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400 rounded-lg text-[9px] font-black uppercase hover:bg-red-100 dark:hover:bg-red-900/50 transition border border-red-200 dark:border-red-800/30 shadow-sm shrink-0">Видалити</button>` : '';
-
-                const deadlineHtml = hw.deadline && hw.deadline !== 'Не вказано' ? `<div class="mt-3 inline-block px-2 py-1 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-lg text-[10px] font-black uppercase border border-rose-200 dark:border-rose-800/50">⏰ Дедлайн: ${hw.deadline}</div>` : '';
+                const deleteBtn = canDelete ? `<button onclick="deleteHw(${hw.id})" class="px-3 py-1.5 bg-red-50 text-red-500 dark:bg-red-900/20 rounded-xl text-[10px] font-bold uppercase transition hover:bg-red-100 flex items-center gap-1"><i class="ph ph-trash"></i> Видалити</button>` : '';
+                const deadlineHtml = hw.deadline && hw.deadline !== 'Не вказано' ? `<div class="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 rounded-xl text-[10px] font-extrabold uppercase tracking-wide"><i class="ph-fill ph-clock"></i> Дедлайн: ${hw.deadline}</div>` : '';
 
                 item.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-start gap-2 mb-3">
+                    <div class="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-4">
                         <div>
-                            <span class="inline-block px-2 py-1 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-lg text-[9px] font-black uppercase text-indigo-600 dark:text-indigo-400 mb-1">${hw.subj}</span>
-                            <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400">${hw.day} • ${hw.num} пара • ${weekLabel}</div>
-                        </div>
-                        <div class="flex items-center gap-2 self-end sm:self-auto">
-                            <div class="text-[10px] font-mono text-slate-400 bg-white/50 dark:bg-zinc-900/50 px-2 py-1 rounded">
-                                Додано: ${hw.date}
+                            <span class="inline-block px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-extrabold uppercase tracking-tight mb-2">${hw.subj}</span>
+                            <div class="text-[11px] font-bold text-slate-500 flex flex-wrap items-center gap-2">
+                                <span>${hw.day}</span> &bull; <span>${hw.num} пара</span> &bull; <span>${weekLabel}</span>
                             </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-mono font-medium text-slate-400 bg-slate-50 dark:bg-zinc-800 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-zinc-700">${hw.date}</span>
                             ${deleteBtn}
                         </div>
                     </div>
-                    <div class="text-sm font-medium text-slate-800 dark:text-zinc-200 mb-4 bg-white dark:bg-zinc-900 p-3 rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <div class="text-sm font-medium text-slate-800 dark:text-zinc-200 mb-5 bg-slate-50 dark:bg-zinc-950 p-5 rounded-2xl border border-slate-100 dark:border-zinc-800 leading-relaxed">
                         ${hw.text.replace(/\n/g, '<br>')}
                         ${deadlineHtml}
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[10px] font-black">
-                            ${hw.author.charAt(0)}
-                        </div>
-                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300 inline-flex items-center">${hw.author} ${starostaBadge}</span>
+                    <div class="flex items-center gap-3 border-t border-slate-100 dark:border-zinc-800 pt-4">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-black">${hw.author.charAt(0)}</div>
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1">${hw.author} ${starostaBadge}</span>
                     </div>
                 `;
                 list.appendChild(item);
             });
         }
-        
-        // --- ФУНКЦІЇ ДЛЯ МАТЕРІАЛІВ ---
+
         function openMaterialModal() {
             document.getElementById('material-modal').classList.remove('hidden');
             document.getElementById('mat-title').value = '';
             document.getElementById('mat-url').value = '';
             document.getElementById('mat-subj').value = 'Загальне';
-            
-            // Скидаємо стилі помилок, якщо були
-            document.getElementById('mat-title').classList.remove('ring-2', 'ring-red-400');
-            document.getElementById('mat-url').classList.remove('ring-2', 'ring-red-400');
         }
-
-        function closeMaterialModal() {
-            document.getElementById('material-modal').classList.add('hidden');
-        }
+        function closeMaterialModal() { document.getElementById('material-modal').classList.add('hidden'); }
 
         function saveMaterial() {
             const titleInput = document.getElementById('mat-title');
             const urlInput = document.getElementById('mat-url');
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-            const subj = document.getElementById('mat-subj').value;
+            if(!titleInput.value.trim() || !urlInput.value.trim()) return;
             
-            let hasError = false;
-            if(!title) { titleInput.classList.add('ring-2', 'ring-red-400'); hasError = true; } else { titleInput.classList.remove('ring-2', 'ring-red-400'); }
-            if(!url) { urlInput.classList.add('ring-2', 'ring-red-400'); hasError = true; } else { urlInput.classList.remove('ring-2', 'ring-red-400'); }
-            
-            if(hasError) return;
-            
-            let formattedUrl = url;
-            if(!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
-                formattedUrl = 'https://' + formattedUrl;
-            }
+            let url = urlInput.value.trim();
+            if(!url.startsWith('http')) url = 'https://' + url;
 
-            const newMat = {
-                id: Date.now(),
-                title: title,
-                url: formattedUrl,
-                subj: subj,
-                author: state.selectedStudent.name,
-                date: new Date().toLocaleDateString('uk-UA')
-            };
-
-            globalMaterials.unshift(newMat);
+            globalMaterials.unshift({ id: Date.now(), title: titleInput.value.trim(), url: url, subj: document.getElementById('mat-subj').value, author: state.selectedStudent.name, date: new Date().toLocaleDateString('uk-UA') });
             localStorage.setItem('portal-materials', JSON.stringify(globalMaterials));
-            
             closeMaterialModal();
             if(state.view === 'materials') renderMaterials();
         }
@@ -832,76 +951,65 @@
             if (state.view === 'materials') renderMaterials();
         }
 
-        function setMaterialFilter(subj) {
-            currentMaterialFilter = subj;
-            renderMaterials();
-        }
+        function setMaterialFilter(subj) { currentMaterialFilter = subj; renderMaterials(); }
 
         function renderMaterials() {
             const filterContainer = document.getElementById('material-filters');
             const grid = document.getElementById('materials-grid');
-            
-            // 1. Оновлення кнопок фільтрів
             const subjectsInUse = ['Всі', 'Загальне', ...new Set(globalMaterials.map(m => m.subj).filter(s => s !== 'Загальне'))].sort();
             
             filterContainer.innerHTML = subjectsInUse.map(s => {
-                const isActive = currentMaterialFilter === s;
-                const activeClass = isActive 
-                    ? 'bg-indigo-600 text-white shadow-md border-indigo-600' 
-                    : 'bg-white dark:bg-zinc-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-700';
-                return `<button onclick="setMaterialFilter('${s}')" class="px-4 py-2 rounded-xl border text-[10px] font-black uppercase transition whitespace-nowrap ${activeClass}">${s}</button>`;
+                const activeClass = currentMaterialFilter === s ? 'bg-indigo-600 text-white shadow-md' : 'bg-card-light dark:bg-card-dark text-slate-500 hover:text-slate-800 dark:hover:text-white border-slate-200 dark:border-zinc-700';
+                return `<button onclick="setMaterialFilter('${s}')" class="px-5 py-2.5 rounded-xl border text-[11px] font-bold uppercase transition-all whitespace-nowrap ${activeClass}">${s}</button>`;
             }).join('');
 
-            // 2. Оновлення сітки
             grid.innerHTML = '';
             const filtered = currentMaterialFilter === 'Всі' ? globalMaterials : globalMaterials.filter(m => m.subj === currentMaterialFilter);
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center p-12 text-slate-400 text-sm font-bold border-2 border-dashed border-slate-200 dark:border-zinc-800 rounded-3xl">В цій категорії ще немає посилань. Додайте першим!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center p-12 text-slate-400 text-sm font-bold border-2 border-dashed border-slate-200 dark:border-zinc-800 rounded-[2rem]">Поки що порожньо.</div>`;
                 return;
             }
 
             filtered.forEach(m => {
                 const authorObj = students.find(s => s.name === m.author);
-                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="ml-1 px-1 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[7px] font-black uppercase rounded border border-amber-200 dark:border-amber-800/50 align-middle">👑</span>` : '';
-                
+                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-500 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
                 const canDelete = state.selectedStudent && (state.selectedStudent.name === m.author || state.selectedStudent.isStarosta);
-                const deleteBtn = canDelete ? `<button onclick="deleteMaterial(${m.id})" class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center bg-white/50 dark:bg-zinc-900/50 hover:bg-red-100 dark:hover:bg-red-900/50 text-slate-400 hover:text-red-500 rounded-xl transition shadow-sm border border-slate-200 dark:border-zinc-700" title="Видалити">✕</button>` : '';
+                const deleteBtn = canDelete ? `<button onclick="deleteMaterial(${m.id})" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-white dark:bg-zinc-800 text-slate-400 hover:text-red-500 rounded-xl transition shadow-sm border border-slate-100 dark:border-zinc-700"><i class="ph ph-trash"></i></button>` : '';
 
-                let icon = '🔗';
+                let iconClass = 'ph-link';
+                let iconColor = 'text-indigo-500';
                 const lowerUrl = m.url.toLowerCase();
-                if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) icon = '📁';
-                if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) icon = '✈️';
-                if(lowerUrl.includes('zoom.us')) icon = '📹';
-                if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) icon = '▶️';
+                if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconClass = 'ph-google-drive-logo'; iconColor = 'text-green-500'; }
+                if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconClass = 'ph-telegram-logo'; iconColor = 'text-blue-500'; }
+                if(lowerUrl.includes('zoom.us')) { iconClass = 'ph-video-camera'; iconColor = 'text-blue-500'; }
+                if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconClass = 'ph-youtube-logo'; iconColor = 'text-red-500'; }
 
                 const card = document.createElement('div');
-                card.className = "bg-slate-50 dark:bg-zinc-800/50 p-5 rounded-[1.5rem] border border-slate-200 dark:border-zinc-700/50 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition relative group flex flex-col h-full";
+                card.className = "bg-card-light dark:bg-card-dark p-6 rounded-[2rem] border border-slate-100 dark:border-zinc-800 shadow-sm hover:shadow-float transition-all relative flex flex-col h-full";
                 
                 card.innerHTML = `
                     ${deleteBtn}
-                    <div class="mb-4">
-                        <span class="inline-block px-2 py-1 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-lg text-[8px] font-black uppercase text-indigo-600 dark:text-indigo-400 mb-3 shadow-sm">${m.subj}</span>
-                        <h3 class="font-bold text-base leading-tight text-slate-800 dark:text-zinc-200 pr-8 line-clamp-2" title="${m.title}">${icon} ${m.title}</h3>
+                    <div class="mb-5">
+                        <span class="inline-block px-2.5 py-1 bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700 rounded-lg text-[9px] font-extrabold uppercase text-indigo-600 dark:text-indigo-400 mb-4">${m.subj}</span>
+                        <h3 class="font-extrabold text-lg leading-tight text-slate-800 dark:text-zinc-100 pr-10 flex items-start gap-2"><i class="ph-fill ${iconClass} ${iconColor} mt-1 text-xl shrink-0"></i> ${m.title}</h3>
                     </div>
-                    <div class="mt-auto pt-4 border-t border-slate-200 dark:border-zinc-700/50 flex items-center justify-between">
+                    <div class="mt-auto pt-5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[10px] font-black shrink-0">
-                                ${m.author.charAt(0)}
-                            </div>
+                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-black text-slate-500">${m.author.charAt(0)}</div>
                             <div class="flex flex-col">
-                                <span class="text-[9px] font-bold text-slate-600 dark:text-slate-300 leading-none flex items-center gap-0.5">${m.author.split(' ')[0]} ${starostaBadge}</span>
-                                <span class="text-[8px] text-slate-400 mt-1">${m.date}</span>
+                                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 flex items-center">${m.author.split(' ')[0]} ${starostaBadge}</span>
+                                <span class="text-[9px] font-mono text-slate-400 mt-0.5">${m.date}</span>
                             </div>
                         </div>
-                        <a href="${m.url}" target="_blank" class="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-xl text-[10px] font-black uppercase hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition shrink-0">Відкрити</a>
+                        <a href="${m.url}" target="_blank" class="px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl text-[10px] font-extrabold uppercase hover:bg-indigo-100 transition flex items-center gap-1"><i class="ph-bold ph-arrow-square-out text-sm"></i> Відкрити</a>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
-        // ------------------------------------------
 
+        // --- ІНШЕ ---
         function updateLiveStatus() {
             const now = new Date();
             const days = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
@@ -919,16 +1027,16 @@
             if(cur) {
                 label.innerText = "До кінця пари";
                 const subj = today?.pairs.find(p => p.num === cur.idx)?.subj || "Заняття";
-                el.innerHTML = `<span class='font-black opacity-60'>${cur.idx} ПАРА:</span> ${subj}`;
+                el.innerHTML = `<span class='font-medium opacity-60 mr-2'>${cur.idx} Пара:</span> ${subj}`;
                 timerEl.innerText = calculateDiff(cur.end, now);
             } else if(nxt) {
                 label.innerText = "До початку пари";
                 const s = today?.pairs.find(p => p.num === nxt.idx)?.subj || "...";
-                el.innerHTML = `Наступна: <span class='font-black opacity-60'>${nxt.idx} ПАРА</span> (${nxt.start})`;
+                el.innerHTML = `<span class='font-medium opacity-60 mr-2'>Наступна (${nxt.idx} пара):</span> ${s}`;
                 timerEl.innerText = calculateDiff(nxt.start, now);
             } else {
                 label.innerText = "Поточний час";
-                el.innerHTML = `<span class='opacity-50 italic'>День завершено</span>`;
+                el.innerHTML = `<span class='opacity-50 italic'>Пари завершено ☕</span>`;
                 timerEl.innerText = now.toLocaleTimeString('uk-UA');
             }
         }
@@ -940,23 +1048,16 @@
             return `${Math.floor(d/3600).toString().padStart(2,'0')}:${Math.floor((d%3600)/60).toString().padStart(2,'0')}:${(d%60).toString().padStart(2,'0')}`;
         }
 
-        function toggleDarkMode() {
-            state.isDark = !state.isDark;
-            document.documentElement.classList.toggle('dark', state.isDark);
-            document.getElementById('dark-mode-icon').textContent = state.isDark ? '☀️' : '🌙';
-            localStorage.setItem('darkMode', state.isDark);
-        }
-
         function renderRegister() {
             const body = document.getElementById('reg-table-body'); body.innerHTML = '';
             const q = document.getElementById('global-search').value.toLowerCase();
             const l = document.getElementById('lang-filter').value;
             students.filter(s => s.name.toLowerCase().includes(q) && (l === 'all' || s.electives.includes(l))).forEach((s, i) => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition cursor-pointer";
-                const b = s.electives.map(e => `<span class="px-2 py-0.5 rounded text-[8px] font-black border ${discColors[e] || 'bg-slate-100'}">${e}</span>`).join(' ');
-                const starostaBadge = s.isStarosta ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[8px] font-black uppercase rounded border border-amber-200 dark:border-amber-800/50 align-middle">👑 Староста</span>` : '';
-                tr.innerHTML = `<td class="p-4 text-xs font-bold text-slate-300">${i+1}</td><td class="p-4 font-bold text-sm text-slate-800 dark:text-zinc-200">${s.name} ${starostaBadge}</td><td class="p-4 flex flex-wrap gap-1">${b}</td>`;
+                tr.className = "hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors group";
+                const b = s.electives.map(e => `<span class="px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase border ${discColors[e] || 'bg-slate-100'}">${e}</span>`).join(' ');
+                const starostaBadge = s.isStarosta ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[9px] font-bold uppercase rounded-md border border-amber-200 dark:border-amber-800 inline-flex">Староста</span>` : '';
+                tr.innerHTML = `<td class="p-4 text-xs font-bold text-slate-400 w-10 text-center">${i+1}</td><td class="p-4 font-bold text-sm text-slate-800 dark:text-zinc-200 group-hover:text-indigo-600 transition-colors">${s.name} ${starostaBadge}</td><td class="p-4 flex flex-wrap gap-1.5">${b}</td>`;
                 body.appendChild(tr);
             });
         }
@@ -972,8 +1073,8 @@
             const weekLabels = { 24: "1-ша", 25: "2-га", 26: "3-тя", 27: "4-та" };
             const make = (target, type) => weeks.map(w => {
                 const act = target === w;
-                const cls = act ? "bg-indigo-600 text-white shadow-lg" : "text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800";
-                return `<button onclick="event.stopPropagation(); setWeek(${w}, '${type}')" class="px-2 py-1 rounded-lg font-black text-[8px] transition duration-300 flex-shrink-0 min-w-[70px] ${cls}">${weekLabels[w]} неділя</button>`;
+                const cls = act ? "bg-card-light dark:bg-card-dark shadow-sm font-extrabold text-slate-800 dark:text-white" : "text-slate-500 font-bold hover:text-slate-800";
+                return `<button onclick="event.stopPropagation(); setWeek(${w}, '${type}')" class="px-4 py-2.5 rounded-xl text-[11px] uppercase transition-all flex-shrink-0 min-w-[64px] ${cls}">${weekLabels[w]}</button>`;
             }).join('');
             const genSel = document.getElementById('week-selector-gen');
             const persSel = document.getElementById('week-selector-pers');
@@ -985,8 +1086,8 @@
             const grid = document.getElementById('general-schedule-grid'); grid.innerHTML = '';
             (scheduleData[state.genWeek] || []).forEach(day => {
                 const card = document.createElement('div');
-                card.className = "bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800 shadow-sm animate-fade";
-                card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b dark:border-zinc-800 pb-2"><h3 class="font-black text-lg uppercase italic">${day.day}</h3><span class="text-[10px] font-bold text-slate-400 font-mono">${day.date}</span></div><div class="space-y-3">${day.pairs.map(p => renderPair(p, true)).join('')}</div>`;
+                card.className = "bg-card-light dark:bg-card-dark rounded-3xl p-6 md:p-8 border border-slate-100 dark:border-zinc-800 shadow-sm flex flex-col";
+                card.innerHTML = `<div class="flex justify-between items-center mb-5 border-b border-slate-100 dark:border-zinc-800 pb-4"><h3 class="font-extrabold text-indigo-500 text-xl uppercase tracking-tight flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-indigo-500/30"></div>${day.day}</h3><span class="text-[11px] font-mono font-bold text-slate-400 px-3 py-1 bg-slate-50 dark:bg-zinc-800 rounded-lg">${day.date}</span></div><div class="space-y-4 flex-grow">${day.pairs.map(p => renderPair(p, true)).join('')}</div>`;
                 grid.appendChild(card);
             });
             updateWeekSelectors();
