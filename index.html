@@ -3,111 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПОРТАЛ МБ-202 ІІ-семестр</title>
+    <title>ПОРТАЛ МБ-202 | II-семестр</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        zoom: '#2D8CFF',
-                    }
+                    colors: { zoom: '#2D8CFF' },
+                    borderRadius: { '3xl': '1.5rem' }
                 }
             }
         }
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-
-        /* Оптимізація скролбару */
-        .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #3f3f46; }
-
-        /* Сітка розкладу */
-        .schedule-grid { 
-            display: grid; 
-            grid-template-columns: repeat(1, minmax(0, 1fr)); 
-            gap: 1rem; 
-        }
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1rem; }
         @media (min-width: 768px) { .schedule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; } }
         @media (min-width: 1280px) { .schedule-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-        /* Картка пари */
-        .pair-item { border-left-width: 4px; position: relative; transition: transform 0.2s, box-shadow 0.2s; border-radius: 0.75rem; border-top-left-radius: 0; border-bottom-left-radius: 0; }
-        .pair-item:hover { transform: translateX(4px); }
         
+        .pair-item { border-left-width: 4px; transition: all 0.2s ease; border-radius: 0.75rem; }
         .pair-general { border-left-color: #6366f1; background-color: #f8fafc; border: 1px solid #e2e8f0; }
         .pair-elective { border-left-color: #f59e0b; background-color: #fffdfa; border: 1px solid #fef3c7; }
         .pair-lang { border-left-color: #10b981; background-color: #f0fdf4; border: 1px solid #d1fae5; }
-
+        
         .dark .pair-general { background-color: rgba(30, 41, 59, 0.4); border-color: #334155; }
-        .dark .pair-elective { background-color: rgba(69, 39, 0, 0.15); border-color: #78350f; }
-        .dark .pair-lang { background-color: rgba(6, 78, 59, 0.15); border-color: #064e3b; }
+        .dark .pair-elective { background-color: rgba(69, 39, 0, 0.1); border-color: #78350f; }
+        .dark .pair-lang { background-color: rgba(6, 78, 59, 0.1); border-color: #064e3b; }
+        
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
 
-        .animate-fade { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Фікс для ПІБ */
-        .full-name-cell {
-            white-space: normal !important;
-            overflow: visible !important;
-            text-overflow: clip !important;
-            word-wrap: break-word !important;
-            word-break: break-word !important;
-            hyphens: auto;
-            line-height: 1.4 !important;
-        }
-
-        /* Трансформація таблиці в картки на мобілці */
         @media (max-width: 639px) {
             .mobile-stack-table thead { display: none; }
-            .mobile-stack-table, .mobile-stack-table tbody, .mobile-stack-table tr, .mobile-stack-table td { display: block; width: 100%; }
-            .mobile-stack-table tr { 
-                margin-bottom: 1rem; 
-                padding: 1.25rem;
-                background: white;
-                border: 1px solid #e2e8f0;
-                border-radius: 1rem;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            }
+            .mobile-stack-table tr { margin-bottom: 1rem; padding: 1.25rem; background: white; border: 1px solid #e2e8f0; border-radius: 1rem; display: block; }
             .dark .mobile-stack-table tr { background: #18181b; border-color: #27272a; }
-            .mobile-stack-table td { padding: 0.15rem 0; border: none !important; }
-            .mobile-stack-table td:first-child { color: #94a3b8; font-size: 0.75rem; font-weight: 800; margin-bottom: 0.25rem; }
-            .mobile-stack-table td:nth-child(2) { 
-                font-size: 1.125rem; 
-                font-weight: 800; 
-                color: #0f172a; 
-            }
-            .dark .mobile-stack-table td:nth-child(2) { color: #f8fafc; }
-            .mobile-stack-table td:nth-child(3) { margin: 0.5rem 0; }
-            .mobile-stack-table td:last-child { margin-top: 0.75rem; text-align: left !important; }
+            .mobile-stack-table td { display: block; padding: 0.25rem 0; border: none !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-300 min-h-screen pb-24 sm:pb-12">
+<body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-300 min-h-screen pb-28 md:pb-12">
+
+    <!-- Екран авторизації -->
+    <div id="auth-screen" class="fixed inset-0 z-[100] bg-slate-50 dark:bg-zinc-950 flex items-center justify-center p-4 hidden">
+        <div class="max-w-md w-full bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-200 dark:border-zinc-800 text-center animate-fade">
+            <div class="text-5xl mb-6">👋</div>
+            <h1 class="text-2xl font-black mb-2 uppercase tracking-tight">Вітаємо в Порталі</h1>
+            <p class="text-slate-500 text-sm mb-8 text-balance">Для входу, будь ласка, оберіть своє ПІБ</p>
+            <div class="relative mb-6 text-left">
+                <input type="text" id="auth-search" oninput="filterAuthList()" placeholder="Почніть вводити ПІБ..." 
+                    class="w-full p-4 bg-slate-100 dark:bg-zinc-800 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm">
+                <div id="auth-list" class="absolute left-0 right-0 mt-2 max-h-64 overflow-y-auto bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-2xl shadow-xl z-10 hidden custom-scroll"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Навігація -->
-    <nav class="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-50 shadow-sm">
+    <nav class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 sm:h-20">
-                <div class="flex items-center gap-2">
-                    <span class="text-xl sm:text-2xl">🎓</span>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <span class="text-xl font-black">M</span>
+                    </div>
                     <div class="flex flex-col">
-                        <span class="text-[10px] font-black tracking-widest uppercase opacity-50 leading-none">ІІ-СЕМЕСТР</span>
-                        <span class="text-sm sm:text-lg font-bold tracking-tight uppercase leading-tight">ПОРТАЛ МБ-202</span>
+                        <span class="text-[9px] font-black tracking-[0.2em] text-indigo-600 dark:text-indigo-400 uppercase leading-none">MB-202</span>
+                        <span class="text-sm sm:text-base font-bold tracking-tighter uppercase leading-tight">Портал</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <div class="hidden sm:flex items-center gap-2 mr-4 border-r border-slate-200 dark:border-zinc-800 pr-4">
-                        <button onclick="switchView('register')" id="nav-register-pc" class="px-4 py-2 rounded-xl text-sm font-semibold transition hover:bg-slate-100 dark:hover:bg-zinc-800">Головна</button>
-                        <button onclick="switchView('schedule')" id="nav-schedule-pc" class="px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-500 dark:text-zinc-400 hover:text-indigo-600">Мій Розклад</button>
+                <div class="flex items-center gap-1">
+                    <div class="hidden lg:flex items-center gap-1 mr-4 border-r border-slate-200 dark:border-zinc-800 pr-4 font-black">
+                        <button onclick="switchView('schedule')" id="nav-schedule-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Мій Розклад</button>
+                        <button onclick="switchView('main')" id="nav-main-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Основний</button>
+                        <button onclick="switchView('lectures')" id="nav-lectures-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Начитка</button>
+                        <button onclick="switchView('register')" id="nav-register-pc" class="px-3 py-2 rounded-xl text-[10px] uppercase transition">Група</button>
                     </div>
-                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition border border-transparent">
+                    <button onclick="logout()" class="hidden sm:block p-2 text-[9px] font-black text-slate-400 hover:text-red-500 transition uppercase tracking-tighter">Вийти</button>
+                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm">
                         <span id="dark-mode-icon">🌙</span>
                     </button>
                 </div>
@@ -116,138 +96,148 @@
     </nav>
 
     <!-- Мобільне меню -->
-    <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-zinc-800 z-50 flex justify-around p-3 shadow-2xl">
-        <button onclick="switchView('register')" class="flex flex-col items-center gap-1">
-            <span id="mob-icon-reg" class="text-xl">🏠</span>
-            <span class="text-[10px] font-bold uppercase tracking-tighter">Головна</span>
+    <div class="sm:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-zinc-800/50 z-50 flex justify-around p-2 rounded-3xl shadow-2xl ring-1 ring-black/5">
+        <button onclick="switchView('schedule')" id="mob-nav-sch" class="flex flex-col items-center gap-1 flex-1 py-1">
+            <span class="text-lg">👤</span>
+            <span class="text-[7px] font-black uppercase">Мій</span>
         </button>
-        <button onclick="switchView('schedule')" class="flex flex-col items-center gap-1">
-            <span id="mob-icon-sch" class="text-xl">📅</span>
-            <span class="text-[10px] font-bold uppercase tracking-tighter">Розклад</span>
+        <button onclick="switchView('main')" id="mob-nav-main" class="flex flex-col items-center gap-1 flex-1 py-1">
+            <span class="text-lg">🗓️</span>
+            <span class="text-[7px] font-black uppercase">Основний</span>
+        </button>
+        <button onclick="switchView('lectures')" id="mob-nav-lec" class="flex flex-col items-center gap-1 flex-1 py-1">
+            <span class="text-lg">📚</span>
+            <span class="text-[7px] font-black uppercase">Начитка</span>
+        </button>
+        <button onclick="switchView('register')" id="mob-nav-reg" class="flex flex-col items-center gap-1 flex-1 py-1">
+            <span class="text-lg">👥</span>
+            <span class="text-[7px] font-black uppercase">Група</span>
         </button>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         
         <!-- Live Widget -->
-        <div id="live-widget" class="bg-white dark:bg-zinc-900 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 shadow-sm animate-fade">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-5">
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <div id="status-icon" class="w-12 h-12 sm:w-14 sm:h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-2xl shadow-inner transition-all shrink-0">⚡</div>
+        <div id="live-widget" class="bg-indigo-600 text-white p-6 rounded-[2.5rem] shadow-xl animate-fade overflow-hidden relative">
+            <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl font-black italic">LIVE</div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                <div class="flex items-center gap-5 w-full">
+                    <div id="status-icon" class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl shrink-0">⚡</div>
                     <div class="min-w-0">
-                        <h3 id="status-title" class="text-slate-500 dark:text-zinc-400 text-[10px] font-bold uppercase tracking-widest leading-none mb-1 text-left">Зараз у розкладі</h3>
-                        <div id="current-pair-text" class="text-base sm:text-lg font-bold leading-tight text-left">Аналіз часу...</div>
+                        <h3 id="status-title" class="text-white/60 text-[9px] font-black uppercase tracking-[0.2em] mb-1">Поточний стан</h3>
+                        <div id="current-pair-text" class="text-base sm:text-xl font-bold leading-tight truncate">...</div>
                     </div>
                 </div>
-                <div class="w-full md:w-auto border-t md:border-t-0 md:border-l border-slate-100 dark:border-zinc-800 pt-4 md:pt-0 md:pl-8">
-                    <div class="bg-indigo-600 text-white px-6 py-2 rounded-2xl text-center shadow-lg shadow-indigo-500/20">
-                        <p id="timer-label" class="text-[9px] font-black uppercase opacity-80 mb-0.5 tracking-widest">Тривалість</p>
-                        <p id="elapsed-timer" class="text-xl sm:text-2xl font-mono font-black tracking-tighter">00:00:00</p>
-                    </div>
+                <div class="bg-black/20 backdrop-blur-md px-6 py-3 rounded-2xl text-center min-w-[160px] w-full md:w-auto">
+                    <p id="timer-label" class="text-[8px] font-black uppercase opacity-60 mb-0.5">До події</p>
+                    <p id="elapsed-timer" class="text-2xl font-mono font-black">00:00:00</p>
                 </div>
             </div>
         </div>
 
-        <!-- Пошук -->
-        <div class="bg-white dark:bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm">
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-grow relative">
-                    <input type="text" id="global-search" oninput="handleSearch()" placeholder="Почніть вводити ПІБ..." 
-                        class="w-full pl-10 pr-4 py-3 border border-slate-100 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-indigo-500/20 transition outline-none bg-slate-50 dark:bg-zinc-950 font-medium text-sm sm:text-base">
-                    <span class="absolute left-3.5 top-3 sm:top-3.5 opacity-40">🔍</span>
+        <!-- Вкладка Основний розклад -->
+        <div id="view-main" class="hidden animate-fade space-y-6">
+            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-black uppercase tracking-tighter">Основний семестровий розклад</h2>
+                    <p class="text-xs text-slate-400 font-medium">Діє на постійній основі до червня</p>
                 </div>
-                <div class="w-full md:w-64">
-                    <select id="lang-filter" onchange="handleSearch()" class="w-full p-3 border border-slate-100 dark:border-zinc-800 rounded-xl bg-slate-50 dark:bg-zinc-950 outline-none focus:ring-2 focus:ring-indigo-500/20 font-medium text-sm text-slate-600 dark:text-zinc-300">
-                        <option value="all">Усі групи</option>
-                        <option value="німецька">Німецька</option>
-                        <option value="польська">Польська</option>
-                        <option value="французька">Французька</option>
-                        <option value="китайська">Китайська</option>
-                    </select>
+                <div id="main-week-toggle" class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-xl font-black">
+                    <button onclick="setMainViewWeek('upper')" id="btn-upper" class="px-4 py-2 rounded-lg text-[10px] uppercase transition">Верхній</button>
+                    <button onclick="setMainViewWeek('lower')" id="btn-lower" class="px-4 py-2 rounded-lg text-[10px] uppercase transition">Нижній</button>
                 </div>
             </div>
+            <div id="main-schedule-grid" class="schedule-grid"></div>
         </div>
 
-        <!-- Реєстр -->
-        <div id="view-register" class="space-y-10 animate-fade">
-            <section>
-                <div class="flex justify-between items-center mb-4 px-1">
-                    <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white uppercase tracking-tight text-center sm:text-left">Реєстр студентів</h2>
-                    <span id="reg-count" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">0 осіб</span>
-                </div>
-                <div class="sm:bg-white sm:dark:bg-zinc-900 sm:rounded-2xl sm:border sm:border-slate-200 sm:dark:border-zinc-800 sm:overflow-hidden sm:shadow-sm">
-                    <table class="w-full text-left mobile-stack-table">
-                        <thead class="bg-slate-50 dark:bg-zinc-800/50 text-slate-500 dark:text-zinc-500 text-[10px] uppercase font-bold tracking-widest border-b border-slate-200 dark:border-zinc-800">
-                            <tr>
-                                <th class="p-4 w-12 text-center">№</th>
-                                <th class="p-4">Студент (ПІБ)</th>
-                                <th class="p-4">Дисципліни</th>
-                                <th class="p-4 text-center">Дія</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reg-table-body" class="divide-y divide-slate-100 dark:divide-zinc-800"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Загальний розклад -->
-            <section>
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white uppercase tracking-tight">Загальна сітка розкладу</h2>
-                    <div id="week-selector-gen" class="flex gap-1 p-1 bg-slate-200 dark:bg-zinc-800 rounded-xl overflow-x-auto max-w-full no-scrollbar">
-                        <!-- JS Buttons -->
+        <!-- Вкладка Начитка -->
+        <div id="view-lectures" class="hidden animate-fade space-y-4">
+            <section class="space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <h2 class="text-xl font-black uppercase italic tracking-tighter text-slate-800 dark:text-white">Сітка начитки</h2>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">Тимчасовий розклад лекцій</p>
                     </div>
+                    <div id="week-selector-gen" class="flex gap-1 p-1 bg-slate-200 dark:bg-zinc-800 rounded-xl overflow-x-auto max-w-full no-scrollbar"></div>
                 </div>
                 <div id="general-schedule-grid" class="schedule-grid"></div>
             </section>
         </div>
 
-        <!-- Персональний розклад -->
-        <div id="view-schedule" class="hidden animate-fade space-y-6">
-            <div id="no-student-selected" class="text-center py-20 bg-white dark:bg-zinc-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-zinc-800">
-                <div class="text-5xl mb-4">👤</div>
-                <h3 class="text-lg font-bold text-slate-400 tracking-tight">Студента не обрано</h3>
-                <p class="text-slate-400 text-sm mt-1 font-medium">Оберіть ПІБ у списку на головній</p>
-            </div>
-            
-            <div id="schedule-content" class="hidden space-y-6">
-                <div class="bg-white dark:bg-zinc-900 p-5 sm:p-8 rounded-2xl border border-slate-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
-                    <div class="text-center md:text-left w-full md:min-w-0">
-                        <h2 id="active-student-name" class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight leading-tight mb-2 full-name-cell"></h2>
-                        <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 italic">Персональний розклад</span>
+        <!-- Вкладка Група -->
+        <div id="view-register" class="hidden animate-fade space-y-4">
+            <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm">
+                <button onclick="toggleRegistry()" class="w-full p-6 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition text-left">
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">👥</span>
+                        <div>
+                            <h2 class="text-lg font-black uppercase tracking-tight text-slate-800 dark:text-white">Реєстр групи</h2>
+                            <p class="text-xs text-slate-400 font-medium">Список студентів та вибіркових дисциплін</p>
+                        </div>
                     </div>
-                    <div id="week-selector-pers" class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-xl border border-slate-200 dark:border-zinc-700 shadow-inner">
-                        <!-- JS Buttons -->
+                    <span id="registry-arrow" class="text-xl transition-transform">▼</span>
+                </button>
+                <div id="registry-content" class="hidden border-t dark:border-zinc-800">
+                    <div class="p-4 bg-slate-50/50 dark:bg-zinc-950/30 flex flex-col md:flex-row gap-3 border-b dark:border-zinc-800">
+                        <input type="text" id="global-search" oninput="handleSearch()" placeholder="Пошук студента..." class="flex-grow p-3 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl text-sm font-bold shadow-sm">
+                        <select id="lang-filter" onchange="handleSearch()" class="p-3 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl text-sm font-bold cursor-pointer">
+                            <option value="all">Усі підгрупи</option>
+                            <option value="німецька">Німецька</option>
+                            <option value="польська">Польська</option>
+                            <option value="французька">Французька</option>
+                            <option value="китайська">Китайська</option>
+                        </select>
+                    </div>
+                    <table class="w-full text-left mobile-stack-table">
+                        <tbody id="reg-table-body" class="divide-y dark:divide-zinc-800"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Персональний розклад -->
+        <div id="view-schedule" class="animate-fade space-y-6">
+            <div class="bg-white dark:bg-zinc-900 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-indigo-600"></div>
+                <div class="text-center md:text-left">
+                    <span id="date-today-label" class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-2 block italic">Сьогодні...</span>
+                    <h2 id="active-student-name" class="text-2xl sm:text-4xl font-black tracking-tighter text-slate-900 dark:text-white mb-4"></h2>
+                    
+                    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl w-fit mx-auto md:mx-0">
+                        <button onclick="setPersonalMode('lectures')" id="btn-mode-lec" class="px-4 py-2 rounded-xl text-[9px] font-black uppercase transition shadow-sm">Начитка</button>
+                        <button onclick="setPersonalMode('main')" id="btn-mode-main" class="px-4 py-2 rounded-xl text-[9px] font-black uppercase transition shadow-sm">Основний</button>
                     </div>
                 </div>
-                <div id="schedule-grid" class="schedule-grid"></div>
+
+                <div id="personal-week-area"></div>
             </div>
+            <div id="schedule-grid" class="schedule-grid"></div>
         </div>
 
     </main>
 
     <script>
-        // --- ДАНІ ---
+        // --- ПОВНІ ДАНІ (Тільки для Начитки) ---
         const zoomLinks = {
-            "маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1#success",
-            "політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1&omn=81642694735#success",
-            "екаунтинг": "https://us02web.zoom.us/j/86814364953?pwd=YjJTSTd0czAzbkNGdmNXRlRqalZOQT09#success",
-            "публічне адміністрування": "https://us02web.zoom.us/j/83636582974?pwd=RbIos5kRtplFa04mJ3U5BnZUaaoueF.1#success",
-            "соціологія": "https://us04web.zoom.us/j/75469263830?pwd=VlsIwYIMbBLQWpYCDtbq15tzyLhkTu.1#success",
+            "маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1",
+            "політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1",
+            "екаунтинг": "https://us02web.zoom.us/j/86814364953?pwd=YjJTSTd0czAzbkNGdmNXRlRqalZOQT09",
+            "публічне адміністрування": "https://us02web.zoom.us/j/83636582974?pwd=RbIos5kRtplFa04mJ3U5BnZUaaoueF.1",
+            "соціологія": "https://us04web.zoom.us/j/75469263830?pwd=VlsIwYIMbBLQWpYCDtbq15tzyLhkTu.1",
             "соціальне підприємництво": "https://us02web.zoom.us/j/3211931658?pwd=eWhoQ2M4UVZKcnREOTFHSTNlTm5QQT09",
-            "підприємництво": "https://us02web.zoom.us/j/8716473386?pwd=GtAPx2bTw0h0v4ysz2sD7vdhauZ7jj.1&omn=87871014108"
+            "підприємництво": "https://us02web.zoom.us/j/8716473386?pwd=GtAPx2bTw0h0v4ysz2sD7vdhauZ7jj.1"
         };
 
         const discColors = {
-            "німецька": "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400",
-            "польська": "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400",
-            "французька": "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400",
-            "китайська": "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400",
-            "політологія": "bg-indigo-50 text-indigo-600 border-indigo-100 dark:bg-indigo-900/20 dark:text-indigo-400",
-            "публічне адміністрування": "bg-violet-50 text-violet-600 border-violet-100 dark:bg-violet-900/20 dark:text-violet-400",
-            "соціальне підприємництво": "bg-cyan-50 text-cyan-600 border-cyan-100 dark:bg-cyan-900/20 dark:text-cyan-400",
-            "соціологія": "bg-pink-50 text-pink-600 border-pink-100 dark:bg-pink-900/20 dark:text-pink-400",
-            "бзвп": "bg-slate-100 text-slate-500 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400"
+            "німецька": "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400",
+            "польська": "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400",
+            "французька": "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400",
+            "китайська": "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400",
+            "політологія": "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400",
+            "публічне адміністрування": "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400",
+            "соціальне підприємництво": "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-400",
+            "соціологія": "bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-500/10 dark:text-pink-400",
+            "бзвп": "bg-slate-100 text-slate-600 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400"
         };
 
         const students = [
@@ -285,9 +275,29 @@
         const timeSlots = [
             { start: "08:30", end: "09:45" }, { start: "10:00", end: "11:15" },
             { start: "11:30", end: "12:45" }, { start: "13:00", end: "14:15" },
-            { start: "14:30", end: "15:45" }, { start: "16:00", end: "17:15" }
+            { start: "14:30", end: "15:45" }, { start: "16:00", end: "17:15" },
+            { start: "17:30", end: "18:45" }
         ];
 
+        // --- ОСНОВНИЙ РОЗКЛАД (БЕЗ ПОСИЛАНЬ ZOOM) ---
+        const mainScheduleData = {
+            upper: [
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
+                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
+                { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Маркетинг п", type: "general" }]},
+                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
+                { day: "П'ятниця", pairs: [{ num: 3, time: "11:30-12:45", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }]}
+            ],
+            lower: [
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
+                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
+                { day: "Середа", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }]},
+                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
+                { day: "П'ятниця", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво п", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг п", type: "general" }]}
+            ]
+        };
+
+        // --- ДАНІ НАЧИТКИ (4 ТИЖНІ) ---
         const scheduleData = {
             24: [
                 { day: "Понеділок", date: "09.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }]},
@@ -303,18 +313,18 @@
                 { day: "Середа", date: "18.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
                 { day: "Четвер", date: "19.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }]},
                 { day: "П'ятниця", date: "20.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 5, time: "14:30-15:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }]},
-                { day: "Субота", date: "21.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }, { num: 3, time: "11:30-12:45", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }]}
+                { day: "Субота", date: "21.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }, { num: 3, time: "11:30-12:45", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }, { num: 4, time: "13:00-14:15", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }]}
             ],
             26: [
-                { day: "Понеділок", date: "23.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Китайська мова п", type: "elective", map: "китайська" }, { num: 3, time: "11:30-12:45", subj: "Китайська мова п", type: "elective", map: "китайська" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 6, time: "16:00-17:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
-                { day: "Вівторок", date: "24.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Іноземна мова п", type: "lang" }, { num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang" }]},
+                { day: "Понеділок", date: "23.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 6, time: "16:00-17:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
+                { day: "Вівторок", date: "24.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
                 { day: "Середа", date: "25.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }]},
                 { day: "Четвер", date: "26.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 2, time: "10:00-11:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }]},
                 { day: "П'ятниця", date: "27.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }, { num: 5, time: "14:30-15:45", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }]}
             ],
             27: [
-                { day: "Понеділок", date: "02.03", pairs: [{ num: 2, time: "10:00-11:15", subj: "Китайська мова п", type: "elective", map: "китайська" }, { num: 3, time: "11:30-12:45", subj: "Китайська мова п", type: "elective", map: "китайська" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang" }]},
-                { day: "Вівторок", date: "03.03", pairs: [{ num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 5, time: "14:30-15:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
+                { day: "Понеділок", date: "02.03", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
+                { day: "Вівторок", date: "03.03", pairs: [{ num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 5, time: "14:30-15:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
                 { day: "Середа", date: "04.03", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }]},
                 { day: "Четвер", date: "05.03", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 2, time: "10:00-11:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }]},
                 { day: "П'ятниця", date: "06.03", pairs: [{ num: 1, time: "08:30-09:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 3, time: "11:30-12:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 4, time: "13:00-14:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 5, time: "14:30-15:45", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }]}
@@ -323,24 +333,225 @@
 
         // --- ЛОГІКА ---
         let state = {
-            view: 'register',
+            view: 'schedule',
+            personalMode: 'lectures',
             selectedStudent: null,
-            week: 24,
-            genWeek: 24,
-            search: '',
-            lang: 'all',
+            week: 25,
+            genWeek: 25,
+            mainViewWeek: 'upper',
+            persMainWeek: 'upper',
+            isRegistryOpen: false,
             isDark: false
         };
 
         window.onload = () => {
+            state.week = detectCurrentWeek();
+            state.genWeek = state.week;
             const savedDark = localStorage.getItem('darkMode') === 'true';
-            if (savedDark) toggleDarkMode();
+            if (savedDark) { state.isDark = true; document.documentElement.classList.add('dark'); document.getElementById('dark-mode-icon').textContent = '☀️'; }
+            const savedId = localStorage.getItem('selectedStudentId');
+            if (savedId) {
+                state.selectedStudent = students.find(s => s.id == savedId);
+                initApp();
+            } else { showAuthScreen(); }
+        };
+
+        function detectCurrentWeek() {
+            const today = new Date();
+            if (today >= new Date(2026, 1, 9) && today <= new Date(2026, 1, 15)) return 24;
+            if (today >= new Date(2026, 1, 16) && today <= new Date(2026, 1, 22)) return 25;
+            if (today >= new Date(2026, 1, 23) && today <= new Date(2026, 2, 1)) return 26;
+            if (today >= new Date(2026, 2, 2) && today <= new Date(2026, 2, 8)) return 27;
+            return 25;
+        }
+
+        function initApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('date-today-label').innerText = `${new Date().toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' })}`;
             renderRegister();
-            updateWeekSelectors();
-            renderGeneralSchedule();
+            switchView('schedule');
             updateLiveStatus();
             setInterval(updateLiveStatus, 1000);
-        };
+        }
+
+        function showAuthScreen() {
+            const screen = document.getElementById('auth-screen');
+            screen.classList.remove('hidden');
+            filterAuthList();
+        }
+
+        function filterAuthList() {
+            const q = document.getElementById('auth-search').value.toLowerCase();
+            const list = document.getElementById('auth-list');
+            list.innerHTML = '';
+            const filtered = students.filter(s => s.name.toLowerCase().includes(q));
+            if (filtered.length > 0) {
+                list.classList.remove('hidden');
+                filtered.forEach(s => {
+                    const d = document.createElement('div');
+                    d.className = "p-4 hover:bg-slate-50 dark:hover:bg-zinc-700 cursor-pointer font-bold text-sm border-b dark:border-zinc-700 last:border-0";
+                    d.innerText = s.name;
+                    d.onclick = () => { localStorage.setItem('selectedStudentId', s.id); state.selectedStudent = s; initApp(); };
+                    list.appendChild(d);
+                });
+            } else { list.classList.add('hidden'); }
+        }
+
+        function logout() { localStorage.removeItem('selectedStudentId'); location.reload(); }
+
+        function toggleRegistry() {
+            state.isRegistryOpen = !state.isRegistryOpen;
+            document.getElementById('registry-content').classList.toggle('hidden', !state.isRegistryOpen);
+            document.getElementById('registry-arrow').style.transform = state.isRegistryOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        function switchView(view) {
+            state.view = view;
+            const sections = ['view-schedule', 'view-main', 'view-lectures', 'view-register'];
+            sections.forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(`view-${view === 'schedule' ? 'schedule' : view}`).classList.remove('hidden');
+
+            const navIds = ['schedule', 'main', 'lectures', 'register'];
+            navIds.forEach(id => {
+                const pc = document.getElementById(`nav-${id}-pc`);
+                const mob = document.getElementById(`mob-nav-${id === 'schedule' ? 'sch' : (id === 'lectures' ? 'lec' : id)}`);
+                if(pc) pc.className = id === view ? "px-3 py-2 rounded-xl text-[10px] uppercase font-black bg-indigo-600 text-white shadow-lg" : "px-3 py-2 rounded-xl text-[10px] uppercase font-bold text-slate-400";
+                if(mob) {
+                    if(id === view) { mob.classList.add('text-indigo-600', 'scale-110'); mob.classList.remove('opacity-40'); }
+                    else { mob.classList.remove('text-indigo-600', 'scale-110'); mob.classList.add('opacity-40'); }
+                }
+            });
+
+            if(view === 'schedule') renderPersonalSchedule();
+            if(view === 'main') renderMainTabSchedule();
+            if(view === 'lectures') renderGeneralSchedule();
+        }
+
+        function setPersonalMode(mode) {
+            state.personalMode = mode;
+            renderPersonalSchedule();
+        }
+
+        function setMainViewWeek(w) {
+            state.mainViewWeek = w;
+            renderMainTabSchedule();
+        }
+
+        function setPersMainWeek(w) {
+            state.persMainWeek = w;
+            renderPersonalSchedule();
+        }
+
+        function renderMainTabSchedule() {
+            const grid = document.getElementById('main-schedule-grid'); grid.innerHTML = '';
+            const btnUp = document.getElementById('btn-upper');
+            const btnLo = document.getElementById('btn-lower');
+            
+            btnUp.className = state.mainViewWeek === 'upper' ? "px-4 py-2 rounded-lg text-[10px] uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-lg text-[10px] uppercase text-slate-400";
+            btnLo.className = state.mainViewWeek === 'lower' ? "px-4 py-2 rounded-lg text-[10px] uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-lg text-[10px] uppercase text-slate-400";
+
+            mainScheduleData[state.mainViewWeek].forEach(day => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800 shadow-sm animate-fade";
+                card.innerHTML = `<h3 class="font-black text-lg uppercase italic border-b dark:border-zinc-800 pb-2 mb-4">${day.day}</h3><div class="space-y-3">${day.pairs.map(p => renderPair(p, true)).join('')}</div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderPersonalSchedule() {
+            const grid = document.getElementById('schedule-grid'); grid.innerHTML = '';
+            const weekArea = document.getElementById('personal-week-area');
+            if(!state.selectedStudent) return;
+            document.getElementById('active-student-name').textContent = state.selectedStudent.name;
+
+            const bLec = document.getElementById('btn-mode-lec');
+            const bMain = document.getElementById('btn-mode-main');
+            bLec.className = state.personalMode === 'lectures' ? "px-4 py-2 rounded-xl text-[9px] font-black uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-xl text-[9px] font-black uppercase text-slate-400";
+            bMain.className = state.personalMode === 'main' ? "px-4 py-2 rounded-xl text-[9px] font-black uppercase bg-indigo-600 text-white shadow-md" : "px-4 py-2 rounded-xl text-[9px] font-black uppercase text-slate-400";
+
+            if (state.personalMode === 'lectures') {
+                weekArea.innerHTML = `<div id="week-selector-pers" class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700"></div>`;
+                updateWeekSelectors();
+                (scheduleData[state.week] || []).forEach(day => {
+                    const pairs = filterPairs(day.pairs);
+                    if(pairs.length > 0) appendCard(grid, day.day, day.date, pairs);
+                });
+            } else {
+                weekArea.innerHTML = `<div class="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700 font-black"><button onclick="setPersMainWeek('upper')" class="px-3 py-1.5 rounded-xl text-[8px] uppercase ${state.persMainWeek === 'upper' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400'}">Верхній</button><button onclick="setPersMainWeek('lower')" class="px-3 py-1.5 rounded-xl text-[8px] uppercase ${state.persMainWeek === 'lower' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400'}">Нижній</button></div>`;
+                (mainScheduleData[state.persMainWeek] || []).forEach(day => {
+                    const pairs = filterPairs(day.pairs);
+                    if(pairs.length > 0) appendCard(grid, day.day, null, pairs);
+                });
+            }
+        }
+
+        function filterPairs(pairs) {
+            const studentElectives = state.selectedStudent.electives.map(e => e.toLowerCase());
+            return pairs.filter(p => {
+                if (p.type === 'general') return true;
+                if (p.map === 'english') return true; 
+                if (p.map === 'language_pair') return studentElectives.some(el => ['німецька','польська','французька','китайська'].includes(el));
+                if (p.type === 'elective') return studentElectives.includes(p.map?.toLowerCase());
+                return false;
+            });
+        }
+
+        function appendCard(grid, day, date, pairs) {
+            const card = document.createElement('div');
+            card.className = "bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800 shadow-sm animate-fade";
+            card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b dark:border-zinc-800 pb-2"><h3 class="font-black text-indigo-600 dark:text-indigo-400 text-lg uppercase italic">${day}</h3>${date ? `<span class="text-[10px] font-mono font-bold text-slate-400">${date}</span>` : ''}</div><div class="space-y-3">${pairs.map(p => renderPair(p, true, true)).join('')}</div>`;
+            grid.appendChild(card);
+        }
+
+        function renderPair(p, showZoom = true, isPersonal = false) {
+            let displaySubj = p.subj;
+            if (isPersonal && p.map === 'language_pair') {
+                const sLang = state.selectedStudent.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
+                if (sLang) displaySubj = `Друга іноземна мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
+            }
+            let z = showZoom && p.zoomKey && zoomLinks[p.zoomKey] ? `<a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-3 block w-full py-2 bg-zoom text-white text-center rounded-xl text-[10px] font-black shadow-lg">ZOOM 🚀</a>` : '';
+            let n = isPersonal ? `<textarea oninput="localStorage.setItem('note-${state.selectedStudent.id}-${p.num}-${p.subj}', this.value)" placeholder="Нотатки..." class="mt-2 w-full p-2 text-[9px] bg-slate-50 dark:bg-zinc-800/50 rounded-lg outline-none border border-transparent focus:border-indigo-300 h-14 resize-none">${localStorage.getItem(`note-${state.selectedStudent.id}-${p.num}-${p.subj}`) || ''}</textarea>` : '';
+            const c = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
+            return `<div class="pair-item ${c} p-4 shadow-sm"><div class="flex justify-between items-center text-[8px] font-black text-slate-400 mb-1"><span>${p.num} ПАРА • ${p.time}</span><span class="px-1 bg-white dark:bg-zinc-800 rounded border border-slate-100 dark:border-zinc-700 uppercase">${p.type}</span></div><div class="text-sm font-bold leading-tight text-slate-800 dark:text-zinc-200">${displaySubj}</div>${z}${n}</div>`;
+        }
+
+        function updateLiveStatus() {
+            const now = new Date();
+            const days = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
+            const curDay = days[now.getDay()];
+            const time = now.toTimeString().slice(0,5);
+            let cur = null, nxt = null;
+            for(let i=0; i<timeSlots.length; i++) {
+                if(time >= timeSlots[i].start && time <= timeSlots[i].end) { cur = {...timeSlots[i], idx: i+1}; break; }
+                if(time < timeSlots[i].start) { nxt = {...timeSlots[i], idx: i+1}; break; }
+            }
+            const el = document.getElementById('current-pair-text');
+            const timerEl = document.getElementById('elapsed-timer');
+            const label = document.getElementById('timer-label');
+            const today = (scheduleData[state.genWeek] || []).find(d => d.day === curDay);
+            if(cur) {
+                label.innerText = "До кінця пари";
+                const subj = today?.pairs.find(p => p.num === cur.idx)?.subj || "Заняття";
+                el.innerHTML = `<span class='font-black opacity-60'>${cur.idx} ПАРА:</span> ${subj}`;
+                timerEl.innerText = calculateDiff(cur.end, now);
+            } else if(nxt) {
+                label.innerText = "До початку пари";
+                const s = today?.pairs.find(p => p.num === nxt.idx)?.subj || "...";
+                el.innerHTML = `Наступна: <span class='font-black opacity-60'>${nxt.idx} ПАРА</span> (${nxt.start})`;
+                timerEl.innerText = calculateDiff(nxt.start, now);
+            } else {
+                label.innerText = "Поточний час";
+                el.innerHTML = `<span class='opacity-50 italic'>День завершено</span>`;
+                timerEl.innerText = now.toLocaleTimeString('uk-UA');
+            }
+        }
+
+        function calculateDiff(t, now) {
+            const [h,m] = t.split(':').map(Number);
+            const tgt = new Date(now); tgt.setHours(h,m,0,0);
+            const d = Math.max(0, Math.floor((tgt-now)/1000));
+            return `${Math.floor(d/3600).toString().padStart(2,'0')}:${Math.floor((d%3600)/60).toString().padStart(2,'0')}:${(d%60).toString().padStart(2,'0')}`;
+        }
 
         function toggleDarkMode() {
             state.isDark = !state.isDark;
@@ -349,220 +560,51 @@
             localStorage.setItem('darkMode', state.isDark);
         }
 
-        function switchView(view) {
-            state.view = view;
-            const viewsPc = ['register', 'schedule'];
-            viewsPc.forEach(v => {
-                document.getElementById(`view-${v}`).classList.add('hidden');
-                document.getElementById(`nav-${v}-pc`)?.classList.remove('text-indigo-600', 'bg-slate-100', 'dark:bg-zinc-800');
-                document.getElementById(`nav-${v}-pc`)?.classList.add('text-slate-500');
-            });
-            
-            document.getElementById(`view-${view}`).classList.remove('hidden');
-            document.getElementById(`nav-${view}-pc`)?.classList.remove('text-slate-500');
-            document.getElementById(`nav-${view}-pc`)?.classList.add('text-indigo-600', 'bg-slate-100', 'dark:bg-zinc-800');
-            
-            document.getElementById('mob-icon-reg').style.opacity = view === 'register' ? '1' : '0.4';
-            document.getElementById('mob-icon-sch').style.opacity = view === 'schedule' ? '1' : '0.4';
-
-            if (view === 'schedule') renderPersonalSchedule();
-        }
-
-        function updateLiveStatus() {
-            const now = new Date();
-            const dayNames = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
-            const currentDayName = dayNames[now.getDay()];
-            const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            
-            const ordinalsNom = ["", "1-ша", "2-га", "3-тя", "4-та", "5-та", "6-та"];
-            let current = null;
-            let next = null;
-            let breakSince = null;
-
-            for (let i = 0; i < timeSlots.length; i++) {
-                const slot = timeSlots[i];
-                if (timeStr >= slot.start && timeStr <= slot.end) {
-                    current = { ...slot, index: i + 1 };
-                    break;
-                }
-                if (timeStr < slot.start) {
-                    next = { ...slot, index: i + 1 };
-                    if (i > 0) breakSince = timeSlots[i-1].end;
-                    break;
-                }
-            }
-
-            const el = document.getElementById('current-pair-text');
-            const timerEl = document.getElementById('elapsed-timer');
-            const labelEl = document.getElementById('timer-label');
-            const statusTitle = document.getElementById('status-title');
-            const icon = document.getElementById('status-icon');
-
-            const todayData = (scheduleData[state.genWeek] || []).find(d => d.day === currentDayName);
-
-            if (current) {
-                statusTitle.innerText = "ЗАРАЗ ПАРА";
-                labelEl.innerText = "ТРИВАЄ ВЖЕ";
-                icon.className = "w-12 h-12 sm:w-14 sm:h-14 bg-indigo-500 text-white rounded-full flex items-center justify-center text-2xl shadow-lg animate-pulse shrink-0";
-                const subj = todayData?.pairs.find(p => p.num === current.index)?.subj || "Заняття";
-                el.innerHTML = `Зараз <span class='text-indigo-600 dark:text-indigo-400 font-bold'>${ordinalsNom[current.index]} пара</span>: ${subj}`;
-                timerEl.innerText = calculateElapsed(current.start, now);
-            } else if (next) {
-                statusTitle.innerText = "ЗАРАЗ ПЕРЕРВА";
-                labelEl.innerText = "ВІДПОЧИНОК ВЖЕ";
-                icon.className = "w-12 h-12 sm:w-14 sm:h-14 bg-emerald-500 text-white rounded-full flex items-center justify-center text-2xl shadow-lg shrink-0";
-                const nextSubj = todayData?.pairs.find(p => p.num === next.index)?.subj || "наступна пара";
-                el.innerHTML = `Наступна: <span class='text-emerald-600 dark:text-emerald-400 font-bold'>${ordinalsNom[next.index]} пара</span> о ${next.start} (${nextSubj})`;
-                timerEl.innerText = breakSince ? calculateElapsed(breakSince, now) : "00:00:00";
-            } else {
-                statusTitle.innerText = "СТАТУС";
-                labelEl.innerText = "ПОТОЧНИЙ ЧАС";
-                icon.className = "w-12 h-12 sm:w-14 sm:h-14 bg-slate-200 dark:bg-zinc-800 text-slate-500 rounded-full flex items-center justify-center text-2xl shrink-0";
-                el.innerHTML = `<span class='opacity-50 italic font-medium'>Навчальний день закінчено</span>`;
-                timerEl.innerText = now.toLocaleTimeString('uk-UA');
-            }
-        }
-
-        function calculateElapsed(startTimeStr, now) {
-            const [startH, startM] = startTimeStr.split(':').map(Number);
-            const start = new Date(now);
-            start.setHours(startH, startM, 0, 0);
-            const diff = Math.floor((now - start) / 1000);
-            if (diff < 0) return "00:00:00";
-            const h = Math.floor(diff / 3600);
-            const m = Math.floor((diff % 3600) / 60);
-            const s = diff % 60;
-            return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        }
-
-        function handleSearch() {
-            state.search = document.getElementById('global-search').value.toLowerCase();
-            state.lang = document.getElementById('lang-filter').value;
-            renderRegister();
-        }
-
         function renderRegister() {
-            const body = document.getElementById('reg-table-body');
-            body.innerHTML = '';
-            const filtered = students.filter(s => {
-                const nameMatch = s.name.toLowerCase().includes(state.search);
-                const langMatch = state.lang === 'all' || s.electives.includes(state.lang);
-                return nameMatch && langMatch;
-            });
-
-            filtered.forEach((s, i) => {
+            const body = document.getElementById('reg-table-body'); body.innerHTML = '';
+            const q = document.getElementById('global-search').value.toLowerCase();
+            const l = document.getElementById('lang-filter').value;
+            students.filter(s => s.name.toLowerCase().includes(q) && (l === 'all' || s.electives.includes(l))).forEach((s, i) => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 transition cursor-pointer group";
-                tr.onclick = () => selectStudent(s.id);
-                
-                const badges = s.electives.map(e => {
-                    const colorClass = discColors[e] || "bg-slate-200 text-slate-700";
-                    return `<span class="px-2 py-0.5 rounded-md text-[8px] sm:text-[9px] uppercase font-bold border ${colorClass}">${e}</span>`;
-                }).join(' ');
-
-                tr.innerHTML = `
-                    <td class="p-3 sm:p-4 text-center font-semibold text-slate-400 text-xs">${i + 1}</td>
-                    <td class="p-3 sm:p-4 font-bold text-slate-800 dark:text-zinc-200 group-hover:text-indigo-600 transition full-name-cell">${s.name}</td>
-                    <td class="p-3 sm:p-4"><div class="flex flex-wrap gap-1">${badges}</div></td>
-                    <td class="p-3 sm:p-4 text-center">
-                        <button class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 opacity-100 sm:opacity-0 group-hover:opacity-100 transition px-3 py-1.5 rounded-lg border border-indigo-100 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950 sm:bg-transparent">Відкрити</button>
-                    </td>
-                `;
+                tr.className = "hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition cursor-pointer";
+                const b = s.electives.map(e => `<span class="px-2 py-0.5 rounded text-[8px] font-black border ${discColors[e] || 'bg-slate-100'}">${e}</span>`).join(' ');
+                tr.innerHTML = `<td class="p-4 text-xs font-bold text-slate-300">${i+1}</td><td class="p-4 font-bold text-sm text-slate-800 dark:text-zinc-200">${s.name}</td><td class="p-4 flex flex-wrap gap-1">${b}</td>`;
                 body.appendChild(tr);
             });
-            document.getElementById('reg-count').textContent = `${filtered.length} осіб`;
-        }
-
-        function selectStudent(id) {
-            state.selectedStudent = students.find(s => s.id === id);
-            switchView('schedule');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function setWeek(w, type) {
-            if (type === 'general') { state.genWeek = w; renderGeneralSchedule(); }
+            if(type === 'general') { state.genWeek = w; renderGeneralSchedule(); }
             else { state.week = w; renderPersonalSchedule(); }
             updateWeekSelectors();
         }
 
         function updateWeekSelectors() {
             const weeks = [24, 25, 26, 27];
-            const makeBtns = (target, type) => weeks.map(w => {
-                const active = target === w;
-                const c = active ? "bg-indigo-600 text-white shadow-sm" : "text-slate-500 hover:bg-slate-200 dark:text-zinc-400 dark:hover:bg-zinc-700";
-                return `<button onclick="event.stopPropagation(); setWeek(${w}, '${type}')" class="px-3 py-1 rounded-lg font-bold text-xs transition-all ${c}">Н${w}</button>`;
+            const weekLabels = { 24: "1-ша", 25: "2-га", 26: "3-тя", 27: "4-та" };
+            const make = (target, type) => weeks.map(w => {
+                const act = target === w;
+                const cls = act ? "bg-indigo-600 text-white shadow-lg" : "text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-800";
+                return `<button onclick="event.stopPropagation(); setWeek(${w}, '${type}')" class="px-2 py-1 rounded-lg font-black text-[8px] transition duration-300 flex-shrink-0 min-w-[70px] ${cls}">${weekLabels[w]} неділя</button>`;
             }).join('');
-            document.getElementById('week-selector-gen').innerHTML = makeBtns(state.genWeek, 'general');
-            if(state.selectedStudent) document.getElementById('week-selector-pers').innerHTML = makeBtns(state.week, 'personal');
+            const genSel = document.getElementById('week-selector-gen');
+            const persSel = document.getElementById('week-selector-pers');
+            if(genSel) genSel.innerHTML = make(state.genWeek, 'general');
+            if(persSel) persSel.innerHTML = make(state.week, 'personal');
         }
 
         function renderGeneralSchedule() {
-            const grid = document.getElementById('general-schedule-grid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('general-schedule-grid'); grid.innerHTML = '';
             (scheduleData[state.genWeek] || []).forEach(day => {
                 const card = document.createElement('div');
-                card.className = "bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 day-card animate-fade";
-                card.innerHTML = `
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-zinc-800 pb-3 flex justify-between items-center">
-                        <span class="uppercase tracking-tight text-lg italic font-black">${day.day}</span>
-                        <span class="text-[10px] font-mono text-slate-400">${day.date}</span>
-                    </h3>
-                    <div class="space-y-3">${day.pairs.map(p => renderPair(p, true)).join('')}</div>
-                `;
+                card.className = "bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800 shadow-sm animate-fade";
+                card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b dark:border-zinc-800 pb-2"><h3 class="font-black text-lg uppercase italic">${day.day}</h3><span class="text-[10px] font-bold text-slate-400 font-mono">${day.date}</span></div><div class="space-y-3">${day.pairs.map(p => renderPair(p, true)).join('')}</div>`;
                 grid.appendChild(card);
-            });
-        }
-
-        function renderPersonalSchedule() {
-            const grid = document.getElementById('schedule-grid');
-            grid.innerHTML = '';
-            if (!state.selectedStudent) return;
-            
-            document.getElementById('active-student-name').textContent = state.selectedStudent.name;
-            document.getElementById('no-student-selected').classList.add('hidden');
-            document.getElementById('schedule-content').classList.remove('hidden');
-
-            (scheduleData[state.week] || []).forEach(day => {
-                const pairs = day.pairs.filter(p => {
-                    const studentElectives = state.selectedStudent.electives.map(e => e.toLowerCase());
-                    if (p.type === 'general') return true;
-                    if (p.type === 'lang') return studentElectives.some(el => ['німецька','польська','французька','китайська'].includes(el));
-                    if (p.type === 'elective') return studentElectives.includes(p.map.toLowerCase());
-                    return false;
-                });
-                if (pairs.length > 0) {
-                    const card = document.createElement('div');
-                    card.className = "bg-white dark:bg-zinc-900 rounded-xl p-5 sm:p-6 border border-slate-200 dark:border-zinc-800 day-card animate-fade shadow-sm";
-                    card.innerHTML = `<h3 class="font-black mb-4 border-b-2 border-indigo-50 dark:border-indigo-900/50 pb-3 flex justify-between items-center text-indigo-700 dark:text-indigo-400"><span class="uppercase text-lg italic tracking-tight">${day.day}</span><span class="text-[10px] font-mono text-slate-400">${day.date}</span></h3><div class="space-y-3">${pairs.map(p => renderPair(p, true, true)).join('')}</div>`;
-                    grid.appendChild(card);
-                }
             });
             updateWeekSelectors();
         }
 
-        function renderPair(p, showZoom = true, isPersonal = false) {
-            let zoom = '';
-            if (showZoom && p.zoomKey && zoomLinks[p.zoomKey]) {
-                zoom = `<a href="${zoomLinks[p.zoomKey]}" target="_blank" class="mt-3 flex items-center justify-center gap-2 w-full py-2.5 bg-zoom text-white rounded-lg text-[10px] font-black shadow-sm hover:brightness-110 active:scale-95 transition-all">🚀 ZOOM</a>`;
-            }
-            let notes = '';
-            if (isPersonal) {
-                const noteId = `note-${state.selectedStudent.id}-${p.num}-${p.subj}`;
-                const note = localStorage.getItem(noteId) || '';
-                notes = `<textarea oninput="localStorage.setItem('${noteId}', this.value)" placeholder="Замітки..." class="mt-3 w-full p-2.5 text-[10px] bg-slate-50 dark:bg-zinc-800/50 border border-slate-100 dark:border-zinc-700 rounded-lg outline-none focus:border-indigo-300 min-h-[50px] font-medium text-slate-700 dark:text-zinc-300 resize-none"></textarea>`;
-            }
-            const cls = p.type === 'general' ? 'pair-general' : (p.type === 'lang' ? 'pair-lang' : 'pair-elective');
-            return `
-                <div class="pair-item ${cls} p-4 shadow-sm">
-                    <div class="flex justify-between items-start text-[8px] font-bold text-slate-500 dark:text-zinc-500 mb-1 uppercase tracking-widest">
-                        <span>${p.num} ПАРА • ${p.time}</span>
-                        <span class="px-1.5 py-0.5 bg-white dark:bg-zinc-800 border rounded border-slate-100 dark:border-zinc-700 text-[7px]">${p.type}</span>
-                    </div>
-                    <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-zinc-100 leading-tight">${p.subj}</div>
-                    ${zoom} ${notes}
-                </div>
-            `;
-        }
+        function handleSearch() { renderRegister(); }
     </script>
 </body>
 </html>
