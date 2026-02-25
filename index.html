@@ -498,7 +498,7 @@
                         <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3 ml-2 flex items-center gap-2">
                             <i class="ph-fill ph-calendar-check text-indigo-500 text-sm"></i> Календар тижнів (Натисніть для ДЗ)
                         </h3>
-                        <div class="flex gap-3 overflow-x-auto custom-scroll pb-4 px-2 snap-x">
+                        <div class="flex gap-3 overflow-x-auto custom-scroll pb-4 px-2 snap-x" id="main-weeks-container">
                             
                             <div data-week="28" onclick="setMainSpecificWeek(28, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-white/60 dark:hover:bg-white/5 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
@@ -789,7 +789,7 @@
         </div>
     </div>
 
-    <!-- Модалка Zoom (Тільки для Даніїла) -->
+    <!-- Модалка Zoom -->
     <div id="zoom-modal" class="fixed inset-0 z-[200] bg-slate-900/50 flex items-center justify-center p-4 mobile-bottom-sheet hidden backdrop-blur-sm transition-opacity">
         <div class="w-full max-w-md liquid-glass p-6 sm:p-8 relative" style="border-radius: 32px;">
             <button onclick="closeZoomModal()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full glass-card text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition z-10">
@@ -815,6 +815,21 @@
         </div>
     </div>
 
+    <!-- Модалка підтвердження видалення -->
+    <div id="confirm-modal" class="fixed inset-0 z-[300] bg-slate-900/50 flex items-center justify-center p-4 mobile-bottom-sheet hidden backdrop-blur-sm transition-opacity opacity-0">
+        <div class="w-full max-w-sm liquid-glass p-6 sm:p-8 relative text-center" style="border-radius: 32px;">
+            <div class="w-16 h-16 bg-red-100 dark:bg-red-500/10 rounded-full flex items-center justify-center text-red-600 dark:text-red-400 mx-auto mb-4 border border-red-200 dark:border-red-500/20">
+                <i class="ph ph-warning-circle text-3xl"></i>
+            </div>
+            <h3 id="confirm-title" class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Підтвердження</h3>
+            <p id="confirm-text" class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-6">Ви впевнені, що хочете видалити це?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm glass-card text-slate-800 dark:text-slate-300 hover:text-slate-900 transition border-none">Скасувати</button>
+                <button id="confirm-btn-yes" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-red-600 text-white hover:bg-red-700 transition shadow-float hover:-translate-y-0.5">Видалити</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- ДАНІ ТА СИНХРОНІЗАЦІЯ ---
         let globalHomeworks = JSON.parse(localStorage.getItem('portal-homeworks')) || [];
@@ -824,6 +839,36 @@
         let currentHwContext = null;
         let currentMaterialFilter = 'Всі';
         let currentZoomSubj = null;
+        let currentConfirmCallback = null;
+
+        // Функції для модалки підтвердження
+        function openConfirmModal(title, text, callback) {
+            currentConfirmCallback = callback;
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-text').innerText = text;
+            const m = document.getElementById('confirm-modal');
+            m.classList.remove('hidden');
+            setTimeout(() => m.style.opacity = 1, 10);
+        }
+
+        function closeConfirmModal() {
+            const m = document.getElementById('confirm-modal');
+            m.style.opacity = 0;
+            setTimeout(() => { m.classList.add('hidden'); currentConfirmCallback = null; }, 300);
+        }
+
+        document.getElementById('confirm-btn-yes').addEventListener('click', () => {
+            if (currentConfirmCallback) currentConfirmCallback();
+            closeConfirmModal();
+        });
+
+        function promptDeleteHw(id) {
+            openConfirmModal("Видалити ДЗ?", "Цю дію неможливо скасувати. Завдання буде видалено для всієї групи.", () => deleteHw(id));
+        }
+
+        function promptDeleteMaterial(id) {
+            openConfirmModal("Видалити матеріал?", "Цю дію неможливо скасувати. Матеріал буде видалено для всієї групи.", () => deleteMaterial(id));
+        }
 
         // Функція для оновлення локальних даних з хмари (Firebase)
         window.updateCloudData = function(type, data) {
@@ -974,9 +1019,48 @@
             isDark: false
         };
 
+        function getClosestMainWeek() {
+            const now = new Date();
+            const weeks = [
+                { num: 28, type: 'lower', start: new Date(2026, 2, 9), end: new Date(2026, 2, 15, 23, 59, 59) },
+                { num: 29, type: 'upper', start: new Date(2026, 2, 16), end: new Date(2026, 2, 22, 23, 59, 59) },
+                { num: 30, type: 'lower', start: new Date(2026, 2, 23), end: new Date(2026, 2, 29, 23, 59, 59) },
+                { num: 31, type: 'upper', start: new Date(2026, 2, 30), end: new Date(2026, 3, 5, 23, 59, 59) },
+                { num: 32, type: 'lower', start: new Date(2026, 3, 6), end: new Date(2026, 3, 12, 23, 59, 59) },
+                { num: 33, type: 'upper', start: new Date(2026, 3, 13), end: new Date(2026, 3, 19, 23, 59, 59) },
+                { num: 34, type: 'lower', start: new Date(2026, 3, 20), end: new Date(2026, 3, 26, 23, 59, 59) },
+                { num: 35, type: 'upper', start: new Date(2026, 3, 27), end: new Date(2026, 4, 3, 23, 59, 59) },
+                { num: 36, type: 'lower', start: new Date(2026, 4, 4), end: new Date(2026, 4, 10, 23, 59, 59) },
+                { num: 37, type: 'upper', start: new Date(2026, 4, 11), end: new Date(2026, 4, 17, 23, 59, 59) },
+                { num: 38, type: 'lower', start: new Date(2026, 4, 18), end: new Date(2026, 4, 24, 23, 59, 59) },
+                { num: 39, type: 'upper', start: new Date(2026, 4, 25), end: new Date(2026, 4, 31, 23, 59, 59) }
+            ];
+
+            for (let w of weeks) {
+                if (now >= w.start && now <= w.end) return w;
+            }
+            if (now < weeks[0].start) return weeks[0];
+
+            let closest = weeks[0];
+            let minDiff = Infinity;
+            for(let w of weeks) {
+                if (w.start > now) {
+                    let diff = w.start - now;
+                    if(diff < minDiff) { minDiff = diff; closest = w; }
+                }
+            }
+            if (minDiff === Infinity) return weeks[weeks.length - 1];
+
+            return closest;
+        }
+
         window.onload = () => {
             state.week = detectCurrentWeek();
             state.genWeek = state.week;
+            
+            const closestMain = getClosestMainWeek();
+            state.mainActiveWeekNum = closestMain.num;
+            state.mainViewWeek = closestMain.type;
             
             const savedDark = localStorage.getItem('darkMode') === 'true';
             if (savedDark) { 
@@ -1063,6 +1147,19 @@
             localStorage.setItem('darkMode', state.isDark);
         }
 
+        function scrollToActiveMainWeek() {
+            if(state.mainActiveWeekNum) {
+                setTimeout(() => {
+                    const activeCard = document.querySelector(`.week-card[data-week="${state.mainActiveWeekNum}"]`);
+                    const container = document.getElementById('main-weeks-container');
+                    if(activeCard && container) {
+                        const scrollLeft = activeCard.offsetLeft - container.offsetLeft - (container.clientWidth / 2) + (activeCard.clientWidth / 2);
+                        container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                    }
+                }, 100);
+            }
+        }
+
         function switchView(view) {
             state.view = view;
             
@@ -1098,7 +1195,11 @@
             });
 
             if(view === 'schedule') renderPersonalSchedule();
-            if(view === 'main') renderMainTabSchedule();
+            if(view === 'main') {
+                updateWeekCardHighlight();
+                renderMainTabSchedule();
+                scrollToActiveMainWeek();
+            }
             if(view === 'lectures') renderGeneralSchedule();
             if(view === 'homework') renderHomeworkHistory();
             if(view === 'materials') renderMaterials();
@@ -1215,20 +1316,20 @@
             let zoomUrl = (p.zoomKey && zoomLinks[p.zoomKey]) ? zoomLinks[p.zoomKey] : customZoomLinks[p.subj];
             let z = '';
             
-            const isDaniil = state.selectedStudent && state.selectedStudent.id == 19;
+            const canEditZoom = state.selectedStudent && (state.selectedStudent.id == 19 || state.selectedStudent.isStarosta);
 
             if (showZoom && zoomUrl) {
                 z = `<div class="mt-4 relative group">
                         <a href="${zoomUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-2.5 bg-blue-50 text-blue-600 dark:bg-[#2D8CFF]/10 dark:text-[#2D8CFF] hover:bg-blue-100 dark:hover:bg-[#2D8CFF]/20 border border-blue-200 dark:border-[#2D8CFF]/20 rounded-xl text-[11px] font-extrabold transition-all uppercase tracking-wider hover:shadow-md hover:-translate-y-0.5">
                             <i class="ph-fill ph-video-camera text-base"></i> Zoom Meeting
                         </a>`;
-                if (isDaniil) {
+                if (canEditZoom) {
                     z += `<button onclick="openZoomModal('${p.subj}')" class="absolute -top-2 -right-2 w-7 h-7 bg-white dark:bg-zinc-800 text-blue-500 rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-blue-100 dark:border-blue-900/50 hover:bg-blue-50 hover:scale-110">
                             <i class="ph ph-pencil-simple text-sm"></i>
                           </button>`;
                 }
                 z += `</div>`;
-            } else if (showZoom && !zoomUrl && isDaniil) {
+            } else if (showZoom && !zoomUrl && canEditZoom) {
                 z = `<button onclick="openZoomModal('${p.subj}')" class="mt-4 flex items-center justify-center gap-2 w-full py-2.5 glass-card text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 border border-dashed border-slate-300 dark:border-white/10 rounded-xl text-[11px] font-extrabold transition-all uppercase tracking-wider hover:shadow-md hover:-translate-y-0.5">
                         <i class="ph ph-plus-circle text-base"></i> Додати Zoom
                      </button>`;
@@ -1247,8 +1348,8 @@
                             const authorObj = students.find(s => s.name === h.author);
                             const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 dark:text-amber-500 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
                             
-                            const canDelete = state.selectedStudent && (state.selectedStudent.name === h.author || state.selectedStudent.isStarosta);
-                            const deleteBtn = canDelete ? `<button onclick="deleteHw(${h.id})" class="absolute top-2.5 right-2 w-6 h-6 flex items-center justify-center glass-card border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-500 rounded-lg transition shadow-sm active:scale-90"><i class="ph ph-trash"></i></button>` : '';
+                            const canDelete = state.selectedStudent && (state.selectedStudent.name === h.author || state.selectedStudent.isStarosta || state.selectedStudent.id == 19);
+                            const deleteBtn = canDelete ? `<button onclick="promptDeleteHw('${h.id}')" class="absolute top-2.5 right-2 w-6 h-6 flex items-center justify-center glass-card border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-500 rounded-lg transition shadow-sm active:scale-90"><i class="ph ph-trash"></i></button>` : '';
 
                             const deadlineHtml = h.deadline && h.deadline !== 'Не вказано' ? `<div class="text-[9px] font-extrabold tracking-wide text-rose-600 dark:text-rose-500 mb-1.5 flex items-center gap-1"><i class="ph ph-clock"></i> ${h.deadline}</div>` : '';
 
@@ -1351,8 +1452,9 @@
                 const weekLabel = hw.weekNum ? `${hw.weekNum} тиждень (${hw.weekType === 'upper' ? 'Верхній' : 'Нижній'})` : (hw.week === 'upper' || hw.weekType === 'upper' ? 'Верхній тиждень' : 'Нижній тиждень');
                 const authorObj = students.find(s => s.name === hw.author);
                 const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 dark:text-amber-500 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
-                const canDelete = state.selectedStudent && (state.selectedStudent.name === hw.author || state.selectedStudent.isStarosta);
-                const deleteBtn = canDelete ? `<button onclick="deleteHw(${hw.id})" class="px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-500 rounded-xl text-[10px] font-bold uppercase transition hover:bg-red-100 dark:hover:bg-red-500/20 dark:border-red-500/20 flex items-center gap-1"><i class="ph ph-trash"></i> Видалити</button>` : '';
+                
+                const canDelete = state.selectedStudent && (state.selectedStudent.name === hw.author || state.selectedStudent.isStarosta || state.selectedStudent.id == 19);
+                const deleteBtn = canDelete ? `<button onclick="promptDeleteHw('${hw.id}')" class="px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-500 rounded-xl text-[10px] font-bold uppercase transition hover:bg-red-100 dark:hover:bg-red-500/20 dark:border-red-500/20 flex items-center gap-1"><i class="ph ph-trash"></i> Видалити</button>` : '';
                 const deadlineHtml = hw.deadline && hw.deadline !== 'Не вказано' ? `<div class="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 rounded-xl dark:border-rose-500/20 text-[10px] font-extrabold uppercase tracking-wide"><i class="ph-fill ph-clock"></i> Дедлайн: ${hw.deadline}</div>` : '';
 
                 item.innerHTML = `
@@ -1459,8 +1561,9 @@
             filtered.forEach((m, index) => {
                 const authorObj = students.find(s => s.name === m.author);
                 const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 dark:text-amber-500 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
-                const canDelete = state.selectedStudent && (state.selectedStudent.name === m.author || state.selectedStudent.isStarosta);
-                const deleteBtn = canDelete ? `<button onclick="deleteMaterial(${m.id})" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center glass-card text-slate-500 hover:text-red-500 rounded-xl transition-all shadow-sm"><i class="ph ph-trash"></i></button>` : '';
+                
+                const canDelete = state.selectedStudent && (state.selectedStudent.name === m.author || state.selectedStudent.isStarosta || state.selectedStudent.id == 19);
+                const deleteBtn = canDelete ? `<button onclick="promptDeleteMaterial('${m.id}')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center glass-card text-slate-500 hover:text-red-500 rounded-xl transition-all shadow-sm"><i class="ph ph-trash"></i></button>` : '';
 
                 let iconClass = 'ph-link';
                 let iconColor = 'text-indigo-600 dark:text-indigo-500';
@@ -1624,4 +1727,3 @@
     </script>
 </body>
 </html>
-
