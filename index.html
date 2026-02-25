@@ -218,7 +218,7 @@
             // Визначаємо, де запущено код: в Canvas (вбудовано) чи на вашому Github Pages (з вашими ключами)
             if (typeof __firebase_config !== 'undefined') {
                 firebaseConfig = JSON.parse(__firebase_config); 
-            } else if (myFirebaseConfig.apiKey !== "AIzaSyA3_Lt-oh48jvyh2QujNLTsLfBYg0Fi1Co") {
+            } else if (myFirebaseConfig.apiKey !== "ВСТАВТЕ_ВАШ_API_KEY") {
                 firebaseConfig = myFirebaseConfig; 
             } else {
                 console.warn("Firebase не налаштовано! Дані зберігаються ТІЛЬКИ локально.");
@@ -1598,5 +1598,6 @@
     </script>
 </body>
 </html>
+
 
 
