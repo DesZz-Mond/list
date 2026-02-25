@@ -191,6 +191,21 @@
 </head>
 <body class="text-slate-900 dark:text-zinc-100 transition-colors duration-500 antialiased h-screen overflow-hidden flex flex-col md:flex-row relative bg-slate-50 dark:bg-[#050508]">
 
+    <!-- СИСТЕМА СПОВІЩЕНЬ (TOASTS) -->
+    <script>
+        window.showToast = function(msg, isError = false) {
+            const t = document.createElement('div');
+            t.className = `fixed top-6 right-4 md:right-8 p-4 rounded-2xl shadow-xl z-[999] text-sm font-bold text-white transition-all duration-500 transform -translate-y-[150%] opacity-0 flex items-center gap-3 ${isError ? 'bg-red-500 shadow-red-500/30' : 'bg-emerald-500 shadow-emerald-500/30'}`;
+            t.innerHTML = `<i class="ph-fill ${isError ? 'ph-warning-circle' : 'ph-check-circle'} text-xl"></i> <span>${msg}</span>`;
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.transform = 'translateY(0)'; t.style.opacity = '1'; }, 10);
+            setTimeout(() => { 
+                t.style.transform = 'translateY(-150%)'; t.style.opacity = '0'; 
+                setTimeout(() => t.remove(), 500); 
+            }, 4000);
+        };
+    </script>
+
     <!-- FIREBASE ХМАРНА СИНХРОНІЗАЦІЯ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -199,43 +214,44 @@
 
         let db, auth, appId;
 
-        // =========================================================================
-        // 🔴 УВАГА: НАЛАШТУВАННЯ ДЛЯ ХОСТИНГУ НА GITHUB PAGES
-        // Замініть значення нижче на ваші власні з консолі Firebase!
-        // =========================================================================
+        // ВАШІ КЛЮЧІ FIREBASE ЗІ СКРІНШОТУ
         const myFirebaseConfig = {
-            apiKey: "AIzaSyA3_Lt-oh48jvyh2QujNLTsLfBYg0Fi1Co",
+            apiKey: "AIzaSyA3_Lt-oh48jvyh2QujNLTSLfBYg0Fi1Co",
             authDomain: "mb-202-hub.firebaseapp.com",
             projectId: "mb-202-hub",
             storageBucket: "mb-202-hub.firebasestorage.app",
             messagingSenderId: "29475695860",
-            appId: "1:29475695860:web:ea43251ba67ce5dde302a1"
+            appId: "1:29475695860:web:ea43251ba67ce5dde302a1",
+            measurementId: "G-D3Q49R1Q2D"
         };
 
         try {
             let firebaseConfig = null;
             
-            // Визначаємо, де запущено код: в Canvas (вбудовано) чи на вашому Github Pages (з вашими ключами)
             if (typeof __firebase_config !== 'undefined') {
                 firebaseConfig = JSON.parse(__firebase_config); 
-            } else if (myFirebaseConfig.apiKey !== "ВСТАВТЕ_ВАШ_API_KEY") {
+            } else if (myFirebaseConfig.apiKey && myFirebaseConfig.apiKey !== "ВСТАВТЕ_ВАШ_API_KEY") {
                 firebaseConfig = myFirebaseConfig; 
             } else {
-                console.warn("Firebase не налаштовано! Дані зберігаються ТІЛЬКИ локально.");
+                console.warn("Firebase не налаштовано!");
             }
 
             if (firebaseConfig) {
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-202-group'; // ID для колекцій
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-202-group';
 
                 const initAuth = async () => {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        // Якщо це ваш власний хостинг - використовуємо анонімний вхід
-                        await signInAnonymously(auth);
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (err) {
+                        console.error("Помилка авторизації:", err);
+                        setTimeout(() => window.showToast("Помилка Auth: Перевірте домен та 'Anonymous' вхід!", true), 2000);
                     }
                 };
 
@@ -243,28 +259,30 @@
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        // 1. Zoom Links Sync
-                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'zoom_links'), (snapshot) => {
-                            let links = {};
-                            snapshot.forEach(doc => links[doc.id] = doc.data().url);
-                            window.updateCloudData('zoom', links);
-                        }, console.error);
+                        try {
+                            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'zoom_links'), (snapshot) => {
+                                let links = {};
+                                snapshot.forEach(doc => links[doc.id] = doc.data().url);
+                                window.updateCloudData('zoom', links);
+                            }, (err) => { console.error(err); window.showToast("Помилка читання: Перевірте Rules!", true); });
 
-                        // 2. Homework Sync
-                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'homeworks'), (snapshot) => {
-                            let hw = [];
-                            snapshot.forEach(doc => hw.push(doc.data()));
-                            hw.sort((a, b) => b.id - a.id); // Sort newest first
-                            window.updateCloudData('homeworks', hw);
-                        }, console.error);
+                            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'homeworks'), (snapshot) => {
+                                let hw = [];
+                                snapshot.forEach(doc => hw.push(doc.data()));
+                                hw.sort((a, b) => b.id - a.id);
+                                window.updateCloudData('homeworks', hw);
+                            }, (err) => console.error(err));
 
-                        // 3. Materials Sync
-                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'materials'), (snapshot) => {
-                            let mat = [];
-                            snapshot.forEach(doc => mat.push(doc.data()));
-                            mat.sort((a, b) => b.id - a.id); // Sort newest first
-                            window.updateCloudData('materials', mat);
-                        }, console.error);
+                            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'materials'), (snapshot) => {
+                                let mat = [];
+                                snapshot.forEach(doc => pushData(mat, doc));
+                                function pushData(array, doc){ array.push(doc.data()); }
+                                mat.sort((a, b) => b.id - a.id);
+                                window.updateCloudData('materials', mat);
+                            }, (err) => console.error(err));
+                        } catch(e) {
+                            console.error("Firestore Listeners Error:", e);
+                        }
                     }
                 });
             }
@@ -274,15 +292,32 @@
 
         // Global functions for inline HTML to access Cloud logic
         window.saveToCloud = async (collectionName, docId, data) => {
-            if(!db || !auth?.currentUser) return false;
-            try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId.toString()), data); return true; } 
-            catch(e) { console.error("Помилка збереження в хмару:", e); return false; }
+            if(!db) { window.showToast("База даних не підключена!", true); return false; }
+            if(!auth?.currentUser) { window.showToast("Ви не авторизовані в хмарі. Дані збережено лише локально!", true); return false; }
+            try { 
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId.toString()), data); 
+                window.showToast("Успішно збережено в хмару!");
+                return true; 
+            } 
+            catch(e) { 
+                console.error("Firebase Write Error:", e); 
+                window.showToast("Помилка запису в хмару: Перевірте Rules!", true); 
+                return false; 
+            }
         };
 
         window.deleteFromCloud = async (collectionName, docId) => {
-            if(!db || !auth?.currentUser) return false;
-            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId.toString())); return true; } 
-            catch(e) { console.error("Помилка видалення з хмари:", e); return false; }
+            if(!db || !auth?.currentUser) { window.showToast("Помилка видалення: немає доступу", true); return false; }
+            try { 
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId.toString())); 
+                window.showToast("Успішно видалено з хмари");
+                return true; 
+            } 
+            catch(e) { 
+                console.error(e); 
+                window.showToast("Помилка видалення в хмарі", true); 
+                return false; 
+            }
         };
     </script>
 
@@ -934,7 +969,7 @@
             week: 25,
             genWeek: 25,
             mainViewWeek: 'upper',
-            mainActiveWeekNum: null, // Додано: відстежуємо КОНКРЕТНИЙ тиждень для ДЗ
+            mainActiveWeekNum: null,
             persMainWeek: 'upper',
             isDark: false
         };
@@ -1080,15 +1115,13 @@
 
         function setPersonalMode(mode) { state.personalMode = mode; renderPersonalSchedule(); }
         
-        // Змінено логіку для загальних кнопок Верхній/Нижній
         function setMainViewWeek(w) { 
             state.mainViewWeek = w; 
-            state.mainActiveWeekNum = null; // Скидаємо вибраний номер тижня
+            state.mainActiveWeekNum = null;
             updateWeekCardHighlight();
             renderMainTabSchedule(); 
         }
 
-        // Нова функція для вибору конкретного тижня
         function setMainSpecificWeek(num, type) {
             state.mainActiveWeekNum = num;
             state.mainViewWeek = type;
@@ -1179,11 +1212,9 @@
                 if (sLang) displaySubj = `Друга іноземна мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
             }
             
-            // Якщо посилання є в стандартній базі - берем звідти, якщо ні - берем кастомне з хмари
             let zoomUrl = (p.zoomKey && zoomLinks[p.zoomKey]) ? zoomLinks[p.zoomKey] : customZoomLinks[p.subj];
             let z = '';
             
-            // Тільки Даніїл (ID: 19) може додавати та редагувати
             const isDaniil = state.selectedStudent && state.selectedStudent.id == 19;
 
             if (showZoom && zoomUrl) {
@@ -1206,11 +1237,8 @@
             let n = isPersonal ? `<textarea oninput="localStorage.setItem('note-${state.selectedStudent.id}-${p.num}-${p.subj}', this.value)" placeholder="Додати нотатку..." class="mt-3 w-full p-3 text-[11px] bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 dark:bg-black/30 dark:border-white/10 dark:text-slate-300 dark:placeholder-slate-500 rounded-xl outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 h-16 resize-none custom-scroll transition-colors font-medium shadow-inner block">${localStorage.getItem(`note-${state.selectedStudent.id}-${p.num}-${p.subj}`) || ''}</textarea>` : '';
             
             let hwHtml = '';
-            // Відмальовуємо блок ДЗ тільки на головній вкладці
             if (hwContext && hwContext.isMainTab) {
-                // Якщо користувач обрав конкретний тиждень з віджету
                 if (hwContext.weekNum !== null && hwContext.weekNum !== undefined) {
-                    // Фільтруємо ДЗ по номеру тижня
                     const currentHwList = globalHomeworks.filter(h => h.subj === p.subj && h.weekNum === hwContext.weekNum && h.day === hwContext.day && h.num === p.num);
                     
                     if (currentHwList.length > 0) {
@@ -1241,7 +1269,6 @@
 
                     hwHtml += `<button onclick="openHwModal('${p.subj}', '${hwContext.weekType}', '${hwContext.day}', ${p.num}, ${hwContext.weekNum})" class="mt-3 w-full py-2.5 glass-card text-slate-700 dark:text-slate-300 text-[10px] font-extrabold uppercase tracking-wide rounded-xl transition-all border border-dashed hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-white/50 dark:hover:bg-indigo-500/10 flex items-center justify-center gap-2"><i class="ph ph-plus"></i> Додати ДЗ на ${hwContext.weekNum} тиждень</button>`;
                 } else {
-                    // Якщо вибраний просто "Верхній/Нижній" без номера тижня
                     hwHtml += `<div class="mt-3 text-[10px] text-center text-slate-500 dark:text-slate-400 font-bold glass-card py-2.5 rounded-xl border border-dashed">Оберіть конкретний тиждень вище, щоб керувати ДЗ</div>`;
                 }
             }
@@ -1278,10 +1305,9 @@
                 date: new Date().toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             };
             
-            // Спроба зберегти у хмару Firebase
             if (window.saveToCloud) {
                 const success = await window.saveToCloud('homeworks', docId, newHw);
-                if (!success) fallbackSaveHw(newHw); // Якщо Firebase недоступний
+                if (!success) fallbackSaveHw(newHw);
             } else {
                 fallbackSaveHw(newHw);
             }
@@ -1577,7 +1603,7 @@
             if(!url) return;
             if(!url.startsWith('http')) url = 'https://' + url;
 
-            const safeId = currentZoomSubj.replace(/\//g, '_'); // Безпечне ID для хмари
+            const safeId = currentZoomSubj.replace(/\//g, '_');
 
             if (window.saveToCloud) {
                 const success = await window.saveToCloud('zoom_links', safeId, { url: url });
@@ -1598,6 +1624,3 @@
     </script>
 </body>
 </html>
-
-
-
