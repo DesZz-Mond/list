@@ -199,18 +199,43 @@
 
         let db, auth, appId;
 
+        // =========================================================================
+        // 🔴 УВАГА: НАЛАШТУВАННЯ ДЛЯ ХОСТИНГУ НА GITHUB PAGES
+        // Замініть значення нижче на ваші власні з консолі Firebase!
+        // =========================================================================
+        const myFirebaseConfig = {
+            apiKey: "AIzaSyA3_Lt-oh48jvyh2QujNLTsLfBYg0Fi1Co",
+            authDomain: "mb-202-hub.firebaseapp.com",
+            projectId: "mb-202-hub",
+            storageBucket: "mb-202-hub.firebasestorage.app",
+            messagingSenderId: "29475695860",
+            appId: "1:29475695860:web:ea43251ba67ce5dde302a1"
+            measurementId: "G-D3Q49R1Q2D"
+        };
+
         try {
-            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            let firebaseConfig = null;
+            
+            // Визначаємо, де запущено код: в Canvas (вбудовано) чи на вашому Github Pages (з вашими ключами)
+            if (typeof __firebase_config !== 'undefined') {
+                firebaseConfig = JSON.parse(__firebase_config); 
+            } else if (myFirebaseConfig.apiKey !== "ВСТАВТЕ_ВАШ_API_KEY") {
+                firebaseConfig = myFirebaseConfig; 
+            } else {
+                console.warn("Firebase не налаштовано! Дані зберігаються ТІЛЬКИ локально.");
+            }
+
             if (firebaseConfig) {
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-202-group'; // ID для колекцій
 
                 const initAuth = async () => {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
+                        // Якщо це ваш власний хостинг - використовуємо анонімний вхід
                         await signInAnonymously(auth);
                     }
                 };
@@ -245,20 +270,20 @@
                 });
             }
         } catch(e) {
-            console.warn("Firebase not loaded. Local mode only.", e);
+            console.warn("Firebase config error:", e);
         }
 
         // Global functions for inline HTML to access Cloud logic
         window.saveToCloud = async (collectionName, docId, data) => {
             if(!db || !auth?.currentUser) return false;
             try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId.toString()), data); return true; } 
-            catch(e) { console.error(e); return false; }
+            catch(e) { console.error("Помилка збереження в хмару:", e); return false; }
         };
 
         window.deleteFromCloud = async (collectionName, docId) => {
             if(!db || !auth?.currentUser) return false;
             try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId.toString())); return true; } 
-            catch(e) { console.error(e); return false; }
+            catch(e) { console.error("Помилка видалення з хмари:", e); return false; }
         };
     </script>
 
