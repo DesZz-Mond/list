@@ -14,6 +14,14 @@
             if (!isChromium) {
                 document.documentElement.classList.add('no-liquid-glass-support');
             }
+            
+            // ОПТИМІЗАЦІЯ ДЛЯ ANDROID (вимикає важкі ефекти розмиття, які спричиняють зависання)
+            const isAndroid = /android/i.test(userAgent);
+            if (isAndroid) {
+                document.documentElement.classList.add('is-android');
+            }
+        })();
+    </script>
 
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -1715,4 +1723,3 @@
     </script>
 </body>
 </html>
-
