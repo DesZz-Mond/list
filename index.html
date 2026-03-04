@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#050a0a" media="(prefers-color-scheme: dark)">
     <title>МБ-202 | Hub</title>
 
     <script>
@@ -33,7 +33,7 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        brand: { 50: '#eff6ff', 100: '#dbeafe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' },
+                        brand: { 50: '#f0fdfa', 100: '#ccfbf1', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a' },
                     },
                     animation: {
                         'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
@@ -77,7 +77,7 @@
             border-left-width: 4px;
             border-left-style: solid;
         }
-        .pair-general { border-left-color: #6366f1; }
+        .pair-general { border-left-color: #14b8a6; } /* Teal-500 */
         .pair-elective { border-left-color: #f59e0b; }
         .pair-lang { border-left-color: #10b981; }
 
@@ -111,7 +111,7 @@
         }
 
         html.dark .liquid-glass {
-            background: linear-gradient(135deg, rgba(30, 30, 35, 0.6) 0%, rgba(20, 20, 25, 0.4) 100%);
+            background: linear-gradient(135deg, rgba(15, 35, 35, 0.6) 0%, rgba(10, 25, 25, 0.4) 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 
                 inset 0 1px 1px rgba(255, 255, 255, 0.15), 
@@ -156,7 +156,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #f4f4f5;
         }
-        html.dark .glass-input:focus { border-color: #6366f1; background: rgba(0,0,0,0.5); }
+        html.dark .glass-input:focus { border-color: #14b8a6; background: rgba(0,0,0,0.5); } /* Teal-500 */
 
         /* --- ANDROID ANTI-LAG CSS --- */
         html.is-android .liquid-glass, 
@@ -166,15 +166,15 @@
             -webkit-backdrop-filter: none !important;
         }
         html.is-android .liquid-glass { background: rgba(255, 255, 255, 0.95) !important; }
-        html.is-android.dark .liquid-glass { background: rgba(20, 20, 25, 0.95) !important; }
+        html.is-android.dark .liquid-glass { background: rgba(15, 25, 25, 0.95) !important; }
         
         html.is-android .glass-card { background: rgba(255, 255, 255, 0.9) !important; border-color: rgba(220, 226, 236, 0.8) !important; }
-        html.is-android.dark .glass-card { background: rgba(30, 30, 35, 0.9) !important; border-color: rgba(50, 50, 60, 0.8) !important; }
+        html.is-android.dark .glass-card { background: rgba(20, 35, 35, 0.9) !important; border-color: rgba(40, 60, 60, 0.8) !important; }
         
         html.is-android .glass-input { background: rgba(255, 255, 255, 0.9) !important; }
-        html.is-android.dark .glass-input { background: rgba(20, 20, 25, 0.9) !important; }
+        html.is-android.dark .glass-input { background: rgba(15, 25, 25, 0.9) !important; }
 
-        html.is-android .animate-blob { display: none !important; } /* Ховаємо важку анімацію плям */
+        html.is-android .animate-blob { display: none !important; }
 
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 20px); }
         .tab-content { display: none; }
@@ -189,7 +189,7 @@
         }
     </style>
 </head>
-<body class="text-slate-900 dark:text-zinc-100 transition-colors duration-500 antialiased h-screen overflow-hidden flex flex-col md:flex-row relative bg-slate-50 dark:bg-[#050508]">
+<body class="text-slate-900 dark:text-zinc-100 transition-colors duration-500 antialiased h-screen overflow-hidden flex flex-col md:flex-row relative bg-slate-50 dark:bg-[#050a0a]">
 
     <!-- СИСТЕМА СПОВІЩЕНЬ (TOASTS) -->
     <script>
@@ -214,7 +214,6 @@
 
         let db, auth, appId;
 
-        // ВАШІ КЛЮЧІ FIREBASE ЗІ СКРІНШОТУ
         const myFirebaseConfig = {
             apiKey: "AIzaSyB42c4pQLDd9-SrJWExTfZjTAZikE_YD-Y",
             authDomain: "mb-202-hub.firebaseapp.com",
@@ -290,7 +289,6 @@
             console.warn("Firebase config error:", e);
         }
 
-        // Global functions for inline HTML to access Cloud logic
         window.saveToCloud = async (collectionName, docId, data) => {
             if(!db) { window.showToast("База даних не підключена!", true); return false; }
             if(!auth?.currentUser) { window.showToast("Ви не авторизовані в хмарі. Дані збережено лише локально!", true); return false; }
@@ -321,11 +319,11 @@
         };
     </script>
 
-    <!-- ФОНОВІ ЕЛЕМЕНТИ (Blobs - оптимізовані) -->
+    <!-- ФОНОВІ ЕЛЕМЕНТИ (Teal, Emerald, Indigo) -->
     <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-indigo-400/40 dark:bg-indigo-700/30 blur-[100px] animate-blob transform-gpu"></div>
-        <div class="absolute top-[20%] right-[-10%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-purple-400/40 dark:bg-purple-800/30 blur-[100px] animate-blob animation-delay-2000 transform-gpu"></div>
-        <div class="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-teal-400/30 dark:bg-teal-800/20 blur-[100px] animate-blob animation-delay-4000 transform-gpu"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-teal-400/40 dark:bg-teal-700/30 blur-[100px] animate-blob transform-gpu"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-emerald-400/40 dark:bg-emerald-800/30 blur-[100px] animate-blob animation-delay-2000 transform-gpu"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-indigo-400/30 dark:bg-indigo-800/20 blur-[100px] animate-blob animation-delay-4000 transform-gpu"></div>
     </div>
 
     <!-- Екран авторизації -->
@@ -336,7 +334,7 @@
         </button>
 
         <div class="w-full max-w-md liquid-glass text-center animate-slide-up flex flex-col p-8 sm:p-10 relative">
-            <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-violet-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform rotate-3 shrink-0 relative z-10">
+            <div class="w-24 h-24 bg-gradient-to-tr from-teal-500 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg transform rotate-3 shrink-0 relative z-10">
                 <span class="text-5xl drop-shadow-md">🎓</span>
             </div>
             <h1 class="text-3xl font-extrabold mb-2 tracking-tight text-slate-900 dark:text-white relative z-10">МБ-202 Hub</h1>
@@ -345,7 +343,7 @@
             <div class="relative text-left shrink-0 mb-2 z-10">
                 <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-500 dark:text-slate-400"></i>
                 <input type="text" id="auth-search" oninput="filterAuthList()" placeholder="Пошук ПІБ..." 
-                    class="w-full pl-12 pr-4 py-4 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold text-slate-900 dark:text-white placeholder-slate-500 shadow-sm">
+                    class="w-full pl-12 pr-4 py-4 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-teal-500 transition-all font-bold text-slate-900 dark:text-white placeholder-slate-500 shadow-sm">
             </div>
 
             <div id="auth-list" class="mt-2 max-h-[35vh] overflow-y-auto custom-scroll rounded-2xl glass-input flex-col gap-1 p-2 hidden z-10"></div>
@@ -356,17 +354,17 @@
     <aside class="hidden md:flex flex-col w-72 liquid-glass border-l-0 border-y-0 h-full relative z-40 transition-colors" style="border-radius: 0 32px 32px 0;">
         <div class="p-6 border-b border-slate-300/50 dark:border-white/10 relative z-10">
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-md hover:scale-105 transition-transform cursor-pointer">
+                <div class="w-10 h-10 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center text-white shadow-md hover:scale-105 transition-transform cursor-pointer">
                     <span class="text-lg font-black">M</span>
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg tracking-tight leading-none text-slate-900 dark:text-white">Портал</h1>
-                    <span class="text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">МБ-202</span>
+                    <span class="text-[10px] font-extrabold text-teal-600 dark:text-teal-400 uppercase tracking-widest">МБ-202</span>
                 </div>
             </div>
             
             <div class="glass-card p-3 rounded-2xl flex items-center gap-3">
-                <div id="pc-user-avatar" class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center justify-center font-black text-sm shrink-0 border border-indigo-200 dark:border-indigo-500/20"></div>
+                <div id="pc-user-avatar" class="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-400 flex items-center justify-center font-black text-sm shrink-0 border border-teal-200 dark:border-teal-500/20"></div>
                 <div class="overflow-hidden">
                     <div id="pc-user-name" class="text-xs font-extrabold truncate text-slate-900 dark:text-zinc-100"></div>
                     <div id="pc-user-role" class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Студент</div>
@@ -399,7 +397,7 @@
         </nav>
 
         <div class="p-4 border-t border-slate-300/50 dark:border-white/10 flex gap-2 relative z-10">
-            <button onclick="toggleDarkMode()" class="flex-1 py-3 rounded-xl glass-card text-slate-800 dark:text-slate-300 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 font-bold text-xs">
+            <button onclick="toggleDarkMode()" class="flex-1 py-3 rounded-xl glass-card text-slate-800 dark:text-slate-300 hover:text-teal-600 transition-all flex items-center justify-center gap-2 font-bold text-xs">
                 <i class="ph ph-moon text-lg" id="pc-dark-icon"></i> Тема
             </button>
             <button onclick="logout()" class="py-3 px-4 rounded-xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 hover:bg-red-100 transition-all flex items-center justify-center border border-red-200 dark:border-red-500/20">
@@ -414,7 +412,7 @@
         <!-- МОБІЛЬНИЙ ХЕДЕР -->
         <header class="md:hidden liquid-glass sticky top-0 z-30 px-4 py-3 flex justify-between items-center safe-top rounded-t-none mb-2 mx-2 mt-2" style="border-radius: 0 0 32px 32px;">
             <div class="flex items-center gap-3 relative z-10">
-                <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                <div class="w-8 h-8 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-lg flex items-center justify-center text-white shadow-sm">
                     <span class="text-sm font-black">M</span>
                 </div>
                 <div>
@@ -422,10 +420,10 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 relative z-10">
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-slate-800 dark:text-slate-300 hover:text-indigo-600 transition-colors border-none">
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-slate-800 dark:text-slate-300 hover:text-teal-600 transition-colors border-none">
                     <i class="ph ph-moon text-lg" id="mob-dark-icon"></i>
                 </button>
-                <div id="mob-user-avatar" onclick="logout()" class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30 flex items-center justify-center font-black text-xs cursor-pointer shadow-sm"></div>
+                <div id="mob-user-avatar" onclick="logout()" class="w-9 h-9 rounded-full bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-500/30 flex items-center justify-center font-black text-xs cursor-pointer shadow-sm"></div>
             </div>
         </header>
 
@@ -437,8 +435,8 @@
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
                     <div class="flex items-center gap-5 w-full">
                         <div class="relative w-16 h-16 shrink-0">
-                            <div class="absolute inset-0 bg-indigo-500 rounded-2xl animate-pulse opacity-30"></div>
-                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center text-white shadow-lg border border-indigo-400/50">
+                            <div class="absolute inset-0 bg-teal-500 rounded-2xl animate-pulse opacity-30"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg border border-teal-400/50">
                                 <i class="ph ph-lightning text-3xl"></i>
                             </div>
                         </div>
@@ -456,7 +454,7 @@
                     
                     <div class="glass-card px-8 py-4 rounded-2xl text-center min-w-[180px] w-full md:w-auto">
                         <p id="timer-label" class="text-[9px] font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-400 mb-1">До події</p>
-                        <p id="elapsed-timer" class="text-3xl font-mono font-black text-indigo-700 dark:text-indigo-400 tracking-tight">00:00:00</p>
+                        <p id="elapsed-timer" class="text-3xl font-mono font-black text-teal-700 dark:text-teal-400 tracking-tight">00:00:00</p>
                     </div>
                 </div>
             </div>
@@ -468,7 +466,7 @@
                 <div id="view-schedule" class="tab-content active">
                     <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative z-10">
                         <div>
-                            <span id="date-today-label" class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2 block">Сьогодні</span>
+                            <span id="date-today-label" class="text-[11px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-2 block">Сьогодні</span>
                             <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white" id="active-student-name-title">Розклад</h2>
                         </div>
                         <div class="flex glass-card p-1.5 rounded-xl w-full md:w-auto">
@@ -496,115 +494,115 @@
                     <!-- КАЛЕНДАР ТИЖНІВ -->
                     <div class="mb-8 relative z-10 w-full">
                         <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3 ml-2 flex items-center gap-2">
-                            <i class="ph-fill ph-calendar-check text-indigo-500 text-sm"></i> Календар тижнів (Натисніть для ДЗ)
+                            <i class="ph-fill ph-calendar-check text-teal-500 text-sm"></i> Календар тижнів (Натисніть для ДЗ)
                         </h3>
                         <div class="flex gap-3 overflow-x-auto custom-scroll pt-3 pb-5 px-2 snap-x -mt-3" id="main-weeks-container">
                             
-                            <div data-week="28" onclick="setMainSpecificWeek(28, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="28" onclick="setMainSpecificWeek(28, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">28</span>
-                                    <i class="ph-fill ph-arrow-circle-down text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">28</span>
+                                    <i class="ph-fill ph-arrow-circle-down text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Нижній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Нижній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">09.03 - 15.03</span>
                             </div>
 
-                            <div data-week="29" onclick="setMainSpecificWeek(29, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="29" onclick="setMainSpecificWeek(29, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">29</span>
-                                    <i class="ph-fill ph-arrow-circle-up text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">29</span>
+                                    <i class="ph-fill ph-arrow-circle-up text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Верхній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Верхній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">16.03 - 22.03</span>
                             </div>
 
-                            <div data-week="30" onclick="setMainSpecificWeek(30, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="30" onclick="setMainSpecificWeek(30, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">30</span>
-                                    <i class="ph-fill ph-arrow-circle-down text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">30</span>
+                                    <i class="ph-fill ph-arrow-circle-down text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Нижній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Нижній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">23.03 - 29.03</span>
                             </div>
 
-                            <div data-week="31" onclick="setMainSpecificWeek(31, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="31" onclick="setMainSpecificWeek(31, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">31</span>
-                                    <i class="ph-fill ph-arrow-circle-up text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">31</span>
+                                    <i class="ph-fill ph-arrow-circle-up text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Верхній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Верхній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">30.03 - 05.04</span>
                             </div>
 
-                            <div data-week="32" onclick="setMainSpecificWeek(32, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="32" onclick="setMainSpecificWeek(32, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">32</span>
-                                    <i class="ph-fill ph-arrow-circle-down text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">32</span>
+                                    <i class="ph-fill ph-arrow-circle-down text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Нижній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Нижній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">06.04 - 12.04</span>
                             </div>
 
-                            <div data-week="33" onclick="setMainSpecificWeek(33, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="33" onclick="setMainSpecificWeek(33, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">33</span>
-                                    <i class="ph-fill ph-arrow-circle-up text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">33</span>
+                                    <i class="ph-fill ph-arrow-circle-up text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Верхній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Верхній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">13.04 - 19.04</span>
                             </div>
 
-                            <div data-week="34" onclick="setMainSpecificWeek(34, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="34" onclick="setMainSpecificWeek(34, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">34</span>
-                                    <i class="ph-fill ph-arrow-circle-down text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">34</span>
+                                    <i class="ph-fill ph-arrow-circle-down text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Нижній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Нижній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">20.04 - 26.04</span>
                             </div>
 
-                            <div data-week="35" onclick="setMainSpecificWeek(35, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="35" onclick="setMainSpecificWeek(35, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">35</span>
-                                    <i class="ph-fill ph-arrow-circle-up text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">35</span>
+                                    <i class="ph-fill ph-arrow-circle-up text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Верхній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Верхній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">27.04 - 03.05</span>
                             </div>
 
-                            <div data-week="36" onclick="setMainSpecificWeek(36, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="36" onclick="setMainSpecificWeek(36, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">36</span>
-                                    <i class="ph-fill ph-arrow-circle-down text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">36</span>
+                                    <i class="ph-fill ph-arrow-circle-down text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Нижній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Нижній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">04.05 - 10.05</span>
                             </div>
 
-                            <div data-week="37" onclick="setMainSpecificWeek(37, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="37" onclick="setMainSpecificWeek(37, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">37</span>
-                                    <i class="ph-fill ph-arrow-circle-up text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">37</span>
+                                    <i class="ph-fill ph-arrow-circle-up text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Верхній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Верхній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">11.05 - 17.05</span>
                             </div>
 
-                            <div data-week="38" onclick="setMainSpecificWeek(38, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="38" onclick="setMainSpecificWeek(38, 'lower')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">38</span>
-                                    <i class="ph-fill ph-arrow-circle-down text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">38</span>
+                                    <i class="ph-fill ph-arrow-circle-down text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Нижній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Нижній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">18.05 - 24.05</span>
                             </div>
 
-                            <div data-week="39" onclick="setMainSpecificWeek(39, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-indigo-50/80 dark:hover:bg-indigo-900/40 hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-indigo-400 dark:border-l-indigo-500 flex flex-col min-w-[130px] shadow-sm group">
+                            <div data-week="39" onclick="setMainSpecificWeek(39, 'upper')" class="week-card snap-start shrink-0 cursor-pointer liquid-glass hover:bg-teal-50/80 dark:hover:bg-teal-900/40 hover:shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/40 hover:-translate-y-1 transition-all duration-300 p-4 rounded-2xl border-l-4 border-l-teal-400 dark:border-l-teal-500 flex flex-col min-w-[130px] shadow-sm group">
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">39</span>
-                                    <i class="ph-fill ph-arrow-circle-up text-indigo-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                    <span class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">39</span>
+                                    <i class="ph-fill ph-arrow-circle-up text-teal-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1.5">Верхній</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-1.5">Верхній</span>
                                 <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">25.05 - 31.05</span>
                             </div>
                             
@@ -637,9 +635,9 @@
                         <div class="p-6 border-b border-slate-300/50 dark:border-white/5 flex flex-col md:flex-row gap-4 relative z-10">
                             <div class="relative flex-1">
                                 <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg"></i>
-                                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Пошук студента..." class="w-full pl-12 pr-4 py-3 glass-input text-slate-900 dark:text-white rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm">
+                                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Пошук студента..." class="w-full pl-12 pr-4 py-3 glass-input text-slate-900 dark:text-white rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-teal-500 transition shadow-sm">
                             </div>
-                            <select id="lang-filter" onchange="handleSearch()" class="py-3 px-4 glass-input text-slate-900 dark:text-white rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer min-w-[200px] appearance-none">
+                            <select id="lang-filter" onchange="handleSearch()" class="py-3 px-4 glass-input text-slate-900 dark:text-white rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-teal-500 shadow-sm cursor-pointer min-w-[200px] appearance-none">
                                 <option value="all" class="bg-white dark:bg-zinc-900">Усі підгрупи</option>
                                 <option value="німецька" class="bg-white dark:bg-zinc-900">Німецька</option>
                                 <option value="польська" class="bg-white dark:bg-zinc-900">Польська</option>
@@ -673,7 +671,7 @@
                             <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">Матеріали</h2>
                             <p class="text-sm text-slate-600 dark:text-slate-400 font-bold">Корисні посилання та диски</p>
                         </div>
-                        <button onclick="openMaterialModal()" class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-float transition-all flex items-center justify-center gap-2 hover:-translate-y-1">
+                        <button onclick="openMaterialModal()" class="w-full sm:w-auto px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-float transition-all flex items-center justify-center gap-2 hover:-translate-y-1">
                             <i class="ph ph-plus-circle text-lg"></i> Додати лінк
                         </button>
                     </div>
@@ -723,20 +721,20 @@
             </button>
             <div class="relative z-10">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
+                    <div class="w-10 h-10 bg-teal-100 dark:bg-teal-500/10 rounded-xl flex items-center justify-center text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-500/20">
                         <i class="ph ph-pencil-simple text-xl"></i>
                     </div>
                     <h2 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Додати ДЗ</h2>
                 </div>
-                <p id="hw-modal-title" class="text-indigo-800 dark:text-indigo-300 font-bold text-xs mb-4 px-3 py-2 bg-indigo-50/80 dark:bg-indigo-500/10 rounded-lg inline-block border border-indigo-200 dark:border-indigo-500/20"></p>
-                <textarea id="hw-textarea" placeholder="Опишіть завдання..." class="w-full p-4 glass-input text-slate-900 dark:text-white rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium text-sm h-32 resize-none mb-4 custom-scroll placeholder-slate-500 shadow-sm"></textarea>
+                <p id="hw-modal-title" class="text-teal-800 dark:text-teal-300 font-bold text-xs mb-4 px-3 py-2 bg-teal-50/80 dark:bg-teal-500/10 rounded-lg inline-block border border-teal-200 dark:border-teal-500/20"></p>
+                <textarea id="hw-textarea" placeholder="Опишіть завдання..." class="w-full p-4 glass-input text-slate-900 dark:text-white rounded-2xl outline-none focus:ring-2 focus:ring-teal-500 transition font-medium text-sm h-32 resize-none mb-4 custom-scroll placeholder-slate-500 shadow-sm"></textarea>
                 <div class="mb-6">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2 ml-1">Дедлайн <span class="text-slate-400 dark:text-slate-500 lowercase">(необов'язково)</span></label>
-                    <input type="text" id="hw-deadline" placeholder="Напр. 25.02 або Наступна пара" class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm placeholder-slate-500 shadow-sm">
+                    <input type="text" id="hw-deadline" placeholder="Напр. 25.02 або Наступна пара" class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-teal-500 transition font-bold text-sm placeholder-slate-500 shadow-sm">
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="closeHwModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm glass-card text-slate-800 dark:text-slate-300 hover:text-indigo-600 transition border-none">Скасувати</button>
-                    <button onclick="saveHw()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-float hover:-translate-y-0.5">Зберегти</button>
+                    <button onclick="closeHwModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm glass-card text-slate-800 dark:text-slate-300 hover:text-teal-600 transition border-none">Скасувати</button>
+                    <button onclick="saveHw()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-teal-600 text-white hover:bg-teal-700 transition shadow-float hover:-translate-y-0.5">Зберегти</button>
                 </div>
             </div>
         </div>
@@ -750,7 +748,7 @@
             </button>
             <div class="relative z-10">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
+                    <div class="w-10 h-10 bg-teal-100 dark:bg-teal-500/10 rounded-xl flex items-center justify-center text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-500/20">
                         <i class="ph ph-link text-xl"></i>
                     </div>
                     <h2 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Додати матеріал</h2>
@@ -758,15 +756,15 @@
                 <div class="space-y-4 mb-8">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2 ml-1">Назва</label>
-                        <input type="text" id="mat-title" placeholder="Коротко і зрозуміло..." class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm placeholder-slate-500 shadow-sm">
+                        <input type="text" id="mat-title" placeholder="Коротко і зрозуміло..." class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-teal-500 transition font-bold text-sm placeholder-slate-500 shadow-sm">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2 ml-1">Посилання (URL)</label>
-                        <input type="url" id="mat-url" placeholder="https://..." class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium text-sm placeholder-slate-500 shadow-sm">
+                        <input type="url" id="mat-url" placeholder="https://..." class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-teal-500 transition font-medium text-sm placeholder-slate-500 shadow-sm">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2 ml-1">Дисципліна</label>
-                        <select id="mat-subj" class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition font-bold text-sm shadow-sm cursor-pointer appearance-none">
+                        <select id="mat-subj" class="w-full p-3.5 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-teal-500 transition font-bold text-sm shadow-sm cursor-pointer appearance-none">
                             <option value="Загальне" class="bg-white dark:bg-zinc-900">Загальне (Орг. питання)</option>
                             <option value="Маркетинг" class="bg-white dark:bg-zinc-900">Маркетинг</option>
                             <option value="Політологія" class="bg-white dark:bg-zinc-900">Політологія</option>
@@ -782,8 +780,8 @@
                     </div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="closeMaterialModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm glass-card text-slate-800 dark:text-slate-300 hover:text-indigo-600 transition border-none">Скасувати</button>
-                    <button onclick="saveMaterial()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-float hover:-translate-y-0.5">Зберегти</button>
+                    <button onclick="closeMaterialModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm glass-card text-slate-800 dark:text-slate-300 hover:text-teal-600 transition border-none">Скасувати</button>
+                    <button onclick="saveMaterial()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-teal-600 text-white hover:bg-teal-700 transition shadow-float hover:-translate-y-0.5">Зберегти</button>
                 </div>
             </div>
         </div>
@@ -841,7 +839,6 @@
         let currentZoomSubj = null;
         let currentConfirmCallback = null;
 
-        // Функції для модалки підтвердження
         function openConfirmModal(title, text, callback) {
             currentConfirmCallback = callback;
             document.getElementById('confirm-title').innerText = title;
@@ -870,7 +867,6 @@
             openConfirmModal("Видалити матеріал?", "Цю дію неможливо скасувати. Матеріал буде видалено для всієї групи.", () => deleteMaterial(id));
         }
 
-        // Функція для оновлення локальних даних з хмари (Firebase)
         window.updateCloudData = function(type, data) {
             if (type === 'zoom') {
                 customZoomLinks = data;
@@ -907,14 +903,14 @@
         };
 
         const discColors = {
-            "німецька": "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/20",
+            "німецька": "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 border-green-300 dark:border-green-500/20",
             "польська": "bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400 border-amber-300 dark:border-amber-500/20",
             "французька": "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400 border-blue-300 dark:border-blue-500/20",
             "китайська": "bg-rose-100 text-rose-800 dark:bg-rose-500/10 dark:text-rose-400 border-rose-300 dark:border-rose-500/20",
-            "політологія": "bg-indigo-100 text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-400 border-indigo-300 dark:border-indigo-500/20",
-            "публічне адміністрування": "bg-violet-100 text-violet-800 dark:bg-violet-500/10 dark:text-violet-400 border-violet-300 dark:border-violet-500/20",
-            "соціальне підприємництво": "bg-cyan-100 text-cyan-800 dark:bg-cyan-500/10 dark:text-cyan-400 border-cyan-300 dark:border-cyan-500/20",
-            "соціологія": "bg-pink-100 text-pink-800 dark:bg-pink-500/10 dark:text-pink-400 border-pink-300 dark:border-pink-500/20",
+            "політологія": "bg-teal-100 text-teal-800 dark:bg-teal-500/10 dark:text-teal-400 border-teal-300 dark:border-teal-500/20",
+            "публічне адміністрування": "bg-cyan-100 text-cyan-800 dark:bg-cyan-500/10 dark:text-cyan-400 border-cyan-300 dark:border-cyan-500/20",
+            "соціальне підприємництво": "bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400 border-orange-300 dark:border-orange-500/20",
+            "соціологія": "bg-violet-100 text-violet-800 dark:bg-violet-500/10 dark:text-violet-400 border-violet-300 dark:border-violet-500/20",
             "бзвп": "bg-slate-200 text-slate-800 dark:bg-slate-500/10 dark:text-slate-400 border-slate-300 dark:border-slate-500/20"
         };
 
@@ -1169,11 +1165,11 @@
 
             document.querySelectorAll('.nav-btn-pc').forEach(btn => {
                 if(btn.id === `nav-pc-${view}`) {
-                    btn.classList.add('glass-card', 'text-indigo-700', 'dark:text-indigo-400');
+                    btn.classList.add('glass-card', 'text-teal-700', 'dark:text-teal-400');
                     btn.classList.remove('text-slate-700', 'dark:text-slate-300', 'border-transparent');
                     btn.querySelector('i').classList.replace('ph', 'ph-fill');
                 } else {
-                    btn.classList.remove('glass-card', 'text-indigo-700', 'dark:text-indigo-400');
+                    btn.classList.remove('glass-card', 'text-teal-700', 'dark:text-teal-400');
                     btn.classList.add('text-slate-700', 'dark:text-slate-300', 'border-transparent');
                     btn.querySelector('i').classList.replace('ph-fill', 'ph');
                 }
@@ -1182,12 +1178,12 @@
             document.querySelectorAll('.nav-btn-mob').forEach(btn => {
                 const icon = btn.querySelector('i');
                 if(btn.id === `nav-mob-${view}`) {
-                    btn.classList.add('text-indigo-600', 'dark:text-indigo-400');
+                    btn.classList.add('text-teal-600', 'dark:text-teal-400');
                     btn.classList.remove('text-slate-600', 'dark:text-slate-400');
                     icon.classList.replace('ph', 'ph-fill');
                     icon.classList.add('scale-125', '-translate-y-1');
                 } else {
-                    btn.classList.remove('text-indigo-600', 'dark:text-indigo-400');
+                    btn.classList.remove('text-teal-600', 'dark:text-teal-400');
                     btn.classList.add('text-slate-600', 'dark:text-slate-400');
                     icon.classList.replace('ph-fill', 'ph');
                     icon.classList.remove('scale-125', '-translate-y-1');
@@ -1233,9 +1229,9 @@
         function updateWeekCardHighlight() {
             document.querySelectorAll('.week-card').forEach(card => {
                 if(parseInt(card.dataset.week) === state.mainActiveWeekNum) {
-                    card.classList.add('ring-2', 'ring-indigo-500', 'dark:ring-indigo-400', 'bg-white/60', 'dark:bg-white/10');
+                    card.classList.add('ring-2', 'ring-teal-500', 'dark:ring-teal-400', 'bg-white/60', 'dark:bg-white/10');
                 } else {
-                    card.classList.remove('ring-2', 'ring-indigo-500', 'dark:ring-indigo-400', 'bg-white/60', 'dark:bg-white/10');
+                    card.classList.remove('ring-2', 'ring-teal-500', 'dark:ring-teal-400', 'bg-white/60', 'dark:bg-white/10');
                 }
             });
         }
@@ -1247,14 +1243,14 @@
             const btnUp = document.getElementById('btn-upper');
             const btnLo = document.getElementById('btn-lower');
             
-            btnUp.className = (state.mainViewWeek === 'upper' && !state.mainActiveWeekNum) ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-extrabold uppercase bg-indigo-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all duration-300 border border-transparent";
-            btnLo.className = (state.mainViewWeek === 'lower' && !state.mainActiveWeekNum) ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-extrabold uppercase bg-indigo-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all duration-300 border border-transparent";
+            btnUp.className = (state.mainViewWeek === 'upper' && !state.mainActiveWeekNum) ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-extrabold uppercase bg-teal-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all duration-300 border border-transparent";
+            btnLo.className = (state.mainViewWeek === 'lower' && !state.mainActiveWeekNum) ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-extrabold uppercase bg-teal-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all duration-300 border border-transparent";
 
             mainScheduleData[state.mainViewWeek].forEach((day, index) => {
                 const card = document.createElement('div');
                 card.className = "liquid-glass p-6 md:p-8 flex flex-col transition-all duration-300 opacity-0 animate-fade-in-up";
                 card.style.animationDelay = `${index * 100}ms`;
-                card.innerHTML = `<h3 class="font-extrabold text-xl uppercase tracking-tight text-slate-900 dark:text-white border-b border-slate-300/60 dark:border-white/10 pb-4 mb-5 flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-indigo-500"></div>${day.day}</h3><div class="space-y-4 flex-grow">${day.pairs.map((p, i) => renderPair(p, true, false, { isMainTab: true, day: day.day, weekType: state.mainViewWeek, weekNum: state.mainActiveWeekNum })).join('')}</div>`;
+                card.innerHTML = `<h3 class="font-extrabold text-xl uppercase tracking-tight text-slate-900 dark:text-white border-b border-slate-300/60 dark:border-white/10 pb-4 mb-5 flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-teal-500"></div>${day.day}</h3><div class="space-y-4 flex-grow">${day.pairs.map((p, i) => renderPair(p, true, false, { isMainTab: true, day: day.day, weekType: state.mainViewWeek, weekNum: state.mainActiveWeekNum })).join('')}</div>`;
                 grid.appendChild(card);
             });
         }
@@ -1267,8 +1263,8 @@
             const bLec = document.getElementById('btn-mode-lec');
             const bMain = document.getElementById('btn-mode-main');
             
-            bLec.className = state.personalMode === 'lectures' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase bg-indigo-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all border border-transparent";
-            bMain.className = state.personalMode === 'main' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase bg-indigo-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all border border-transparent";
+            bLec.className = state.personalMode === 'lectures' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase bg-teal-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all border border-transparent";
+            bMain.className = state.personalMode === 'main' ? "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-extrabold uppercase bg-teal-600 text-white shadow-md transition-all duration-300" : "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-white/10 transition-all border border-transparent";
 
             let cardIndex = 0;
             if (state.personalMode === 'lectures') {
@@ -1279,7 +1275,7 @@
                     if(pairs.length > 0) { appendCard(grid, day.day, day.date, pairs, cardIndex); cardIndex++; }
                 });
             } else {
-                weekArea.innerHTML = `<div class="flex gap-1.5 p-1.5 glass-card rounded-xl font-bold w-full md:w-auto shadow-sm"><button onclick="setPersMainWeek('upper')" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] uppercase transition-all duration-300 ${state.persMainWeek === 'upper' ? 'bg-indigo-600 text-white shadow-md font-extrabold border-transparent' : 'text-slate-700 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-white/10'}">Верхній</button><button onclick="setPersMainWeek('lower')" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] uppercase transition-all duration-300 ${state.persMainWeek === 'lower' ? 'bg-indigo-600 text-white shadow-md font-extrabold border-transparent' : 'text-slate-700 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-white/10'}">Нижній</button></div>`;
+                weekArea.innerHTML = `<div class="flex gap-1.5 p-1.5 glass-card rounded-xl font-bold w-full md:w-auto shadow-sm"><button onclick="setPersMainWeek('upper')" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] uppercase transition-all duration-300 ${state.persMainWeek === 'upper' ? 'bg-teal-600 text-white shadow-md font-extrabold border-transparent' : 'text-slate-700 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-white/10'}">Верхній</button><button onclick="setPersMainWeek('lower')" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[11px] uppercase transition-all duration-300 ${state.persMainWeek === 'lower' ? 'bg-teal-600 text-white shadow-md font-extrabold border-transparent' : 'text-slate-700 dark:text-slate-400 border border-transparent hover:bg-white/50 dark:hover:bg-white/10'}">Нижній</button></div>`;
                 (mainScheduleData[state.persMainWeek] || []).forEach(day => {
                     const pairs = filterPairs(day.pairs);
                     if(pairs.length > 0) { appendCard(grid, day.day, null, pairs, cardIndex); cardIndex++; }
@@ -1302,7 +1298,7 @@
             const card = document.createElement('div');
             card.className = "liquid-glass p-6 md:p-8 flex flex-col opacity-0 animate-fade-in-up z-10";
             card.style.animationDelay = `${index * 100}ms`;
-            card.innerHTML = `<div class="flex justify-between items-center mb-5 border-b border-slate-300/60 dark:border-white/10 pb-4"><h3 class="font-extrabold text-slate-900 dark:text-white text-xl uppercase tracking-tight flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-indigo-500/80"></div>${day}</h3>${date ? `<span class="text-[11px] font-mono font-extrabold text-slate-600 dark:text-slate-300 px-3 py-1 glass-card shadow-sm rounded-lg">${date}</span>` : ''}</div><div class="space-y-4 flex-grow">${pairs.map((p, i) => renderPair(p, true, true)).join('')}</div>`;
+            card.innerHTML = `<div class="flex justify-between items-center mb-5 border-b border-slate-300/60 dark:border-white/10 pb-4"><h3 class="font-extrabold text-slate-900 dark:text-white text-xl uppercase tracking-tight flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-teal-500/80"></div>${day}</h3>${date ? `<span class="text-[11px] font-mono font-extrabold text-slate-600 dark:text-slate-300 px-3 py-1 glass-card shadow-sm rounded-lg">${date}</span>` : ''}</div><div class="space-y-4 flex-grow">${pairs.map((p, i) => renderPair(p, true, true)).join('')}</div>`;
             grid.appendChild(card);
         }
 
@@ -1335,7 +1331,7 @@
                      </button>`;
             }
             
-            let n = isPersonal ? `<textarea oninput="localStorage.setItem('note-${state.selectedStudent.id}-${p.num}-${p.subj}', this.value)" placeholder="Додати нотатку..." class="mt-3 w-full p-3 text-[11px] bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 dark:bg-black/30 dark:border-white/10 dark:text-slate-300 dark:placeholder-slate-500 rounded-xl outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 h-16 resize-none custom-scroll transition-colors font-medium shadow-inner block">${localStorage.getItem(`note-${state.selectedStudent.id}-${p.num}-${p.subj}`) || ''}</textarea>` : '';
+            let n = isPersonal ? `<textarea oninput="localStorage.setItem('note-${state.selectedStudent.id}-${p.num}-${p.subj}', this.value)" placeholder="Додати нотатку..." class="mt-3 w-full p-3 text-[11px] bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 dark:bg-black/30 dark:border-white/10 dark:text-slate-300 dark:placeholder-slate-500 rounded-xl outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 h-16 resize-none custom-scroll transition-colors font-medium shadow-inner block">${localStorage.getItem(`note-${state.selectedStudent.id}-${p.num}-${p.subj}`) || ''}</textarea>` : '';
             
             let hwHtml = '';
             if (hwContext && hwContext.isMainTab) {
@@ -1354,13 +1350,13 @@
                             const deadlineHtml = h.deadline && h.deadline !== 'Не вказано' ? `<div class="text-[9px] font-extrabold tracking-wide text-rose-600 dark:text-rose-500 mb-1.5 flex items-center gap-1"><i class="ph ph-clock"></i> ${h.deadline}</div>` : '';
 
                             hwHtml += `
-                                <div class="bg-indigo-50/50 border-indigo-200 dark:bg-indigo-500/10 p-3 rounded-2xl border dark:border-indigo-500/20 relative pr-10 shadow-sm backdrop-blur-md">
+                                <div class="bg-teal-50/50 border-teal-200 dark:bg-teal-500/10 p-3 rounded-2xl border dark:border-teal-500/20 relative pr-10 shadow-sm backdrop-blur-md">
                                     ${deleteBtn}
                                     ${deadlineHtml}
                                     <p class="text-[12px] text-slate-800 dark:text-slate-200 font-bold leading-relaxed">${h.text.replace(/\n/g, '<br>')}</p>
-                                    <div class="text-[9px] text-slate-600 dark:text-slate-400 mt-2 flex justify-between items-center pt-2 border-t border-indigo-200/60 dark:border-indigo-500/20">
-                                        <span class="font-bold flex items-center text-indigo-900 dark:text-indigo-300"><i class="ph ph-pencil-simple mr-1"></i> ${h.author.split(' ')[0]} ${starostaBadge}</span>
-                                        <span class="font-mono text-indigo-700 dark:text-indigo-400">${h.date.split(',')[0]}</span>
+                                    <div class="text-[9px] text-slate-600 dark:text-slate-400 mt-2 flex justify-between items-center pt-2 border-t border-teal-200/60 dark:border-teal-500/20">
+                                        <span class="font-bold flex items-center text-teal-900 dark:text-teal-300"><i class="ph ph-pencil-simple mr-1"></i> ${h.author.split(' ')[0]} ${starostaBadge}</span>
+                                        <span class="font-mono text-teal-700 dark:text-teal-400">${h.date.split(',')[0]}</span>
                                     </div>
                                 </div>
                             `;
@@ -1368,7 +1364,7 @@
                         hwHtml += `</div>`;
                     }
 
-                    hwHtml += `<button onclick="openHwModal('${p.subj}', '${hwContext.weekType}', '${hwContext.day}', ${p.num}, ${hwContext.weekNum})" class="mt-3 w-full py-2.5 glass-card text-slate-700 dark:text-slate-300 text-[10px] font-extrabold uppercase tracking-wide rounded-xl transition-all border border-dashed hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-white/50 dark:hover:bg-indigo-500/10 flex items-center justify-center gap-2"><i class="ph ph-plus"></i> Додати ДЗ на ${hwContext.weekNum} тиждень</button>`;
+                    hwHtml += `<button onclick="openHwModal('${p.subj}', '${hwContext.weekType}', '${hwContext.day}', ${p.num}, ${hwContext.weekNum})" class="mt-3 w-full py-2.5 glass-card text-slate-700 dark:text-slate-300 text-[10px] font-extrabold uppercase tracking-wide rounded-xl transition-all border border-dashed hover:border-teal-400 hover:text-teal-700 dark:hover:text-teal-400 hover:bg-white/50 dark:hover:bg-teal-500/10 flex items-center justify-center gap-2"><i class="ph ph-plus"></i> Додати ДЗ на ${hwContext.weekNum} тиждень</button>`;
                 } else {
                     hwHtml += `<div class="mt-3 text-[10px] text-center text-slate-500 dark:text-slate-400 font-bold glass-card py-2.5 rounded-xl border border-dashed">Оберіть конкретний тиждень вище, щоб керувати ДЗ</div>`;
                 }
@@ -1460,9 +1456,9 @@
                 item.innerHTML = `
                     <div class="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-4">
                         <div>
-                            <span class="inline-block px-3 py-1 bg-indigo-50 border border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-400 rounded-lg text-[10px] font-extrabold uppercase tracking-tight mb-2">${hw.subj}</span>
+                            <span class="inline-block px-3 py-1 bg-teal-50 border border-teal-200 dark:bg-teal-500/10 dark:border-teal-500/20 text-teal-700 dark:text-teal-400 rounded-lg text-[10px] font-extrabold uppercase tracking-tight mb-2">${hw.subj}</span>
                             <div class="text-[11px] font-bold text-slate-600 dark:text-slate-500 flex flex-wrap items-center gap-2">
-                                <span>${hw.day}</span> &bull; <span>${hw.num} пара</span> &bull; <span class="text-indigo-600 dark:text-indigo-400">${weekLabel}</span>
+                                <span>${hw.day}</span> &bull; <span>${hw.num} пара</span> &bull; <span class="text-teal-600 dark:text-teal-400">${weekLabel}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
@@ -1475,7 +1471,7 @@
                         ${deadlineHtml}
                     </div>
                     <div class="flex items-center gap-3 border-t border-slate-300/60 dark:border-white/10 pt-4">
-                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center text-xs font-black">${hw.author.charAt(0)}</div>
+                        <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 border border-teal-200 dark:bg-teal-500/20 dark:text-teal-400 flex items-center justify-center text-xs font-black">${hw.author.charAt(0)}</div>
                         <span class="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-1">${hw.author} ${starostaBadge}</span>
                     </div>
                 `;
@@ -1546,7 +1542,7 @@
             const subjectsInUse = ['Всі', 'Загальне', ...new Set(globalMaterials.map(m => m.subj).filter(s => s !== 'Загальне'))].sort();
             
             filterContainer.innerHTML = subjectsInUse.map(s => {
-                const activeClass = currentMaterialFilter === s ? 'bg-indigo-600 text-white shadow-md border-indigo-500' : 'glass-card text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white';
+                const activeClass = currentMaterialFilter === s ? 'bg-teal-600 text-white shadow-md border-teal-500' : 'glass-card text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white';
                 return `<button onclick="setMaterialFilter('${s}')" class="px-5 py-2.5 rounded-xl border text-[11px] font-bold uppercase transition-all whitespace-nowrap ${activeClass}">${s}</button>`;
             }).join('');
 
@@ -1566,7 +1562,7 @@
                 const deleteBtn = canDelete ? `<button onclick="promptDeleteMaterial('${m.id}')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center glass-card text-slate-500 hover:text-red-500 rounded-xl transition-all shadow-sm"><i class="ph ph-trash"></i></button>` : '';
 
                 let iconClass = 'ph-link';
-                let iconColor = 'text-indigo-600 dark:text-indigo-500';
+                let iconColor = 'text-teal-600 dark:text-teal-500';
                 const lowerUrl = m.url.toLowerCase();
                 if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconClass = 'ph-google-drive-logo'; iconColor = 'text-green-600 dark:text-green-500'; }
                 if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconClass = 'ph-telegram-logo'; iconColor = 'text-blue-600 dark:text-blue-500'; }
@@ -1580,7 +1576,7 @@
                 card.innerHTML = `
                     ${deleteBtn}
                     <div class="mb-5">
-                        <span class="inline-block px-2.5 py-1 bg-white text-slate-800 border border-slate-200 dark:bg-black/30 dark:border-white/10 rounded-lg text-[9px] font-extrabold uppercase dark:text-indigo-400 mb-4 shadow-sm">${m.subj}</span>
+                        <span class="inline-block px-2.5 py-1 bg-white text-slate-800 border border-slate-200 dark:bg-black/30 dark:border-white/10 rounded-lg text-[9px] font-extrabold uppercase dark:text-teal-400 mb-4 shadow-sm">${m.subj}</span>
                         <h3 class="font-extrabold text-lg leading-tight text-slate-900 dark:text-white pr-10 flex items-start gap-2"><i class="ph-fill ${iconClass} ${iconColor} mt-1 text-xl shrink-0"></i> ${m.title}</h3>
                     </div>
                     <div class="mt-auto pt-5 border-t border-slate-300/60 dark:border-white/10 flex items-center justify-between">
@@ -1591,7 +1587,7 @@
                                 <span class="text-[9px] font-mono font-bold text-slate-500 mt-0.5">${m.date}</span>
                             </div>
                         </div>
-                        <a href="${m.url}" target="_blank" class="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400 rounded-xl text-[10px] font-extrabold uppercase hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all hover:scale-105 flex items-center gap-1 shadow-sm"><i class="ph-bold ph-arrow-square-out text-sm"></i> Відкрити</a>
+                        <a href="${m.url}" target="_blank" class="px-4 py-2 bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-500/10 dark:border-teal-500/20 dark:text-teal-400 rounded-xl text-[10px] font-extrabold uppercase hover:bg-teal-100 dark:hover:bg-teal-500/20 transition-all hover:scale-105 flex items-center gap-1 shadow-sm"><i class="ph-bold ph-arrow-square-out text-sm"></i> Відкрити</a>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1648,7 +1644,7 @@
                 counter++;
                 const b = s.electives.map(e => `<span class="px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase border shadow-sm ${discColors[e] || 'bg-slate-100'}">${e}</span>`).join(' ');
                 const starostaBadge = s.isStarosta ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 text-[9px] font-bold uppercase rounded-md border dark:border-amber-500/30 inline-flex shadow-sm">Староста</span>` : '';
-                tr.innerHTML = `<td class="p-4 text-xs font-bold text-slate-500 w-10 text-center border-b border-slate-300/50 dark:border-white/5">${i+1}</td><td class="p-4 font-extrabold text-sm text-slate-900 dark:text-zinc-200 group-hover:text-indigo-600 transition-colors border-b border-slate-300/50 dark:border-white/5">${s.name} ${starostaBadge}</td><td class="p-4 flex flex-wrap gap-1.5 border-b border-slate-300/50 dark:border-white/5">${b}</td>`;
+                tr.innerHTML = `<td class="p-4 text-xs font-bold text-slate-500 w-10 text-center border-b border-slate-300/50 dark:border-white/5">${i+1}</td><td class="p-4 font-extrabold text-sm text-slate-900 dark:text-zinc-200 group-hover:text-teal-600 transition-colors border-b border-slate-300/50 dark:border-white/5">${s.name} ${starostaBadge}</td><td class="p-4 flex flex-wrap gap-1.5 border-b border-slate-300/50 dark:border-white/5">${b}</td>`;
                 body.appendChild(tr);
             });
         }
@@ -1679,7 +1675,7 @@
                 const card = document.createElement('div');
                 card.className = "liquid-glass p-6 md:p-8 flex flex-col relative z-10 opacity-0 animate-fade-in-up";
                 card.style.animationDelay = `${index * 100}ms`;
-                card.innerHTML = `<div class="flex justify-between items-center mb-5 border-b border-slate-300/60 dark:border-white/10 pb-4"><h3 class="font-extrabold text-slate-900 dark:text-white text-xl uppercase tracking-tight flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-indigo-500/80"></div>${day.day}</h3><span class="text-[11px] font-mono font-extrabold text-slate-700 dark:text-slate-300 px-3 py-1 glass-card rounded-lg shadow-sm">${day.date}</span></div><div class="space-y-4 flex-grow">${day.pairs.map(p => renderPair(p, true)).join('')}</div>`;
+                card.innerHTML = `<div class="flex justify-between items-center mb-5 border-b border-slate-300/60 dark:border-white/10 pb-4"><h3 class="font-extrabold text-slate-900 dark:text-white text-xl uppercase tracking-tight flex items-center gap-3"><div class="w-2 h-6 rounded-full bg-teal-500/80"></div>${day.day}</h3><span class="text-[11px] font-mono font-extrabold text-slate-700 dark:text-slate-300 px-3 py-1 glass-card rounded-lg shadow-sm">${day.date}</span></div><div class="space-y-4 flex-grow">${day.pairs.map(p => renderPair(p, true)).join('')}</div>`;
                 grid.appendChild(card);
             });
             updateWeekSelectors();
