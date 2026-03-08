@@ -522,10 +522,10 @@
                                     <option value="Соціальне підприємництво В п|elective|соціальне підприємництво">Соц. підприємництво п</option>
                                     <option value="Соціологія В п|elective|соціологія">Соціологія п</option>
                                     <option value="Теоретична підготовка БЗВП В п|elective|бзвп">БЗВП п</option>
-                                    <option value="Англ Шматок (Мельник-Шматок)|lang|англ: мельник">Англ Шматок (Мельник-Шматок)</option>
-                                    <option value="Англ Мельник (Мельник-Шматок)|lang|англ: мельник">Англ Мельник (Мельник-Шматок)</option>
-                                    <option value="Англ Шматок (Маркова-Шматок)|lang|англ: маркова">Англ Шматок (Маркова-Шматок)</option>
-                                    <option value="Англ Маркова (Маркова-Шматок)|lang|англ: маркова">Англ Маркова (Маркова-Шматок)</option>
+                                    <option value="Англійська мова Шматок (Мельник-Шматок)|lang|англ: мельник">Англійська мова Шматок (Мельник-Шматок)</option>
+                                    <option value="Англійська мова Мельник (Мельник-Шматок)|lang|англ: мельник">Англійська мова Мельник (Мельник-Шматок)</option>
+                                    <option value="Англійська мова Шматок (Маркова-Шматок)|lang|англ: маркова">Англійська мова Шматок (Маркова-Шматок)</option>
+                                    <option value="Англійська мова Маркова (Маркова-Шматок)|lang|англ: маркова">Англійська мова Маркова (Маркова-Шматок)</option>
                                     <option value="Друга іноземна мова|lang|language_pair">Друга іноземна мова</option>
                                 </select>
                             </div>
@@ -778,6 +778,30 @@
             {n:38, t:'lower', d:'18.05-24.05'}, {n:39, t:'upper', d:'25.05-31.05'}
         ];
 
+        let state = {
+            view: 'schedule',
+            selectedStudent: null,
+            genWeek: 25,
+            mainActiveWeekNum: null,
+            mainViewWeek: 'upper',
+            persActiveWeekNum: null,
+            persMainWeek: 'upper',
+            isDark: false,
+            initialLoad: true
+        };
+
+        function filterPairs(pairs) {
+            if (!state.selectedStudent) return pairs;
+            const studentElectives = state.selectedStudent.electives.map(e => e.toLowerCase());
+            return pairs.filter(p => {
+                if (p.type === 'general' || p.map === 'english') return true; 
+                if (p.map === 'language_pair') return studentElectives.some(el => ['німецька','польська','французька','китайська'].includes(el));
+                if (p.map && p.map.startsWith('англ:')) return studentElectives.includes(p.map.toLowerCase());
+                if (p.type === 'elective') return studentElectives.includes(p.map?.toLowerCase());
+                return false;
+            });
+        }
+
         // --- ДАНІ ТА СИНХРОНІЗАЦІЯ ---
         let globalHomeworks = JSON.parse(localStorage.getItem('portal-homeworks')) || [];
         let globalMaterials = JSON.parse(localStorage.getItem('portal-materials')) || [];
@@ -791,19 +815,6 @@
         let currentRegFilter = 'all';
         let currentZoomSubj = null;
         let currentConfirmCallback = null;
-
-        // Переміщено вище
-        function filterPairs(pairs) {
-            if (!state.selectedStudent) return pairs;
-            const studentElectives = state.selectedStudent.electives.map(e => e.toLowerCase());
-            return pairs.filter(p => {
-                if (p.type === 'general' || p.map === 'english') return true; 
-                if (p.map === 'language_pair') return studentElectives.some(el => ['німецька','польська','французька','китайська'].includes(el));
-                if (p.map && p.map.startsWith('англ:')) return studentElectives.includes(p.map.toLowerCase());
-                if (p.type === 'elective') return studentElectives.includes(p.map?.toLowerCase());
-                return false;
-            });
-        }
 
         function setupDragScroll() {
             const containers = document.querySelectorAll('.overflow-x-auto');
@@ -1005,17 +1016,17 @@
         // ОСНОВНИЙ РОЗКЛАД
         const mainScheduleData = {
             upper: [
-                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
-                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
+                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
                 { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Маркетинг п", type: "general" }]},
-                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
+                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 3, time: "11:30-12:45", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }]}
             ],
             lower: [
-                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
-                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 2, time: "10:00-11:15", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 3, time: "11:30-12:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
+                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 2, time: "10:00-11:15", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
                 { day: "Середа", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }]},
-                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
+                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво п", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг п", type: "general" }]}
             ]
         };
@@ -1065,18 +1076,6 @@
             date.setDate(date.getDate() + dayOffsets[dayName]);
             return `${date.getDate().toString().padStart(2,'0')}.${(date.getMonth()+1).toString().padStart(2,'0')}`;
         }
-
-        let state = {
-            view: 'schedule',
-            selectedStudent: null,
-            genWeek: 25,
-            mainActiveWeekNum: null,
-            mainViewWeek: 'upper',
-            persActiveWeekNum: null,
-            persMainWeek: 'upper',
-            isDark: false,
-            initialLoad: true
-        };
 
         function getClosestMainWeek() {
             const now = new Date();
@@ -1403,7 +1402,7 @@
                                 displaySubj = p.subj.split('(')[0].trim();
                             } else {
                                 let m = p.subj.match(/\((.*?)\)/);
-                                if (m) displaySubj = "Англ (" + m[1] + ")";
+                                if (m) displaySubj = "Англійська мова (" + m[1] + ")";
                             }
                         } else if (isPersonal && p.map === 'language_pair') {
                             const sLang = state.selectedStudent.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
@@ -1457,11 +1456,10 @@
                                 </div>
                             </div>
                         `;
-                    }).join('<div class="h-3"></div>'); // Відступ між картками одного часу
+                    }).join('<div class="h-3"></div>');
 
                     pairsHtml += `
                         <div class="flex items-stretch gap-4 relative z-10 mb-5 last:mb-0 group">
-                            <!-- Колоннка часу -->
                             <div class="w-12 shrink-0 flex flex-col items-center pt-1 relative">
                                 <div class="bg-slate-50 dark:bg-[#020617] py-1 z-10 w-full flex flex-col items-center">
                                     <span class="text-[11px] font-bold text-slate-800 dark:text-slate-200 leading-none">${timeStr.split('-')[0]}</span>
@@ -1469,7 +1467,6 @@
                                 </div>
                                 <div class="absolute top-[32px] w-6 h-6 rounded-full border-4 border-slate-50 dark:border-[#020617] ${isToday ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'} text-[10px] flex items-center justify-center font-bold z-10 shadow-sm">${numStr}</div>
                             </div>
-                            <!-- Контейнер карток -->
                             <div class="flex-1 flex flex-col justify-center">
                                 ${cardsHtml}
                             </div>
@@ -1868,8 +1865,8 @@
                 { id: 'соціальне підприємництво', label: 'Соц. підприємництво' },
                 { id: 'соціологія', label: 'Соціологія' },
                 { id: 'бзвп', label: 'БЗВП' },
-                { id: 'англ: маркова', label: 'Англ (Маркова)' },
-                { id: 'англ: мельник', label: 'Англ (Мельник)' }
+                { id: 'англ: маркова', label: 'Англійська мова (Маркова)' },
+                { id: 'англ: мельник', label: 'Англійська мова (Мельник)' }
             ];
 
             const container = document.getElementById('register-filters');
