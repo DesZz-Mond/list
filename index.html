@@ -65,7 +65,6 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Зробимо кастомний скрол для горизонтальних списків більш акуратним */
         .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; margin: 0 8px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.2); border-radius: 10px; }
@@ -249,6 +248,19 @@
                                 mat.sort((a, b) => b.id - a.id);
                                 window.updateCloudData('materials', mat);
                             }, (err) => console.error(err));
+
+                            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'extra_schedule'), (snapshot) => {
+                                let extra = [];
+                                snapshot.forEach(doc => extra.push({id: doc.id, ...doc.data()}));
+                                window.updateCloudData('extra_schedule', extra);
+                            }, (err) => console.error(err));
+
+                            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'hidden_schedule'), (snapshot) => {
+                                let hidden = [];
+                                snapshot.forEach(doc => hidden.push({id: doc.id, ...doc.data()}));
+                                window.updateCloudData('hidden_schedule', hidden);
+                            }, (err) => console.error(err));
+
                         } catch(e) { console.error("Firestore Error:", e); }
                     }
                 });
@@ -334,14 +346,19 @@
             </button>
 
             <p class="px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 mt-6">Ресурси групи</p>
-            <button onclick="switchView('homework')" id="nav-pc-homework" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="ph ph-pencil-simple-line text-xl"></i> Історія Д/з
-            </button>
             <button onclick="switchView('materials')" id="nav-pc-materials" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
                 <i class="ph ph-folder text-xl"></i> Матеріали
             </button>
+            <button onclick="switchView('homework')" id="nav-pc-homework" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
+                <i class="ph ph-pencil-simple-line text-xl"></i> Історія Д/з
+            </button>
             <button onclick="switchView('register')" id="nav-pc-register" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
                 <i class="ph ph-users text-xl"></i> Реєстр групи
+            </button>
+
+            <!-- Редактор (Тільки для адмінів) -->
+            <button onclick="switchView('editor')" id="nav-pc-editor" class="hidden nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-amber-600 dark:text-amber-500 mt-2">
+                <i class="ph ph-pencil-line text-xl"></i> Редактор
             </button>
 
             <!-- Архів Начитка -->
@@ -422,7 +439,7 @@
                         </div>
                     </div>
 
-                    <!-- КАЛЕНДАР ТИЖНІВ ДЛЯ ПЕРСОНАЛЬНОГО (розширений padding для тіней) -->
+                    <!-- КАЛЕНДАР ТИЖНІВ ДЛЯ ПЕРСОНАЛЬНОГО -->
                     <div class="mb-8 relative z-10 w-[calc(100%+16px)] -ml-2">
                         <div class="flex gap-3 overflow-x-auto custom-scroll px-2 pt-2 pb-5 snap-x" id="pers-weeks-container"></div>
                     </div>
@@ -443,12 +460,84 @@
                         </div>
                     </div>
                     
-                    <!-- КАЛЕНДАР ТИЖНІВ ДЛЯ ОСНОВНОГО (розширений padding для тіней) -->
+                    <!-- КАЛЕНДАР ТИЖНІВ ДЛЯ ОСНОВНОГО -->
                     <div class="mb-8 relative z-10 w-[calc(100%+16px)] -ml-2">
                         <div class="flex gap-3 overflow-x-auto custom-scroll px-2 pt-2 pb-5 snap-x" id="main-weeks-container"></div>
                     </div>
 
                     <div id="main-schedule-grid" class="space-y-6"></div>
+                </div>
+
+                <!-- РЕДАКТОР РОЗКЛАДУ (ДЛЯ АДМІНІВ) -->
+                <div id="view-editor" class="tab-content">
+                    <div class="mb-6 flex flex-wrap justify-between items-end gap-4 relative z-10">
+                        <div>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap">Редактор</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">Керування розкладом</p>
+                        </div>
+                    </div>
+                    
+                    <div class="liquid-glass p-5 md:p-6 mb-8 rounded-3xl relative z-10">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4">Додати пару вручну:</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">Тиждень</label>
+                                <select id="ed-week" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                    <option value="upper">Верхній тиждень</option>
+                                    <option value="lower">Нижній тиждень</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">День</label>
+                                <select id="ed-day" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                    <option value="Понеділок">Понеділок</option>
+                                    <option value="Вівторок">Вівторок</option>
+                                    <option value="Середа">Середа</option>
+                                    <option value="Четвер">Четвер</option>
+                                    <option value="П'ятниця">П'ятниця</option>
+                                    <option value="Субота">Субота</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">Номер пари</label>
+                                <select id="ed-num" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                    <option value="1">1 пара (08:30-09:45)</option>
+                                    <option value="2">2 пара (10:00-11:15)</option>
+                                    <option value="3">3 пара (11:30-12:45)</option>
+                                    <option value="4">4 пара (13:00-14:15)</option>
+                                    <option value="5">5 пара (14:30-15:45)</option>
+                                    <option value="6">6 пара (16:00-17:15)</option>
+                                    <option value="7">7 пара (17:30-18:45)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">Дисципліна</label>
+                                <select id="ed-subj" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                    <option value="Маркетинг п|general|маркетинг">Маркетинг п</option>
+                                    <option value="Підприємництво п|general|підприємництво">Підприємництво п</option>
+                                    <option value="Екаунтинг-2 п|general|екаунтинг">Екаунтинг п</option>
+                                    <option value="Фізичне виховання п|general|фізвиховання">Фізичне виховання п</option>
+                                    <option value="Політологія В п|elective|політологія">Політологія п</option>
+                                    <option value="Публічне адміністрування В п|elective|публічне адміністрування">Публічне адмін. п</option>
+                                    <option value="Соціальне підприємництво В п|elective|соціальне підприємництво">Соц. підприємництво п</option>
+                                    <option value="Соціологія В п|elective|соціологія">Соціологія п</option>
+                                    <option value="Теоретична підготовка БЗВП В п|elective|бзвп">БЗВП п</option>
+                                    <option value="Англ Шматок (Мельник-Шматок)|lang|англ: мельник">Англ Шматок (Мельник-Шматок)</option>
+                                    <option value="Англ Мельник (Мельник-Шматок)|lang|англ: мельник">Англ Мельник (Мельник-Шматок)</option>
+                                    <option value="Англ Шматок (Маркова-Шматок)|lang|англ: маркова">Англ Шматок (Маркова-Шматок)</option>
+                                    <option value="Англ Маркова (Маркова-Шматок)|lang|англ: маркова">Англ Маркова (Маркова-Шматок)</option>
+                                    <option value="Друга іноземна мова|lang|language_pair">Друга іноземна мова</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="addCustomPair()" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-sm uppercase tracking-wide rounded-xl shadow-lg shadow-amber-500/30 transition-all hover:-translate-y-0.5">Додати в розклад</button>
+                    </div>
+                    
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 ml-2">Додані вручну пари:</h3>
+                    <div id="editor-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"></div>
+
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 ml-2 mt-8">Приховані пари (скасовані):</h3>
+                    <div id="hidden-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
 
                 <!-- НАЧИТКА (АРХІВ) -->
@@ -458,7 +547,6 @@
                             <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap"><i class="ph ph-archive mr-2 text-slate-400"></i>Начитка</h2>
                             <p class="text-xs text-slate-500 font-bold whitespace-nowrap">Архів першого місяця</p>
                         </div>
-                        <!-- Селектор тижнів начитки -->
                         <div class="w-[calc(100%+16px)] -ml-2">
                             <div id="week-selector-gen" class="flex gap-2 overflow-x-auto custom-scroll px-2 pt-2 pb-5 snap-x"></div>
                         </div>
@@ -473,7 +561,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">Реєстр та дисципліни</p>
                     </div>
                     
-                    <!-- Фільтри реєстру (кнопками замість select) -->
+                    <!-- Фільтри реєстру -->
                     <div class="w-[calc(100%+16px)] -ml-2 mb-4 relative z-10">
                         <div class="flex gap-2 overflow-x-auto custom-scroll px-2 pt-2 pb-5" id="register-filters"></div>
                     </div>
@@ -514,7 +602,6 @@
                         </button>
                     </div>
                     
-                    <!-- Фільтри матеріалів -->
                     <div class="w-[calc(100%+16px)] -ml-2 mb-6 relative z-10">
                         <div class="flex gap-2 overflow-x-auto custom-scroll px-2 pt-2 pb-5" id="material-filters"></div>
                     </div>
@@ -538,9 +625,9 @@
                 <i class="ph ph-calendar-blank text-2xl mb-0.5 transition-transform duration-300"></i>
                 <span class="text-[9px] font-extrabold uppercase tracking-tight">Осн.</span>
             </button>
-            <button onclick="switchView('homework')" id="nav-mob-homework" class="nav-btn-mob flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400">
-                <i class="ph ph-pencil-simple-line text-2xl mb-0.5 transition-transform duration-300"></i>
-                <span class="text-[9px] font-extrabold uppercase tracking-tight">Д/з</span>
+            <button onclick="switchView('materials')" id="nav-mob-materials" class="nav-btn-mob flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400">
+                <i class="ph ph-folder text-2xl mb-0.5 transition-transform duration-300"></i>
+                <span class="text-[9px] font-extrabold uppercase tracking-tight">Мат.</span>
             </button>
             <button onclick="toggleMobileMenu()" class="flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400">
                 <i class="ph ph-list text-2xl mb-0.5"></i>
@@ -555,13 +642,18 @@
             <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-6"></div>
             
             <div class="space-y-2 mb-6">
-                <button onclick="switchView('materials'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-800 dark:text-slate-200 font-bold active:scale-95 transition-transform">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center"><i class="ph ph-folder text-xl"></i></div>
-                    Матеріали
+                <button onclick="switchView('homework'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-800 dark:text-slate-200 font-bold active:scale-95 transition-transform">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center"><i class="ph ph-pencil-simple-line text-xl"></i></div>
+                    Історія Д/з
                 </button>
                 <button onclick="switchView('register'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-800 dark:text-slate-200 font-bold active:scale-95 transition-transform">
                     <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center"><i class="ph ph-users text-xl"></i></div>
                     Група
+                </button>
+                <!-- Редактор для мобілок (Тільки для адмінів) -->
+                <button onclick="switchView('editor'); toggleMobileMenu()" id="nav-mob-editor" class="hidden w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-amber-700 dark:text-amber-500 font-bold active:scale-95 transition-transform">
+                    <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center"><i class="ph ph-pencil-line text-xl"></i></div>
+                    Редактор розкладу
                 </button>
                 <button onclick="switchView('lectures'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-500 dark:text-slate-400 font-bold active:scale-95 transition-transform">
                     <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 flex items-center justify-center"><i class="ph ph-archive text-xl"></i></div>
@@ -661,17 +753,17 @@
         </div>
     </div>
 
-    <!-- Модалка підтвердження видалення -->
+    <!-- Модалка підтвердження видалення / приховування -->
     <div id="confirm-modal" class="fixed inset-0 z-[400] bg-slate-900/60 flex items-center justify-center p-4 hidden backdrop-blur-md transition-opacity opacity-0">
         <div class="w-full max-w-sm liquid-glass p-6 relative text-center" style="border-radius: 28px;">
             <div class="w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center text-red-600 mx-auto mb-3 border border-red-200 dark:border-red-500/30">
                 <i class="ph ph-warning-circle text-2xl"></i>
             </div>
             <h3 id="confirm-title" class="text-lg font-extrabold text-slate-900 dark:text-white mb-1">Підтвердження</h3>
-            <p id="confirm-text" class="text-xs font-bold text-slate-500 mb-5">Впевнені, що хочете видалити це?</p>
+            <p id="confirm-text" class="text-xs font-bold text-slate-500 mb-5">Впевнені, що хочете виконати цю дію?</p>
             <div class="flex gap-2">
                 <button onclick="closeConfirmModal()" class="flex-1 py-3 rounded-xl font-bold text-sm glass-card text-slate-600">Скасувати</button>
-                <button id="confirm-btn-yes" class="flex-1 py-3 rounded-xl font-bold text-sm bg-red-600 text-white">Видалити</button>
+                <button id="confirm-btn-yes" class="flex-1 py-3 rounded-xl font-bold text-sm bg-red-600 text-white">Підтвердити</button>
             </div>
         </div>
     </div>
@@ -690,37 +782,39 @@
         let globalHomeworks = JSON.parse(localStorage.getItem('portal-homeworks')) || [];
         let globalMaterials = JSON.parse(localStorage.getItem('portal-materials')) || [];
         let customZoomLinks = JSON.parse(localStorage.getItem('portal-custom-zoom')) || {};
+        let globalExtraPairs = JSON.parse(localStorage.getItem('portal-extra-schedule')) || [];
+        let globalHiddenPairs = JSON.parse(localStorage.getItem('portal-hidden-schedule')) || []; 
         
         let currentHwContext = null;
+        let currentHideContext = null; 
         let currentMaterialFilter = 'Всі';
-        let currentRegFilter = 'all'; // Для реєстру
+        let currentRegFilter = 'all';
         let currentZoomSubj = null;
         let currentConfirmCallback = null;
 
-        // Скрипт для прокрутки горизонтальних блоків мишею на ПК
+        // Переміщено вище
+        function filterPairs(pairs) {
+            if (!state.selectedStudent) return pairs;
+            const studentElectives = state.selectedStudent.electives.map(e => e.toLowerCase());
+            return pairs.filter(p => {
+                if (p.type === 'general' || p.map === 'english') return true; 
+                if (p.map === 'language_pair') return studentElectives.some(el => ['німецька','польська','французька','китайська'].includes(el));
+                if (p.map && p.map.startsWith('англ:')) return studentElectives.includes(p.map.toLowerCase());
+                if (p.type === 'elective') return studentElectives.includes(p.map?.toLowerCase());
+                return false;
+            });
+        }
+
         function setupDragScroll() {
             const containers = document.querySelectorAll('.overflow-x-auto');
             containers.forEach(slider => {
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-                let dragged = false;
-
+                let isDown = false; let startX; let scrollLeft; let dragged = false;
                 slider.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    dragged = false;
-                    slider.classList.add('cursor-grabbing');
-                    startX = e.pageX - slider.offsetLeft;
-                    scrollLeft = slider.scrollLeft;
+                    isDown = true; dragged = false; slider.classList.add('cursor-grabbing');
+                    startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft;
                 });
-                slider.addEventListener('mouseleave', () => {
-                    isDown = false;
-                    slider.classList.remove('cursor-grabbing');
-                });
-                slider.addEventListener('mouseup', () => {
-                    isDown = false;
-                    slider.classList.remove('cursor-grabbing');
-                });
+                slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('cursor-grabbing'); });
+                slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('cursor-grabbing'); });
                 slider.addEventListener('mousemove', (e) => {
                     if (!isDown) return;
                     e.preventDefault();
@@ -729,9 +823,7 @@
                     if (Math.abs(walk) > 5) dragged = true;
                     slider.scrollLeft = scrollLeft - walk;
                 });
-                slider.addEventListener('click', (e) => {
-                    if (dragged) { e.preventDefault(); e.stopPropagation(); }
-                }, true);
+                slider.addEventListener('click', (e) => { if (dragged) { e.preventDefault(); e.stopPropagation(); } }, true);
             });
         }
 
@@ -757,6 +849,52 @@
 
         function promptDeleteHw(id) { openConfirmModal("Видалити ДЗ?", "Це завдання буде видалено для всієї групи.", () => deleteHw(id)); }
         function promptDeleteMaterial(id) { openConfirmModal("Видалити файл?", "Файл зникне у всієї групи.", () => deleteMaterial(id)); }
+        
+        function promptHidePair(weekType, day, num, subj, customId) {
+            if (customId && customId !== 'null') {
+                openConfirmModal("Видалити додану пару?", "Ця пара буде назавжди видалена з розкладу.", () => deleteCustomPair(customId));
+            } else {
+                currentHideContext = {weekType, day, num, subj};
+                openConfirmModal("Скасувати пару?", "Ця статична пара буде прихована для всієї групи.", () => hideStaticPair());
+            }
+        }
+
+        async function hideStaticPair() {
+            if(!currentHideContext) return;
+            const {weekType, day, num, subj} = currentHideContext;
+            const hideId = `${weekType}_${dayOffsets[day]}_${num}_${subj.replace(/[^a-zA-Zа-яА-Я0-9]/g, '')}`;
+            const data = { weekType, day, num, subj, author: state.selectedStudent.name };
+            
+            if (window.saveToCloud) {
+                const success = await window.saveToCloud('hidden_schedule', hideId, data);
+                if (!success) fallbackHidePair(hideId, data);
+            } else { fallbackHidePair(hideId, data); }
+        }
+
+        function fallbackHidePair(id, data) {
+            globalHiddenPairs.push({id, ...data});
+            localStorage.setItem('portal-hidden-schedule', JSON.stringify(globalHiddenPairs));
+            refreshViews(['schedule', 'main']);
+            if(state.view === 'editor') renderEditorList();
+        }
+
+        function promptRestorePair(id) {
+            openConfirmModal("Відновити пару?", "Ця пара знову з'явиться в розкладі.", () => restoreStaticPair(id));
+        }
+
+        async function restoreStaticPair(id) {
+            if (window.deleteFromCloud) {
+                const success = await window.deleteFromCloud('hidden_schedule', id);
+                if (!success) fallbackRestorePair(id);
+            } else { fallbackRestorePair(id); }
+        }
+
+        function fallbackRestorePair(id) {
+            globalHiddenPairs = globalHiddenPairs.filter(p => p.id != id);
+            localStorage.setItem('portal-hidden-schedule', JSON.stringify(globalHiddenPairs));
+            refreshViews(['schedule', 'main']);
+            if(state.view === 'editor') renderEditorList();
+        }
 
         window.updateCloudData = function(type, data) {
             if (type === 'zoom') {
@@ -769,6 +907,14 @@
             } else if (type === 'materials') {
                 globalMaterials = data; localStorage.setItem('portal-materials', JSON.stringify(globalMaterials));
                 if(state.view === 'materials') renderMaterials();
+            } else if (type === 'extra_schedule') {
+                globalExtraPairs = data; localStorage.setItem('portal-extra-schedule', JSON.stringify(globalExtraPairs));
+                if(state.view === 'editor') renderEditorList();
+                refreshViews(['schedule', 'main']);
+            } else if (type === 'hidden_schedule') {
+                globalHiddenPairs = data; localStorage.setItem('portal-hidden-schedule', JSON.stringify(globalHiddenPairs));
+                if(state.view === 'editor') renderEditorList();
+                refreshViews(['schedule', 'main']);
             }
         };
 
@@ -792,6 +938,7 @@
             }
         }
 
+        // РЕШТА КОНСТАНТ І ФУНКЦІЙ ЗБЕРЕЖЕНА
         const zoomLinks = {
             "маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1",
             "політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1",
@@ -811,39 +958,41 @@
             "публічне адміністрування": "bg-cyan-100 text-cyan-800 dark:bg-cyan-500/20 dark:text-cyan-400 border-cyan-300 dark:border-cyan-500/30",
             "соціальне підприємництво": "bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400 border-orange-300 dark:border-orange-500/30",
             "соціологія": "bg-purple-100 text-purple-800 dark:bg-purple-500/20 dark:text-purple-400 border-purple-300 dark:border-purple-500/30",
-            "бзвп": "bg-slate-200 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400 border-slate-300 dark:border-slate-500/30"
+            "бзвп": "bg-slate-200 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400 border-slate-300 dark:border-slate-500/30",
+            "англ: маркова": "bg-sky-100 text-sky-800 dark:bg-sky-500/20 dark:text-sky-400 border-sky-300 dark:border-sky-500/30",
+            "англ: мельник": "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-500/20 dark:text-fuchsia-400 border-fuchsia-300 dark:border-fuchsia-500/30"
         };
 
         const students = [
-            { id: 1, name: "Бельтюкова Анастасія Дмитрівна", electives: ["німецька", "політологія", "публічне адміністрування"] },
-            { id: 2, name: "Великоконь Дар'я Андріївна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво"], isStarosta: true },
-            { id: 3, name: "Галабудська Софія Костянтинівна", electives: ["польська", "політологія", "соціальне підприємництво"] },
-            { id: 4, name: "Гіткіс Ілля Михайлович", electives: ["публічне адміністрування", "соціальне підприємництво", "бзвп"] },
-            { id: 5, name: "Гордієнко Катерина Володимирівна", electives: ["французька", "публічне адміністрування", "соціологія"] },
-            { id: 6, name: "Гуменюк Анна Володимирівна", electives: ["німецька", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 7, name: "Жидченко Анастасія Костянтинівна", electives: ["німецька", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 8, name: "Кельвич Катерина Костянтинівна", electives: ["політологія", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 9, name: "Кисленко Наталія Іванівна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 10, name: "Клічук Михайло Васильович", electives: ["німецька", "публічне адміністрування", "бзвп"] },
-            { id: 11, name: "Колодій Юлія Василівна", electives: ["німецька", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 12, name: "Кохан Олексій Віталійович", electives: ["соціальне підприємництво", "бзвп", "німецька"] },
-            { id: 13, name: "Май Денис Вікторович", electives: ["німецька", "соціальне підприємництво", "бзвп"] },
-            { id: 14, name: "Мартин Максим Андрійович", electives: ["французька", "соціальне підприємництво", "бзвп"] },
-            { id: 15, name: "Масяєв Ярослав Олександрович", electives: ["німецька", "політологія", "бзвп"] },
-            { id: 16, name: "Могилянська Софія Олегівна", electives: ["публічне адміністрування", "соціальне підприємництво", "китайська"] },
-            { id: 17, name: "Мурін Андрій Олексійович", electives: ["французька", "соціальне підприємництво", "бзвп"] },
-            { id: 18, name: "Петричка Валерія Сергіївна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 19, name: "Пилипенко Даніїл Олександрович", electives: ["німецька", "соціальне підприємництво", "бзвп"] },
-            { id: 20, name: "Поправка Анастасія Юріївна", electives: ["польська", "політологія", "соціальне підприємництво"] },
-            { id: 21, name: "Рижук Анна Сергіївна", electives: ["французька", "політологія", "публічне адміністрування"] },
-            { id: 22, name: "Солярик Владислав Ярославович", electives: ["німецька", "політологія", "бзвп"] },
-            { id: 23, name: "Степаненко Максим Юрійович", electives: ["польська", "соціальне підприємництво", "бзвп"] },
-            { id: 24, name: "Тимощук Владислав Володимирович", electives: ["французька", "соціальне підприємництво", "соціологія"] },
-            { id: 25, name: "Троцька Діана Русланівна", electives: ["німецька", "публічне адміністрування", "соціологія"] },
-            { id: 26, name: "Устименко Даяна Віталіївна", electives: ["політологія", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 27, name: "Черняк Діана Іванівна", electives: ["французька", "політологія", "публічне адміністрування"] },
-            { id: 28, name: "Чуприна Аріна Олексіївна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво"] },
-            { id: 29, name: "Шелепа Михайло Владиславович", electives: ["польська", "соціальне підприємництво", "бзвп"] }
+            { id: 1, name: "Бельтюкова Анастасія Дмитрівна", electives: ["німецька", "політологія", "публічне адміністрування", "англ: мельник"] },
+            { id: 2, name: "Великоконь Дар'я Андріївна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво", "англ: мельник"], isStarosta: true },
+            { id: 3, name: "Галабудська Софія Костянтинівна", electives: ["польська", "політологія", "соціальне підприємництво", "англ: мельник"] },
+            { id: 4, name: "Гіткіс Ілля Михайлович", electives: ["публічне адміністрування", "соціальне підприємництво", "бзвп", "англ: мельник"] },
+            { id: 5, name: "Гордієнко Катерина Володимирівна", electives: ["французька", "публічне адміністрування", "соціологія", "англ: мельник"] },
+            { id: 6, name: "Гуменюк Анна Володимирівна", electives: ["німецька", "публічне адміністрування", "соціальне підприємництво", "англ: мельник"] },
+            { id: 7, name: "Жидченко Анастасія Костянтинівна", electives: ["німецька", "публічне адміністрування", "соціальне підприємництво", "англ: маркова"] },
+            { id: 8, name: "Кельвич Катерина Костянтинівна", electives: ["політологія", "публічне адміністрування", "соціальне підприємництво", "англ: мельник"] },
+            { id: 9, name: "Кисленко Наталія Іванівна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво", "англ: мельник"] },
+            { id: 10, name: "Клічук Михайло Васильович", electives: ["німецька", "публічне адміністрування", "бзвп", "англ: маркова"] },
+            { id: 11, name: "Колодій Юлія Василівна", electives: ["німецька", "публічне адміністрування", "соціальне підприємництво", "англ: мельник"] },
+            { id: 12, name: "Кохан Олексій Віталійович", electives: ["соціальне підприємництво", "бзвп", "німецька", "англ: маркова"] },
+            { id: 13, name: "Май Денис Вікторович", electives: ["німецька", "соціальне підприємництво", "бзвп", "англ: маркова"] },
+            { id: 14, name: "Мартин Максим Андрійович", electives: ["французька", "соціальне підприємництво", "бзвп", "англ: маркова"] },
+            { id: 15, name: "Масяєв Ярослав Олександрович", electives: ["німецька", "політологія", "бзвп", "англ: маркова"] },
+            { id: 16, name: "Могилянська Софія Олегівна", electives: ["публічне адміністрування", "соціальне підприємництво", "китайська", "англ: мельник"] },
+            { id: 17, name: "Мурін Андрій Олексійович", electives: ["французька", "соціальне підприємництво", "бзвп", "англ: мельник"] },
+            { id: 18, name: "Петричка Валерія Сергіївна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво", "англ: маркова"] },
+            { id: 19, name: "Пилипенко Даніїл Олександрович", electives: ["німецька", "соціальне підприємництво", "бзвп", "англ: мельник"] },
+            { id: 20, name: "Поправка Анастасія Юріївна", electives: ["польська", "політологія", "соціальне підприємництво", "англ: маркова"] },
+            { id: 21, name: "Рижук Анна Сергіївна", electives: ["французька", "політологія", "публічне адміністрування", "англ: маркова"] },
+            { id: 22, name: "Солярик Владислав Ярославович", electives: ["німецька", "політологія", "бзвп", "англ: маркова"] },
+            { id: 23, name: "Степаненко Максим Юрійович", electives: ["польська", "соціальне підприємництво", "бзвп", "англ: маркова"] },
+            { id: 24, name: "Тимощук Владислав Володимирович", electives: ["французька", "соціальне підприємництво", "соціологія", "англ: маркова"] },
+            { id: 25, name: "Троцька Діана Русланівна", electives: ["німецька", "публічне адміністрування", "соціологія", "англ: мельник"] },
+            { id: 26, name: "Устименко Даяна Віталіївна", electives: ["політологія", "публічне адміністрування", "соціальне підприємництво", "англ: маркова"] },
+            { id: 27, name: "Черняк Діана Іванівна", electives: ["французька", "політологія", "публічне адміністрування", "англ: маркова"] },
+            { id: 28, name: "Чуприна Аріна Олексіївна", electives: ["французька", "публічне адміністрування", "соціальне підприємництво", "англ: мельник"] },
+            { id: 29, name: "Шелепа Михайло Владиславович", electives: ["польська", "соціальне підприємництво", "бзвп", "англ: маркова"] }
         ];
 
         const timeSlots = [
@@ -853,28 +1002,55 @@
             { start: "17:30", end: "18:45" }
         ];
 
+        // ОСНОВНИЙ РОЗКЛАД
         const mainScheduleData = {
             upper: [
-                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
-                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
+                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
                 { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Маркетинг п", type: "general" }]},
-                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
+                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 3, time: "11:30-12:45", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }]}
             ],
             lower: [
-                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
-                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
+                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 2, time: "10:00-11:15", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 3, time: "11:30-12:45", subj: "Англ (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англ (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
                 { day: "Середа", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }]},
-                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
+                { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво п", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг п", type: "general" }]}
             ]
         };
 
         const scheduleData = {
-            24: [{day: "Понеділок", date: "09.02", pairs: [{num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general"}]}],
-            25: [{day: "Понеділок", date: "16.02", pairs: [{num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general"}]}],
-            26: [{day: "Понеділок", date: "23.02", pairs: [{num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang"}]}],
-            27: [{day: "Понеділок", date: "02.03", pairs: [{num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang"}]}]
+            24: [
+                { day: "Понеділок", date: "09.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }]},
+                { day: "Вівторок", date: "10.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 4, time: "13:00-14:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }]},
+                { day: "Середа", date: "11.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }, { num: 5, time: "14:30-15:45", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }]},
+                { day: "Четвер", date: "12.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }, { num: 5, time: "14:30-15:45", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }]},
+                { day: "П'ятниця", date: "13.02", pairs: [{ num: 3, time: "11:30-12:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }]},
+                { day: "Субота", date: "14.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }, { num: 3, time: "11:30-12:45", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }]}
+            ],
+            25: [
+                { day: "Понеділок", date: "16.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }]},
+                { day: "Вівторок", date: "17.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }]},
+                { day: "Середа", date: "18.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
+                { day: "Четвер", date: "19.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }]},
+                { day: "П'ятниця", date: "20.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 5, time: "14:30-15:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }]},
+                { day: "Субота", date: "21.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }, { num: 3, time: "11:30-12:45", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }, { num: 4, time: "13:00-14:15", subj: "Теоретична підготовка БЗВП В Л", type: "elective", map: "бзвп" }]}
+            ],
+            26: [
+                { day: "Понеділок", date: "23.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 6, time: "16:00-17:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
+                { day: "Вівторок", date: "24.02", pairs: [{ num: 2, time: "10:00-11:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
+                { day: "Середа", date: "25.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }]},
+                { day: "Четвер", date: "26.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 2, time: "10:00-11:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }]},
+                { day: "П'ятниця", date: "27.02", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }, { num: 5, time: "14:30-15:45", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }]}
+            ],
+            27: [
+                { day: "Понеділок", date: "02.03", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 5, time: "14:30-15:45", subj: "Іноземна мова п", type: "lang", map: "english" }]},
+                { day: "Вівторок", date: "03.03", pairs: [{ num: 3, time: "11:30-12:45", subj: "Іноземна мова п", type: "lang", map: "english" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }, { num: 5, time: "14:30-15:45", subj: "Екаунтинг-2 Л", type: "general", zoomKey: "екаунтинг" }]},
+                { day: "Середа", date: "04.03", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В Л", type: "elective", map: "соціальне підприємництво", zoomKey: "соціальне підприємництво" }]},
+                { day: "Четвер", date: "05.03", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 2, time: "10:00-11:15", subj: "Соціологія В Л", type: "elective", map: "соціологія", zoomKey: "соціологія" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }, { num: 4, time: "13:00-14:15", subj: "Підприємництво Л", type: "general", zoomKey: "підприємництво" }]},
+                { day: "П'ятниця", date: "06.03", pairs: [{ num: 1, time: "08:30-09:45", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 2, time: "10:00-11:15", subj: "Маркетинг Л", type: "general", zoomKey: "маркетинг" }, { num: 3, time: "11:30-12:45", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 4, time: "13:00-14:15", subj: "Політологія В Л", type: "elective", map: "політологія", zoomKey: "політологія" }, { num: 5, time: "14:30-15:45", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Публічне адміністрування В Л", type: "elective", map: "публічне адміністрування", zoomKey: "публічне адміністрування" }]}
+            ]
         };
 
         const dayOffsets = { "Понеділок": 0, "Вівторок": 1, "Середа": 2, "Четвер": 3, "П'ятниця": 4, "Субота": 5, "Неділя": 6 };
@@ -939,7 +1115,6 @@
                 showAuthScreen(); 
             }
 
-            // Додаємо можливість скролити мишкою
             setupDragScroll();
         };
 
@@ -952,6 +1127,12 @@
             
             if (state.selectedStudent.isStarosta) {
                 document.getElementById('pc-user-role').innerHTML = `<span class="text-amber-500 font-bold">Староста</span>`;
+            }
+
+            const canEditSchedule = state.selectedStudent && (state.selectedStudent.id == 19 || state.selectedStudent.id == 2);
+            if (canEditSchedule) {
+                document.getElementById('nav-pc-editor').classList.remove('hidden');
+                document.getElementById('nav-mob-editor').classList.remove('hidden');
             }
 
             renderRegisterFilters();
@@ -1041,12 +1222,15 @@
                 if(btn.id === `nav-pc-${view}`) {
                     btn.classList.add('bg-white', 'dark:bg-[#111115]', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm', 'border', 'border-slate-200', 'dark:border-white/5');
                     btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent', 'opacity-70');
-                    btn.querySelector('i').classList.replace('ph', 'ph-fill');
+                    if (btn.id !== 'nav-pc-editor') btn.querySelector('i').classList.replace('ph', 'ph-fill');
                 } else {
                     btn.classList.remove('bg-white', 'dark:bg-[#111115]', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm', 'border', 'border-slate-200', 'dark:border-white/5');
-                    btn.classList.add('text-slate-500', 'dark:text-slate-400', 'border-transparent');
+                    btn.classList.add('border-transparent');
+                    if (btn.id === 'nav-pc-editor') btn.classList.add('text-amber-600', 'dark:text-amber-500');
+                    else btn.classList.add('text-slate-500', 'dark:text-slate-400');
+                    
                     if (btn.id === 'nav-pc-lectures') btn.classList.add('opacity-70');
-                    btn.querySelector('i').classList.replace('ph-fill', 'ph');
+                    if (btn.id !== 'nav-pc-editor') btn.querySelector('i').classList.replace('ph-fill', 'ph');
                 }
             });
 
@@ -1077,9 +1261,9 @@
             if(view === 'homework') renderHomeworkHistory();
             if(view === 'materials') renderMaterials();
             if(view === 'register') renderRegister();
+            if(view === 'editor') renderEditorList();
         }
 
-        // Управління картками тижнів для обох вкладок
         function updateSharedWeekCards() {
             const html = weeksConfig.map(w => {
                 const isMainActive = state.view === 'main' && state.mainActiveWeekNum === w.n;
@@ -1141,7 +1325,39 @@
             renderPersonalSchedule();
         }
 
-        // НОВИЙ КОМПАКТНИЙ РЕНДЕР (TIMELINE) з датами
+        function getMergedSchedule(weekType) {
+            let base = mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : [];
+            let extras = globalExtraPairs.filter(ep => ep.weekType === weekType);
+            
+            extras.forEach(ep => {
+                let dayObj = base.find(d => d.day === ep.day);
+                if (!dayObj) {
+                    dayObj = { day: ep.day, pairs: [] };
+                    base.push(dayObj);
+                }
+                dayObj.pairs.push({
+                    id: ep.id,
+                    num: parseInt(ep.num),
+                    time: timeSlots[parseInt(ep.num)-1].start + "-" + timeSlots[parseInt(ep.num)-1].end,
+                    subj: ep.subj,
+                    type: ep.type,
+                    map: ep.map,
+                    isCustom: true
+                });
+            });
+
+            base.forEach(d => {
+                d.pairs = d.pairs.filter(p => {
+                    return !globalHiddenPairs.some(hp => hp.weekType === weekType && hp.day === d.day && hp.num == p.num && hp.subj === p.subj);
+                });
+            });
+            base = base.filter(d => d.pairs.length > 0);
+            
+            base.forEach(d => d.pairs.sort((a,b) => a.num - b.num));
+            base.sort((a,b) => dayOffsets[a.day] - dayOffsets[b.day]);
+            return base;
+        }
+
         function renderTimelineSchedule(containerId, scheduleList, isPersonal, weekType, weekNum = null) {
             const grid = document.getElementById(containerId); grid.innerHTML = '';
             
@@ -1167,49 +1383,67 @@
                 dayCard.style.animationDelay = `${dayIdx * 100}ms`;
                 if (isToday) dayCard.id = "today-schedule-card";
 
-                let pairsHtml = pairsToRender.map((p, i) => {
-                    let displaySubj = p.subj;
-                    if (isPersonal && p.map === 'language_pair') {
-                        const sLang = state.selectedStudent.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
-                        if (sLang) displaySubj = `Ін.мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
-                    }
-                    
-                    let zoomUrl = (p.zoomKey && zoomLinks[p.zoomKey]) ? zoomLinks[p.zoomKey] : customZoomLinks[p.subj];
-                    const canEditZoom = state.selectedStudent && (state.selectedStudent.id == 19 || state.selectedStudent.isStarosta);
-                    
-                    let zBtn = '';
-                    if (zoomUrl) {
-                        zBtn = `<a href="${zoomUrl}" target="_blank" class="p-2 rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 hover:bg-blue-200 transition-colors shadow-sm" title="Zoom"><i class="ph-fill ph-video-camera text-base"></i></a>`;
-                    } else if (canEditZoom) {
-                        zBtn = `<button onclick="openZoomModal('${p.subj}')" class="p-2 rounded-xl bg-slate-100 text-slate-400 hover:bg-blue-50 hover:text-blue-500 dark:bg-white/5 transition-colors"><i class="ph ph-plus"></i></button>`;
-                    }
+                let groupedPairs = {};
+                pairsToRender.forEach(p => {
+                    if (!groupedPairs[p.num]) groupedPairs[p.num] = [];
+                    groupedPairs[p.num].push(p);
+                });
 
-                    // Count HW
-                    let hwBadge = '';
-                    if (!isPersonal && weekNum) {
-                        const count = globalHomeworks.filter(h => h.subj === p.subj && h.weekNum === weekNum && h.day === day.day && h.num === p.num).length;
-                        if (count > 0) {
-                            hwBadge = `<div class="ml-auto flex items-center gap-1 px-2 py-1 bg-green-50 text-green-600 dark:bg-green-500/20 dark:text-green-400 rounded-lg text-[10px] font-bold"><i class="ph-fill ph-check-circle"></i> ${count}</div>`;
+                let pairsHtml = '';
+                Object.keys(groupedPairs).sort((a,b) => a - b).forEach(numKey => {
+                    const pairsGroup = groupedPairs[numKey];
+                    const timeStr = pairsGroup[0].time;
+                    const numStr = pairsGroup[0].num;
+
+                    let cardsHtml = pairsGroup.map((p) => {
+                        let displaySubj = p.subj;
+                        
+                        if (p.subj.toLowerCase().startsWith('англ')) {
+                            if (isPersonal) {
+                                displaySubj = p.subj.split('(')[0].trim();
+                            } else {
+                                let m = p.subj.match(/\((.*?)\)/);
+                                if (m) displaySubj = "Англ (" + m[1] + ")";
+                            }
+                        } else if (isPersonal && p.map === 'language_pair') {
+                            const sLang = state.selectedStudent.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
+                            if (sLang) displaySubj = `Ін.мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
                         }
-                    }
+                        
+                        let zoomUrl = (p.zoomKey && zoomLinks[p.zoomKey]) ? zoomLinks[p.zoomKey] : customZoomLinks[p.subj];
+                        const canEditSchedule = state.selectedStudent && (state.selectedStudent.id == 19 || state.selectedStudent.id == 2);
+                        
+                        let zBtn = '';
+                        if (zoomUrl) {
+                            zBtn = `<a href="${zoomUrl}" target="_blank" class="p-2 rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 hover:bg-blue-200 transition-colors shadow-sm" title="Zoom"><i class="ph-fill ph-video-camera text-base"></i></a>`;
+                        } else if (canEditSchedule) {
+                            zBtn = `<button onclick="openZoomModal('${p.subj}')" class="p-2 rounded-xl bg-slate-100 text-slate-400 hover:bg-blue-50 hover:text-blue-500 dark:bg-white/5 transition-colors"><i class="ph ph-plus"></i></button>`;
+                        }
 
-                    const badgeColor = p.type === 'general' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300' : (p.type === 'lang' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' : 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300');
-                    const tLbl = p.type === 'general' ? 'Загальне' : (p.type === 'lang' ? 'Мова' : 'Вибір');
-                    const cardBorder = isToday ? 'border-blue-400/50 dark:border-blue-500/30' : 'border-slate-200 dark:border-slate-800';
-                    const cardBg = isToday ? 'bg-blue-50/50 dark:bg-blue-900/10' : 'bg-white/80 dark:bg-[#0f172a]/80';
+                        let trashBtn = '';
+                        if (canEditSchedule) {
+                            if (p.isCustom) {
+                                trashBtn = `<button onclick="promptHidePair('${weekType}', '${day.day}', ${p.num}, '${p.subj}', '${p.id}')" class="px-2 py-1.5 rounded-xl border border-red-200 dark:border-red-900/30 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition flex items-center justify-center" title="Видалити додану пару"><i class="ph ph-trash"></i></button>`;
+                            } else {
+                                trashBtn = `<button onclick="promptHidePair('${weekType}', '${day.day}', ${p.num}, '${p.subj}', null)" class="px-2 py-1.5 rounded-xl border border-red-200 dark:border-red-900/30 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition flex items-center justify-center" title="Приховати цю пару"><i class="ph ph-eye-slash"></i></button>`;
+                            }
+                        }
 
-                    return `
-                        <div class="flex items-stretch gap-4 relative z-10 mb-4 last:mb-0 group">
-                            <!-- Time Column -->
-                            <div class="w-12 shrink-0 flex flex-col items-center pt-1 relative">
-                                <div class="bg-slate-50 dark:bg-[#020617] py-1 z-10 w-full flex flex-col items-center">
-                                    <span class="text-[11px] font-bold text-slate-800 dark:text-slate-200 leading-none">${p.time.split('-')[0]}</span>
-                                    <span class="text-[9px] text-slate-400 mt-0.5">${p.time.split('-')[1]}</span>
-                                </div>
-                                <div class="absolute top-[32px] w-6 h-6 rounded-full border-4 border-slate-50 dark:border-[#020617] ${isToday ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'} text-[10px] flex items-center justify-center font-bold z-10 shadow-sm">${p.num}</div>
-                            </div>
-                            <!-- Card -->
-                            <div class="flex-1 ${cardBg} backdrop-blur-md border ${cardBorder} rounded-2xl p-4 shadow-sm hover:shadow-md transition-all group-hover:-translate-y-0.5 relative overflow-hidden">
+                        let hwBadge = '';
+                        if (!isPersonal && weekNum) {
+                            const count = globalHomeworks.filter(h => h.subj === p.subj && h.weekNum === weekNum && h.day === day.day && h.num === p.num).length;
+                            if (count > 0) {
+                                hwBadge = `<div class="ml-auto flex items-center gap-1 px-2 py-1 bg-green-50 text-green-600 dark:bg-green-500/20 dark:text-green-400 rounded-lg text-[10px] font-bold"><i class="ph-fill ph-check-circle"></i> ${count}</div>`;
+                            }
+                        }
+
+                        const badgeColor = p.type === 'general' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300' : (p.type === 'lang' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' : 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300');
+                        const tLbl = p.type === 'general' ? 'Загальне' : (p.type === 'lang' ? 'Мова' : 'Вибір');
+                        const cardBorder = isToday ? 'border-blue-400/50 dark:border-blue-500/30' : 'border-slate-200 dark:border-slate-800';
+                        const cardBg = isToday ? 'bg-blue-50/50 dark:bg-blue-900/10' : 'bg-white/80 dark:bg-[#0f172a]/80';
+
+                        return `
+                            <div class="w-full ${cardBg} backdrop-blur-md border ${cardBorder} rounded-2xl p-4 shadow-sm hover:shadow-md transition-all group-hover:-translate-y-0.5 relative overflow-hidden">
                                 <div class="flex justify-between items-start mb-2">
                                     <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wide whitespace-nowrap ${badgeColor}">${tLbl}</span>
                                 </div>
@@ -1218,12 +1452,30 @@
                                 <div class="flex items-center gap-2 mt-auto">
                                     ${zBtn}
                                     <button onclick="openHwModal('${p.subj}', '${weekType}', '${day.day}', ${p.num}, ${weekNum || 0})" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 text-[10px] font-bold uppercase transition flex items-center gap-1.5"><i class="ph ph-pencil-simple"></i> Д/з</button>
+                                    ${trashBtn}
                                     ${hwBadge}
                                 </div>
                             </div>
+                        `;
+                    }).join('<div class="h-3"></div>'); // Відступ між картками одного часу
+
+                    pairsHtml += `
+                        <div class="flex items-stretch gap-4 relative z-10 mb-5 last:mb-0 group">
+                            <!-- Колоннка часу -->
+                            <div class="w-12 shrink-0 flex flex-col items-center pt-1 relative">
+                                <div class="bg-slate-50 dark:bg-[#020617] py-1 z-10 w-full flex flex-col items-center">
+                                    <span class="text-[11px] font-bold text-slate-800 dark:text-slate-200 leading-none">${timeStr.split('-')[0]}</span>
+                                    <span class="text-[9px] text-slate-400 mt-0.5">${timeStr.split('-')[1]}</span>
+                                </div>
+                                <div class="absolute top-[32px] w-6 h-6 rounded-full border-4 border-slate-50 dark:border-[#020617] ${isToday ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'} text-[10px] flex items-center justify-center font-bold z-10 shadow-sm">${numStr}</div>
+                            </div>
+                            <!-- Контейнер карток -->
+                            <div class="flex-1 flex flex-col justify-center">
+                                ${cardsHtml}
+                            </div>
                         </div>
                     `;
-                }).join('');
+                });
 
                 let headerClasses = isToday 
                     ? "bg-blue-600 text-white shadow-md ring-4 ring-blue-500/20" 
@@ -1253,7 +1505,8 @@
             btnUp.className = (state.mainViewWeek === 'upper' && !state.mainActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
             btnLo.className = (state.mainViewWeek === 'lower' && !state.mainActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
 
-            renderTimelineSchedule('main-schedule-grid', mainScheduleData[state.mainViewWeek], false, state.mainViewWeek, state.mainActiveWeekNum);
+            const mergedData = getMergedSchedule(state.mainViewWeek);
+            renderTimelineSchedule('main-schedule-grid', mergedData, false, state.mainViewWeek, state.mainActiveWeekNum);
         }
 
         function renderPersonalSchedule() {
@@ -1264,19 +1517,95 @@
             btnUp.className = (state.persMainWeek === 'upper' && !state.persActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
             btnLo.className = (state.persMainWeek === 'lower' && !state.persActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
 
-            renderTimelineSchedule('schedule-grid', mainScheduleData[state.persMainWeek], true, state.persMainWeek, state.persActiveWeekNum);
+            const mergedData = getMergedSchedule(state.persMainWeek);
+            renderTimelineSchedule('schedule-grid', mergedData, true, state.persMainWeek, state.persActiveWeekNum);
         }
 
-        function filterPairs(pairs) {
-            const studentElectives = state.selectedStudent.electives.map(e => e.toLowerCase());
-            return pairs.filter(p => {
-                if (p.type === 'general' || p.map === 'english') return true; 
-                if (p.map === 'language_pair') return studentElectives.some(el => ['німецька','польська','французька','китайська'].includes(el));
-                if (p.type === 'elective') return studentElectives.includes(p.map?.toLowerCase());
-                return false;
-            });
+        async function addCustomPair() {
+            const weekType = document.getElementById('ed-week').value;
+            const day = document.getElementById('ed-day').value;
+            const num = document.getElementById('ed-num').value;
+            const subjData = document.getElementById('ed-subj').value.split('|');
+            
+            if(subjData.length !== 3) return;
+            const [subj, type, map] = subjData;
+            const docId = Date.now().toString();
+
+            const newPair = { id: docId, weekType, day, num, subj, type, map, author: state.selectedStudent.name };
+
+            if (window.saveToCloud) {
+                const success = await window.saveToCloud('extra_schedule', docId, newPair);
+                if (!success) fallbackAddCustomPair(newPair);
+            } else { fallbackAddCustomPair(newPair); }
         }
 
+        function fallbackAddCustomPair(newPair) {
+            globalExtraPairs.push(newPair);
+            localStorage.setItem('portal-extra-schedule', JSON.stringify(globalExtraPairs));
+            renderEditorList();
+            window.showToast("Локально збережено!");
+        }
+
+        async function deleteCustomPair(id) {
+            if (window.deleteFromCloud) {
+                const success = await window.deleteFromCloud('extra_schedule', id);
+                if (!success) fallbackDeleteCustomPair(id);
+            } else { fallbackDeleteCustomPair(id); }
+        }
+
+        function fallbackDeleteCustomPair(id) {
+            globalExtraPairs = globalExtraPairs.filter(p => p.id != id);
+            localStorage.setItem('portal-extra-schedule', JSON.stringify(globalExtraPairs));
+            renderEditorList();
+        }
+
+        function renderEditorList() {
+            const list = document.getElementById('editor-list');
+            const hiddenList = document.getElementById('hidden-list');
+            if(!list || !hiddenList) return;
+            
+            list.innerHTML = '';
+            if(globalExtraPairs.length === 0) {
+                list.innerHTML = `<div class="col-span-full text-center p-6 text-sm font-bold text-slate-400 border border-dashed rounded-2xl">Немає доданих пар.</div>`;
+            } else {
+                globalExtraPairs.forEach((p) => {
+                    const w = p.weekType === 'upper' ? 'Верхній' : 'Нижній';
+                    const el = document.createElement('div');
+                    el.className = "bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative";
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] font-extrabold uppercase bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 px-2 py-1 rounded">${w} • ${p.day}</span>
+                            <button onclick="promptHidePair(null, null, null, null, '${p.id}')" class="text-slate-400 hover:text-red-500 transition"><i class="ph ph-trash text-lg"></i></button>
+                        </div>
+                        <div class="font-extrabold text-sm text-slate-900 dark:text-white">${p.subj}</div>
+                        <div class="text-[11px] font-bold text-slate-500 mt-1">${p.num} пара</div>
+                    `;
+                    list.appendChild(el);
+                });
+            }
+
+            hiddenList.innerHTML = '';
+            if(globalHiddenPairs.length === 0) {
+                hiddenList.innerHTML = `<div class="col-span-full text-center p-6 text-sm font-bold text-slate-400 border border-dashed rounded-2xl">Немає прихованих пар.</div>`;
+            } else {
+                globalHiddenPairs.forEach((p) => {
+                    const w = p.weekType === 'upper' ? 'Верхній' : 'Нижній';
+                    const el = document.createElement('div');
+                    el.className = "bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative opacity-60 hover:opacity-100 transition-opacity";
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] font-extrabold uppercase bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-1 rounded flex items-center gap-1"><i class="ph-fill ph-eye-slash"></i>${w} • ${p.day}</span>
+                            <button onclick="promptRestorePair('${p.id}')" class="text-blue-500 hover:text-blue-600 transition" title="Відновити пару"><i class="ph ph-arrow-counter-clockwise text-lg"></i></button>
+                        </div>
+                        <div class="font-extrabold text-sm text-slate-900 dark:text-white line-through">${p.subj}</div>
+                        <div class="text-[11px] font-bold text-slate-500 mt-1">${p.num} пара</div>
+                    `;
+                    hiddenList.appendChild(el);
+                });
+            }
+        }
+
+        // ІНШІ ФУНКЦІЇ
         function openHwModal(subj, weekType, day, num, weekNum) {
             currentHwContext = { subj, weekType, day, num, weekNum: weekNum || 0 };
             const m = document.getElementById('hw-modal');
@@ -1500,8 +1829,7 @@
             const timerEl = document.getElementById('elapsed-timer');
             const label = document.getElementById('timer-label');
             
-            // Look into active schedule based on context
-            let searchArr = mainScheduleData[state.mainViewWeek];
+            let searchArr = getMergedSchedule(state.mainViewWeek);
             const today = searchArr.find(d => d.day === curDay);
             
             if(cur) {
@@ -1539,7 +1867,9 @@
                 { id: 'публічне адміністрування', label: 'Публічне адмін.' },
                 { id: 'соціальне підприємництво', label: 'Соц. підприємництво' },
                 { id: 'соціологія', label: 'Соціологія' },
-                { id: 'бзвп', label: 'БЗВП' }
+                { id: 'бзвп', label: 'БЗВП' },
+                { id: 'англ: маркова', label: 'Англ (Маркова)' },
+                { id: 'англ: мельник', label: 'Англ (Мельник)' }
             ];
 
             const container = document.getElementById('register-filters');
@@ -1569,7 +1899,7 @@
                     tr.className = "bg-blue-50/80 dark:bg-blue-900/20";
                 }
                 
-                const b = s.electives.map(e => `<span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase border shadow-sm whitespace-nowrap ${discColors[e] || 'bg-slate-100'}">${e}</span>`).join(' ');
+                const b = s.electives.map(e => `<span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase border shadow-sm whitespace-nowrap ${discColors[e] || 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">${e}</span>`).join(' ');
                 const starostaBadge = s.isStarosta ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold uppercase rounded border">Староста</span>` : '';
                 const youBadge = isCurrentUser ? `<span class="ml-2 text-[10px] font-extrabold text-blue-500 dark:text-blue-400">(Ви)</span>` : '';
                 const nameColor = isCurrentUser ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-zinc-200";
@@ -1579,7 +1909,6 @@
             });
         }
 
-        // РЕНДЕР АРХІВУ НАЧИТКИ
         function setWeek(w, type) {
             if(type === 'general') { state.genWeek = w; renderGeneralSchedule(); }
             updateWeekSelectors();
