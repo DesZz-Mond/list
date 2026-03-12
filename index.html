@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
     <title>МБ-202 | Портал</title>
 
     <script>
@@ -29,20 +29,24 @@
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
                         brand: { 50: '#eff6ff', 100: '#dbeafe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' },
+                        zinc: { 850: '#1f1f22', 900: '#18181b', 950: '#09090b' }
                     },
                     animation: {
-                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in-up': 'fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'blob': 'blob 15s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                        'blob': 'blob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
-                        slideUp: { '0%': { transform: 'translateY(100%)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
+                        slideUp: { '0%': { transform: 'translateY(40px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
                         fadeInUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
                         blob: {
-                            '0%': { transform: 'translate3d(0px, 0px, 0) scale(1)' },
-                            '33%': { transform: 'translate3d(30px, -50px, 0) scale(1.1)' },
-                            '66%': { transform: 'translate3d(-20px, 20px, 0) scale(0.9)' },
-                            '100%': { transform: 'translate3d(0px, 0px, 0) scale(1)' }
+                            '0%': { transform: 'translate3d(0px, 0px, 0) scale(1) rotate(0deg)' },
+                            '33%': { transform: 'translate3d(30px, -50px, 0) scale(1.1) rotate(10deg)' },
+                            '66%': { transform: 'translate3d(-20px, 20px, 0) scale(0.9) rotate(-5deg)' },
+                            '100%': { transform: 'translate3d(0px, 0px, 0) scale(1) rotate(0deg)' }
                         }
                     }
                 }
@@ -55,37 +59,35 @@
         body { 
             -webkit-tap-highlight-color: transparent; 
             overscroll-behavior-y: none;
+            font-feature-settings: "cv03", "cv04", "cv11";
         }
         
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); }
+        ::-webkit-scrollbar-thumb { background: rgba(161, 161, 170, 0.3); border-radius: 10px; transition: all 0.3s ease; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(161, 161, 170, 0.5); }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
+        .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
         
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; margin: 0 8px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.2); border-radius: 10px; }
-        .dark .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
+        .custom-scroll::-webkit-scrollbar { height: 0px; width: 0px; display: none; } /* Hide visually but keep scrollable */
 
-        /* --- LIQUID GLASS --- */
+        /* --- PREMIUM GLASSMORPHISM --- */
         :root {
-            --noise-bg: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
+            --noise-bg: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
         }
 
         .liquid-glass {
             position: relative;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(32px) saturate(150%);
+            -webkit-backdrop-filter: blur(32px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 
-                inset 0 1px 1px rgba(255, 255, 255, 0.9),
-                0 8px 32px 0 rgba(15, 23, 42, 0.05);
-            transform: translateZ(0);
+                0 4px 24px -1px rgba(0, 0, 0, 0.03),
+                0 0 1px 1px rgba(0, 0, 0, 0.02);
         }
         
         .liquid-glass::before {
@@ -93,81 +95,112 @@
             position: absolute;
             inset: 0;
             background-image: var(--noise-bg);
-            opacity: 0.8;
-            mix-blend-mode: overlay;
+            border-radius: inherit;
             pointer-events: none;
             z-index: -1;
         }
 
         html.dark .liquid-glass {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(2, 6, 23, 0.5) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(24, 24, 27, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 
-                inset 0 1px 1px rgba(255, 255, 255, 0.1), 
-                0 8px 32px 0 rgba(0, 0, 0, 0.5);
+                0 4px 24px -1px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
         }
-        html.dark .liquid-glass::before { opacity: 0.3; mix-blend-mode: soft-light; }
+        html.dark .liquid-glass::before { opacity: 0.5; mix-blend-mode: overlay; }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(12px) saturate(120%);
-            -webkit-backdrop-filter: blur(12px) saturate(120%);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(228, 228, 231, 0.6);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         html.dark .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: rgba(39, 39, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
+        .glass-card:hover {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        html.dark .glass-card:hover {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
         .glass-input {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
+            background: rgba(244, 244, 245, 0.7);
+            border: 1px solid rgba(228, 228, 231, 0.8);
+            transition: all 0.2s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
         html.dark .glass-input {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f8fafc;
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #f4f4f5;
         }
-        html.dark .glass-input:focus { border-color: #3b82f6; background: rgba(15, 23, 42, 0.9); }
+        html.dark .glass-input:focus { 
+            border-color: #3b82f6; 
+            background: rgba(39, 39, 42, 0.8); 
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
 
         /* ANDROID ANTI-LAG CSS */
-        html.is-android .liquid-glass, html.is-android .glass-card, html.is-android .glass-input {
+        html.is-android .liquid-glass, html.is-android .glass-card {
             backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
         }
-        html.is-android .liquid-glass { background: rgba(248, 250, 252, 0.98) !important; }
-        html.is-android.dark .liquid-glass { background: rgba(15, 23, 42, 0.98) !important; }
+        html.is-android .liquid-glass { background: #ffffff !important; }
+        html.is-android.dark .liquid-glass { background: #18181b !important; }
         html.is-android .animate-blob { display: none !important; }
 
-        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 20px); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .safe-top { padding-top: env(safe-area-inset-top, 16px); }
+        
+        .tab-content { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .tab-content.active { display: block; opacity: 1; animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
 
-        .timeline-container::before {
-            content: '';
-            position: absolute;
-            left: 23px; /* Центр кружечка таймлайна */
-            top: 24px;
-            bottom: 0;
-            width: 2px;
-            background: rgba(59, 130, 246, 0.2);
-            z-index: 0;
+        /* Modern subtle grid background */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
         }
-        html.dark .timeline-container::before { background: rgba(59, 130, 246, 0.15); }
+        html.dark .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        /* Connecting line for timeline */
+        .timeline-connector {
+            position: absolute;
+            left: 23px; /* Align with center of time bubble */
+            top: 48px;
+            bottom: -16px;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            z-index: 0;
+            border-radius: 2px;
+        }
+        html.dark .timeline-connector { 
+            background: linear-gradient(to bottom, rgba(59, 130, 246, 0.2), rgba(255, 255, 255, 0.02));
+        }
+        .timeline-item:last-child .timeline-connector { display: none; }
     </style>
 </head>
-<body class="text-slate-900 dark:text-slate-100 transition-colors duration-500 antialiased h-screen overflow-hidden flex flex-col md:flex-row relative bg-slate-50 dark:bg-[#020617]">
+<body class="text-slate-800 dark:text-zinc-200 transition-colors duration-500 antialiased h-screen overflow-hidden flex flex-col md:flex-row relative bg-[#f4f4f5] dark:bg-zinc-950 bg-grid-pattern">
 
     <script>
         window.showToast = function(msg, isError = false) {
             const t = document.createElement('div');
-            t.className = `fixed top-6 right-4 md:right-8 p-4 rounded-2xl shadow-xl z-[999] text-sm font-bold text-white transition-all duration-500 transform -translate-y-[150%] opacity-0 flex items-center gap-3 ${isError ? 'bg-red-500 shadow-red-500/30' : 'bg-blue-500 shadow-blue-500/30'}`;
-            t.innerHTML = `<i class="ph-fill ${isError ? 'ph-warning-circle' : 'ph-check-circle'} text-xl"></i> <span class="whitespace-nowrap">${msg}</span>`;
+            t.className = `fixed top-6 right-4 md:right-8 px-5 py-3.5 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all duration-500 transform -translate-y-[150%] opacity-0 flex items-center gap-3 backdrop-blur-xl border ${isError ? 'bg-red-500/90 border-red-400/50 shadow-red-500/20' : 'bg-zinc-900/90 dark:bg-white/90 dark:text-zinc-900 border-white/10 dark:border-zinc-900/10 shadow-black/20'}`;
+            t.innerHTML = `<i class="ph-fill ${isError ? 'ph-warning-circle' : 'ph-check-circle text-blue-400 dark:text-blue-500'} text-xl"></i> <span class="whitespace-nowrap tracking-tight">${msg}</span>`;
             document.body.appendChild(t);
             setTimeout(() => { t.style.transform = 'translateY(0)'; t.style.opacity = '1'; }, 10);
             setTimeout(() => { 
@@ -284,212 +317,226 @@
         };
     </script>
 
-    <!-- ФОНОВІ ЕЛЕМЕНТИ (Сині та Індиго тони) -->
+    <!-- ФОНОВІ ЕЛЕМЕНТИ (Soft Ambient Lights) -->
     <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-blue-400/30 dark:bg-blue-800/20 blur-[100px] animate-blob transform-gpu"></div>
-        <div class="absolute top-[20%] right-[-10%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-indigo-400/30 dark:bg-indigo-800/20 blur-[100px] animate-blob animation-delay-2000 transform-gpu"></div>
-        <div class="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-sky-400/20 dark:bg-sky-900/20 blur-[100px] animate-blob animation-delay-4000 transform-gpu"></div>
+        <div class="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-blue-300/20 dark:bg-blue-900/20 blur-[120px] animate-blob transform-gpu mix-blend-multiply dark:mix-blend-lighten"></div>
+        <div class="absolute top-[10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-indigo-300/20 dark:bg-indigo-900/20 blur-[120px] animate-blob animation-delay-2000 transform-gpu mix-blend-multiply dark:mix-blend-lighten"></div>
+        <div class="absolute bottom-[-20%] left-[15%] w-[55vw] h-[55vw] max-w-[650px] max-h-[650px] rounded-full bg-sky-300/20 dark:bg-sky-900/10 blur-[120px] animate-blob animation-delay-4000 transform-gpu mix-blend-multiply dark:mix-blend-lighten"></div>
     </div>
 
     <!-- Екран авторизації -->
-    <div id="auth-screen" class="fixed inset-0 z-[200] bg-slate-100/50 dark:bg-[#020617]/80 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-6 hidden">
-        <div class="w-full max-w-md liquid-glass text-center animate-slide-up flex flex-col p-8 sm:p-10 relative" style="border-radius: 32px;">
-            <button onclick="toggleDarkMode()" class="absolute top-5 right-5 w-10 h-10 rounded-full glass-card flex items-center justify-center text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-all z-50 border border-slate-200 dark:border-white/10 shadow-sm">
-                <i class="ph ph-moon text-xl" id="auth-dark-icon"></i>
+    <div id="auth-screen" class="fixed inset-0 z-[200] bg-white/40 dark:bg-zinc-950/60 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-6 hidden">
+        <div class="w-full max-w-md liquid-glass text-center animate-slide-up flex flex-col p-8 sm:p-12 relative overflow-hidden" style="border-radius: 40px;">
+            <!-- Glow effect behind content -->
+            <div class="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-900/10 dark:to-transparent pointer-events-none"></div>
+
+            <button onclick="toggleDarkMode()" class="absolute top-6 right-6 w-12 h-12 rounded-full glass-card flex items-center justify-center text-zinc-500 hover:text-blue-600 dark:text-zinc-400 dark:hover:text-blue-400 transition-all duration-300 z-50 hover:scale-105 active:scale-95">
+                <i class="ph ph-moon text-2xl" id="auth-dark-icon"></i>
             </button>
 
-            <div class="w-20 h-20 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/30 shrink-0 relative z-10">
-                <i class="ph-fill ph-graduation-cap text-4xl text-white drop-shadow-md"></i>
+            <div class="w-24 h-24 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-500/30 shrink-0 relative z-10 transform hover:scale-105 transition-transform duration-500">
+                <i class="ph-fill ph-graduation-cap text-5xl text-white drop-shadow-md"></i>
             </div>
-            <h1 class="text-3xl font-extrabold mb-2 tracking-tight text-slate-900 dark:text-white relative z-10">МБ-202 Портал</h1>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mb-8 font-bold shrink-0 relative z-10 whitespace-nowrap">Знайдіть себе у списку для входу</p>
             
-            <div class="relative text-left shrink-0 mb-2 z-10">
-                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400"></i>
+            <h1 class="text-4xl font-extrabold mb-3 tracking-tight text-zinc-900 dark:text-white relative z-10">МБ-202</h1>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-10 font-medium shrink-0 relative z-10">Знайдіть себе у списку для доступу до порталу</p>
+            
+            <div class="relative text-left shrink-0 mb-4 z-10 group">
+                <i class="ph ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-xl text-zinc-400 group-focus-within:text-blue-500 transition-colors"></i>
                 <input type="text" id="auth-search" oninput="filterAuthList()" placeholder="Пошук ПІБ..." 
-                    class="w-full pl-12 pr-4 py-4 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-slate-900 dark:text-white placeholder-slate-400 shadow-sm">
+                    class="w-full pl-14 pr-5 py-4 lg:py-5 glass-input rounded-2xl outline-none transition-all font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 text-lg">
             </div>
 
-            <div id="auth-list" class="mt-2 max-h-[35vh] overflow-y-auto custom-scroll rounded-2xl glass-input flex-col gap-1 p-2 hidden z-10"></div>
+            <div id="auth-list" class="mt-2 max-h-[30vh] overflow-y-auto custom-scroll flex-col gap-2 hidden z-10 p-1"></div>
         </div>
     </div>
 
-    <!-- SIDEBAR (ДЛЯ ПК) -->
-    <aside class="hidden md:flex flex-col w-72 liquid-glass border-l-0 border-y-0 h-full relative z-40 transition-colors" style="border-radius: 0 32px 32px 0;">
-        <div class="p-6 border-b border-slate-300/50 dark:border-white/10 relative z-10">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20 cursor-pointer">
-                    <span class="text-lg font-black">M</span>
+    <!-- SIDEBAR (ДЛЯ ПК) - Floating Bento Style -->
+    <aside class="hidden md:flex flex-col w-[300px] m-4 mr-0 liquid-glass relative z-40 transition-colors overflow-hidden" style="border-radius: 32px;">
+        <div class="p-8 pb-6 relative z-10">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
+                    <span class="text-xl font-black tracking-tighter">МБ</span>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg tracking-tight leading-none text-slate-900 dark:text-white">Портал</h1>
-                    <span class="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-widest whitespace-nowrap">МБ-202</span>
+                    <h1 class="font-extrabold text-xl tracking-tight text-zinc-900 dark:text-white leading-none mb-1">Портал</h1>
+                    <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">МБ-202</span>
                 </div>
             </div>
             
-            <div class="glass-card p-3 rounded-2xl flex items-center gap-3">
-                <div id="pc-user-avatar" class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-sm shrink-0 border border-blue-200 dark:border-blue-500/20"></div>
-                <div class="overflow-hidden">
-                    <div id="pc-user-name" class="text-xs font-extrabold truncate text-slate-900 dark:text-slate-100"></div>
-                    <div id="pc-user-role" class="text-[10px] font-bold text-slate-500">Студент</div>
+            <div class="glass-card p-3 rounded-2xl flex items-center gap-3 hover:shadow-md transition-shadow cursor-default">
+                <div id="pc-user-avatar" class="w-12 h-12 rounded-[14px] bg-gradient-to-tr from-blue-100 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-900/20 text-blue-700 dark:text-blue-300 flex items-center justify-center font-black text-lg shrink-0 border border-blue-200/50 dark:border-blue-700/30"></div>
+                <div class="overflow-hidden flex-1">
+                    <div id="pc-user-name" class="text-sm font-bold truncate text-zinc-900 dark:text-zinc-100 leading-tight"></div>
+                    <div id="pc-user-role" class="text-xs font-medium text-zinc-500 mt-0.5">Студент</div>
                 </div>
             </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto p-4 space-y-1 custom-scroll relative z-10 flex flex-col">
-            <p class="px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 mt-2">Розклад</p>
-            <button onclick="switchView('schedule')" id="nav-pc-schedule" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="ph ph-user text-xl"></i> Мій розклад
+        <nav class="flex-1 overflow-y-auto px-6 py-2 space-y-1 custom-scroll relative z-10 flex flex-col">
+            <p class="px-2 text-[11px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-3 mt-2">Розклад</p>
+            <button onclick="switchView('schedule')" id="nav-pc-schedule" class="nav-btn-pc group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 relative overflow-hidden">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors nav-icon-wrapper"><i class="ph ph-user text-xl"></i></div>
+                Мій розклад
             </button>
-            <button onclick="switchView('main')" id="nav-pc-main" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="ph ph-calendar-blank text-xl"></i> Загальний
+            <button onclick="switchView('main')" id="nav-pc-main" class="nav-btn-pc group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 relative overflow-hidden">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors nav-icon-wrapper"><i class="ph ph-calendar-blank text-xl"></i></div>
+                Загальний
             </button>
 
-            <p class="px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 mt-6">Ресурси групи</p>
-            <button onclick="switchView('materials')" id="nav-pc-materials" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="ph ph-folder text-xl"></i> Матеріали
+            <p class="px-2 text-[11px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-3 mt-8">Група</p>
+            <button onclick="switchView('materials')" id="nav-pc-materials" class="nav-btn-pc group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 relative overflow-hidden">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors nav-icon-wrapper"><i class="ph ph-folder text-xl"></i></div>
+                Матеріали
             </button>
-            <button onclick="switchView('homework')" id="nav-pc-homework" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="ph ph-pencil-simple-line text-xl"></i> Історія Д/з
+            <button onclick="switchView('homework')" id="nav-pc-homework" class="nav-btn-pc group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 relative overflow-hidden">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors nav-icon-wrapper"><i class="ph ph-pencil-simple-line text-xl"></i></div>
+                Історія Д/з
             </button>
-            <button onclick="switchView('register')" id="nav-pc-register" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="ph ph-users text-xl"></i> Реєстр групи
+            <button onclick="switchView('register')" id="nav-pc-register" class="nav-btn-pc group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 relative overflow-hidden">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors nav-icon-wrapper"><i class="ph ph-users text-xl"></i></div>
+                Реєстр
             </button>
 
             <!-- Редактор (Тільки для адмінів) -->
-            <button onclick="switchView('editor')" id="nav-pc-editor" class="hidden nav-btn-pc w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-amber-600 dark:text-amber-500 mt-2">
-                <i class="ph ph-pencil-line text-xl"></i> Редактор
+            <button onclick="switchView('editor')" id="nav-pc-editor" class="hidden nav-btn-pc group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 mt-2 text-amber-600 dark:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors bg-amber-100 dark:bg-amber-500/20"><i class="ph-fill ph-pencil-line text-xl"></i></div>
+                Редактор
             </button>
 
             <!-- Архів Начитка -->
-            <div class="mt-auto pt-4 mb-2 border-t border-slate-200 dark:border-white/10">
-                <button onclick="switchView('lectures')" id="nav-pc-lectures" class="nav-btn-pc w-full flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 transition-all opacity-70 hover:opacity-100">
+            <div class="mt-auto pt-6 pb-2">
+                <button onclick="switchView('lectures')" id="nav-pc-lectures" class="nav-btn-pc group w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-all hover:bg-black/5 dark:hover:bg-white/5">
                     <i class="ph ph-archive text-lg"></i> Архів: Начитка
                 </button>
             </div>
         </nav>
 
-        <div class="p-4 border-t border-slate-300/50 dark:border-white/10 flex gap-2 relative z-10">
-            <button onclick="toggleDarkMode()" class="flex-1 py-3 rounded-xl glass-card text-slate-800 dark:text-slate-300 hover:text-blue-600 transition-all flex items-center justify-center gap-2 font-bold text-xs">
-                <i class="ph ph-moon text-lg" id="pc-dark-icon"></i> Тема
+        <div class="p-6 pt-4 flex gap-3 relative z-10 mt-auto">
+            <button onclick="toggleDarkMode()" class="flex-1 py-3.5 rounded-2xl glass-card text-zinc-700 dark:text-zinc-300 hover:text-blue-600 transition-all flex items-center justify-center gap-2 font-semibold text-sm hover:scale-[1.02] active:scale-[0.98]">
+                <i class="ph ph-moon text-xl" id="pc-dark-icon"></i> Тема
             </button>
-            <button onclick="logout()" class="py-3 px-4 rounded-xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 hover:bg-red-100 transition-all flex items-center justify-center border border-red-200 dark:border-red-500/20">
-                <i class="ph ph-sign-out text-lg"></i>
+            <button onclick="logout()" class="w-[52px] shrink-0 py-3.5 rounded-2xl bg-rose-50/80 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 hover:bg-rose-100 transition-all flex items-center justify-center border border-rose-200/50 dark:border-rose-500/20 hover:scale-[1.02] active:scale-[0.98]" title="Вийти">
+                <i class="ph-bold ph-sign-out text-xl"></i>
             </button>
         </div>
     </aside>
 
     <!-- ГОЛОВНА РОБОЧА ЗОНА -->
-    <div class="flex-1 flex flex-col h-full relative overflow-hidden z-10">
+    <div class="flex-1 flex flex-col h-full relative overflow-hidden z-10 md:p-4">
         
         <!-- МОБІЛЬНИЙ ХЕДЕР -->
-        <header class="md:hidden bg-slate-50/80 dark:bg-[#020617]/80 backdrop-blur-xl sticky top-0 z-30 px-5 py-3 flex justify-between items-center safe-top border-b border-slate-200 dark:border-white/10 shadow-sm">
+        <header class="md:hidden bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl sticky top-0 z-30 px-6 py-4 flex justify-between items-center safe-top border-b border-zinc-200/50 dark:border-white/5 shadow-sm">
             <div class="flex items-center gap-3 relative z-10">
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white shadow-sm">
-                    <span class="text-sm font-black">M</span>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md">
+                    <span class="text-sm font-black tracking-tighter">МБ</span>
                 </div>
-                <h1 class="font-extrabold text-[15px] tracking-tight text-slate-900 dark:text-slate-100 whitespace-nowrap">МБ-202</h1>
+                <div>
+                    <h1 class="font-extrabold text-[16px] tracking-tight text-zinc-900 dark:text-zinc-100 leading-none">Портал</h1>
+                    <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mt-0.5">МБ-202</span>
+                </div>
             </div>
-            <div id="mob-user-avatar-top" class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30 flex items-center justify-center font-black text-xs shadow-sm"></div>
+            <div id="mob-user-avatar-top" class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200/50 dark:border-blue-700/50 flex items-center justify-center font-black text-sm shadow-sm ring-2 ring-transparent transition-all"></div>
         </header>
 
         <!-- ЗОНА КОНТЕНТУ -->
-        <main class="flex-1 overflow-y-auto custom-scroll p-4 sm:p-6 lg:p-8 pb-32 relative scroll-smooth" id="main-scroll-area">
+        <main class="flex-1 overflow-y-auto custom-scroll p-4 sm:p-6 lg:p-8 lg:px-12 pb-32 md:pb-8 relative scroll-smooth md:bg-white/40 md:dark:bg-zinc-900/30 md:rounded-[32px] md:border md:border-white/20 md:dark:border-white/5 md:shadow-inner md:backdrop-blur-xl" id="main-scroll-area">
             
-            <!-- Live Widget (Компактний) -->
-            <div id="live-widget" class="liquid-glass p-5 md:p-6 mb-6 relative group transition-all" style="border-radius: 24px;">
-                <div class="flex items-center justify-between gap-4 relative z-10">
-                    <div class="flex items-center gap-4 min-w-0">
-                        <div class="relative w-12 h-12 shrink-0 hidden sm:block">
-                            <div class="absolute inset-0 bg-blue-500 rounded-2xl animate-pulse opacity-30"></div>
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg border border-blue-400/50">
-                                <i class="ph ph-lightning text-2xl"></i>
-                            </div>
-                        </div>
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="relative flex h-2 w-2 shrink-0">
-                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                </span>
-                                <h3 class="text-slate-500 dark:text-slate-400 text-[10px] font-extrabold uppercase tracking-widest whitespace-nowrap" id="timer-label">Поточний статус</h3>
-                            </div>
-                            <div id="current-pair-text" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-zinc-100 leading-tight truncate">...</div>
+            <!-- Live Widget (Premium Dashboard Card) -->
+            <div id="live-widget" class="liquid-glass p-6 md:p-8 mb-8 relative group transition-all overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6" style="border-radius: 32px;">
+                <!-- Subtle animated glow inside widget -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-400/20 transition-colors duration-700 pointer-events-none"></div>
+
+                <div class="flex items-center gap-5 relative z-10">
+                    <div class="relative w-14 h-14 shrink-0 hidden sm:block">
+                        <div class="absolute inset-0 bg-blue-500 rounded-[18px] animate-pulse-slow opacity-20"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[18px] flex items-center justify-center text-white shadow-lg border border-white/20">
+                            <i class="ph-fill ph-lightning text-2xl"></i>
                         </div>
                     </div>
-                    <div class="text-right shrink-0">
-                        <p id="elapsed-timer" class="text-2xl font-mono font-black text-blue-600 dark:text-blue-400 tracking-tight">00:00</p>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2.5 mb-1.5">
+                            <span class="relative flex h-2.5 w-2.5 shrink-0">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                            <h3 class="text-zinc-500 dark:text-zinc-400 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap" id="timer-label">Поточний статус</h3>
+                        </div>
+                        <div id="current-pair-text" class="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-white leading-tight truncate tracking-tight">...</div>
                     </div>
+                </div>
+                <div class="text-left md:text-right shrink-0 relative z-10 pl-1 sm:pl-0">
+                    <p id="elapsed-timer" class="text-4xl sm:text-5xl font-mono font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 tracking-tighter drop-shadow-sm">00:00</p>
                 </div>
             </div>
 
             <!-- ЗОНИ ВКЛАДОК -->
-            <div id="views-container">
+            <div id="views-container" class="max-w-5xl mx-auto">
                 
-                <!-- ПЕРСОНАЛЬНИЙ РОЗКЛАД (Компактний Timeline) -->
+                <!-- ПЕРСОНАЛЬНИЙ РОЗКЛАД -->
                 <div id="view-schedule" class="tab-content active">
-                    <div class="mb-6 flex flex-wrap justify-between items-end gap-4 relative z-10">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10">
                         <div>
-                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-1 block whitespace-nowrap">Актуально</span>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white whitespace-nowrap" id="active-student-name-title">Мій розклад</h2>
+                            <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-3">Актуально</span>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white whitespace-nowrap" id="active-student-name-title">Мій розклад</h2>
                         </div>
-                        <div class="flex glass-card p-1 rounded-xl shadow-sm shrink-0" id="personal-week-toggle">
-                            <button onclick="setPersMainWeek('upper')" id="btn-pers-upper" class="px-5 py-2 rounded-lg text-[11px] font-bold uppercase transition-all duration-300">Верхній</button>
-                            <button onclick="setPersMainWeek('lower')" id="btn-pers-lower" class="px-5 py-2 rounded-lg text-[11px] font-bold uppercase transition-all duration-300">Нижній</button>
+                        <div class="flex bg-zinc-200/50 dark:bg-zinc-800/50 p-1.5 rounded-2xl shadow-inner shrink-0 backdrop-blur-sm" id="personal-week-toggle">
+                            <button onclick="setPersMainWeek('upper')" id="btn-pers-upper" class="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300">Верхній</button>
+                            <button onclick="setPersMainWeek('lower')" id="btn-pers-lower" class="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300">Нижній</button>
                         </div>
                     </div>
 
-                    <!-- КАЛЕНДАР ТИЖНІВ ДЛЯ ПЕРСОНАЛЬНОГО -->
-                    <div class="mb-8 relative z-10 w-[calc(100%+16px)] -ml-2">
-                        <div class="flex gap-3 overflow-x-auto custom-scroll px-2 pt-2 pb-5 snap-x" id="pers-weeks-container"></div>
+                    <!-- КАЛЕНДАР ТИЖНІВ -->
+                    <div class="mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+3rem)] sm:-ml-6 md:w-full md:ml-0 overflow-hidden">
+                        <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 sm:px-6 md:px-1 py-2 pb-6 snap-x" id="pers-weeks-container"></div>
                     </div>
 
-                    <div id="schedule-grid" class="space-y-6"></div>
+                    <div id="schedule-grid" class="space-y-8 relative">
+                        <!-- Timeline line background is added dynamically in JS -->
+                    </div>
                 </div>
 
-                <!-- ОСНОВНИЙ РОЗКЛАД (Компактний Timeline) -->
+                <!-- ОСНОВНИЙ РОЗКЛАД -->
                 <div id="view-main" class="tab-content">
-                    <div class="mb-6 flex flex-wrap justify-between items-end gap-4 relative z-10">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10">
                         <div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap">Загальний</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">Розклад всієї групи</p>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Загальний</h2>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Розклад для всієї групи МБ-202</p>
                         </div>
-                        <div class="flex glass-card p-1 rounded-xl shadow-sm shrink-0" id="main-week-toggle">
-                            <button onclick="setMainViewWeek('upper')" id="btn-main-upper" class="px-5 py-2 rounded-lg text-[11px] font-bold uppercase transition-all duration-300">Верхній</button>
-                            <button onclick="setMainViewWeek('lower')" id="btn-main-lower" class="px-5 py-2 rounded-lg text-[11px] font-bold uppercase transition-all duration-300">Нижній</button>
+                        <div class="flex bg-zinc-200/50 dark:bg-zinc-800/50 p-1.5 rounded-2xl shadow-inner shrink-0 backdrop-blur-sm" id="main-week-toggle">
+                            <button onclick="setMainViewWeek('upper')" id="btn-main-upper" class="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300">Верхній</button>
+                            <button onclick="setMainViewWeek('lower')" id="btn-main-lower" class="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300">Нижній</button>
                         </div>
                     </div>
                     
                     <!-- КАЛЕНДАР ТИЖНІВ ДЛЯ ОСНОВНОГО -->
-                    <div class="mb-8 relative z-10 w-[calc(100%+16px)] -ml-2">
-                        <div class="flex gap-3 overflow-x-auto custom-scroll px-2 pt-2 pb-5 snap-x" id="main-weeks-container"></div>
+                    <div class="mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+3rem)] sm:-ml-6 md:w-full md:ml-0 overflow-hidden">
+                        <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 sm:px-6 md:px-1 py-2 pb-6 snap-x" id="main-weeks-container"></div>
                     </div>
 
-                    <div id="main-schedule-grid" class="space-y-6"></div>
+                    <div id="main-schedule-grid" class="space-y-8 relative"></div>
                 </div>
 
-                <!-- РЕДАКТОР РОЗКЛАДУ (ДЛЯ АДМІНІВ) -->
+                <!-- РЕДАКТОР РОЗКЛАДУ -->
                 <div id="view-editor" class="tab-content">
-                    <div class="mb-6 flex flex-wrap justify-between items-end gap-4 relative z-10">
-                        <div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap">Редактор</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">Керування розкладом</p>
-                        </div>
+                    <div class="mb-8 relative z-10">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Редактор</h2>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Керування розкладом (Доступ для адмінів)</p>
                     </div>
                     
-                    <div class="liquid-glass p-5 md:p-6 mb-8 rounded-3xl relative z-10">
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4">Додати пару вручну:</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div class="liquid-glass p-6 md:p-8 mb-10 rounded-[32px] relative z-10 border-t-4 border-t-amber-500">
+                        <h3 class="text-base font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2"><i class="ph-fill ph-plus-circle text-amber-500 text-xl"></i> Додати пару вручну</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
                             <div>
-                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">Тиждень</label>
-                                <select id="ed-week" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Тиждень</label>
+                                <select id="ed-week" class="w-full p-4 glass-input rounded-2xl text-sm font-semibold appearance-none cursor-pointer focus:ring-amber-500 border-zinc-200">
                                     <option value="upper">Верхній тиждень</option>
                                     <option value="lower">Нижній тиждень</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">День</label>
-                                <select id="ed-day" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">День</label>
+                                <select id="ed-day" class="w-full p-4 glass-input rounded-2xl text-sm font-semibold appearance-none cursor-pointer focus:ring-amber-500">
                                     <option value="Понеділок">Понеділок</option>
                                     <option value="Вівторок">Вівторок</option>
                                     <option value="Середа">Середа</option>
@@ -499,8 +546,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">Номер пари</label>
-                                <select id="ed-num" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Номер пари</label>
+                                <select id="ed-num" class="w-full p-4 glass-input rounded-2xl text-sm font-semibold appearance-none cursor-pointer focus:ring-amber-500">
                                     <option value="1">1 пара (08:30-09:45)</option>
                                     <option value="2">2 пара (10:00-11:15)</option>
                                     <option value="3">3 пара (11:30-12:45)</option>
@@ -511,8 +558,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1.5 ml-1">Дисципліна</label>
-                                <select id="ed-subj" class="w-full p-3.5 glass-input rounded-xl text-sm font-bold appearance-none cursor-pointer">
+                                <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Дисципліна</label>
+                                <select id="ed-subj" class="w-full p-4 glass-input rounded-2xl text-sm font-semibold appearance-none cursor-pointer focus:ring-amber-500">
                                     <option value="Маркетинг п|general|маркетинг">Маркетинг п</option>
                                     <option value="Підприємництво п|general|підприємництво">Підприємництво п</option>
                                     <option value="Екаунтинг-2 п|general|екаунтинг">Екаунтинг п</option>
@@ -530,52 +577,52 @@
                                 </select>
                             </div>
                         </div>
-                        <button onclick="addCustomPair()" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-sm uppercase tracking-wide rounded-xl shadow-lg shadow-amber-500/30 transition-all hover:-translate-y-0.5">Додати в розклад</button>
+                        <button onclick="addCustomPair()" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-sm uppercase tracking-widest rounded-2xl shadow-lg shadow-amber-500/30 transition-all hover:-translate-y-1 active:scale-[0.98]">Додати в розклад</button>
                     </div>
                     
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 ml-2">Додані вручну пари:</h3>
-                    <div id="editor-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"></div>
+                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2">Додані вручну пари:</h3>
+                    <div id="editor-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10"></div>
 
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 ml-2 mt-8">Приховані пари (скасовані):</h3>
-                    <div id="hidden-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2 mt-10">Приховані пари (скасовані):</h3>
+                    <div id="hidden-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
                 </div>
 
                 <!-- НАЧИТКА (АРХІВ) -->
                 <div id="view-lectures" class="tab-content">
-                    <div class="mb-6 flex flex-wrap justify-between items-end gap-4 relative z-10">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10">
                         <div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap"><i class="ph ph-archive mr-2 text-slate-400"></i>Начитка</h2>
-                            <p class="text-xs text-slate-500 font-bold whitespace-nowrap">Архів першого місяця</p>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap flex items-center gap-3"><i class="ph-fill ph-archive text-zinc-400"></i>Начитка</h2>
+                            <p class="text-sm text-zinc-500 font-medium whitespace-nowrap">Архів першого місяця</p>
                         </div>
-                        <div class="w-[calc(100%+16px)] -ml-2">
-                            <div id="week-selector-gen" class="flex gap-2 overflow-x-auto custom-scroll px-2 pt-2 pb-5 snap-x"></div>
+                        <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+3rem)] sm:-ml-6 md:w-auto md:ml-0 overflow-hidden">
+                            <div id="week-selector-gen" class="flex gap-2 overflow-x-auto no-scrollbar px-4 sm:px-6 md:px-1 py-2 pb-4 snap-x"></div>
                         </div>
                     </div>
-                    <div id="general-schedule-grid" class="space-y-6 opacity-80 grayscale-[30%]"></div>
+                    <div id="general-schedule-grid" class="space-y-6 opacity-80 grayscale-[30%] relative"></div>
                 </div>
 
                 <!-- ГРУПА -->
                 <div id="view-register" class="tab-content">
-                    <div class="mb-6 relative z-10">
-                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap">Група</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">Реєстр та дисципліни</p>
+                    <div class="mb-8 relative z-10">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Група</h2>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Студенти МБ-202 та дисципліни</p>
                     </div>
                     
                     <!-- Фільтри реєстру -->
-                    <div class="w-[calc(100%+16px)] -ml-2 mb-4 relative z-10">
-                        <div class="flex gap-2 overflow-x-auto custom-scroll px-2 pt-2 pb-5" id="register-filters"></div>
+                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+3rem)] sm:-ml-6 md:w-full md:ml-0 mb-6 relative z-10 overflow-hidden">
+                        <div class="flex gap-3 overflow-x-auto no-scrollbar px-4 sm:px-6 md:px-1 py-2 pb-4" id="register-filters"></div>
                     </div>
 
-                    <div class="liquid-glass overflow-hidden" style="border-radius: 24px;">
-                        <div class="p-4 border-b border-slate-200 dark:border-white/5 relative z-10">
-                            <div class="relative">
-                                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Пошук студента..." class="w-full pl-11 pr-4 py-2.5 glass-input rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                    <div class="liquid-glass overflow-hidden shadow-sm" style="border-radius: 32px;">
+                        <div class="p-6 border-b border-zinc-200/50 dark:border-white/5 relative z-10 bg-white/30 dark:bg-black/10">
+                            <div class="relative group">
+                                <i class="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 text-lg group-focus-within:text-blue-500 transition-colors"></i>
+                                <input type="text" id="global-search" oninput="handleSearch()" placeholder="Знайти студента..." class="w-full pl-12 pr-5 py-3.5 glass-input rounded-2xl text-sm font-semibold outline-none transition-all shadow-sm">
                             </div>
                         </div>
                         <div class="overflow-x-auto relative z-10">
-                            <table class="w-full text-left">
-                                <tbody id="reg-table-body" class="divide-y divide-slate-200/50 dark:divide-white/5"></tbody>
+                            <table class="w-full text-left border-collapse">
+                                <tbody id="reg-table-body" class="divide-y divide-zinc-200/50 dark:divide-white/5"></tbody>
                             </table>
                         </div>
                     </div>
@@ -583,187 +630,203 @@
 
                 <!-- ІСТОРІЯ ДЗ -->
                 <div id="view-homework" class="tab-content">
-                    <div class="mb-6 relative z-10">
-                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap">Історія Д/з</h2>
-                        <p class="text-xs text-slate-500 font-bold whitespace-nowrap">Стрічка доданих завдань</p>
+                    <div class="mb-8 relative z-10">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Історія Д/з</h2>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Стрічка завдань для МБ-202</p>
                     </div>
-                    <div id="homework-history-list" class="space-y-4"></div>
+                    <div id="homework-history-list" class="space-y-6"></div>
                 </div>
 
                 <!-- МАТЕРІАЛИ -->
                 <div id="view-materials" class="tab-content">
-                    <div class="mb-6 flex flex-wrap justify-between items-end gap-4 relative z-10">
+                    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 relative z-10">
                         <div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1 whitespace-nowrap">Матеріали</h2>
-                            <p class="text-xs text-slate-500 font-bold whitespace-nowrap">Корисні посилання та диски</p>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Матеріали</h2>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Корисні посилання, диски та чати</p>
                         </div>
-                        <button onclick="openMaterialModal()" class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5">
-                            <i class="ph ph-plus-circle text-lg"></i> Додати
+                        <button onclick="openMaterialModal()" class="w-full sm:w-auto px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 hover:-translate-y-1 active:scale-95">
+                            <i class="ph-bold ph-plus text-lg"></i> Додати
                         </button>
                     </div>
                     
-                    <div class="w-[calc(100%+16px)] -ml-2 mb-6 relative z-10">
-                        <div class="flex gap-2 overflow-x-auto custom-scroll px-2 pt-2 pb-5" id="material-filters"></div>
+                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+3rem)] sm:-ml-6 md:w-full md:ml-0 mb-8 relative z-10 overflow-hidden">
+                        <div class="flex gap-3 overflow-x-auto no-scrollbar px-4 sm:px-6 md:px-1 py-2 pb-4" id="material-filters"></div>
                     </div>
 
-                    <div id="materials-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                    <div id="materials-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </div>
 
             </div> 
         </main>
     </div>
 
-    <!-- НОВА МОБІЛЬНА НАВІГАЦІЯ (Плавайна капсула) -->
-    <nav class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] liquid-glass z-[100] shadow-2xl border border-white/40 dark:border-white/10" style="border-radius: 32px; background: rgba(255,255,255,0.75); backdrop-filter: blur(20px);">
-        <style>html.dark nav.md\:hidden { background: rgba(15, 23, 42, 0.85); }</style>
-        <div class="flex justify-between items-center px-2 py-1.5 relative z-10">
-            <button onclick="switchView('schedule')" id="nav-mob-schedule" class="nav-btn-mob flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400">
-                <i class="ph ph-user text-2xl mb-0.5 transition-transform duration-300"></i>
-                <span class="text-[9px] font-extrabold uppercase tracking-tight">Мій</span>
+    <!-- НОВА МОБІЛЬНА НАВІГАЦІЯ (Premium Floating Capsule) -->
+    <nav class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[380px] z-[100] shadow-2xl border border-white/40 dark:border-white/10 transition-transform duration-300" style="border-radius: 100px; background: rgba(255,255,255,0.85); backdrop-filter: blur(24px) saturate(150%);">
+        <style>html.dark nav.md\:hidden { background: rgba(24, 24, 27, 0.85); border-color: rgba(255,255,255,0.08); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); }</style>
+        <div class="flex justify-between items-center px-3 py-2 relative z-10">
+            <button onclick="switchView('schedule')" id="nav-mob-schedule" class="nav-btn-mob flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-all text-zinc-500 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 relative">
+                <i class="ph ph-user text-[26px] mb-1 transition-transform duration-300"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Мій</span>
             </button>
-            <button onclick="switchView('main')" id="nav-mob-main" class="nav-btn-mob flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400">
-                <i class="ph ph-calendar-blank text-2xl mb-0.5 transition-transform duration-300"></i>
-                <span class="text-[9px] font-extrabold uppercase tracking-tight">Осн.</span>
+            <button onclick="switchView('main')" id="nav-mob-main" class="nav-btn-mob flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-all text-zinc-500 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 relative">
+                <i class="ph ph-calendar-blank text-[26px] mb-1 transition-transform duration-300"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Осн.</span>
             </button>
-            <button onclick="switchView('materials')" id="nav-mob-materials" class="nav-btn-mob flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400">
-                <i class="ph ph-folder text-2xl mb-0.5 transition-transform duration-300"></i>
-                <span class="text-[9px] font-extrabold uppercase tracking-tight">Мат.</span>
+            <button onclick="switchView('materials')" id="nav-mob-materials" class="nav-btn-mob flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-all text-zinc-500 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 relative">
+                <i class="ph ph-folder text-[26px] mb-1 transition-transform duration-300"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Мат.</span>
             </button>
-            <button onclick="toggleMobileMenu()" class="flex flex-col items-center flex-1 py-1.5 rounded-2xl transition-all text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400">
-                <i class="ph ph-list text-2xl mb-0.5"></i>
-                <span class="text-[9px] font-extrabold uppercase tracking-tight">Меню</span>
+            <button onclick="toggleMobileMenu()" class="flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-all text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5">
+                <i class="ph ph-list text-[26px] mb-1"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Меню</span>
             </button>
         </div>
     </nav>
 
-    <!-- МОБІЛЬНЕ МЕНЮ (BottomSheet) -->
-    <div id="mob-menu-sheet" class="fixed inset-0 z-[200] bg-slate-900/50 flex items-end p-0 hidden backdrop-blur-sm transition-opacity opacity-0">
-        <div class="w-full bg-slate-50 dark:bg-[#020617] rounded-t-[32px] p-6 pb-12 transform translate-y-full transition-transform duration-300 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border-t border-slate-200 dark:border-white/10" id="mob-menu-content">
-            <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-6"></div>
+    <!-- МОБІЛЬНЕ МЕНЮ (Modern BottomSheet) -->
+    <div id="mob-menu-sheet" class="fixed inset-0 z-[200] bg-zinc-900/40 dark:bg-black/60 flex items-end p-0 hidden backdrop-blur-sm transition-opacity opacity-0">
+        <div class="w-full bg-[#f4f4f5] dark:bg-zinc-900 rounded-t-[40px] p-6 pb-12 transform translate-y-full transition-transform duration-400 shadow-[0_-20px_40px_rgba(0,0,0,0.1)] border-t border-white/50 dark:border-white/10" id="mob-menu-content">
+            <div class="w-16 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
             
-            <div class="space-y-2 mb-6">
-                <button onclick="switchView('homework'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-800 dark:text-slate-200 font-bold active:scale-95 transition-transform">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center"><i class="ph ph-pencil-simple-line text-xl"></i></div>
-                    Історія Д/з
+            <div class="space-y-3 mb-8">
+                <button onclick="switchView('homework'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all">
+                    <div class="w-12 h-12 rounded-[18px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 flex items-center justify-center"><i class="ph-fill ph-pencil-simple-line text-2xl"></i></div>
+                    <span class="text-[15px]">Історія Д/з</span>
                 </button>
-                <button onclick="switchView('register'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-800 dark:text-slate-200 font-bold active:scale-95 transition-transform">
-                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center"><i class="ph ph-users text-xl"></i></div>
-                    Група
+                <button onclick="switchView('register'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all">
+                    <div class="w-12 h-12 rounded-[18px] bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 flex items-center justify-center"><i class="ph-fill ph-users text-2xl"></i></div>
+                    <span class="text-[15px]">Реєстр групи</span>
                 </button>
-                <!-- Редактор для мобілок (Тільки для адмінів) -->
-                <button onclick="switchView('editor'); toggleMobileMenu()" id="nav-mob-editor" class="hidden w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-amber-700 dark:text-amber-500 font-bold active:scale-95 transition-transform">
-                    <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center"><i class="ph ph-pencil-line text-xl"></i></div>
-                    Редактор розкладу
+                <button onclick="switchView('editor'); toggleMobileMenu()" id="nav-mob-editor" class="hidden w-full flex items-center gap-4 p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-900/10 shadow-sm border border-amber-100 dark:border-amber-500/10 text-left text-amber-700 dark:text-amber-500 font-bold active:scale-[0.98] transition-all">
+                    <div class="w-12 h-12 rounded-[18px] bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center"><i class="ph-fill ph-pencil-line text-2xl"></i></div>
+                    <span class="text-[15px]">Редактор розкладу</span>
                 </button>
-                <button onclick="switchView('lectures'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-2xl glass-card text-left text-slate-500 dark:text-slate-400 font-bold active:scale-95 transition-transform">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 flex items-center justify-center"><i class="ph ph-archive text-xl"></i></div>
-                    Архів: Начитка
+                <button onclick="switchView('lectures'); toggleMobileMenu()" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-500 dark:text-zinc-400 font-bold active:scale-[0.98] transition-all">
+                    <div class="w-12 h-12 rounded-[18px] bg-zinc-100 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400 flex items-center justify-center"><i class="ph-fill ph-archive text-2xl"></i></div>
+                    <span class="text-[15px]">Архів: Начитка</span>
                 </button>
             </div>
 
-            <div class="flex gap-3">
-                <button onclick="toggleDarkMode(); toggleMobileMenu()" class="flex-1 py-3.5 rounded-xl font-bold text-sm glass-card text-slate-800 dark:text-slate-300 flex justify-center items-center gap-2">
-                    <i class="ph ph-moon text-lg" id="mob-menu-dark-icon"></i> Тема
+            <div class="flex gap-4">
+                <button onclick="toggleDarkMode(); toggleMobileMenu()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-white dark:bg-zinc-800 shadow-sm border border-zinc-100 dark:border-white/5 text-zinc-800 dark:text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-transform">
+                    <i class="ph-fill ph-moon text-xl" id="mob-menu-dark-icon"></i> Тема
                 </button>
-                <button onclick="logout()" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 flex justify-center items-center gap-2">
-                    <i class="ph ph-sign-out text-lg"></i> Вихід
+                <button onclick="logout()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20 flex justify-center items-center gap-2 active:scale-95 transition-transform">
+                    <i class="ph-bold ph-sign-out text-xl"></i> Вихід
                 </button>
             </div>
-            <button onclick="toggleMobileMenu()" class="mt-6 w-full py-3 text-sm font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Закрити</button>
         </div>
     </div>
 
-    <!-- Модалка ДЗ -->
-    <div id="hw-modal" class="fixed inset-0 z-[300] bg-slate-900/60 flex items-center justify-center p-4 hidden backdrop-blur-md transition-opacity opacity-0">
-        <div class="w-full max-w-md liquid-glass p-6 relative" style="border-radius: 28px;">
-            <button onclick="closeHwModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full glass-card text-slate-500 hover:text-slate-900 dark:hover:text-white transition z-10">
-                <i class="ph ph-x font-bold"></i>
+    <!-- Модалка ДЗ (Bento Glass style) -->
+    <div id="hw-modal" class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 hidden backdrop-blur-lg transition-opacity opacity-0">
+        <div class="w-full max-w-lg liquid-glass p-8 relative overflow-hidden" style="border-radius: 32px;">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 dark:to-transparent pointer-events-none"></div>
+            <button onclick="closeHwModal()" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/10 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all z-10 hover:scale-110 active:scale-95">
+                <i class="ph-bold ph-x"></i>
             </button>
             <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-600 border border-blue-200 dark:border-blue-500/30">
-                        <i class="ph ph-pencil-simple text-xl"></i>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-[18px] flex items-center justify-center text-blue-600 border border-blue-200/50 dark:border-blue-500/30">
+                        <i class="ph-fill ph-pencil-simple text-2xl"></i>
                     </div>
-                    <h2 class="text-lg font-extrabold text-slate-900 dark:text-white whitespace-nowrap">Додати ДЗ</h2>
+                    <h2 class="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">Додати ДЗ</h2>
                 </div>
-                <p id="hw-modal-title" class="text-blue-800 dark:text-blue-300 font-bold text-[11px] mb-4 px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-lg inline-block border border-blue-200 dark:border-blue-500/20"></p>
-                <textarea id="hw-textarea" placeholder="Опишіть завдання..." class="w-full p-4 glass-input text-slate-900 dark:text-white rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition font-medium text-sm h-28 resize-none mb-4 custom-scroll placeholder-slate-400"></textarea>
-                <div class="mb-5">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">Дедлайн (необов'язково)</label>
-                    <input type="text" id="hw-deadline" placeholder="Напр. 25.02" class="w-full p-3 glass-input text-slate-900 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-bold text-sm">
+                <p id="hw-modal-title" class="text-blue-700 dark:text-blue-300 font-bold text-xs mb-6 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 rounded-xl inline-block border border-blue-100 dark:border-blue-500/20 tracking-wide"></p>
+                
+                <div class="space-y-4 mb-8">
+                    <textarea id="hw-textarea" placeholder="Детальний опис завдання..." class="w-full p-5 glass-input text-zinc-900 dark:text-white rounded-[20px] outline-none transition font-medium text-[15px] h-36 resize-none custom-scroll placeholder-zinc-400 leading-relaxed shadow-inner"></textarea>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Дедлайн (необов'язково)</label>
+                        <div class="relative">
+                            <i class="ph-bold ph-calendar-blank absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                            <input type="text" id="hw-deadline" placeholder="Напр. 25.02" class="w-full pl-11 pr-4 py-4 glass-input text-zinc-900 dark:text-white rounded-2xl outline-none font-bold text-sm shadow-inner">
+                        </div>
+                    </div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="closeHwModal()" class="flex-1 py-3 rounded-xl font-bold text-sm glass-card text-slate-600 dark:text-slate-300">Скасувати</button>
-                    <button onclick="saveHw()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-blue-600 text-white shadow-lg shadow-blue-500/30">Зберегти</button>
+
+                <div class="flex gap-3">
+                    <button onclick="closeHwModal()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
+                    <button onclick="saveHw()" class="flex-[2] py-4 rounded-2xl font-bold text-sm bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 active:scale-95 tracking-wide">Зберегти завдання</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Модалка Матеріалів -->
-    <div id="material-modal" class="fixed inset-0 z-[300] bg-slate-900/60 flex items-center justify-center p-4 hidden backdrop-blur-md transition-opacity opacity-0">
-        <div class="w-full max-w-md liquid-glass p-6 relative" style="border-radius: 28px;">
-            <button onclick="closeMaterialModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full glass-card text-slate-500 transition z-10"><i class="ph ph-x font-bold"></i></button>
+    <div id="material-modal" class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 hidden backdrop-blur-lg transition-opacity opacity-0">
+        <div class="w-full max-w-lg liquid-glass p-8 relative overflow-hidden" style="border-radius: 32px;">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-900/10 dark:to-transparent pointer-events-none"></div>
+            <button onclick="closeMaterialModal()" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/10 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all z-10 hover:scale-110 active:scale-95"><i class="ph-bold ph-x"></i></button>
             <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-600 border border-blue-200 dark:border-blue-500/30"><i class="ph ph-link text-xl"></i></div>
-                    <h2 class="text-lg font-extrabold text-slate-900 dark:text-white whitespace-nowrap">Додати матеріал</h2>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-[18px] flex items-center justify-center text-indigo-600 border border-indigo-200/50 dark:border-indigo-500/30"><i class="ph-fill ph-link text-2xl"></i></div>
+                    <h2 class="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">Додати матеріал</h2>
                 </div>
-                <div class="space-y-3 mb-6">
-                    <input type="text" id="mat-title" placeholder="Назва..." class="w-full p-3 glass-input rounded-xl text-sm font-bold">
-                    <input type="url" id="mat-url" placeholder="Посилання (https://...)" class="w-full p-3 glass-input rounded-xl text-sm font-medium">
-                    <select id="mat-subj" class="w-full p-3 glass-input rounded-xl text-sm font-bold cursor-pointer appearance-none">
-                        <option value="Загальне" class="bg-white dark:bg-zinc-900">Загальне (Орг. питання)</option>
-                        <option value="Маркетинг" class="bg-white dark:bg-zinc-900">Маркетинг</option>
-                        <option value="Політологія" class="bg-white dark:bg-zinc-900">Політологія</option>
-                        <option value="Екаунтинг" class="bg-white dark:bg-zinc-900">Екаунтинг</option>
-                        <option value="Публічне адміністрування" class="bg-white dark:bg-zinc-900">Публічне адміністрування</option>
-                        <option value="Соціологія" class="bg-white dark:bg-zinc-900">Соціологія</option>
-                        <option value="Соціальне підприємництво" class="bg-white dark:bg-zinc-900">Соц. підприємництво</option>
-                        <option value="Підприємництво" class="bg-white dark:bg-zinc-900">Підприємництво</option>
-                        <option value="БЗВП" class="bg-white dark:bg-zinc-900">БЗВП</option>
-                        <option value="Іноземна мова" class="bg-white dark:bg-zinc-900">Іноземна мова</option>
-                        <option value="Друга іноземна" class="bg-white dark:bg-zinc-900">Друга іноземна мова</option>
-                    </select>
+                <div class="space-y-4 mb-8">
+                    <input type="text" id="mat-title" placeholder="Назва ресурсу..." class="w-full p-4 glass-input rounded-2xl text-[15px] font-bold shadow-inner">
+                    <input type="url" id="mat-url" placeholder="Посилання (https://...)" class="w-full p-4 glass-input rounded-2xl text-[15px] font-medium shadow-inner">
+                    <div class="relative">
+                        <select id="mat-subj" class="w-full p-4 glass-input rounded-2xl text-[15px] font-bold cursor-pointer appearance-none shadow-inner text-zinc-700 dark:text-zinc-200">
+                            <option value="Загальне" class="bg-white dark:bg-zinc-900">Загальне (Орг. питання)</option>
+                            <option value="Маркетинг" class="bg-white dark:bg-zinc-900">Маркетинг</option>
+                            <option value="Політологія" class="bg-white dark:bg-zinc-900">Політологія</option>
+                            <option value="Екаунтинг" class="bg-white dark:bg-zinc-900">Екаунтинг</option>
+                            <option value="Публічне адміністрування" class="bg-white dark:bg-zinc-900">Публічне адміністрування</option>
+                            <option value="Соціологія" class="bg-white dark:bg-zinc-900">Соціологія</option>
+                            <option value="Соціальне підприємництво" class="bg-white dark:bg-zinc-900">Соц. підприємництво</option>
+                            <option value="Підприємництво" class="bg-white dark:bg-zinc-900">Підприємництво</option>
+                            <option value="БЗВП" class="bg-white dark:bg-zinc-900">БЗВП</option>
+                            <option value="Іноземна мова" class="bg-white dark:bg-zinc-900">Іноземна мова</option>
+                            <option value="Друга іноземна" class="bg-white dark:bg-zinc-900">Друга іноземна мова</option>
+                        </select>
+                        <i class="ph-bold ph-caret-down absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"></i>
+                    </div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="closeMaterialModal()" class="flex-1 py-3 rounded-xl font-bold text-sm glass-card text-slate-600">Скасувати</button>
-                    <button onclick="saveMaterial()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-blue-600 text-white">Зберегти</button>
+                <div class="flex gap-3">
+                    <button onclick="closeMaterialModal()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
+                    <button onclick="saveMaterial()" class="flex-[2] py-4 rounded-2xl font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 active:scale-95 tracking-wide">Зберегти посилання</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Модалка Zoom -->
-    <div id="zoom-modal" class="fixed inset-0 z-[300] bg-slate-900/60 flex items-center justify-center p-4 hidden backdrop-blur-md transition-opacity opacity-0">
-        <div class="w-full max-w-md liquid-glass p-6 relative" style="border-radius: 28px;">
-            <button onclick="closeZoomModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full glass-card text-slate-500 transition z-10"><i class="ph ph-x font-bold"></i></button>
+    <div id="zoom-modal" class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 hidden backdrop-blur-lg transition-opacity opacity-0">
+        <div class="w-full max-w-lg liquid-glass p-8 relative overflow-hidden" style="border-radius: 32px;">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 dark:to-transparent pointer-events-none"></div>
+            <button onclick="closeZoomModal()" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/10 text-zinc-500 transition-all z-10 hover:scale-110 active:scale-95"><i class="ph-bold ph-x"></i></button>
             <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-600 border border-indigo-200 dark:border-indigo-500/30"><i class="ph ph-video-camera text-xl"></i></div>
-                    <h2 class="text-lg font-extrabold text-slate-900 dark:text-white whitespace-nowrap">Налаштування Zoom</h2>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-[18px] flex items-center justify-center text-blue-600 border border-blue-200/50 dark:border-blue-500/30"><i class="ph-fill ph-video-camera text-2xl"></i></div>
+                    <h2 class="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">Zoom Лінк</h2>
                 </div>
-                <p id="zoom-modal-title" class="text-indigo-800 dark:text-indigo-300 font-bold text-[11px] mb-4 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg inline-block"></p>
-                <input type="url" id="zoom-url-input" placeholder="https://zoom.us/j/..." class="w-full p-3 mb-5 glass-input rounded-xl text-sm font-medium">
-                <div class="flex gap-2">
-                    <button onclick="closeZoomModal()" class="flex-1 py-3 rounded-xl font-bold text-sm glass-card text-slate-600">Скасувати</button>
-                    <button onclick="saveZoomLink()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-indigo-600 text-white">Зберегти в хмару</button>
+                <p id="zoom-modal-title" class="text-blue-700 dark:text-blue-300 font-bold text-xs mb-6 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 rounded-xl inline-block tracking-wide"></p>
+                <div class="relative mb-8">
+                    <i class="ph-bold ph-link absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                    <input type="url" id="zoom-url-input" placeholder="https://zoom.us/j/..." class="w-full pl-11 pr-4 py-4 glass-input rounded-2xl text-[15px] font-medium shadow-inner">
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeZoomModal()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
+                    <button onclick="saveZoomLink()" class="flex-[2] py-4 rounded-2xl font-bold text-sm bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 active:scale-95 tracking-wide">Зберегти в хмару</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Модалка підтвердження видалення / приховування -->
-    <div id="confirm-modal" class="fixed inset-0 z-[400] bg-slate-900/60 flex items-center justify-center p-4 hidden backdrop-blur-md transition-opacity opacity-0">
-        <div class="w-full max-w-sm liquid-glass p-6 relative text-center" style="border-radius: 28px;">
-            <div class="w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center text-red-600 mx-auto mb-3 border border-red-200 dark:border-red-500/30">
-                <i class="ph ph-warning-circle text-2xl"></i>
+    <!-- Модалка підтвердження -->
+    <div id="confirm-modal" class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 hidden backdrop-blur-lg transition-opacity opacity-0">
+        <div class="w-full max-w-sm liquid-glass p-8 relative text-center overflow-hidden" style="border-radius: 32px;">
+            <div class="absolute inset-0 bg-gradient-to-b from-rose-50/50 to-transparent dark:from-rose-900/10 dark:to-transparent pointer-events-none"></div>
+            <div class="w-16 h-16 bg-rose-100 dark:bg-rose-500/20 rounded-[24px] flex items-center justify-center text-rose-600 mx-auto mb-5 border border-rose-200/50 dark:border-rose-500/30 transform rotate-3">
+                <i class="ph-fill ph-warning-circle text-3xl"></i>
             </div>
-            <h3 id="confirm-title" class="text-lg font-extrabold text-slate-900 dark:text-white mb-1">Підтвердження</h3>
-            <p id="confirm-text" class="text-xs font-bold text-slate-500 mb-5">Впевнені, що хочете виконати цю дію?</p>
-            <div class="flex gap-2">
-                <button onclick="closeConfirmModal()" class="flex-1 py-3 rounded-xl font-bold text-sm glass-card text-slate-600">Скасувати</button>
-                <button id="confirm-btn-yes" class="flex-1 py-3 rounded-xl font-bold text-sm bg-red-600 text-white">Підтвердити</button>
+            <h3 id="confirm-title" class="text-xl font-extrabold text-zinc-900 dark:text-white mb-2 tracking-tight">Підтвердження</h3>
+            <p id="confirm-text" class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">Впевнені, що хочете виконати цю дію?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
+                <button id="confirm-btn-yes" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-500/30 transition-all active:scale-95">Підтвердити</button>
             </div>
         </div>
     </div>
@@ -945,11 +1008,10 @@
                 setTimeout(() => { m.style.opacity = 1; c.classList.remove('translate-y-full'); }, 10);
             } else {
                 m.style.opacity = 0; c.classList.add('translate-y-full');
-                setTimeout(() => m.classList.add('hidden'), 300);
+                setTimeout(() => m.classList.add('hidden'), 400);
             }
         }
 
-        // РЕШТА КОНСТАНТ І ФУНКЦІЙ ЗБЕРЕЖЕНА
         const zoomLinks = {
             "маркетинг": "https://us04web.zoom.us/j/73655681421?pwd=4uXIxO7llz8HQW8adqLXkQeV4XpB0G.1",
             "політологія": "https://us02web.zoom.us/j/4967822437?pwd=HwC2X8Tg4EQxyfs0sRaDpgkdcsLAId.1",
@@ -961,17 +1023,17 @@
         };
 
         const discColors = {
-            "німецька": "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30",
-            "польська": "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border-amber-300 dark:border-amber-500/30",
-            "французька": "bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 border-blue-300 dark:border-blue-500/30",
-            "китайська": "bg-rose-100 text-rose-800 dark:bg-rose-500/20 dark:text-rose-400 border-rose-300 dark:border-rose-500/30",
-            "політологія": "bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400 border-indigo-300 dark:border-indigo-500/30",
-            "публічне адміністрування": "bg-cyan-100 text-cyan-800 dark:bg-cyan-500/20 dark:text-cyan-400 border-cyan-300 dark:border-cyan-500/30",
-            "соціальне підприємництво": "bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400 border-orange-300 dark:border-orange-500/30",
-            "соціологія": "bg-purple-100 text-purple-800 dark:bg-purple-500/20 dark:text-purple-400 border-purple-300 dark:border-purple-500/30",
-            "бзвп": "bg-slate-200 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400 border-slate-300 dark:border-slate-500/30",
-            "англ: маркова": "bg-sky-100 text-sky-800 dark:bg-sky-500/20 dark:text-sky-400 border-sky-300 dark:border-sky-500/30",
-            "англ: мельник": "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-500/20 dark:text-fuchsia-400 border-fuchsia-300 dark:border-fuchsia-500/30"
+            "німецька": "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20",
+            "польська": "bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400 border-amber-200 dark:border-amber-500/20",
+            "французька": "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400 border-blue-200 dark:border-blue-500/20",
+            "китайська": "bg-rose-100 text-rose-800 dark:bg-rose-500/10 dark:text-rose-400 border-rose-200 dark:border-rose-500/20",
+            "політологія": "bg-indigo-100 text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20",
+            "публічне адміністрування": "bg-cyan-100 text-cyan-800 dark:bg-cyan-500/10 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/20",
+            "соціальне підприємництво": "bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400 border-orange-200 dark:border-orange-500/20",
+            "соціологія": "bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400 border-purple-200 dark:border-purple-500/20",
+            "бзвп": "bg-zinc-200 text-zinc-800 dark:bg-zinc-500/10 dark:text-zinc-400 border-zinc-300 dark:border-zinc-500/20",
+            "англ: маркова": "bg-sky-100 text-sky-800 dark:bg-sky-500/10 dark:text-sky-400 border-sky-200 dark:border-sky-500/20",
+            "англ: мельник": "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-500/10 dark:text-fuchsia-400 border-fuchsia-200 dark:border-fuchsia-500/20"
         };
 
         const students = [
@@ -1125,7 +1187,8 @@
             document.getElementById('mob-user-avatar-top').textContent = state.selectedStudent.name.charAt(0);
             
             if (state.selectedStudent.isStarosta) {
-                document.getElementById('pc-user-role').innerHTML = `<span class="text-amber-500 font-bold">Староста</span>`;
+                document.getElementById('pc-user-role').innerHTML = `<span class="text-amber-500 font-bold uppercase tracking-widest text-[10px]">Староста</span>`;
+                document.getElementById('mob-user-avatar-top').classList.add('ring-amber-500', 'ring-offset-2', 'ring-offset-[#f4f4f5]', 'dark:ring-offset-zinc-950');
             }
 
             const canEditSchedule = state.selectedStudent && (state.selectedStudent.id == 19 || state.selectedStudent.id == 2);
@@ -1156,9 +1219,9 @@
                 list.classList.remove('hidden');
                 filtered.forEach(s => {
                     const d = document.createElement('div');
-                    d.className = "px-4 py-3 rounded-xl glass-card hover:bg-white/50 dark:hover:bg-white/10 cursor-pointer font-bold text-sm transition-all flex items-center justify-between";
-                    const starostaBadge = s.isStarosta ? `<span class="px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[9px] font-extrabold uppercase rounded-lg border border-amber-500/30">Староста</span>` : '';
-                    d.innerHTML = `<span class="text-slate-800 dark:text-zinc-200 whitespace-nowrap overflow-hidden text-ellipsis mr-2">${s.name}</span>${starostaBadge}`;
+                    d.className = "px-5 py-4 rounded-2xl bg-white/50 dark:bg-zinc-800/50 hover:bg-white dark:hover:bg-zinc-800 cursor-pointer font-bold text-[15px] transition-all duration-300 flex items-center justify-between shadow-sm border border-transparent hover:border-blue-500/20 group";
+                    const starostaBadge = s.isStarosta ? `<span class="px-2.5 py-1 bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 text-[10px] font-extrabold uppercase tracking-wide rounded-lg border border-amber-200 dark:border-amber-500/20">Староста</span>` : '';
+                    d.innerHTML = `<span class="text-zinc-800 dark:text-zinc-200 whitespace-nowrap overflow-hidden text-ellipsis mr-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">${s.name}</span>${starostaBadge}`;
                     d.onclick = () => { localStorage.setItem('selectedStudentId', s.id); state.selectedStudent = s; initApp(); };
                     list.appendChild(d);
                 });
@@ -1205,7 +1268,7 @@
                 const el = document.getElementById('today-schedule-card');
                 if (el) {
                     const y = el.getBoundingClientRect().top + window.scrollY - 80;
-                    window.scrollTo({top: y, behavior: 'smooth'});
+                    document.getElementById('main-scroll-area').scrollTo({top: y, behavior: 'smooth'});
                 }
             }, 300);
         }
@@ -1218,31 +1281,42 @@
             document.getElementById('main-scroll-area').scrollTop = 0;
 
             document.querySelectorAll('.nav-btn-pc').forEach(btn => {
+                const wrapper = btn.querySelector('.nav-icon-wrapper');
+                const icon = btn.querySelector('i');
+                
                 if(btn.id === `nav-pc-${view}`) {
-                    btn.classList.add('bg-white', 'dark:bg-[#111115]', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm', 'border', 'border-slate-200', 'dark:border-white/5');
-                    btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'border-transparent', 'opacity-70');
-                    if (btn.id !== 'nav-pc-editor') btn.querySelector('i').classList.replace('ph', 'ph-fill');
-                } else {
-                    btn.classList.remove('bg-white', 'dark:bg-[#111115]', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm', 'border', 'border-slate-200', 'dark:border-white/5');
-                    btn.classList.add('border-transparent');
-                    if (btn.id === 'nav-pc-editor') btn.classList.add('text-amber-600', 'dark:text-amber-500');
-                    else btn.classList.add('text-slate-500', 'dark:text-slate-400');
+                    btn.classList.add('bg-white', 'dark:bg-zinc-800', 'shadow-sm', 'border-zinc-200/50', 'dark:border-white/5');
+                    btn.classList.remove('hover:bg-black/5', 'dark:hover:bg-white/5', 'border-transparent');
                     
-                    if (btn.id === 'nav-pc-lectures') btn.classList.add('opacity-70');
-                    if (btn.id !== 'nav-pc-editor') btn.querySelector('i').classList.replace('ph-fill', 'ph');
+                    if (btn.id !== 'nav-pc-editor') {
+                        btn.classList.add('text-zinc-900', 'dark:text-white');
+                        btn.classList.remove('text-zinc-500', 'dark:text-zinc-400');
+                        if (wrapper) wrapper.classList.add('bg-blue-50', 'text-blue-600', 'dark:bg-blue-500/20', 'dark:text-blue-400');
+                        if (icon) icon.classList.replace('ph', 'ph-fill');
+                    }
+                } else {
+                    btn.classList.remove('bg-white', 'dark:bg-zinc-800', 'shadow-sm', 'border-zinc-200/50', 'dark:border-white/5');
+                    btn.classList.add('border-transparent', 'hover:bg-black/5', 'dark:hover:bg-white/5');
+                    
+                    if (btn.id !== 'nav-pc-editor') {
+                        btn.classList.remove('text-zinc-900', 'dark:text-white');
+                        btn.classList.add('text-zinc-500', 'dark:text-zinc-400');
+                        if (wrapper) wrapper.classList.remove('bg-blue-50', 'text-blue-600', 'dark:bg-blue-500/20', 'dark:text-blue-400');
+                        if (icon) icon.classList.replace('ph-fill', 'ph');
+                    }
                 }
             });
 
             document.querySelectorAll('.nav-btn-mob').forEach(btn => {
                 const icon = btn.querySelector('i');
                 if(btn.id === `nav-mob-${view}`) {
-                    btn.classList.add('text-blue-600', 'dark:text-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
-                    btn.classList.remove('text-slate-500', 'dark:text-slate-400');
-                    icon.classList.replace('ph', 'ph-fill');
+                    btn.classList.add('text-blue-600', 'dark:text-blue-400');
+                    btn.classList.remove('text-zinc-500', 'dark:text-zinc-400');
+                    if (icon) icon.classList.replace('ph', 'ph-fill');
                 } else {
-                    btn.classList.remove('text-blue-600', 'dark:text-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
-                    btn.classList.add('text-slate-500', 'dark:text-slate-400');
-                    icon.classList.replace('ph-fill', 'ph');
+                    btn.classList.remove('text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('text-zinc-500', 'dark:text-zinc-400');
+                    if (icon) icon.classList.replace('ph-fill', 'ph');
                 }
             });
 
@@ -1269,17 +1343,21 @@
                 const isPersActive = state.view === 'schedule' && state.persActiveWeekNum === w.n;
                 const isActive = isMainActive || isPersActive;
                 
-                const baseClass = "week-card snap-start shrink-0 cursor-pointer bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-3.5 rounded-[1.25rem] flex flex-col min-w-[105px] shadow-sm border-b-[3px] " + (w.t==='upper' ? 'border-b-blue-400 ' : 'border-b-indigo-400 ');
-                const activeClass = isActive ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-[#020617] !bg-blue-50/50 dark:!bg-blue-900/20' : '';
+                const baseClass = "week-card snap-start shrink-0 cursor-pointer bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-white/5 hover:shadow-lg hover:-translate-y-1 hover:border-blue-400/30 transition-all duration-300 p-4 rounded-[24px] flex flex-col min-w-[115px] shadow-sm relative overflow-hidden group";
+                const activeClass = isActive ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#f4f4f5] dark:ring-offset-zinc-950 !bg-blue-50/50 dark:!bg-blue-900/10' : '';
+                const gradientLine = w.t === 'upper' ? 'bg-gradient-to-r from-blue-400 to-blue-600' : 'bg-gradient-to-r from-indigo-400 to-indigo-600';
                 
                 return `
                     <div data-week="${w.n}" onclick="handleWeekCardClick(${w.n}, '${w.t}')" class="${baseClass} ${activeClass}">
-                        <div class="flex justify-between items-center mb-1.5">
-                            <span class="text-[22px] leading-none font-black text-slate-800 dark:text-white">${w.n}</span>
-                            <i class="ph-fill ${w.t==='upper' ? 'ph-arrow-circle-up text-blue-500' : 'ph-arrow-circle-down text-indigo-500'} text-lg"></i>
+                        <div class="absolute top-0 left-0 right-0 h-1.5 ${gradientLine} opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="flex justify-between items-center mb-2 mt-1">
+                            <span class="text-[26px] leading-none font-black text-zinc-800 dark:text-white tracking-tighter">${w.n}</span>
+                            <div class="w-7 h-7 rounded-full ${w.t==='upper' ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-indigo-50 text-indigo-500 dark:bg-indigo-500/10 dark:text-indigo-400'} flex items-center justify-center">
+                                <i class="ph-bold ${w.t==='upper' ? 'ph-arrow-up' : 'ph-arrow-down'} text-sm"></i>
+                            </div>
                         </div>
-                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-1 whitespace-nowrap">${w.t==='upper' ? 'Верхній' : 'Нижній'}</span>
-                        <span class="text-[10px] font-mono font-bold text-slate-400 whitespace-nowrap">${w.d}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-0.5 whitespace-nowrap">${w.t==='upper' ? 'Верхній' : 'Нижній'}</span>
+                        <span class="text-[11px] font-medium text-zinc-400 whitespace-nowrap">${w.d}</span>
                     </div>
                 `;
             }).join('');
@@ -1361,7 +1439,12 @@
             const grid = document.getElementById(containerId); grid.innerHTML = '';
             
             if (scheduleList.length === 0) {
-                grid.innerHTML = `<div class="text-center p-8 text-sm font-bold text-slate-400 border border-dashed rounded-2xl">Немає пар у ці дні.</div>`;
+                grid.innerHTML = `
+                    <div class="flex flex-col items-center justify-center p-12 text-center bg-white/50 dark:bg-zinc-900/30 rounded-[32px] border border-dashed border-zinc-300 dark:border-zinc-800">
+                        <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-400 mb-4"><i class="ph-fill ph-coffee text-3xl"></i></div>
+                        <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-1">Немає пар</h3>
+                        <p class="text-sm font-medium text-zinc-500">У ці дні розклад порожній. Можна відпочивати.</p>
+                    </div>`;
                 return;
             }
 
@@ -1378,7 +1461,7 @@
                 if (isToday) hasToday = true;
 
                 const dayCard = document.createElement('div');
-                dayCard.className = `mb-8 relative timeline-container opacity-0 animate-fade-in-up ${isToday ? 'is-today' : ''}`;
+                dayCard.className = `mb-10 relative opacity-0 animate-fade-in-up timeline-item ${isToday ? 'is-today' : ''}`;
                 dayCard.style.animationDelay = `${dayIdx * 100}ms`;
                 if (isToday) dayCard.id = "today-schedule-card";
 
@@ -1389,10 +1472,13 @@
                 });
 
                 let pairsHtml = '';
-                Object.keys(groupedPairs).sort((a,b) => a - b).forEach(numKey => {
+                const sortedKeys = Object.keys(groupedPairs).sort((a,b) => a - b);
+                
+                sortedKeys.forEach((numKey, index) => {
                     const pairsGroup = groupedPairs[numKey];
                     const timeStr = pairsGroup[0].time;
                     const numStr = pairsGroup[0].num;
+                    const isLastInDay = index === sortedKeys.length - 1;
 
                     let cardsHtml = pairsGroup.map((p) => {
                         let displaySubj = p.subj;
@@ -1414,17 +1500,17 @@
                         
                         let zBtn = '';
                         if (zoomUrl) {
-                            zBtn = `<a href="${zoomUrl}" target="_blank" class="p-2 rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 hover:bg-blue-200 transition-colors shadow-sm" title="Zoom"><i class="ph-fill ph-video-camera text-base"></i></a>`;
+                            zBtn = `<a href="${zoomUrl}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-[14px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all hover:scale-105 active:scale-95" title="Join Zoom"><i class="ph-fill ph-video-camera text-xl"></i></a>`;
                         } else if (canEditSchedule) {
-                            zBtn = `<button onclick="openZoomModal('${p.subj}')" class="p-2 rounded-xl bg-slate-100 text-slate-400 hover:bg-blue-50 hover:text-blue-500 dark:bg-white/5 transition-colors"><i class="ph ph-plus"></i></button>`;
+                            zBtn = `<button onclick="openZoomModal('${p.subj}')" class="w-10 h-10 flex items-center justify-center rounded-[14px] bg-zinc-50 text-zinc-400 hover:bg-zinc-100 hover:text-blue-500 dark:bg-white/5 dark:hover:bg-white/10 transition-all hover:scale-105 active:scale-95"><i class="ph-bold ph-plus text-lg"></i></button>`;
                         }
 
                         let trashBtn = '';
                         if (canEditSchedule) {
                             if (p.isCustom) {
-                                trashBtn = `<button onclick="promptHidePair('${weekType}', '${day.day}', ${p.num}, '${p.subj}', '${p.id}')" class="px-2 py-1.5 rounded-xl border border-red-200 dark:border-red-900/30 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition flex items-center justify-center" title="Видалити додану пару"><i class="ph ph-trash"></i></button>`;
+                                trashBtn = `<button onclick="promptHidePair('${weekType}', '${day.day}', ${p.num}, '${p.subj}', '${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-[14px] border border-rose-100 dark:border-rose-900/30 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all hover:scale-105 active:scale-95" title="Видалити додану пару"><i class="ph-fill ph-trash text-lg"></i></button>`;
                             } else {
-                                trashBtn = `<button onclick="promptHidePair('${weekType}', '${day.day}', ${p.num}, '${p.subj}', null)" class="px-2 py-1.5 rounded-xl border border-red-200 dark:border-red-900/30 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition flex items-center justify-center" title="Приховати цю пару"><i class="ph ph-eye-slash"></i></button>`;
+                                trashBtn = `<button onclick="promptHidePair('${weekType}', '${day.day}', ${p.num}, '${p.subj}', null)" class="w-10 h-10 flex items-center justify-center rounded-[14px] border border-rose-100 dark:border-rose-900/30 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all hover:scale-105 active:scale-95" title="Приховати цю пару"><i class="ph-fill ph-eye-slash text-lg"></i></button>`;
                             }
                         }
 
@@ -1432,42 +1518,50 @@
                         if (!isPersonal && weekNum) {
                             const count = globalHomeworks.filter(h => h.subj === p.subj && h.weekNum === weekNum && h.day === day.day && h.num === p.num).length;
                             if (count > 0) {
-                                hwBadge = `<div class="ml-auto flex items-center gap-1 px-2 py-1 bg-green-50 text-green-600 dark:bg-green-500/20 dark:text-green-400 rounded-lg text-[10px] font-bold"><i class="ph-fill ph-check-circle"></i> ${count}</div>`;
+                                hwBadge = `<div class="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 rounded-xl text-xs font-bold border border-emerald-100 dark:border-emerald-500/20"><i class="ph-fill ph-check-circle"></i> ${count}</div>`;
                             }
                         }
 
-                        const badgeColor = p.type === 'general' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300' : (p.type === 'lang' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' : 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300');
-                        const tLbl = p.type === 'general' ? 'Загальне' : (p.type === 'lang' ? 'Мова' : 'Вибір');
-                        const cardBorder = isToday ? 'border-blue-400/50 dark:border-blue-500/30' : 'border-slate-200 dark:border-slate-800';
-                        const cardBg = isToday ? 'bg-blue-50/50 dark:bg-blue-900/10' : 'bg-white/80 dark:bg-[#0f172a]/80';
+                        const badgeColor = p.type === 'general' ? 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20' : (p.type === 'lang' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20' : 'bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20');
+                        const tLbl = p.type === 'general' ? 'Загальне' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
+                        
+                        const cardBg = isToday ? 'bg-white dark:bg-zinc-800' : 'bg-white/80 dark:bg-zinc-900/80';
+                        const cardBorder = isToday ? 'border-blue-200 dark:border-blue-800/50 shadow-[0_8px_30px_rgba(59,130,246,0.12)] dark:shadow-[0_8px_30px_rgba(59,130,246,0.05)]' : 'border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-xl';
+                        const cardIndicator = isToday ? 'bg-blue-500' : (p.type === 'general' ? 'bg-zinc-200 dark:bg-zinc-700' : 'bg-transparent');
 
                         return `
-                            <div class="w-full ${cardBg} backdrop-blur-md border ${cardBorder} rounded-2xl p-4 shadow-sm hover:shadow-md transition-all group-hover:-translate-y-0.5 relative overflow-hidden">
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wide whitespace-nowrap ${badgeColor}">${tLbl}</span>
-                                </div>
-                                <div class="text-[14px] sm:text-base font-extrabold text-slate-900 dark:text-white leading-snug mb-3 pr-2">${displaySubj}</div>
+                            <div class="group w-full ${cardBg} backdrop-blur-md border ${cardBorder} rounded-[24px] p-5 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-full">
+                                <!-- Subtle left indicator -->
+                                <div class="absolute left-0 top-0 bottom-0 w-1 ${cardIndicator} opacity-50 group-hover:opacity-100 transition-opacity"></div>
                                 
-                                <div class="flex items-center gap-2 mt-auto">
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest whitespace-nowrap border ${badgeColor}">${tLbl}</span>
+                                </div>
+                                <div class="text-[15px] sm:text-[17px] font-extrabold text-zinc-900 dark:text-white leading-snug tracking-tight mb-5 pr-2 flex-1">${displaySubj}</div>
+                                
+                                <div class="flex items-center gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-white/5">
                                     ${zBtn}
-                                    <button onclick="openHwModal('${p.subj}', '${weekType}', '${day.day}', ${p.num}, ${weekNum || 0})" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 text-[10px] font-bold uppercase transition flex items-center gap-1.5"><i class="ph ph-pencil-simple"></i> Д/з</button>
+                                    <button onclick="openHwModal('${p.subj}', '${weekType}', '${day.day}', ${p.num}, ${weekNum || 0})" class="px-4 py-2.5 h-10 rounded-[14px] bg-zinc-50 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-500/10 text-xs font-bold transition-all flex items-center gap-2 flex-1 justify-center active:scale-95"><i class="ph-bold ph-pencil-simple text-sm"></i> Д/з</button>
                                     ${trashBtn}
                                     ${hwBadge}
                                 </div>
                             </div>
                         `;
-                    }).join('<div class="h-3"></div>');
+                    }).join('<div class="h-4"></div>');
 
                     pairsHtml += `
-                        <div class="flex items-stretch gap-4 relative z-10 mb-5 last:mb-0 group">
-                            <div class="w-12 shrink-0 flex flex-col items-center pt-1 relative">
-                                <div class="bg-slate-50 dark:bg-[#020617] py-1 z-10 w-full flex flex-col items-center">
-                                    <span class="text-[11px] font-bold text-slate-800 dark:text-slate-200 leading-none">${timeStr.split('-')[0]}</span>
-                                    <span class="text-[9px] text-slate-400 mt-0.5">${timeStr.split('-')[1]}</span>
+                        <div class="flex items-stretch gap-4 sm:gap-6 relative z-10 mb-8 last:mb-0 group">
+                            ${!isLastInDay ? '<div class="timeline-connector"></div>' : ''}
+                            
+                            <!-- Enhanced Time Bubble -->
+                            <div class="w-14 shrink-0 flex flex-col items-center relative z-10 mt-1">
+                                <div class="w-12 h-12 rounded-[18px] ${isToday ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white shadow-sm'} flex flex-col items-center justify-center transition-all group-hover:scale-105">
+                                    <span class="text-[13px] font-black leading-none tracking-tight">${timeStr.split('-')[0]}</span>
                                 </div>
-                                <div class="absolute top-[32px] w-6 h-6 rounded-full border-4 border-slate-50 dark:border-[#020617] ${isToday ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'} text-[10px] flex items-center justify-center font-bold z-10 shadow-sm">${numStr}</div>
+                                <div class="mt-2 text-[10px] font-bold text-zinc-400 bg-[#f4f4f5] dark:bg-zinc-950 px-2 py-0.5 rounded-full">${numStr} пара</div>
                             </div>
-                            <div class="flex-1 flex flex-col justify-center">
+                            
+                            <div class="flex-1 flex flex-col justify-center w-full min-w-0">
                                 ${cardsHtml}
                             </div>
                         </div>
@@ -1475,14 +1569,18 @@
                 });
 
                 let headerClasses = isToday 
-                    ? "bg-blue-600 text-white shadow-md ring-4 ring-blue-500/20" 
-                    : "bg-slate-50/90 dark:bg-[#020617]/90 text-blue-600 dark:text-blue-400 shadow-sm";
+                    ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20 ring-4 ring-blue-500/10" 
+                    : "bg-white/80 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 shadow-sm border border-zinc-200/50 dark:border-white/5 backdrop-blur-md";
 
                 dayCard.innerHTML = `
-                    <h3 class="text-sm font-bold mb-4 ml-14 sticky top-14 z-20 py-1.5 px-3 rounded-xl inline-block backdrop-blur-md whitespace-nowrap ${headerClasses}">
-                        ${day.day} <span class="opacity-80 font-medium ml-1.5">${specificDate}</span>
-                    </h3>
-                    <div class="flex flex-col">
+                    <div class="sticky top-16 sm:top-20 z-20 mb-6 flex items-center pointer-events-none">
+                        <div class="w-14 shrink-0 pointer-events-auto"></div>
+                        <h3 class="text-sm font-bold py-2.5 px-5 rounded-[16px] inline-flex items-center gap-2 whitespace-nowrap pointer-events-auto ${headerClasses}">
+                            ${day.day} 
+                            <span class="${isToday ? 'text-blue-200' : 'text-zinc-400'} font-medium text-xs ml-1 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-md">${specificDate}</span>
+                        </h3>
+                    </div>
+                    <div class="flex flex-col relative">
                         ${pairsHtml}
                     </div>
                 `;
@@ -1499,8 +1597,8 @@
             const btnUp = document.getElementById('btn-main-upper');
             const btnLo = document.getElementById('btn-main-lower');
             
-            btnUp.className = (state.mainViewWeek === 'upper' && !state.mainActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
-            btnLo.className = (state.mainViewWeek === 'lower' && !state.mainActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
+            btnUp.className = (state.mainViewWeek === 'upper' && !state.mainActiveWeekNum) ? "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide bg-white dark:bg-zinc-700 text-blue-600 dark:text-blue-400 shadow-sm whitespace-nowrap" : "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 whitespace-nowrap";
+            btnLo.className = (state.mainViewWeek === 'lower' && !state.mainActiveWeekNum) ? "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide bg-white dark:bg-zinc-700 text-blue-600 dark:text-blue-400 shadow-sm whitespace-nowrap" : "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 whitespace-nowrap";
 
             const mergedData = getMergedSchedule(state.mainViewWeek);
             renderTimelineSchedule('main-schedule-grid', mergedData, false, state.mainViewWeek, state.mainActiveWeekNum);
@@ -1511,8 +1609,8 @@
             const btnUp = document.getElementById('btn-pers-upper');
             const btnLo = document.getElementById('btn-pers-lower');
             
-            btnUp.className = (state.persMainWeek === 'upper' && !state.persActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
-            btnLo.className = (state.persMainWeek === 'lower' && !state.persActiveWeekNum) ? "px-5 py-2 rounded-lg text-[11px] font-extrabold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap" : "px-5 py-2 rounded-lg text-[11px] font-bold uppercase text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 whitespace-nowrap";
+            btnUp.className = (state.persMainWeek === 'upper' && !state.persActiveWeekNum) ? "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide bg-white dark:bg-zinc-700 text-blue-600 dark:text-blue-400 shadow-sm whitespace-nowrap" : "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 whitespace-nowrap";
+            btnLo.className = (state.persMainWeek === 'lower' && !state.persActiveWeekNum) ? "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide bg-white dark:bg-zinc-700 text-blue-600 dark:text-blue-400 shadow-sm whitespace-nowrap" : "px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 whitespace-nowrap";
 
             const mergedData = getMergedSchedule(state.persMainWeek);
             renderTimelineSchedule('schedule-grid', mergedData, true, state.persMainWeek, state.persActiveWeekNum);
@@ -1563,19 +1661,19 @@
             
             list.innerHTML = '';
             if(globalExtraPairs.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center p-6 text-sm font-bold text-slate-400 border border-dashed rounded-2xl">Немає доданих пар.</div>`;
+                list.innerHTML = `<div class="col-span-full text-center p-10 text-sm font-bold text-zinc-400 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-[24px]">Немає доданих пар.</div>`;
             } else {
                 globalExtraPairs.forEach((p) => {
                     const w = p.weekType === 'upper' ? 'Верхній' : 'Нижній';
                     const el = document.createElement('div');
-                    el.className = "bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative";
+                    el.className = "bg-white dark:bg-zinc-900 p-5 rounded-[24px] border border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-md transition-all flex flex-col relative group";
                     el.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] font-extrabold uppercase bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 px-2 py-1 rounded">${w} • ${p.day}</span>
-                            <button onclick="promptHidePair(null, null, null, null, '${p.id}')" class="text-slate-400 hover:text-red-500 transition"><i class="ph ph-trash text-lg"></i></button>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20 px-3 py-1.5 rounded-lg">${w} • ${p.day}</span>
+                            <button onclick="promptHidePair(null, null, null, null, '${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"><i class="ph-fill ph-trash text-lg"></i></button>
                         </div>
-                        <div class="font-extrabold text-sm text-slate-900 dark:text-white">${p.subj}</div>
-                        <div class="text-[11px] font-bold text-slate-500 mt-1">${p.num} пара</div>
+                        <div class="font-extrabold text-base text-zinc-900 dark:text-white leading-snug tracking-tight mb-2">${p.subj}</div>
+                        <div class="text-xs font-bold text-zinc-500 mt-auto pt-4 border-t border-zinc-100 dark:border-white/5 flex items-center gap-1.5"><i class="ph-bold ph-clock"></i> ${p.num} пара</div>
                     `;
                     list.appendChild(el);
                 });
@@ -1583,19 +1681,19 @@
 
             hiddenList.innerHTML = '';
             if(globalHiddenPairs.length === 0) {
-                hiddenList.innerHTML = `<div class="col-span-full text-center p-6 text-sm font-bold text-slate-400 border border-dashed rounded-2xl">Немає прихованих пар.</div>`;
+                hiddenList.innerHTML = `<div class="col-span-full text-center p-10 text-sm font-bold text-zinc-400 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-[24px]">Немає прихованих пар.</div>`;
             } else {
                 globalHiddenPairs.forEach((p) => {
                     const w = p.weekType === 'upper' ? 'Верхній' : 'Нижній';
                     const el = document.createElement('div');
-                    el.className = "bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative opacity-60 hover:opacity-100 transition-opacity";
+                    el.className = "bg-zinc-50 dark:bg-zinc-900/50 p-5 rounded-[24px] border border-zinc-200/60 dark:border-white/5 flex flex-col relative opacity-70 hover:opacity-100 transition-opacity";
                     el.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] font-extrabold uppercase bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-1 rounded flex items-center gap-1"><i class="ph-fill ph-eye-slash"></i>${w} • ${p.day}</span>
-                            <button onclick="promptRestorePair('${p.id}')" class="text-blue-500 hover:text-blue-600 transition" title="Відновити пару"><i class="ph ph-arrow-counter-clockwise text-lg"></i></button>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-rose-50 text-rose-700 border border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i class="ph-fill ph-eye-slash"></i> ${w} • ${p.day}</span>
+                            <button onclick="promptRestorePair('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors" title="Відновити пару"><i class="ph-bold ph-arrow-u-up-left text-lg"></i></button>
                         </div>
-                        <div class="font-extrabold text-sm text-slate-900 dark:text-white line-through">${p.subj}</div>
-                        <div class="text-[11px] font-bold text-slate-500 mt-1">${p.num} пара</div>
+                        <div class="font-extrabold text-base text-zinc-900 dark:text-white leading-snug tracking-tight mb-2 line-through decoration-rose-500/50 decoration-2">${p.subj}</div>
+                        <div class="text-xs font-bold text-zinc-500 mt-auto pt-4 border-t border-zinc-200 dark:border-white/5 flex items-center gap-1.5"><i class="ph-bold ph-clock"></i> ${p.num} пара</div>
                     `;
                     hiddenList.appendChild(el);
                 });
@@ -1662,43 +1760,41 @@
             const list = document.getElementById('homework-history-list');
             list.innerHTML = '';
             if (globalHomeworks.length === 0) {
-                list.innerHTML = `<div class="text-center p-10 text-sm text-slate-500 font-bold border-2 border-dashed rounded-3xl">Завдань поки немає.</div>`;
+                list.innerHTML = `<div class="text-center p-12 text-sm text-zinc-500 font-bold border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[32px] bg-white/50 dark:bg-zinc-900/30">Завдань поки немає.</div>`;
                 return;
             }
             globalHomeworks.forEach((hw, index) => {
                 const item = document.createElement('div');
-                item.className = "bg-white dark:bg-[#0f172a] p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all relative z-10 opacity-0 animate-fade-in-up";
+                item.className = "bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-[32px] border border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-lg transition-all relative z-10 opacity-0 animate-fade-in-up group";
                 item.style.animationDelay = `${index * 50}ms`;
                 
                 const weekLabel = hw.weekNum ? `${hw.weekNum} тиж.` : (hw.weekType === 'upper' ? 'Верх.' : 'Ниж.');
                 const authorObj = students.find(s => s.name === hw.author);
-                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
+                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded text-[9px] ml-2 font-extrabold uppercase tracking-wide border border-amber-100 dark:border-amber-500/20">Староста</span>` : '';
                 
                 const canDelete = state.selectedStudent && (state.selectedStudent.name === hw.author || state.selectedStudent.isStarosta || state.selectedStudent.id == 19);
-                const deleteBtn = canDelete ? `<button onclick="promptDeleteHw('${hw.id}')" class="p-2 text-slate-400 hover:text-red-500 bg-slate-50 dark:bg-slate-800 rounded-xl transition"><i class="ph ph-trash"></i></button>` : '';
-                const deadlineHtml = hw.deadline && hw.deadline !== 'Не вказано' ? `<div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-600 dark:bg-rose-500/10 rounded-xl text-[10px] font-bold"><i class="ph-fill ph-clock"></i> Дедлайн: ${hw.deadline}</div>` : '';
+                const deleteBtn = canDelete ? `<button onclick="promptDeleteHw('${hw.id}')" class="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-[14px] transition-all absolute top-6 right-6 opacity-0 group-hover:opacity-100"><i class="ph-fill ph-trash"></i></button>` : '';
+                const deadlineHtml = hw.deadline && hw.deadline !== 'Не вказано' ? `<div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:border-rose-500/20 rounded-xl text-xs font-bold tracking-wide"><i class="ph-bold ph-calendar-check"></i> Дедлайн: ${hw.deadline}</div>` : '';
 
                 item.innerHTML = `
-                    <div class="flex justify-between items-start gap-4 mb-3">
-                        <div>
-                            <span class="inline-block px-2.5 py-1 bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 rounded-lg text-[10px] font-extrabold uppercase mb-2">${hw.subj}</span>
-                            <div class="text-[11px] font-bold text-slate-500 whitespace-nowrap">
-                                ${hw.day} &bull; ${hw.num} пара &bull; <span class="text-blue-500">${weekLabel}</span>
-                            </div>
-                        </div>
-                        ${deleteBtn}
-                    </div>
-                    <div class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-white/5">
-                        ${hw.text.replace(/\n/g, '<br>')}
-                        ${deadlineHtml}
-                    </div>
-                    <div class="flex items-center gap-2 pt-2">
-                        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black">${hw.author.charAt(0)}</div>
+                    ${deleteBtn}
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-[14px] bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-black text-sm border border-blue-200/50 dark:border-blue-700/30 shrink-0 shadow-sm">${hw.author.charAt(0)}</div>
                         <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${hw.author.split(' ')[0]} ${starostaBadge}</span>
-                            <span class="text-[9px] font-mono text-slate-400">${hw.date}</span>
+                            <span class="text-xs font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center">${hw.author.split(' ')[0]} ${hw.author.split(' ')[1]} ${starostaBadge}</span>
+                            <span class="text-[10px] font-bold text-zinc-400 mt-0.5">${hw.date}</span>
                         </div>
                     </div>
+                    
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest mb-3">${hw.subj}</span>
+                        <div class="text-xs font-bold text-zinc-500 flex items-center gap-2">
+                            <i class="ph-bold ph-calendar-blank"></i> ${hw.day} &bull; ${hw.num} пара &bull; ${weekLabel}
+                        </div>
+                    </div>
+                    
+                    <div class="text-[15px] sm:text-base font-semibold text-zinc-800 dark:text-zinc-200 leading-relaxed bg-[#f4f4f5] dark:bg-zinc-950/50 p-5 sm:p-6 rounded-[24px] border border-zinc-200/60 dark:border-white/5 shadow-inner whitespace-pre-wrap">${hw.text}</div>
+                    ${deadlineHtml}
                 `;
                 list.appendChild(item);
             });
@@ -1763,49 +1859,55 @@
             const subjectsInUse = ['Всі', 'Загальне', ...new Set(globalMaterials.map(m => m.subj).filter(s => s !== 'Загальне'))].sort();
             
             filterContainer.innerHTML = subjectsInUse.map(s => {
-                const activeClass = currentMaterialFilter === s ? 'bg-blue-600 text-white shadow-md border-blue-500' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/5';
-                return `<button onclick="setMaterialFilter('${s}')" class="px-4 py-2 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap border ${activeClass}">${s}</button>`;
+                const activeClass = currentMaterialFilter === s ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent' : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200/60 dark:border-white/5 hover:bg-zinc-50 dark:hover:bg-zinc-700';
+                return `<button onclick="setMaterialFilter('${s}')" class="px-5 py-2.5 rounded-xl text-[11px] font-bold tracking-wide uppercase transition-all whitespace-nowrap border ${activeClass}">${s}</button>`;
             }).join('');
 
             grid.innerHTML = '';
             const filtered = currentMaterialFilter === 'Всі' ? globalMaterials : globalMaterials.filter(m => m.subj === currentMaterialFilter);
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center p-8 text-sm text-slate-500 font-bold border-2 border-dashed rounded-3xl">Папка порожня.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center p-12 text-sm text-zinc-500 font-bold border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[32px] bg-white/50 dark:bg-zinc-900/30">Матеріалів поки немає.</div>`;
                 return;
             }
 
             filtered.forEach((m, index) => {
                 const authorObj = students.find(s => s.name === m.author);
-                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 text-[9px] ml-1 font-bold uppercase">Староста</span>` : '';
+                const starostaBadge = authorObj && authorObj.isStarosta ? `<span class="text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 rounded text-[8px] ml-1.5 font-extrabold uppercase border border-amber-100 dark:border-amber-500/20">Староста</span>` : '';
                 const canDelete = state.selectedStudent && (state.selectedStudent.name === m.author || state.selectedStudent.isStarosta || state.selectedStudent.id == 19);
-                const deleteBtn = canDelete ? `<button onclick="promptDeleteMaterial('${m.id}')" class="w-8 h-8 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-red-500 rounded-xl transition"><i class="ph ph-trash"></i></button>` : '';
+                const deleteBtn = canDelete ? `<button onclick="promptDeleteMaterial('${m.id}')" class="w-8 h-8 flex items-center justify-center bg-zinc-50 dark:bg-white/5 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-colors opacity-0 group-hover:opacity-100"><i class="ph-fill ph-trash"></i></button>` : '';
 
-                let iconClass = 'ph-link'; let iconColor = 'text-blue-500';
+                let iconClass = 'ph-link'; let iconColor = 'text-blue-500'; let iconBg = 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20';
                 const lowerUrl = m.url.toLowerCase();
-                if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconClass = 'ph-google-drive-logo'; iconColor = 'text-emerald-500'; }
-                if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconClass = 'ph-telegram-logo'; iconColor = 'text-sky-500'; }
-                if(lowerUrl.includes('zoom.us')) { iconClass = 'ph-video-camera'; iconColor = 'text-blue-500'; }
-                if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconClass = 'ph-youtube-logo'; iconColor = 'text-red-500'; }
+                if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconClass = 'ph-google-drive-logo'; iconColor = 'text-emerald-500'; iconBg = 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20'; }
+                if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconClass = 'ph-telegram-logo'; iconColor = 'text-sky-500'; iconBg = 'bg-sky-50 dark:bg-sky-500/10 border-sky-100 dark:border-sky-500/20'; }
+                if(lowerUrl.includes('zoom.us')) { iconClass = 'ph-video-camera'; iconColor = 'text-blue-500'; iconBg = 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20'; }
+                if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconClass = 'ph-youtube-logo'; iconColor = 'text-rose-500'; iconBg = 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/20'; }
 
                 const card = document.createElement('div');
-                card.className = "bg-white dark:bg-[#0f172a] p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all flex flex-col h-full opacity-0 animate-fade-in-up";
+                card.className = "group bg-white dark:bg-zinc-900 p-6 rounded-[28px] border border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full opacity-0 animate-fade-in-up relative overflow-hidden";
                 card.style.animationDelay = `${index * 50}ms`;
                 
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="inline-block px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-[9px] font-bold uppercase text-slate-600 dark:text-slate-300 whitespace-nowrap">${m.subj}</span>
+                    <div class="flex justify-between items-start mb-5">
+                        <div class="w-12 h-12 rounded-[16px] border flex items-center justify-center shadow-sm ${iconBg} ${iconColor}">
+                            <i class="ph-fill ${iconClass} text-2xl"></i>
+                        </div>
                         ${deleteBtn}
                     </div>
-                    <h3 class="font-extrabold text-sm text-slate-900 dark:text-white flex items-start gap-2 mb-4"><i class="ph-fill ${iconClass} ${iconColor} mt-0.5 text-lg shrink-0"></i> ${m.title}</h3>
-                    <div class="mt-auto pt-4 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black">${m.author.charAt(0)}</div>
+                    
+                    <span class="inline-block px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-[9px] font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap mb-3">${m.subj}</span>
+                    
+                    <h3 class="font-extrabold text-[17px] text-zinc-900 dark:text-white mb-6 tracking-tight leading-snug line-clamp-2">${m.title}</h3>
+                    
+                    <div class="mt-auto pt-5 flex items-center justify-between border-t border-zinc-100 dark:border-white/5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-[11px] font-black text-zinc-600 dark:text-zinc-400">${m.author.charAt(0)}</div>
                             <div class="flex flex-col">
-                                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${m.author.split(' ')[0]} ${starostaBadge}</span>
+                                <span class="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 whitespace-nowrap flex items-center">${m.author.split(' ')[0]} ${starostaBadge}</span>
                             </div>
                         </div>
-                        <a href="${m.url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 rounded-xl text-[10px] font-bold hover:bg-blue-100 flex items-center gap-1"><i class="ph-bold ph-arrow-square-out text-sm"></i></a>
+                        <a href="${m.url}" target="_blank" class="w-9 h-9 flex items-center justify-center bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-md" title="Відкрити посилання"><i class="ph-bold ph-arrow-right text-sm"></i></a>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1832,16 +1934,16 @@
             if(cur) {
                 label.innerText = "До кінця пари";
                 const subj = today?.pairs.find(p => p.num === cur.idx)?.subj || "Заняття";
-                el.innerHTML = `<span class='font-medium opacity-50 mr-1'>${cur.idx} Пара:</span> ${subj}`;
+                el.innerHTML = `<span class='font-semibold text-blue-500 mr-1'>${cur.idx} Пара:</span> ${subj}`;
                 timerEl.innerText = calculateDiff(cur.end, now);
             } else if(nxt) {
                 label.innerText = "До початку пари";
                 const s = today?.pairs.find(p => p.num === nxt.idx)?.subj || "...";
-                el.innerHTML = `<span class='font-medium opacity-50 mr-1'>Наст. (${nxt.idx}):</span> ${s}`;
+                el.innerHTML = `<span class='font-semibold text-blue-500 mr-1'>Наст. (${nxt.idx}):</span> ${s}`;
                 timerEl.innerText = calculateDiff(nxt.start, now);
             } else {
                 label.innerText = "Поточний час";
-                el.innerHTML = `<span class='opacity-50 italic'>Пари завершено ☕</span>`;
+                el.innerHTML = `<span class='text-zinc-500 dark:text-zinc-400'>Пари завершено ☕</span>`;
                 timerEl.innerText = now.toTimeString().slice(0,5);
             }
         }
@@ -1873,8 +1975,8 @@
             if(!container) return;
 
             container.innerHTML = filters.map(f => {
-                const activeClass = currentRegFilter === f.id ? 'bg-blue-600 text-white shadow-md border-blue-500' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/5';
-                return `<button onclick="setRegFilter('${f.id}')" class="px-4 py-2 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap border ${activeClass}">${f.label}</button>`;
+                const activeClass = currentRegFilter === f.id ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent' : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200/60 dark:border-white/5 hover:bg-zinc-50 dark:hover:bg-zinc-700';
+                return `<button onclick="setRegFilter('${f.id}')" class="px-5 py-2.5 rounded-xl text-[11px] font-bold tracking-wide uppercase transition-all whitespace-nowrap border ${activeClass}">${f.label}</button>`;
             }).join('');
         }
 
@@ -1892,16 +1994,18 @@
                 const isCurrentUser = state.selectedStudent && state.selectedStudent.id === s.id;
                 const tr = document.createElement('tr');
                 
-                if (isCurrentUser) {
-                    tr.className = "bg-blue-50/80 dark:bg-blue-900/20";
-                }
+                tr.className = `transition-colors hover:bg-black/5 dark:hover:bg-white/5 group ${isCurrentUser ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}`;
                 
-                const b = s.electives.map(e => `<span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase border shadow-sm whitespace-nowrap ${discColors[e] || 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">${e}</span>`).join(' ');
-                const starostaBadge = s.isStarosta ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold uppercase rounded border">Староста</span>` : '';
-                const youBadge = isCurrentUser ? `<span class="ml-2 text-[10px] font-extrabold text-blue-500 dark:text-blue-400">(Ви)</span>` : '';
-                const nameColor = isCurrentUser ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-zinc-200";
+                const b = s.electives.map(e => `<span class="px-2 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest border shadow-sm whitespace-nowrap ${discColors[e] || 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'}">${e}</span>`).join(' ');
+                const starostaBadge = s.isStarosta ? `<span class="ml-2 px-2 py-0.5 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[9px] font-extrabold uppercase tracking-wide rounded border border-amber-200 dark:border-amber-500/20">Староста</span>` : '';
+                const youBadge = isCurrentUser ? `<span class="ml-2 px-2 py-0.5 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[9px] font-extrabold uppercase tracking-wide rounded border border-blue-200 dark:border-blue-500/30">(Це ви)</span>` : '';
+                const nameColor = isCurrentUser ? "text-blue-600 dark:text-blue-400" : "text-zinc-900 dark:text-zinc-100";
                 
-                tr.innerHTML = `<td class="py-3 px-2 text-xs font-bold text-slate-400 w-8 text-center">${i+1}</td><td class="py-3 px-2 font-bold text-[13px] ${nameColor} whitespace-nowrap">${s.name} ${starostaBadge}${youBadge}</td><td class="py-3 px-2 flex flex-wrap gap-1">${b}</td>`;
+                tr.innerHTML = `
+                    <td class="py-4 px-4 sm:px-6 text-[13px] font-bold text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
+                    <td class="py-4 px-2 sm:px-4 font-extrabold text-[14px] ${nameColor} tracking-tight whitespace-nowrap">${s.name} ${starostaBadge}${youBadge}</td>
+                    <td class="py-4 px-4 sm:px-6 flex flex-wrap gap-1.5 justify-end sm:justify-start">${b}</td>
+                `;
                 body.appendChild(tr);
             });
         }
@@ -1916,8 +2020,8 @@
             const weekLabels = { 24: "1-ша", 25: "2-га", 26: "3-тя", 27: "4-та" };
             const make = (target, type) => weeks.map(w => {
                 const act = target === w;
-                const cls = act ? "bg-slate-800 text-white dark:bg-white dark:text-slate-900 shadow-sm" : "bg-transparent text-slate-500 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5";
-                return `<button onclick="setWeek(${w}, '${type}')" class="px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all whitespace-nowrap ${cls}">${weekLabels[w]}</button>`;
+                const cls = act ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent" : "bg-white dark:bg-zinc-800 text-zinc-500 border border-zinc-200/60 dark:border-white/5 hover:bg-zinc-50 dark:hover:bg-zinc-700";
+                return `<button onclick="setWeek(${w}, '${type}')" class="px-5 py-2 rounded-xl text-[11px] font-bold tracking-wide uppercase transition-all whitespace-nowrap border ${cls}">${weekLabels[w]}</button>`;
             }).join('');
             const genSel = document.getElementById('week-selector-gen');
             if(genSel) genSel.innerHTML = make(state.genWeek, 'general');
@@ -1928,32 +2032,40 @@
             const data = scheduleData[state.genWeek] || [];
             
             if (data.length === 0) {
-                grid.innerHTML = `<div class="text-center p-8 text-sm font-bold text-slate-400 border border-dashed rounded-2xl">Немає даних</div>`;
+                grid.innerHTML = `<div class="text-center p-12 text-sm text-zinc-500 font-bold border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[32px] bg-white/50 dark:bg-zinc-900/30">Немає даних</div>`;
                 return;
             }
 
             data.forEach((day, index) => {
                 const dayCard = document.createElement('div');
-                dayCard.className = "mb-6 relative timeline-container";
+                dayCard.className = "mb-8 relative";
                 const dName = day.day;
                 
                 let pairsHtml = day.pairs.map(p => {
-                    let zBtn = (p.zoomKey && zoomLinks[p.zoomKey]) ? `<a href="${zoomLinks[p.zoomKey]}" target="_blank" class="p-1.5 rounded-lg bg-blue-100 text-blue-600"><i class="ph-fill ph-video-camera"></i></a>` : '';
+                    let zBtn = (p.zoomKey && zoomLinks[p.zoomKey]) ? `<a href="${zoomLinks[p.zoomKey]}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-[14px] bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:scale-105 active:scale-95 transition-transform"><i class="ph-fill ph-video-camera text-lg"></i></a>` : '';
                     return `
-                        <div class="flex items-center gap-3 relative z-10 mb-3">
-                            <div class="w-12 shrink-0 flex flex-col items-center">
-                                <div class="bg-slate-50 dark:bg-[#020617] py-1 z-10 text-[10px] font-bold text-slate-500">${p.time.split('-')[0]}</div>
-                                <div class="absolute top-[50%] -translate-y-1/2 w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 text-[9px] flex items-center justify-center font-bold z-10">${p.num}</div>
+                        <div class="flex items-center gap-4 relative z-10 mb-4 group">
+                            <div class="w-14 shrink-0 flex flex-col items-center">
+                                <div class="bg-[#f4f4f5] dark:bg-zinc-950 px-2 z-10 text-[11px] font-bold text-zinc-400 mb-1 rounded-full">${p.time.split('-')[0]}</div>
+                                <div class="w-7 h-7 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-white/10 text-[11px] flex items-center justify-center font-black shadow-sm">${p.num}</div>
                             </div>
-                            <div class="flex-1 bg-white/50 dark:bg-[#0f172a]/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex justify-between items-center">
-                                <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${p.subj}</div>
+                            <div class="flex-1 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200/60 dark:border-white/5 rounded-[20px] p-4 flex justify-between items-center shadow-sm group-hover:shadow-md transition-shadow">
+                                <div class="text-[14px] font-extrabold tracking-tight text-zinc-800 dark:text-zinc-200">${p.subj}</div>
                                 ${zBtn}
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                dayCard.innerHTML = `<h3 class="text-xs font-bold text-slate-500 mb-3 ml-14 sticky top-14 bg-slate-50/90 dark:bg-[#020617]/90 inline-block px-2 whitespace-nowrap">${dName}, ${day.date}</h3><div>${pairsHtml}</div>`;
+                dayCard.innerHTML = `
+                    <div class="sticky top-16 sm:top-20 z-20 mb-5 flex items-center pointer-events-none">
+                        <div class="w-14 shrink-0 pointer-events-auto"></div>
+                        <h3 class="text-xs font-bold py-2 px-4 rounded-[14px] inline-flex items-center gap-2 whitespace-nowrap pointer-events-auto bg-white/90 dark:bg-zinc-800/90 text-zinc-800 dark:text-zinc-200 shadow-sm border border-zinc-200/50 dark:border-white/5 backdrop-blur-md">
+                            ${dName} <span class="text-zinc-400 font-medium ml-1">${day.date}</span>
+                        </h3>
+                    </div>
+                    <div class="flex flex-col relative pl-2">${pairsHtml}</div>
+                `;
                 grid.appendChild(dayCard);
             });
             updateWeekSelectors();
@@ -1990,7 +2102,7 @@
         function fallbackSaveZoomLink(url) {
             customZoomLinks[currentZoomSubj] = url;
             localStorage.setItem('portal-custom-zoom', JSON.stringify(customZoomLinks));
-            refreshViews(['schedule', 'main']);
+            refreshViews(['schedule', 'main', 'lectures']);
         }
 
         function handleSearch() { renderRegister(); }
