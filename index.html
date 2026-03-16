@@ -11,7 +11,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Tailwind Config to keep your custom animations -->
+    <!-- Tailwind Config to keep custom animations -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -59,10 +59,10 @@
 </head>
 <body class="text-slate-800 dark:text-zinc-200 bg-slate-50 dark:bg-black transition-colors duration-500 antialiased min-h-screen flex flex-col relative font-sans">
 
-    <!-- Background Mesh Gradients -->
+    <!-- Background Mesh Gradients (Teal & Emerald Theme) -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-blue-500/10 blur-[120px] animate-pulse-slow"></div>
-        <div class="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-violet-600/10 blur-[100px] animate-pulse-slow" style="animation-delay: 3s;"></div>
+        <div class="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-teal-500/10 blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-emerald-600/10 blur-[100px] animate-pulse-slow" style="animation-delay: 3s;"></div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
@@ -73,16 +73,15 @@
             <div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 shadow-lg rounded-full px-4 py-3 flex items-center justify-between">
                 
                 <div class="flex items-center gap-3 cursor-pointer group" onclick="window.app.setView('dashboard')">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-full flex items-center justify-center text-white shadow-inner shadow-white/20 group-hover:scale-105 transition-transform">
+                    <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center text-white shadow-inner shadow-white/20 group-hover:scale-105 transition-transform">
                         <span class="text-sm font-black tracking-tighter">МБ</span>
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="font-extrabold text-[15px] tracking-tight text-zinc-900 dark:text-white leading-none">Портал</h1>
-                        <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-0.5 block">МБ-202</span>
+                        <span class="text-[9px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mt-0.5 block">МБ-202</span>
                     </div>
                 </div>
 
-                <!-- Desktop Nav is now explicitly marked relative for the sliding pill -->
                 <div id="desktop-nav" class="hidden md:flex items-center gap-1 bg-zinc-100/50 dark:bg-black/30 p-1 rounded-full border border-zinc-200/50 dark:border-white/5 relative overflow-hidden">
                     <!-- Injected via JS -->
                 </div>
@@ -96,7 +95,7 @@
                         <div class="text-right hidden lg:block" id="header-user-info">
                             <!-- Injected via JS -->
                         </div>
-                        <div onclick="window.app.logout()" id="header-user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-100 to-indigo-50 dark:from-blue-900/40 dark:to-violet-900/20 text-blue-700 dark:text-blue-300 flex items-center justify-center font-black text-sm border border-blue-200/50 dark:border-blue-700/30 cursor-pointer hover:shadow-md transition-all">
+                        <div onclick="window.app.logout()" id="header-user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-100 to-emerald-50 dark:from-teal-900/40 dark:to-emerald-900/20 text-teal-700 dark:text-teal-300 flex items-center justify-center font-black text-sm border border-teal-200/50 dark:border-teal-700/30 cursor-pointer hover:shadow-md transition-all">
                             А
                         </div>
                     </div>
@@ -123,10 +122,9 @@
 
     <!-- AUTH SCREEN -->
     <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 hidden">
-        <!-- Auth Background -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-blue-500/10 blur-[100px] animate-pulse-slow"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-violet-600/10 blur-[100px] animate-pulse-slow" style="animation-delay: 2s;"></div>
+            <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-teal-500/10 blur-[100px] animate-pulse-slow"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-emerald-600/10 blur-[100px] animate-pulse-slow" style="animation-delay: 2s;"></div>
         </div>
 
         <div class="w-full max-w-md bg-white/70 dark:bg-zinc-900/70 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 sm:p-12 rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden animate-fade-in z-10">
@@ -221,15 +219,37 @@
 
         const mainScheduleData = {
             upper: [
-                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
-                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
+                { day: "Понеділок", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
+                    { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
+                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: маркова" }, 
+                    { num: 5, time: "14:30-15:45", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: маркова" }, 
+                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }, 
+                    { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }
+                ]},
+                { day: "Вівторок", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, 
+                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: мельник" }, 
+                    { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }
+                ]},
                 { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Маркетинг п", type: "general" }]},
                 { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 3, time: "11:30-12:45", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }]}
             ],
             lower: [
-                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }]},
-                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 2, time: "10:00-11:15", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова-Шматок)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Мельник-Шматок)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
+                { day: "Понеділок", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
+                    { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
+                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: маркова" }, 
+                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }
+                ]},
+                { day: "Вівторок", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, 
+                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, 
+                    { num: 2, time: "10:00-11:15", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: мельник" }, 
+                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: мельник" }, 
+                    { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }
+                ]},
                 { day: "Середа", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }]},
                 { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво п", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг п", type: "general" }]}
@@ -353,7 +373,7 @@
             const toast = document.createElement('div');
             toast.className = `px-5 py-3.5 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-fade-in-up flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-red-500/90 border-red-400/50' : 'bg-zinc-900/90 dark:bg-zinc-100/90 dark:text-zinc-900 border-white/10 dark:border-zinc-900/10'}`;
             toast.innerHTML = `
-                <i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" class="w-5 h-5 ${!isError ? 'text-blue-400 dark:text-blue-500' : ''}"></i>
+                <i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" class="w-5 h-5 ${!isError ? 'text-teal-400 dark:text-teal-500' : ''}"></i>
                 <span>${msg}</span>
             `;
             container.appendChild(toast);
@@ -390,6 +410,8 @@
         // --- RENDERING ENGINES ---
         
         const renderNav = () => {
+            const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
+            
             const navItems = [
                 { id: 'dashboard', icon: 'layout-dashboard' },
                 { id: 'schedule', icon: 'user' },
@@ -398,17 +420,25 @@
                 { id: 'homework', icon: 'pen-tool' },
                 { id: 'register', icon: 'users' },
             ];
+
+            // Додаємо кнопку редактора в головне меню, якщо це Пилипенко або Великоконь
+            if (canEdit) {
+                navItems.push({ id: 'editor', icon: 'settings' });
+            }
             
-            // --- DESKTOP NAV SLIDING INDICATOR ---
             const activeIndex = Math.max(0, navItems.findIndex(i => i.id === window.appState.view));
-            const offset = 4 + activeIndex * 44; // 4px initial padding + 44px (40px width + 4px gap)
+            const offset = 4 + activeIndex * 44;
             
             const deskNav = document.getElementById('desktop-nav');
             
-            // Создаем DOM элементы только 1 раз, чтобы transition работал без перерисовок
+            // Якщо кількість елементів змінилася, змушуємо меню перемалюватись
+            if (deskNav.dataset.itemCount && parseInt(deskNav.dataset.itemCount) !== navItems.length) {
+                deskNav.dataset.init = ""; 
+            }
+            
             if (!deskNav.dataset.init) {
                 deskNav.innerHTML = `
-                    <div id="desk-pill" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gradient-to-r from-blue-100 via-indigo-200 to-blue-100 dark:from-blue-500/30 dark:via-indigo-400/30 dark:to-blue-500/30 bg-[length:200%_200%] animate-gradient-flow shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>
+                    <div id="desk-pill" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gradient-to-r from-teal-100 via-emerald-200 to-teal-100 dark:from-teal-500/30 dark:via-emerald-400/30 dark:to-teal-500/30 bg-[length:200%_200%] animate-gradient-flow shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>
                     ${navItems.map(item => `
                         <button id="desk-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300">
                             <i data-lucide="${item.icon}" class="w-4 h-4 transition-all duration-300"></i>
@@ -416,21 +446,20 @@
                     `).join('')}
                 `;
                 deskNav.dataset.init = "true";
+                deskNav.dataset.itemCount = navItems.length;
                 lucide.createIcons({ root: deskNav });
             }
             
-            // Плавно двигаем ползунок
             const deskPill = document.getElementById('desk-pill');
             if(deskPill) deskPill.style.transform = `translate(${offset}px, -50%)`;
 
-            // Обновляем состояния иконок (цвета) без пересоздания DOM
             navItems.forEach(item => {
                 const isActive = window.appState.view === item.id;
                 const btn = document.getElementById(`desk-btn-${item.id}`);
                 if(btn) {
-                    btn.className = `relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-blue-700 dark:text-blue-300' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'}`;
+                    btn.className = `relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'text-teal-700 dark:text-teal-300' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'}`;
                     const svg = btn.querySelector('svg');
-                    if(svg) svg.setAttribute('class', `w-4 h-4 transition-all duration-300 ${isActive ? 'fill-blue-500/20 scale-110 drop-shadow-sm' : ''}`);
+                    if(svg) svg.setAttribute('class', `w-4 h-4 transition-all duration-300 ${isActive ? 'fill-teal-500/20 scale-110 drop-shadow-sm' : ''}`);
                 }
             });
 
@@ -446,7 +475,7 @@
             if (!mobileContainer.dataset.init) {
                 mobileContainer.innerHTML = `
                     <div class="flex justify-between items-center px-3 py-2 w-full relative">
-                        <div id="mob-pill" class="absolute top-2 bottom-2 w-[calc(25%-6px)] bg-gradient-to-r from-blue-100/80 via-indigo-100/80 to-blue-100/80 dark:from-blue-500/30 dark:via-indigo-400/30 dark:to-blue-500/30 bg-[length:200%_200%] animate-gradient-flow rounded-full z-0 shadow-sm border border-white/50 dark:border-white/5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></div>
+                        <div id="mob-pill" class="absolute top-2 bottom-2 w-[calc(25%-6px)] bg-gradient-to-r from-teal-100/80 via-emerald-100/80 to-teal-100/80 dark:from-teal-500/30 dark:via-emerald-400/30 dark:to-teal-500/30 bg-[length:200%_200%] animate-gradient-flow rounded-full z-0 shadow-sm border border-white/50 dark:border-white/5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></div>
                         ${mobileNavItems.map(item => `
                             <button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-colors duration-300">
                                 <i data-lucide="${item.icon}" class="w-6 h-6 mb-1 transition-all duration-300"></i>
@@ -475,9 +504,9 @@
                 const isActive = window.appState.view === item.id;
                 const btn = document.getElementById(`mob-btn-${item.id}`);
                 if(btn) {
-                    btn.className = `relative z-10 flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-colors duration-300 ${isActive ? 'text-blue-700 dark:text-blue-300' : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'}`;
+                    btn.className = `relative z-10 flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-colors duration-300 ${isActive ? 'text-teal-700 dark:text-teal-300' : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'}`;
                     const svg = btn.querySelector('svg');
-                    if(svg) svg.setAttribute('class', `w-6 h-6 mb-1 transition-all duration-300 ${isActive ? 'fill-blue-500/20 scale-110' : ''}`);
+                    if(svg) svg.setAttribute('class', `w-6 h-6 mb-1 transition-all duration-300 ${isActive ? 'fill-teal-500/20 scale-110' : ''}`);
                 }
             });
             
@@ -497,11 +526,11 @@
                     <div class="w-16 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
                     <div class="space-y-3 mb-8">
                         <button onclick="window.app.setView('materials'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all hover:bg-white/80 dark:hover:bg-zinc-800/80">
-                            <div class="w-12 h-12 rounded-[18px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 flex items-center justify-center"><i data-lucide="folder" class="w-6 h-6"></i></div>
+                            <div class="w-12 h-12 rounded-[18px] bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400 flex items-center justify-center"><i data-lucide="folder" class="w-6 h-6"></i></div>
                             <span class="text-[15px]">Матеріали</span>
                         </button>
                         <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all hover:bg-white/80 dark:hover:bg-zinc-800/80">
-                            <div class="w-12 h-12 rounded-[18px] bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 flex items-center justify-center"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
+                            <div class="w-12 h-12 rounded-[18px] bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 flex items-center justify-center"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
                             <span class="text-[15px]">Історія Д/з</span>
                         </button>
                         <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all hover:bg-white/80 dark:hover:bg-zinc-800/80">
@@ -510,7 +539,7 @@
                         </button>
                         ${canEdit ? `
                         <button onclick="window.app.setView('editor'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-900/10 shadow-sm border border-amber-100 dark:border-amber-500/10 text-left text-amber-700 dark:text-amber-500 font-bold active:scale-[0.98] transition-all hover:bg-amber-100/50 dark:hover:bg-amber-900/20">
-                            <div class="w-12 h-12 rounded-[18px] bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
+                            <div class="w-12 h-12 rounded-[18px] bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center"><i data-lucide="settings" class="w-6 h-6"></i></div>
                             <span class="text-[15px]">Редактор розкладу</span>
                         </button>` : ''}
                     </div>
@@ -562,13 +591,18 @@
                         <div class="bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[32px] p-6 border border-zinc-200 dark:border-white/10 shadow-lg flex flex-col cursor-pointer hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-colors" onclick="window.app.setView('schedule')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-sm font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar-days" class="w-4 h-4"></i> Сьогодні</h3>
-                                <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500"><i data-lucide="chevron-right" class="w-4 h-4"></i></div>
+                                <div class="w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center text-teal-500"><i data-lucide="chevron-right" class="w-4 h-4"></i></div>
                             </div>
                             <div class="flex-1 overflow-y-auto custom-scroll pr-2 space-y-3 max-h-[200px]">
                                 ${personalToday.length === 0 ? `<div class="text-zinc-500 text-sm font-medium">Пар немає. Відпочиваємо!</div>` : 
                                     personalToday.map(p => {
-                                        const isLang = p.subj.toLowerCase().startsWith('англ') || p.map === 'language_pair';
-                                        const displaySubj = isLang ? (p.map==='language_pair' ? 'Ін. мова' : 'Англійська') : p.subj.split(' ')[0];
+                                        let displaySubj = p.subj.split(' ')[0];
+                                        if (p.subj.toLowerCase().startsWith('англ')) {
+                                            const teacher = p.subj.match(/\((.*?)\)/)?.[1] || "";
+                                            displaySubj = teacher ? `Англ (${teacher})` : 'Англійська';
+                                        } else if (p.map === 'language_pair') {
+                                            displaySubj = 'Ін. мова';
+                                        }
                                         return `
                                             <div class="flex items-center gap-3">
                                                 <div class="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-black text-zinc-600 dark:text-zinc-300 shrink-0">${p.num}</div>
@@ -584,12 +618,12 @@
                         <div class="md:col-span-2 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[32px] p-6 border border-zinc-200 dark:border-white/10 shadow-lg cursor-pointer hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-colors" onclick="window.app.setView('homework')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-sm font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="pen-tool" class="w-4 h-4"></i> Останні Д/з</h3>
-                                <span class="text-xs font-bold text-blue-500">Всі</span>
+                                <span class="text-xs font-bold text-teal-500">Всі</span>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 ${recentHw.length === 0 ? `<p class="text-sm text-zinc-500">Немає нових Д/з</p>` : recentHw.map(hw => `
                                     <div class="bg-white/80 dark:bg-zinc-950/50 p-4 rounded-[20px] border border-zinc-100 dark:border-white/5 shadow-sm">
-                                        <div class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 truncate">${hw.subj}</div>
+                                        <div class="text-[10px] font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1 truncate">${hw.subj}</div>
                                         <p class="text-xs font-medium text-zinc-600 dark:text-zinc-300 line-clamp-2">${hw.text}</p>
                                     </div>
                                 `).join('')}
@@ -600,12 +634,12 @@
                         <div class="bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[32px] p-6 border border-zinc-200 dark:border-white/10 shadow-lg cursor-pointer hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-colors" onclick="window.app.setView('materials')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-sm font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder" class="w-4 h-4"></i> Матеріали</h3>
-                                <span class="text-xs font-bold text-blue-500">Всі</span>
+                                <span class="text-xs font-bold text-teal-500">Всі</span>
                             </div>
                             <div class="space-y-3">
                                 ${recentMat.length === 0 ? `<p class="text-sm text-zinc-500">Порожньо</p>` : recentMat.map(m => `
                                     <div class="flex items-center gap-3 bg-white/80 dark:bg-zinc-950/50 p-3 rounded-[16px] border border-zinc-100 dark:border-white/5">
-                                        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 shrink-0"><i data-lucide="link" class="w-4 h-4"></i></div>
+                                        <div class="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center text-teal-500 shrink-0"><i data-lucide="link" class="w-4 h-4"></i></div>
                                         <div class="text-xs font-bold text-zinc-900 dark:text-zinc-200 truncate">${m.title}</div>
                                     </div>
                                 `).join('')}
@@ -640,13 +674,13 @@
                 <div class="animate-fade-in">
                     <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10">
                         <div>
-                            ${isPersonal ? `<span class="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-100 dark:from-blue-500/20 dark:via-indigo-500/20 dark:to-blue-500/20 bg-[length:200%_200%] animate-gradient-flow text-blue-700 dark:text-blue-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-3 shadow-sm border border-blue-200/50 dark:border-blue-500/20">Актуально</span>` : ''}
+                            ${isPersonal ? `<span class="inline-block px-3 py-1 bg-gradient-to-r from-teal-100 via-emerald-100 to-teal-100 dark:from-teal-500/20 dark:via-emerald-500/20 dark:to-teal-500/20 bg-[length:200%_200%] animate-gradient-flow text-teal-700 dark:text-teal-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-3 shadow-sm border border-teal-200/50 dark:border-teal-500/20">Актуально</span>` : ''}
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">${isPersonal ? 'Мій розклад' : 'Загальний'}</h2>
                         </div>
                         
                         <!-- SLIDING SHIMMERING WEEK TOGGLE -->
                         <div class="flex w-full sm:w-64 bg-zinc-200/50 dark:bg-zinc-800/50 p-1.5 rounded-2xl shadow-inner shrink-0 backdrop-blur-sm relative overflow-hidden z-10">
-                            <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-gradient-to-r from-white via-blue-50 to-white dark:from-zinc-700 dark:via-zinc-600 dark:to-zinc-700 bg-[length:200%_200%] animate-gradient-flow rounded-xl shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
+                            <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-gradient-to-r from-white via-teal-50 to-white dark:from-zinc-700 dark:via-zinc-600 dark:to-zinc-700 bg-[length:200%_200%] animate-gradient-flow rounded-xl shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
                             
                             <button onclick="${setWeekFn}('upper', null)" class="relative z-10 flex-1 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300 ${isUpper ? 'text-zinc-900 dark:text-white scale-[1.02]' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'}">Верхній</button>
                             <button onclick="${setWeekFn}('lower', null)" class="relative z-10 flex-1 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300 ${isLower ? 'text-zinc-900 dark:text-white scale-[1.02]' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'}">Нижній</button>
@@ -734,7 +768,7 @@
                         pairsGroup.forEach((p, idx) => {
                             let displaySubj = p.subj;
                             if (p.subj.toLowerCase().startsWith('англ')) {
-                                displaySubj = isPersonal ? p.subj.split('(')[0].trim() : "Англійська мова (" + (p.subj.match(/\((.*?)\)/)?.[1] || "") + ")";
+                                displaySubj = "Англійська мова (" + (p.subj.match(/\((.*?)\)/)?.[1] || "") + ")";
                             } else if (isPersonal && p.map === 'language_pair') {
                                 const sLang = user.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
                                 if (sLang) displaySubj = `Ін.мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
@@ -747,7 +781,7 @@
 
                             scheduleHtml += `
                                 <div class="group w-full bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200/50 dark:border-white/5 shadow-sm hover:shadow-xl rounded-[28px] p-6 transition-all duration-300 hover:-translate-y-1 relative flex flex-col">
-                                    ${isToday ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>` : ''}
+                                    ${isToday ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent via-teal-500 to-transparent opacity-50"></div>` : ''}
                                     
                                     <div class="flex justify-between items-start mb-4">
                                         <div class="flex items-center gap-2">
@@ -761,9 +795,9 @@
                                     
                                     <div class="flex items-center gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-white/5">
                                         ${zoomUrl ? `
-                                            <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all hover:scale-105 active:scale-95" title="Join Zoom"><i data-lucide="video" class="w-5 h-5"></i></a>
+                                            <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-10 h-10 flex items-center justify-center rounded-xl bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-500/20 transition-all hover:scale-105 active:scale-95" title="Join Zoom"><i data-lucide="video" class="w-5 h-5"></i></a>
                                         ` : canEdit ? `
-                                            <button onclick="window.app.openZoomModal('${encodedSubj}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-50 text-zinc-400 hover:bg-zinc-100 hover:text-blue-500 dark:bg-white/5 dark:hover:bg-white/10 transition-all hover:scale-105 active:scale-95"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                                            <button onclick="window.app.openZoomModal('${encodedSubj}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-50 text-zinc-400 hover:bg-zinc-100 hover:text-teal-500 dark:bg-white/5 dark:hover:bg-white/10 transition-all hover:scale-105 active:scale-95"><i data-lucide="plus" class="w-5 h-5"></i></button>
                                         ` : ''}
                                         
                                         <button onclick="window.app.openHwModal('${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 0})" class="px-4 py-2.5 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-all flex items-center gap-2 flex-1 justify-center active:scale-95">
@@ -834,11 +868,11 @@
                     const authorObj = students.find(s => s.name === m.author);
                     const canDelete = user.name === m.author || user.isStarosta || user.id === 19;
                     
-                    let iconName = 'link'; let iconColor = 'text-blue-500'; let iconBg = 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20';
+                    let iconName = 'link'; let iconColor = 'text-teal-500'; let iconBg = 'bg-teal-50 dark:bg-teal-500/10 border-teal-100 dark:border-teal-500/20';
                     const lowerUrl = m.url.toLowerCase();
                     if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconName = 'hard-drive'; iconColor = 'text-emerald-500'; iconBg = 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20'; }
                     if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconName = 'message-circle'; iconColor = 'text-sky-500'; iconBg = 'bg-sky-50 dark:bg-sky-500/10 border-sky-100 dark:border-sky-500/20'; }
-                    if(lowerUrl.includes('zoom.us')) { iconName = 'video'; iconColor = 'text-blue-500'; iconBg = 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20'; }
+                    if(lowerUrl.includes('zoom.us')) { iconName = 'video'; iconColor = 'text-teal-500'; iconBg = 'bg-teal-50 dark:bg-teal-500/10 border-teal-100 dark:border-teal-500/20'; }
                     if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconName = 'youtube'; iconColor = 'text-rose-500'; iconBg = 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/20'; }
 
                     html += `
@@ -899,7 +933,7 @@
                                 </div>
                             </div>
                             <div class="mb-5">
-                                <span class="inline-block px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest mb-3">${hw.subj}</span>
+                                <span class="inline-block px-3 py-1.5 bg-teal-50 text-teal-700 border border-teal-100 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest mb-3">${hw.subj}</span>
                                 <div class="text-xs font-bold text-zinc-500 flex items-center gap-2">
                                     <i data-lucide="calendar-days" class="w-4 h-4"></i> ${hw.day} &bull; ${hw.num} пара &bull; ${hw.weekNum ? `${hw.weekNum} тиж.` : (hw.weekType==='upper'?'Верх.':'Ниж.')}
                                 </div>
@@ -962,12 +996,12 @@
                                     ${filteredStudents.map((s, i) => {
                                         const isMe = user.id === s.id;
                                         return `
-                                            <tr class="transition-colors hover:bg-white/50 dark:hover:bg-white/5 group ${isMe ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}">
+                                            <tr class="transition-colors hover:bg-white/50 dark:hover:bg-white/5 group ${isMe ? 'bg-teal-50/50 dark:bg-teal-900/10' : ''}">
                                                 <td class="py-5 px-4 sm:px-6 text-[13px] font-bold text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
-                                                <td class="py-5 px-2 sm:px-4 font-extrabold text-[14px] ${isMe ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-900 dark:text-zinc-100'} tracking-tight whitespace-nowrap">
+                                                <td class="py-5 px-2 sm:px-4 font-extrabold text-[14px] ${isMe ? 'text-teal-600 dark:text-teal-400' : 'text-zinc-900 dark:text-zinc-100'} tracking-tight whitespace-nowrap">
                                                     ${s.name} 
                                                     ${s.isStarosta ? `<span class="ml-3 px-2 py-0.5 bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-wide rounded border border-transparent shadow-sm">Староста</span>` : ''}
-                                                    ${isMe ? `<span class="ml-2 px-2 py-0.5 text-blue-600 dark:text-blue-400 text-[9px] font-extrabold uppercase tracking-wide rounded border border-blue-200 dark:border-blue-500/30">(Це ви)</span>` : ''}
+                                                    ${isMe ? `<span class="ml-2 px-2 py-0.5 text-teal-600 dark:text-teal-400 text-[9px] font-extrabold uppercase tracking-wide rounded border border-teal-200 dark:border-teal-500/30">(Це ви)</span>` : ''}
                                                 </td>
                                                 <td class="py-5 px-4 sm:px-6 flex flex-wrap gap-1.5 justify-end sm:justify-start">
                                                     ${s.electives.map(e => `
@@ -1036,8 +1070,9 @@
                                     <option value="Соціальне підприємництво В п|elective|соціальне підприємництво">Соц. підпр. п</option>
                                     <option value="Соціологія В п|elective|соціологія">Соціологія п</option>
                                     <option value="Теоретична підготовка БЗВП В п|elective|бзвп">БЗВП п</option>
-                                    <option value="Англійська мова Шматок (Мельник-Шматок)|lang|англ: мельник">Англ (Мельник)</option>
-                                    <option value="Англійська мова Маркова (Маркова-Шматок)|lang|англ: маркова">Англ (Маркова)</option>
+                                    <option value="Англійська мова (Мельник)|lang|англ: мельник">Англ (Мельник)</option>
+                                    <option value="Англійська мова (Маркова)|lang|англ: маркова">Англ (Маркова)</option>
+                                    <option value="Англійська мова (Шматок)|lang|language_pair">Англ (Шматок)</option>
                                     <option value="Друга іноземна мова|lang|language_pair">Друга іноземна</option>
                                 </select>
                             </div>
@@ -1068,7 +1103,7 @@
                                 <div class="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md p-6 rounded-[28px] border border-zinc-200/60 dark:border-white/5 flex flex-col relative opacity-80 hover:opacity-100 transition-opacity">
                                     <div class="flex justify-between items-start mb-4">
                                         <span class="text-[10px] font-bold uppercase tracking-widest bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i data-lucide="eye-off" class="w-3 h-3"></i> ${p.weekType==='upper'?'Верхній':'Нижній'} • ${p.day}</span>
-                                        <button onclick="window.app.restoreHiddenSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors"><i data-lucide="arrow-up-left" class="w-4 h-4"></i></button>
+                                        <button onclick="window.app.restoreHiddenSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-500/10 transition-colors"><i data-lucide="arrow-up-left" class="w-4 h-4"></i></button>
                                     </div>
                                     <div class="font-extrabold text-[15px] text-zinc-900 dark:text-white leading-snug tracking-tight mb-2 line-through decoration-rose-500/50 decoration-2">${p.subj}</div>
                                     <div class="text-xs font-bold text-zinc-500 mt-auto pt-4 border-t border-zinc-200 dark:border-white/5 flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> ${p.num} пара</div>
@@ -1128,7 +1163,6 @@
                 if(window.appState.isDark) document.documentElement.classList.add('dark');
                 else document.documentElement.classList.remove('dark');
                 
-                // Update icons manually
                 document.getElementById('theme-icon-header').setAttribute('data-lucide', window.appState.isDark ? 'sun' : 'moon');
                 document.getElementById('theme-icon-auth').setAttribute('data-lucide', window.appState.isDark ? 'sun' : 'moon');
                 lucide.createIcons();
@@ -1191,7 +1225,7 @@
                 }
 
                 widget.innerHTML = `
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 blur-[80px] rounded-full pointer-events-none"></div>
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-teal-500/20 blur-[80px] rounded-full pointer-events-none"></div>
                     <div class="flex flex-col h-full justify-between relative z-10">
                         <div class="flex items-center gap-3 mb-8">
                             ${status.isLive ? `<span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>` : ''}
@@ -1204,7 +1238,7 @@
                         ${status.isLive ? `
                             <div class="mt-8">
                                 <div class="h-2 w-full bg-zinc-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 bg-[length:200%_200%] animate-gradient-flow transition-all duration-1000 rounded-full" style="width: ${status.progress}%"></div>
+                                    <div class="h-full bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-500 bg-[length:200%_200%] animate-gradient-flow transition-all duration-1000 rounded-full" style="width: ${status.progress}%"></div>
                                 </div>
                             </div>
                         ` : ''}
@@ -1212,7 +1246,6 @@
                 `;
             },
 
-            // Setters for schedule toggles
             setPersWeek: (type, num) => { window.appState.persMainWeek = type; window.appState.persActiveWeekNum = num; window.app.renderActiveView(); },
             setMainWeek: (type, num) => { window.appState.mainViewWeek = type; window.appState.mainActiveWeekNum = num; window.app.renderActiveView(); },
             setRegFilter: (f) => { window.appState.regFilter = f; window.app.renderActiveView(); },
@@ -1225,7 +1258,6 @@
             },
             closeMobileMenu: () => document.getElementById('mobile-menu').classList.add('hidden'),
 
-            // Modals Logic
             closeModal: () => document.getElementById('modals').innerHTML = '',
             
             openConfirmModal: (title, text, confirmActionStr) => {
@@ -1256,14 +1288,14 @@
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
                         <div class="w-full max-w-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards">
-                            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent pointer-events-none"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
                             <button onclick="window.app.closeModal()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all z-10 hover:scale-110 active:scale-95"><i data-lucide="x" class="w-5 h-5"></i></button>
                             <div class="relative z-10">
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-violet-100 dark:bg-violet-500/20 rounded-[18px] flex items-center justify-center text-violet-600 dark:text-violet-400"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
+                                    <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-[18px] flex items-center justify-center text-indigo-600 dark:text-indigo-400"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
                                     <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Додати ДЗ</h2>
                                 </div>
-                                <p class="text-violet-700 dark:text-violet-300 font-bold text-xs mb-6 px-4 py-2 bg-violet-50 dark:bg-violet-500/10 rounded-xl inline-block border border-violet-100 dark:border-violet-500/20 tracking-wide">${wLabel}, ${day}, ${num} пара: ${decSubj}</p>
+                                <p class="text-indigo-700 dark:text-indigo-300 font-bold text-xs mb-6 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl inline-block border border-indigo-100 dark:border-indigo-500/20 tracking-wide">${wLabel}, ${day}, ${num} пара: ${decSubj}</p>
                                 <div class="space-y-4 mb-8">
                                     <textarea id="modal-hw-text" autofocus placeholder="Детальний опис завдання..." class="w-full p-5 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 rounded-[24px] outline-none focus:ring-2 ring-zinc-900 dark:ring-white transition font-medium text-[15px] h-36 resize-none custom-scroll placeholder-zinc-400 shadow-inner"></textarea>
                                     <div>
@@ -1306,11 +1338,11 @@
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
                         <div class="w-full max-w-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent pointer-events-none"></div>
                             <button onclick="window.app.closeModal()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all z-10 hover:scale-110 active:scale-95"><i data-lucide="x" class="w-5 h-5"></i></button>
                             <div class="relative z-10">
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-[18px] flex items-center justify-center text-blue-600 dark:text-blue-400"><i data-lucide="folder" class="w-6 h-6"></i></div>
+                                    <div class="w-12 h-12 bg-teal-100 dark:bg-teal-500/20 rounded-[18px] flex items-center justify-center text-teal-600 dark:text-teal-400"><i data-lucide="folder" class="w-6 h-6"></i></div>
                                     <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Додати матеріал</h2>
                                 </div>
                                 <div class="space-y-4 mb-8">
@@ -1361,14 +1393,14 @@
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
                         <div class="w-full max-w-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-transparent pointer-events-none"></div>
                             <button onclick="window.app.closeModal()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 transition-all z-10 hover:scale-110 active:scale-95"><i data-lucide="x" class="w-5 h-5"></i></button>
                             <div class="relative z-10">
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-[18px] flex items-center justify-center text-blue-600 dark:text-blue-400"><i data-lucide="video" class="w-6 h-6"></i></div>
+                                    <div class="w-12 h-12 bg-teal-100 dark:bg-teal-500/20 rounded-[18px] flex items-center justify-center text-teal-600 dark:text-teal-400"><i data-lucide="video" class="w-6 h-6"></i></div>
                                     <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Zoom Лінк</h2>
                                 </div>
-                                <p class="text-blue-700 dark:text-blue-300 font-bold text-xs mb-6 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 rounded-xl inline-block tracking-wide">${subj}</p>
+                                <p class="text-teal-700 dark:text-teal-300 font-bold text-xs mb-6 px-4 py-2 bg-teal-50 dark:bg-teal-500/10 rounded-xl inline-block tracking-wide">${subj}</p>
                                 <div class="relative mb-8">
                                     <i data-lucide="link" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5"></i>
                                     <input id="modal-zoom-url" autofocus type="url" value="${currentLink}" placeholder="https://zoom.us/j/..." class="w-full pl-11 pr-4 py-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 outline-none focus:ring-2 ring-zinc-900 dark:ring-white rounded-[20px] text-[15px] font-medium shadow-inner" />
@@ -1399,7 +1431,6 @@
                 window.app.closeModal();
             },
 
-            // Deletion logic hooks for Confirm Modals
             deleteHomework: (id) => {
                 window.app.openConfirmModal("Видалити ДЗ?", "Завдання буде видалено.", `window.app._doDeleteHW('${id}')`);
             },
@@ -1493,7 +1524,6 @@
             onAuthStateChanged(auth, (user) => {
                 window.appState.firebaseUser = user;
                 if(user) {
-                    // Start Listeners
                     onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'zoom_links'), (snap) => {
                         let links = {}; snap.forEach(doc => links[doc.id] = doc.data().url);
                         window.appState.zoomLinksData = links;
@@ -1544,7 +1574,6 @@
                 }
             }
             
-            // If no saved user, show auth
             document.getElementById('auth-screen').classList.remove('hidden');
             window.app.renderAuthList();
             lucide.createIcons();
