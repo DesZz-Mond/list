@@ -2,8 +2,8 @@
 <html lang="uk" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Портал МБ-202</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Портал МБ-202 | Premium</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,30 +11,37 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Tailwind Config to keep custom animations -->
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-                        'gradient-flow': 'gradientFlow 3s ease infinite',
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
                     },
                     keyframes: {
                         fadeIn: { 
-                            '0%': { opacity: '0', filter: 'blur(8px)', transform: 'scale(0.99)' }, 
-                            '100%': { opacity: '1', filter: 'blur(0)', transform: 'scale(1)' } 
+                            '0%': { opacity: '0', filter: 'blur(10px)' }, 
+                            '100%': { opacity: '1', filter: 'blur(0)' } 
                         },
                         fadeInUp: { 
-                            '0%': { opacity: '0', transform: 'translateY(15px) scale(0.99)', filter: 'blur(4px)' }, 
-                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)', filter: 'blur(0)' } 
+                            '0%': { opacity: '0', transform: 'translateY(20px)', filter: 'blur(8px)' }, 
+                            '100%': { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' } 
                         },
-                        gradientFlow: {
-                            '0%, 100%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -43,71 +50,96 @@
     </script>
 
     <style>
-        /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 20px; }
-        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); }
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
         
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes slideUpModal {
+            from { transform: translateY(100%) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
         
-        body { -webkit-tap-highlight-color: transparent; }
+        body { 
+            -webkit-tap-highlight-color: transparent; 
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11"; /* Inter refinements */
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            @apply bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-white/50 dark:border-white/10 shadow-xl;
+        }
+        .glass-card {
+            @apply bg-white/60 dark:bg-zinc-900/50 backdrop-blur-xl border border-white/60 dark:border-white/5 shadow-lg hover:shadow-2xl transition-all duration-300;
+        }
+        
+        /* Gradient Text */
+        .text-gradient {
+            @apply bg-clip-text text-transparent bg-gradient-to-r;
+        }
     </style>
 </head>
-<body class="text-slate-800 dark:text-zinc-200 bg-slate-50 dark:bg-black transition-colors duration-500 antialiased min-h-screen flex flex-col relative font-sans">
+<body class="text-slate-800 dark:text-zinc-200 bg-[#f8fafc] dark:bg-[#09090b] transition-colors duration-500 antialiased min-h-screen flex flex-col relative">
 
-    <!-- Background Mesh Gradients (Dynamic Theme) -->
+    <!-- Ambient Background (Apple-like Orbs) -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div id="mesh-1" class="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-teal-500/10 blur-[120px] animate-pulse-slow"></div>
-        <div id="mesh-2" class="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-emerald-600/10 blur-[100px] animate-pulse-slow" style="animation-delay: 3s;"></div>
+        <div id="mesh-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full bg-teal-500/15 dark:bg-teal-500/10 blur-[100px] animate-float"></div>
+        <div id="mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-emerald-600/15 dark:bg-emerald-600/10 blur-[100px] animate-float" style="animation-delay: -3s;"></div>
+        <div class="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] rounded-full bg-indigo-500/5 dark:bg-indigo-500/5 blur-[120px] animate-pulse-slow"></div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
     <div id="app" class="w-full h-full flex flex-col flex-1 relative z-10 hidden">
         
-        <!-- Header -->
-        <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 transition-all">
-            <div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 shadow-lg rounded-full px-4 py-3 flex items-center justify-between">
+        <!-- Premium Header -->
+        <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[96%] max-w-6xl z-50 transition-all">
+            <div class="glass-panel rounded-full px-2 py-2 flex items-center justify-between">
                 
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="window.app.setView('dashboard')">
-                    <div id="header-logo-bg" class="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center text-white shadow-inner shadow-white/20 group-hover:scale-105 transition-transform">
-                        <span class="text-sm font-black tracking-tighter">МБ</span>
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3 cursor-pointer group pl-2 pr-4 py-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors" onclick="window.app.setView('dashboard')">
+                    <div id="header-logo-bg" class="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-teal-500/30 group-hover:scale-105 transition-transform duration-300">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="font-extrabold text-[15px] tracking-tight text-zinc-900 dark:text-white leading-none">Портал</h1>
-                        <span id="header-logo-text" class="text-[9px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mt-0.5 block">МБ-202</span>
+                        <span id="header-logo-text" class="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mt-0.5 block opacity-80">МБ-202</span>
                     </div>
                 </div>
 
-                <div id="desktop-nav" class="hidden md:flex items-center gap-1 bg-zinc-100/50 dark:bg-black/30 p-1 rounded-full border border-zinc-200/50 dark:border-white/5 relative overflow-hidden">
+                <!-- Desktop Nav Navigation (Pill Style) -->
+                <div id="desktop-nav" class="hidden md:flex items-center gap-1 bg-zinc-100/50 dark:bg-black/40 p-1.5 rounded-full border border-zinc-200/50 dark:border-white/5 relative overflow-hidden backdrop-blur-md">
                     <!-- Injected via JS -->
                 </div>
 
-                <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Right Actions -->
+                <div class="flex items-center gap-1.5 pr-1">
                     
-                    <!-- Theme Dropdown (Main) -->
+                    <!-- Theme Dropdown -->
                     <div class="relative" id="theme-dropdown-wrapper">
-                        <button onclick="window.app.toggleThemeDropdown('main')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
+                        <button onclick="window.app.toggleThemeDropdown('main')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
                             <i data-lucide="palette" class="w-4 h-4"></i>
                         </button>
-                        <div id="theme-dropdown-main" class="absolute top-full mt-2 right-0 w-44 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 rounded-2xl shadow-xl p-2 hidden z-50 animate-fade-in-up max-h-64 overflow-y-auto custom-scroll">
+                        <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-48 glass-panel rounded-2xl p-2 hidden z-50 animate-fade-in-up max-h-64 overflow-y-auto">
                             <!-- Injected by JS -->
                         </div>
                     </div>
 
-                    <button onclick="window.app.toggleDark()" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="window.app.toggleDark()" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
                         <i id="theme-icon-header" data-lucide="sun" class="w-4 h-4"></i>
                     </button>
-                    <div class="h-6 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block"></div>
-                    <div class="flex items-center gap-2 pr-1">
+                    
+                    <div class="h-5 w-px bg-zinc-300 dark:bg-zinc-700 mx-2 hidden sm:block"></div>
+                    
+                    <!-- User Profile -->
+                    <div class="flex items-center gap-3 pl-1 group cursor-pointer" onclick="window.app.logout()">
                         <div class="text-right hidden lg:block" id="header-user-info">
                             <!-- Injected via JS -->
                         </div>
-                        <div onclick="window.app.logout()" id="header-user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-100 to-emerald-50 dark:from-teal-900/40 dark:to-emerald-900/20 text-teal-700 dark:text-teal-300 flex items-center justify-center font-black text-sm border border-teal-200/50 dark:border-teal-700/30 cursor-pointer hover:shadow-md transition-all">
-                            А
+                        <div id="header-user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-100 to-emerald-50 dark:from-teal-900/60 dark:to-emerald-900/40 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold text-sm border border-teal-200/50 dark:border-teal-700/50 group-hover:ring-2 ring-teal-500/50 transition-all shadow-sm">
+                            A
                         </div>
                     </div>
                 </div>
@@ -115,63 +147,67 @@
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 relative z-10 pt-28 pb-32 md:pb-12 px-4 sm:px-8 max-w-7xl mx-auto w-full" id="main-content">
+        <main class="flex-1 relative z-10 pt-32 pb-32 md:pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full" id="main-content">
             <!-- Views will be injected here -->
         </main>
 
-        <!-- Mobile Nav -->
-        <nav id="mobile-nav" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[380px] z-[100] shadow-2xl border border-white/40 dark:border-white/10 rounded-full bg-white/85 dark:bg-zinc-900/85 backdrop-blur-2xl">
+        <!-- Mobile Floating Nav Bar -->
+        <nav id="mobile-nav" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] z-[100] glass-panel rounded-full p-1.5 flex justify-between">
             <!-- Injected via JS -->
         </nav>
 
-        <!-- Mobile Menu (Overlay) -->
-        <div id="mobile-menu" class="hidden fixed inset-0 z-[200] bg-zinc-900/40 dark:bg-black/60 flex items-end p-0 backdrop-blur-sm animate-fade-in" onclick="window.app.closeMobileMenu()">
+        <!-- Mobile Menu (Bottom Sheet) -->
+        <div id="mobile-menu" class="hidden fixed inset-0 z-[200] bg-zinc-900/40 dark:bg-black/60 flex items-end p-0 backdrop-blur-sm transition-opacity" onclick="window.app.closeMobileMenu()">
             <!-- Injected via JS -->
         </div>
 
     </div>
 
-    <!-- AUTH SCREEN -->
-    <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 hidden">
+    <!-- AUTH SCREEN (Premium Design) -->
+    <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 hidden bg-[#f8fafc]/80 dark:bg-[#09090b]/80 backdrop-blur-xl">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-teal-500/10 blur-[100px] animate-pulse-slow"></div>
-            <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-emerald-600/10 blur-[100px] animate-pulse-slow" style="animation-delay: 2s;"></div>
+            <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-teal-500/20 blur-[100px] animate-float"></div>
+            <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-emerald-600/20 blur-[100px] animate-float" style="animation-delay: -2s;"></div>
         </div>
 
-        <div class="absolute top-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper">
+        <!-- Auth Controls -->
+        <div class="absolute top-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper glass-panel rounded-full px-2 py-1">
             <div class="relative">
-                <button onclick="window.app.toggleThemeDropdown('auth')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:bg-black/5 dark:hover:bg-white/10 transition-all">
-                    <i data-lucide="palette" class="w-5 h-5"></i>
+                <button onclick="window.app.toggleThemeDropdown('auth')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all">
+                    <i data-lucide="palette" class="w-4 h-4"></i>
                 </button>
-                <div id="theme-dropdown-auth" class="absolute top-full mt-2 right-0 w-44 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 rounded-2xl shadow-xl p-2 hidden animate-fade-in-up max-h-64 overflow-y-auto custom-scroll">
+                <div id="theme-dropdown-auth" class="absolute top-full mt-3 right-0 w-48 glass-panel rounded-2xl p-2 hidden animate-fade-in-up max-h-64 overflow-y-auto">
                     <!-- Injected by JS -->
                 </div>
             </div>
-            <button onclick="window.app.toggleDark()" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:bg-black/5 dark:hover:bg-white/10 transition-all">
-                <i id="theme-icon-auth" data-lucide="sun" class="w-5 h-5"></i>
+            <div class="w-px h-4 bg-zinc-300 dark:bg-zinc-700"></div>
+            <button onclick="window.app.toggleDark()" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all">
+                <i id="theme-icon-auth" data-lucide="sun" class="w-4 h-4"></i>
             </button>
         </div>
 
-        <div class="w-full max-w-md bg-white/70 dark:bg-zinc-900/70 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 sm:p-12 rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden animate-fade-in z-10">
-            <div class="w-20 h-20 bg-gradient-to-br from-zinc-900 to-black dark:from-white dark:to-zinc-200 rounded-[24px] flex items-center justify-center mx-auto mb-8 shadow-xl transform hover:scale-105 transition-transform duration-500">
-                <span class="text-3xl font-black text-white dark:text-zinc-900 tracking-tighter">МБ</span>
+        <div class="w-full max-w-md glass-panel p-8 sm:p-12 rounded-[40px] flex flex-col relative overflow-hidden animate-fade-in z-10">
+            <div class="w-24 h-24 bg-gradient-to-br from-zinc-900 to-black dark:from-white dark:to-zinc-200 rounded-[28px] flex items-center justify-center mx-auto mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-500 rotate-3 hover:rotate-0">
+                <i data-lucide="graduation-cap" class="w-12 h-12 text-white dark:text-zinc-900"></i>
             </div>
             
             <h1 class="text-3xl font-black mb-2 tracking-tight text-zinc-900 dark:text-white text-center">МБ-202</h1>
-            <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-8 font-medium text-center">Оновлений портал групи</p>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-8 font-medium text-center">Студентський портал</p>
             
-            <div class="relative z-10 mb-4 group">
-                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
+            <div class="relative z-10 mb-2 group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="search" class="w-5 h-5 text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
+                </div>
                 <input 
                     type="text" 
                     id="auth-search"
                     oninput="window.app.renderAuthList()"
-                    placeholder="Пошук ПІБ..." 
-                    class="w-full pl-14 pr-5 py-4 bg-white/80 dark:bg-black/50 border border-zinc-200 dark:border-white/10 rounded-2xl outline-none focus:ring-2 ring-zinc-900 dark:ring-white transition-all font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 shadow-inner"
+                    placeholder="Введіть ваше Прізвище..." 
+                    class="w-full pl-12 pr-5 py-4 bg-white/50 dark:bg-black/40 border border-zinc-200/80 dark:border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white transition-all font-medium text-zinc-900 dark:text-white placeholder-zinc-400/80 shadow-inner backdrop-blur-sm"
                 />
             </div>
 
-            <div id="auth-list" class="mt-2 max-h-[30vh] overflow-y-auto custom-scroll flex flex-col gap-2 z-10 hidden">
+            <div id="auth-list" class="mt-4 max-h-[35vh] overflow-y-auto custom-scroll flex flex-col gap-2 z-10 hidden pr-1">
                 <!-- Injected via JS -->
             </div>
         </div>
@@ -181,7 +217,7 @@
     <div id="modals" class="empty:hidden"></div>
     
     <!-- TOAST CONTAINER -->
-    <div id="toasts" class="fixed top-24 right-4 md:right-8 z-[999] flex flex-col gap-2"></div>
+    <div id="toasts" class="fixed top-24 right-4 md:right-8 z-[999] flex flex-col gap-3 pointer-events-none"></div>
 
     <!-- FIREBASE & APP SCRIPT -->
     <script type="module">
@@ -191,14 +227,12 @@
 
         // --- DATA CONSTANTS & THEMES ---
         const themesConfig = {
-            'teal': { pri: 'teal', sec: 'emerald', label: 'Смарагд', bg: 'bg-teal-500' },
+            'teal': { pri: 'teal', sec: 'emerald', label: 'Смарагд (Default)', bg: 'bg-teal-500' },
             'blue': { pri: 'blue', sec: 'indigo', label: 'Океан', bg: 'bg-blue-500' },
-            'rose': { pri: 'rose', sec: 'orange', label: 'Вогонь', bg: 'bg-rose-500' },
-            'purple': { pri: 'purple', sec: 'fuchsia', label: 'Неон', bg: 'bg-purple-500' },
-            'amber': { pri: 'amber', sec: 'yellow', label: 'Сонце', bg: 'bg-amber-500' },
-            'zinc': { pri: 'zinc', sec: 'slate', label: 'Графіт', bg: 'bg-zinc-500' },
-            'sky': { pri: 'sky', sec: 'cyan', label: 'Хмари', bg: 'bg-sky-500' },
-            'emerald': { pri: 'emerald', sec: 'lime', label: 'Еко', bg: 'bg-emerald-500' }
+            'rose': { pri: 'rose', sec: 'pink', label: 'Вогонь', bg: 'bg-rose-500' },
+            'purple': { pri: 'violet', sec: 'fuchsia', label: 'Ультрафіолет', bg: 'bg-violet-500' },
+            'amber': { pri: 'amber', sec: 'orange', label: 'Сонце', bg: 'bg-amber-500' },
+            'zinc': { pri: 'zinc', sec: 'slate', label: 'Мінімалізм', bg: 'bg-zinc-500' },
         };
 
         const weeksConfig = [
@@ -249,39 +283,18 @@
             { start: "17:30", end: "18:45" }
         ];
 
+        // Same Schedule Data
         const mainScheduleData = {
             upper: [
-                { day: "Понеділок", pairs: [
-                    { num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
-                    { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
-                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: маркова" }, 
-                    { num: 5, time: "14:30-15:45", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: маркова" }, 
-                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }, 
-                    { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }
-                ]},
-                { day: "Вівторок", pairs: [
-                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, 
-                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: мельник" }, 
-                    { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }
-                ]},
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок - Маркова)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Шматок - Маркова)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }]},
+                { day: "Вівторок", pairs: [{ num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Шматок - Мельник)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }]},
                 { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Підприємництво п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Маркетинг п", type: "general" }]},
                 { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 2, time: "10:00-11:15", subj: "Політологія В п", type: "elective", map: "політологія" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 3, time: "11:30-12:45", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }]}
             ],
             lower: [
-                { day: "Понеділок", pairs: [
-                    { num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
-                    { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, 
-                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: маркова" }, 
-                    { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }
-                ]},
-                { day: "Вівторок", pairs: [
-                    { num: 2, time: "10:00-11:15", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, 
-                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, 
-                    { num: 2, time: "10:00-11:15", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: мельник" }, 
-                    { num: 3, time: "11:30-12:45", subj: "Англійська мова (Шматок)", type: "lang", map: "англ: мельник" }, 
-                    { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }
-                ]},
+                { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок - Маркова)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }]},
+                { day: "Вівторок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Маркова)", type: "lang", map: "англ: маркова" }, { num: 2, time: "10:00-11:15", subj: "Англійська мова (Шматок - Мельник)", type: "lang", map: "англ: мельник" }, { num: 3, time: "11:30-12:45", subj: "Англійська мова (Шматок - Мельник)", type: "lang", map: "англ: мельник" }, { num: 4, time: "13:00-14:15", subj: "Політологія В п", type: "elective", map: "політологія" }]},
                 { day: "Середа", pairs: [{ num: 1, time: "08:30-09:45", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 2, time: "10:00-11:15", subj: "Соціальне підприємництво В п", type: "elective", map: "соціальне підприємництво" }, { num: 3, time: "11:30-12:45", subj: "Екаунтинг-2 п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Екаунтинг-2 п", type: "general" }]},
                 { day: "Четвер", pairs: [{ num: 1, time: "08:30-09:45", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 2, time: "10:00-11:15", subj: "Публічне адміністрування В п", type: "elective", map: "публічне адміністрування" }, { num: 3, time: "11:30-12:45", subj: "Фізичне виховання п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Соціологія В п", type: "elective", map: "соціологія" }, { num: 6, time: "16:00-17:15", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }, { num: 7, time: "17:30-18:45", subj: "Теоретична підготовка БЗВП В п", type: "elective", map: "бзвп" }]},
                 { day: "П'ятниця", pairs: [{ num: 1, time: "08:30-09:45", subj: "Підприємництво п", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Підприємництво п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Маркетинг п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Маркетинг п", type: "general" }]}
@@ -289,17 +302,17 @@
         };
 
         const discColors = {
-            "німецька": "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20",
-            "польська": "bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400 border-amber-200 dark:border-amber-500/20",
-            "французька": "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400 border-blue-200 dark:border-blue-500/20",
-            "китайська": "bg-rose-100 text-rose-800 dark:bg-rose-500/10 dark:text-rose-400 border-rose-200 dark:border-rose-500/20",
-            "політологія": "bg-indigo-100 text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20",
-            "публічне адміністрування": "bg-cyan-100 text-cyan-800 dark:bg-cyan-500/10 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/20",
-            "соціальне підприємництво": "bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400 border-orange-200 dark:border-orange-500/20",
-            "соціологія": "bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400 border-purple-200 dark:border-purple-500/20",
-            "бзвп": "bg-zinc-200 text-zinc-800 dark:bg-zinc-500/10 dark:text-zinc-400 border-zinc-300 dark:border-zinc-500/20",
-            "англ: маркова": "bg-sky-100 text-sky-800 dark:bg-sky-500/10 dark:text-sky-400 border-sky-200 dark:border-sky-500/20",
-            "англ: мельник": "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-500/10 dark:text-fuchsia-400 border-fuchsia-200 dark:border-fuchsia-500/20"
+            "німецька": "bg-emerald-100/80 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border-emerald-200/50",
+            "польська": "bg-amber-100/80 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border-amber-200/50",
+            "французька": "bg-blue-100/80 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300 border-blue-200/50",
+            "китайська": "bg-rose-100/80 text-rose-800 dark:bg-rose-500/20 dark:text-rose-300 border-rose-200/50",
+            "політологія": "bg-indigo-100/80 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-200/50",
+            "публічне адміністрування": "bg-cyan-100/80 text-cyan-800 dark:bg-cyan-500/20 dark:text-cyan-300 border-cyan-200/50",
+            "соціальне підприємництво": "bg-orange-100/80 text-orange-800 dark:bg-orange-500/20 dark:text-orange-300 border-orange-200/50",
+            "соціологія": "bg-violet-100/80 text-violet-800 dark:bg-violet-500/20 dark:text-violet-300 border-violet-200/50",
+            "бзвп": "bg-zinc-200/80 text-zinc-800 dark:bg-zinc-500/20 dark:text-zinc-300 border-zinc-300/50",
+            "англ: маркова": "bg-sky-100/80 text-sky-800 dark:bg-sky-500/20 dark:text-sky-300 border-sky-200/50",
+            "англ: мельник": "bg-fuchsia-100/80 text-fuchsia-800 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 border-fuchsia-200/50"
         };
 
         const dayOffsets = { "Понеділок": 0, "Вівторок": 1, "Середа": 2, "Четвер": 3, "П'ятниця": 4, "Субота": 5, "Неділя": 6 };
@@ -330,6 +343,14 @@
 
         const getTheme = () => themesConfig[window.appState.colorTheme] || themesConfig['teal'];
 
+        const getGreeting = () => {
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 12) return 'Доброго ранку';
+            if (hour >= 12 && hour < 18) return 'Доброго дня';
+            if (hour >= 18 && hour < 23) return 'Доброго вечора';
+            return 'Доброї ночі';
+        };
+
         // Dropdown closer logic
         document.addEventListener('click', (e) => {
             if(!e.target.closest('#theme-dropdown-wrapper')) {
@@ -344,10 +365,7 @@
         const myFirebaseConfig = {
             apiKey: "AIzaSyB42c4pQLDd9-SrJWExTfZjTAZikE_YD-Y",
             authDomain: "mb-202-hub.firebaseapp.com",
-            projectId: "mb-202-hub",
-            storageBucket: "mb-202-hub.firebasestorage.app",
-            messagingSenderId: "29475695860",
-            appId: "1:29475695860:web:ea43251ba67ce5dde302a1",
+            projectId: "mb-202-hub"
         };
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
         const firebaseApp = initializeApp(firebaseConfig);
@@ -369,7 +387,6 @@
             persActiveWeekNum: closestWeekObj.n,
             mainViewWeek: closestWeekObj.t,
             mainActiveWeekNum: closestWeekObj.n,
-            genWeek: 25,
 
             zoomLinksData: JSON.parse(localStorage.getItem('portal-custom-zoom')) || {},
             homeworks: JSON.parse(localStorage.getItem('portal-homeworks')) || [],
@@ -383,29 +400,40 @@
         };
 
         // --- CORE FUNCTIONS ---
-        const getMergedSchedule = (weekType) => {
+        const getMergedSchedule = (weekType, weekNum) => {
             let base = mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : [];
-            let extras = window.appState.extraSchedule.filter(ep => ep.weekType === weekType);
+            let extras = window.appState.extraSchedule.filter(ep => {
+                if (ep.weekType !== weekType) return false;
+                if (ep.targetWeekNum) {
+                    if (weekNum) {
+                        if (parseInt(ep.targetWeekNum) !== parseInt(weekNum)) return false;
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            });
             
             extras.forEach(ep => {
                 let dayObj = base.find(d => d.day === ep.day);
-                if (!dayObj) {
-                    dayObj = { day: ep.day, pairs: [] };
-                    base.push(dayObj);
-                }
+                if (!dayObj) { dayObj = { day: ep.day, pairs: [] }; base.push(dayObj); }
                 dayObj.pairs.push({
-                    id: ep.id,
-                    num: parseInt(ep.num),
+                    id: ep.id, num: parseInt(ep.num),
                     time: timeSlots[parseInt(ep.num)-1].start + "-" + timeSlots[parseInt(ep.num)-1].end,
-                    subj: ep.subj,
-                    type: ep.type,
-                    map: ep.map,
-                    isCustom: true
+                    subj: ep.subj, type: ep.type, map: ep.map, isCustom: true
                 });
             });
 
             base.forEach(d => {
-                d.pairs = d.pairs.filter(p => !window.appState.hiddenSchedule.some(hp => hp.weekType === weekType && hp.day === d.day && hp.num == p.num && hp.subj === p.subj));
+                d.pairs = d.pairs.filter(p => {
+                    return !window.appState.hiddenSchedule.some(hp => {
+                        if (hp.weekType !== weekType || hp.day !== d.day || hp.num != p.num || hp.subj !== p.subj) return false;
+                        if (hp.targetWeekNum) {
+                            return weekNum && parseInt(hp.targetWeekNum) === parseInt(weekNum);
+                        }
+                        return true;
+                    });
+                });
             });
             base = base.filter(d => d.pairs.length > 0);
             base.forEach(d => d.pairs.sort((a,b) => a.num - b.num));
@@ -417,15 +445,16 @@
             const { pri } = getTheme();
             const container = document.getElementById('toasts');
             const toast = document.createElement('div');
-            toast.className = `px-5 py-3.5 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-fade-in-up flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-red-500/90 border-red-400/50' : 'bg-zinc-900/90 dark:bg-zinc-100/90 dark:text-zinc-900 border-white/10 dark:border-zinc-900/10'}`;
+            toast.className = `px-5 py-4 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-fade-in-up flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-rose-500/95 border-rose-400/50' : `bg-${pri}-600/95 border-${pri}-400/50`}`;
             toast.innerHTML = `
-                <i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" class="w-5 h-5 ${!isError ? `text-${pri}-400 dark:text-${pri}-500` : ''}"></i>
+                <div class="p-1 rounded-full bg-white/20"><i data-lucide="${isError ? 'alert-triangle' : 'check'}" class="w-4 h-4 text-white"></i></div>
                 <span>${msg}</span>
             `;
             container.appendChild(toast);
             lucide.createIcons({ root: toast });
             setTimeout(() => {
                 toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         };
@@ -460,30 +489,25 @@
             const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
             
             const navItems = [
-                { id: 'dashboard', icon: 'layout-dashboard' },
+                { id: 'dashboard', icon: 'layout-grid' },
                 { id: 'schedule', icon: 'user' },
-                { id: 'main', icon: 'calendar' },
-                { id: 'materials', icon: 'folder' },
-                { id: 'homework', icon: 'pen-tool' },
+                { id: 'main', icon: 'calendar-days' },
+                { id: 'materials', icon: 'folder-open' },
+                { id: 'homework', icon: 'check-square' },
                 { id: 'register', icon: 'users' },
             ];
-
-            if (canEdit) {
-                navItems.push({ id: 'editor', icon: 'settings' });
-            }
+            if (canEdit) navItems.push({ id: 'editor', icon: 'settings' });
             
             const activeIndex = Math.max(0, navItems.findIndex(i => i.id === window.appState.view));
-            const offset = 4 + activeIndex * 44;
+            const offset = 6 + activeIndex * 44; // Adjust pill offset for padding
             
+            // DESKTOP NAV
             const deskNav = document.getElementById('desktop-nav');
-            
-            if (deskNav.dataset.itemCount && parseInt(deskNav.dataset.itemCount) !== navItems.length) {
-                deskNav.dataset.init = ""; 
-            }
+            if (deskNav.dataset.itemCount && parseInt(deskNav.dataset.itemCount) !== navItems.length) deskNav.dataset.init = ""; 
             
             if (!deskNav.dataset.init) {
                 deskNav.innerHTML = `
-                    <div id="desk-pill" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gradient-to-r from-${pri}-100 via-${sec}-200 to-${pri}-100 dark:from-${pri}-500/30 dark:via-${sec}-400/30 dark:to-${pri}-500/30 bg-[length:200%_200%] animate-gradient-flow shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>
+                    <div id="desk-pill" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-zinc-800 shadow-md border border-zinc-200 dark:border-zinc-700 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>
                     ${navItems.map(item => `
                         <button id="desk-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300">
                             <i data-lucide="${item.icon}" class="w-4 h-4 transition-all duration-300"></i>
@@ -493,10 +517,6 @@
                 deskNav.dataset.init = "true";
                 deskNav.dataset.itemCount = navItems.length;
                 lucide.createIcons({ root: deskNav });
-            } else {
-                // Update background classes dynamically if theme changed without re-creating DOM
-                const pill = document.getElementById('desk-pill');
-                if(pill) pill.className = `absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gradient-to-r from-${pri}-100 via-${sec}-200 to-${pri}-100 dark:from-${pri}-500/30 dark:via-${sec}-400/30 dark:to-${pri}-500/30 bg-[length:200%_200%] animate-gradient-flow shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0`;
             }
             
             const deskPill = document.getElementById('desk-pill');
@@ -506,47 +526,45 @@
                 const isActive = window.appState.view === item.id;
                 const btn = document.getElementById(`desk-btn-${item.id}`);
                 if(btn) {
-                    btn.className = `relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? `text-${pri}-700 dark:text-${pri}-300` : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'}`;
+                    btn.className = `relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'}`;
                     const svg = btn.querySelector('svg');
-                    if(svg) svg.setAttribute('class', `w-4 h-4 transition-all duration-300 ${isActive ? `fill-${pri}-500/20 scale-110 drop-shadow-sm` : ''}`);
+                    if(svg) svg.setAttribute('class', `w-[18px] h-[18px] transition-all duration-300 ${isActive ? `scale-110 drop-shadow-sm` : ''}`);
                 }
             });
 
-            // --- MOBILE NAV ---
+            // MOBILE NAV
             const mobileNavItems = [
-                { id: 'dashboard', icon: 'layout-dashboard' },
+                { id: 'dashboard', icon: 'layout-grid' },
                 { id: 'schedule', icon: 'user' },
-                { id: 'main', icon: 'calendar' }
+                { id: 'main', icon: 'calendar-days' }
             ];
             const mActiveIndex = mobileNavItems.findIndex(i => i.id === window.appState.view);
             const mobileContainer = document.getElementById('mobile-nav');
             
             if (!mobileContainer.dataset.init) {
                 mobileContainer.innerHTML = `
-                    <div class="flex justify-between items-center px-3 py-2 w-full relative">
-                        <div id="mob-pill" class="absolute top-2 bottom-2 w-[calc(25%-6px)] bg-gradient-to-r from-${pri}-100/80 via-${sec}-100/80 to-${pri}-100/80 dark:from-${pri}-500/30 dark:via-${sec}-400/30 dark:to-${pri}-500/30 bg-[length:200%_200%] animate-gradient-flow rounded-full z-0 shadow-sm border border-white/50 dark:border-white/5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></div>
+                    <div class="flex justify-between items-center w-full relative">
+                        <div id="mob-pill" class="absolute top-1 bottom-1 w-[calc(25%-6px)] bg-${pri}-100 dark:bg-${pri}-500/20 rounded-full z-0 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></div>
                         ${mobileNavItems.map(item => `
-                            <button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-colors duration-300">
-                                <i data-lucide="${item.icon}" class="w-6 h-6 mb-1 transition-all duration-300"></i>
+                            <button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex flex-col items-center justify-center flex-1 h-12 rounded-full transition-colors duration-300">
+                                <i data-lucide="${item.icon}" class="w-5 h-5 transition-all duration-300"></i>
                             </button>
                         `).join('')}
-                        <button onclick="window.app.openMobileMenu()" class="relative z-10 flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-colors text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
-                            <i data-lucide="chevron-down" class="w-6 h-6 mb-1"></i>
+                        <button onclick="window.app.openMobileMenu()" class="relative z-10 flex flex-col items-center justify-center flex-1 h-12 rounded-full transition-colors text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+                            <i data-lucide="menu" class="w-5 h-5"></i>
                         </button>
                     </div>
                 `;
                 mobileContainer.dataset.init = "true";
                 lucide.createIcons({ root: mobileContainer });
-            } else {
-                const mobPill = document.getElementById('mob-pill');
-                if(mobPill) mobPill.className = `absolute top-2 bottom-2 w-[calc(25%-6px)] bg-gradient-to-r from-${pri}-100/80 via-${sec}-100/80 to-${pri}-100/80 dark:from-${pri}-500/30 dark:via-${sec}-400/30 dark:to-${pri}-500/30 bg-[length:200%_200%] animate-gradient-flow rounded-full z-0 shadow-sm border border-white/50 dark:border-white/5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]`;
             }
 
             const mobPill = document.getElementById('mob-pill');
             if(mobPill) {
+                mobPill.className = `absolute top-1 bottom-1 w-[calc(25%-6px)] bg-${pri}-100 dark:bg-${pri}-500/20 rounded-full z-0 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]`;
                 if(mActiveIndex >= 0) {
                     mobPill.style.opacity = '1';
-                    mobPill.style.left = `calc(12px + ${mActiveIndex * 25}%)`;
+                    mobPill.style.left = `calc(6px + ${mActiveIndex * 25}%)`;
                 } else {
                     mobPill.style.opacity = '0'; 
                 }
@@ -556,23 +574,23 @@
                 const isActive = window.appState.view === item.id;
                 const btn = document.getElementById(`mob-btn-${item.id}`);
                 if(btn) {
-                    btn.className = `relative z-10 flex flex-col items-center flex-1 py-2 px-1 rounded-full transition-colors duration-300 ${isActive ? `text-${pri}-700 dark:text-${pri}-300` : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'}`;
+                    btn.className = `relative z-10 flex flex-col items-center justify-center flex-1 h-12 rounded-full transition-colors duration-300 ${isActive ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'}`;
                     const svg = btn.querySelector('svg');
-                    if(svg) svg.setAttribute('class', `w-6 h-6 mb-1 transition-all duration-300 ${isActive ? `fill-${pri}-500/20 scale-110` : ''}`);
+                    if(svg) svg.setAttribute('class', `w-5 h-5 transition-all duration-300 ${isActive ? `scale-110` : ''}`);
                 }
             });
             
             if(window.appState.selectedStudent) {
+                const [firstName, lastName] = window.appState.selectedStudent.name.split(' ');
                 document.getElementById('header-user-info').innerHTML = `
-                    <div class="text-[13px] font-bold text-zinc-900 dark:text-white leading-tight">${window.appState.selectedStudent.name.split(' ')[0]} ${window.appState.selectedStudent.name.split(' ')[1]}</div>
-                    <div class="text-[10px] text-zinc-500 font-medium">${window.appState.selectedStudent.isStarosta ? 'Староста' : 'Студент'}</div>
+                    <div class="text-[13px] font-bold text-zinc-900 dark:text-white leading-tight">${firstName} ${lastName}</div>
+                    <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">${window.appState.selectedStudent.isStarosta ? 'Староста' : 'Студент'}</div>
                 `;
-                // Keep the avatar updated with the right color theme
                 document.getElementById('header-user-avatar').innerText = window.appState.selectedStudent.name.charAt(0);
-                document.getElementById('header-user-avatar').className = `w-10 h-10 rounded-full bg-gradient-to-tr from-${pri}-100 to-${sec}-50 dark:from-${pri}-900/40 dark:to-${sec}-900/20 text-${pri}-700 dark:text-${pri}-300 flex items-center justify-center font-black text-sm border border-${pri}-200/50 dark:border-${pri}-700/30 cursor-pointer hover:shadow-md transition-all`;
+                document.getElementById('header-user-avatar').className = `w-10 h-10 rounded-full bg-${pri}-100 dark:bg-${pri}-900/40 text-${pri}-700 dark:text-${pri}-300 flex items-center justify-center font-bold text-sm border border-${pri}-200/50 dark:border-${pri}-700/50 group-hover:ring-2 ring-${pri}-500/50 transition-all shadow-sm`;
                 
-                document.getElementById('header-logo-bg').className = `w-10 h-10 bg-gradient-to-br from-${pri}-500 to-${sec}-500 rounded-full flex items-center justify-center text-white shadow-inner shadow-white/20 group-hover:scale-105 transition-transform`;
-                document.getElementById('header-logo-text').className = `text-[9px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mt-0.5 block`;
+                document.getElementById('header-logo-bg').className = `w-10 h-10 bg-gradient-to-br from-${pri}-500 to-${sec}-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-${pri}-500/30 group-hover:scale-105 transition-transform duration-300`;
+                document.getElementById('header-logo-text').className = `text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mt-0.5 block opacity-80`;
             }
         };
 
@@ -580,32 +598,32 @@
             const { pri, sec } = getTheme();
             const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
             const html = `
-                <div class="w-full bg-[#f4f4f5] dark:bg-zinc-900 rounded-t-[40px] p-6 pb-12 shadow-[0_-20px_40px_rgba(0,0,0,0.1)] border-t border-white/50 dark:border-white/10" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards;">
-                    <div class="w-16 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
+                <div class="w-full glass-panel rounded-t-[40px] p-6 pb-12 shadow-[0_-20px_40px_rgba(0,0,0,0.15)] border-t border-white/50 dark:border-white/10" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+                    <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
                     <div class="space-y-3 mb-8">
-                        <button onclick="window.app.setView('materials'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all hover:bg-white/80 dark:hover:bg-zinc-800/80">
-                            <div class="w-12 h-12 rounded-[18px] bg-${pri}-50 text-${pri}-600 dark:bg-${pri}-500/10 dark:text-${pri}-400 flex items-center justify-center"><i data-lucide="folder" class="w-6 h-6"></i></div>
-                            <span class="text-[15px]">Матеріали</span>
+                        <button onclick="window.app.setView('materials'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group">
+                            <div class="w-12 h-12 rounded-[18px] bg-${pri}-50 dark:bg-${pri}-500/10 text-${pri}-600 dark:text-${pri}-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="folder-open" class="w-6 h-6"></i></div>
+                            <span class="text-[16px] font-semibold text-zinc-900 dark:text-white">Матеріали</span>
                         </button>
-                        <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all hover:bg-white/80 dark:hover:bg-zinc-800/80">
-                            <div class="w-12 h-12 rounded-[18px] bg-${sec}-50 text-${sec}-600 dark:bg-${sec}-500/10 dark:text-${sec}-400 flex items-center justify-center"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
-                            <span class="text-[15px]">Історія Д/з</span>
+                        <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group">
+                            <div class="w-12 h-12 rounded-[18px] bg-${sec}-50 dark:bg-${sec}-500/10 text-${sec}-600 dark:text-${sec}-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="check-square" class="w-6 h-6"></i></div>
+                            <span class="text-[16px] font-semibold text-zinc-900 dark:text-white">Історія Д/з</span>
                         </button>
-                        <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-zinc-800/50 shadow-sm border border-zinc-100 dark:border-white/5 text-left text-zinc-900 dark:text-white font-bold active:scale-[0.98] transition-all hover:bg-white/80 dark:hover:bg-zinc-800/80">
-                            <div class="w-12 h-12 rounded-[18px] bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 flex items-center justify-center"><i data-lucide="users" class="w-6 h-6"></i></div>
-                            <span class="text-[15px]">Реєстр групи</span>
+                        <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group">
+                            <div class="w-12 h-12 rounded-[18px] bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-6 h-6"></i></div>
+                            <span class="text-[16px] font-semibold text-zinc-900 dark:text-white">Реєстр групи</span>
                         </button>
                         ${canEdit ? `
-                        <button onclick="window.app.setView('editor'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-900/10 shadow-sm border border-amber-100 dark:border-amber-500/10 text-left text-amber-700 dark:text-amber-500 font-bold active:scale-[0.98] transition-all hover:bg-amber-100/50 dark:hover:bg-amber-900/20">
-                            <div class="w-12 h-12 rounded-[18px] bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center"><i data-lucide="settings" class="w-6 h-6"></i></div>
-                            <span class="text-[15px]">Редактор розкладу</span>
+                        <button onclick="window.app.setView('editor'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-500/10 text-left active:scale-[0.98] transition-all group">
+                            <div class="w-12 h-12 rounded-[18px] bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="settings" class="w-6 h-6"></i></div>
+                            <span class="text-[16px] font-semibold text-amber-700 dark:text-amber-400">Редактор розкладу</span>
                         </button>` : ''}
                     </div>
                     <div class="flex gap-4">
-                        <button onclick="window.app.toggleDark(); window.app.closeMobileMenu();" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-white dark:bg-zinc-800 shadow-sm border border-zinc-100 dark:border-white/5 text-zinc-800 dark:text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-transform hover:bg-white/80 dark:hover:bg-zinc-800/80">
+                        <button onclick="window.app.toggleDark(); window.app.closeMobileMenu();" class="flex-1 py-4 rounded-2xl font-semibold text-sm glass-card text-zinc-800 dark:text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-all">
                             <i data-lucide="${window.appState.isDark ? 'sun' : 'moon'}" class="w-5 h-5"></i> Тема
                         </button>
-                        <button onclick="window.app.logout(); window.app.closeMobileMenu();" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20 flex justify-center items-center gap-2 active:scale-95 transition-transform hover:bg-rose-100 dark:hover:bg-rose-500/20">
+                        <button onclick="window.app.logout(); window.app.closeMobileMenu();" class="flex-1 py-4 rounded-2xl font-semibold text-sm bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20 flex justify-center items-center gap-2 active:scale-95 transition-all">
                             <i data-lucide="log-out" class="w-5 h-5"></i> Вихід
                         </button>
                     </div>
@@ -618,7 +636,7 @@
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
             const todayDay = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"][new Date().getDay()];
-            const merged = getMergedSchedule(closestWeekObj.t);
+            const merged = getMergedSchedule(closestWeekObj.t, closestWeekObj.n);
             const todayScheduleObj = merged.find(d => d.day === todayDay);
             const todaySchedule = todayScheduleObj ? todayScheduleObj.pairs : [];
 
@@ -636,36 +654,47 @@
 
             let html = `
                 <div class="animate-fade-in space-y-6">
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-8">
-                        Привіт, ${user.name.split(' ')[0]} 👋
-                    </h1>
+                    <div class="mb-8">
+                        <p class="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-1">${getGreeting()},</p>
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+                            ${user.name.split(' ')[0]} 👋
+                        </h1>
+                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
-                        <!-- Live Widget -->
-                        <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] p-8 relative overflow-hidden shadow-2xl border border-zinc-800" id="live-widget">
+                        <!-- HERO LIVE WIDGET (Bento Main) -->
+                        <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] p-8 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[280px]" id="live-widget">
                             <!-- Populated by interval -->
                         </div>
 
-                        <!-- Today Schedule -->
-                        <div class="bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[32px] p-6 border border-zinc-200 dark:border-white/10 shadow-lg flex flex-col cursor-pointer hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-colors" onclick="window.app.setView('schedule')">
+                        <!-- TODAY SCHEDULE (Bento Side) -->
+                        <div class="md:col-span-1 glass-card rounded-[32px] p-6 flex flex-col group cursor-pointer" onclick="window.app.setView('schedule')">
                             <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-sm font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar-days" class="w-4 h-4"></i> Сьогодні</h3>
-                                <div class="w-8 h-8 rounded-full bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500"><i data-lucide="chevron-right" class="w-4 h-4"></i></div>
+                                <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Сьогодні</h3>
+                                <div class="w-8 h-8 rounded-full bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
                             </div>
-                            <div class="flex-1 overflow-y-auto custom-scroll pr-2 space-y-3 max-h-[200px]">
-                                ${personalToday.length === 0 ? `<div class="text-zinc-500 text-sm font-medium">Пар немає. Відпочиваємо!</div>` : 
+                            <div class="flex-1 overflow-y-auto custom-scroll pr-2 space-y-4 max-h-[200px]">
+                                ${personalToday.length === 0 ? `
+                                    <div class="flex flex-col items-center justify-center h-full text-center opacity-60">
+                                        <i data-lucide="coffee" class="w-8 h-8 text-zinc-400 mb-2"></i>
+                                        <div class="text-zinc-500 text-sm font-medium">Пар немає. Відпочиваємо!</div>
+                                    </div>` : 
                                     personalToday.map(p => {
                                         let displaySubj = p.subj.split(' ')[0];
-                                        if (p.subj.toLowerCase().startsWith('англ')) {
+                                        if (p.subj.includes('Шматок')) {
+                                            displaySubj = 'Англ (Шматок)';
+                                        } else if (p.subj.toLowerCase().startsWith('англ')) {
                                             const teacher = p.subj.match(/\((.*?)\)/)?.[1] || "";
                                             displaySubj = teacher ? `Англ (${teacher})` : 'Англійська';
                                         } else if (p.map === 'language_pair') {
                                             displaySubj = 'Ін. мова';
                                         }
                                         return `
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-black text-zinc-600 dark:text-zinc-300 shrink-0">${p.num}</div>
-                                                <div class="text-sm font-bold text-zinc-900 dark:text-white truncate">${displaySubj}</div>
+                                            <div class="flex items-center gap-4 relative">
+                                                <div class="absolute left-3.5 top-8 bottom-[-16px] w-px bg-zinc-200 dark:bg-zinc-800 last:hidden"></div>
+                                                <div class="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300 shrink-0 border-2 border-white dark:border-zinc-900 z-10">${p.num}</div>
+                                                <div class="text-[14px] font-semibold text-zinc-900 dark:text-white truncate pt-0.5">${displaySubj}</div>
                                             </div>
                                         `;
                                     }).join('')
@@ -673,33 +702,33 @@
                             </div>
                         </div>
 
-                        <!-- Recent HW -->
-                        <div class="md:col-span-2 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[32px] p-6 border border-zinc-200 dark:border-white/10 shadow-lg cursor-pointer hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-colors" onclick="window.app.setView('homework')">
+                        <!-- RECENT HOMEWORK (Bento Bottom Left) -->
+                        <div class="md:col-span-2 glass-card rounded-[32px] p-6 group cursor-pointer" onclick="window.app.setView('homework')">
                             <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-sm font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="pen-tool" class="w-4 h-4"></i> Останні Д/з</h3>
-                                <span class="text-xs font-bold text-${pri}-500">Всі</span>
+                                <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Останні Д/з</h3>
+                                <div class="flex items-center gap-1 text-[12px] font-bold text-${pri}-500 group-hover:text-${pri}-600 transition-colors">Всі <i data-lucide="chevron-right" class="w-3 h-3"></i></div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                ${recentHw.length === 0 ? `<p class="text-sm text-zinc-500">Немає нових Д/з</p>` : recentHw.map(hw => `
-                                    <div class="bg-white/80 dark:bg-zinc-950/50 p-4 rounded-[20px] border border-zinc-100 dark:border-white/5 shadow-sm">
-                                        <div class="text-[10px] font-black text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mb-1 truncate">${hw.subj}</div>
-                                        <p class="text-xs font-medium text-zinc-600 dark:text-zinc-300 line-clamp-2">${hw.text}</p>
+                                ${recentHw.length === 0 ? `<p class="text-sm text-zinc-500 col-span-3">Немає нових Д/з</p>` : recentHw.map(hw => `
+                                    <div class="bg-white/80 dark:bg-zinc-900/80 p-5 rounded-[24px] border border-zinc-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mb-2 truncate">${hw.subj}</div>
+                                        <p class="text-[13px] font-medium text-zinc-700 dark:text-zinc-300 line-clamp-2 leading-relaxed">${hw.text}</p>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
-                        <!-- Recent Materials -->
-                        <div class="bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-[32px] p-6 border border-zinc-200 dark:border-white/10 shadow-lg cursor-pointer hover:bg-white/80 dark:hover:bg-zinc-800/80 transition-colors" onclick="window.app.setView('materials')">
+                        <!-- RECENT MATERIALS (Bento Bottom Right) -->
+                        <div class="md:col-span-1 glass-card rounded-[32px] p-6 group cursor-pointer" onclick="window.app.setView('materials')">
                             <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-sm font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder" class="w-4 h-4"></i> Матеріали</h3>
-                                <span class="text-xs font-bold text-${pri}-500">Всі</span>
+                                <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder-open" class="w-4 h-4"></i> Матеріали</h3>
+                                <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
                             </div>
                             <div class="space-y-3">
                                 ${recentMat.length === 0 ? `<p class="text-sm text-zinc-500">Порожньо</p>` : recentMat.map(m => `
-                                    <div class="flex items-center gap-3 bg-white/80 dark:bg-zinc-950/50 p-3 rounded-[16px] border border-zinc-100 dark:border-white/5">
-                                        <div class="w-8 h-8 rounded-lg bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500 shrink-0"><i data-lucide="link" class="w-4 h-4"></i></div>
-                                        <div class="text-xs font-bold text-zinc-900 dark:text-zinc-200 truncate">${m.title}</div>
+                                    <div class="flex items-center gap-3 bg-white/80 dark:bg-zinc-900/80 p-3 rounded-[20px] border border-zinc-100 dark:border-white/5">
+                                        <div class="w-10 h-10 rounded-[14px] bg-${sec}-50 dark:bg-${sec}-500/10 flex items-center justify-center text-${sec}-500 shrink-0"><i data-lucide="link" class="w-4 h-4"></i></div>
+                                        <div class="text-[13px] font-semibold text-zinc-900 dark:text-zinc-200 truncate pr-2">${m.title}</div>
                                     </div>
                                 `).join('')}
                             </div>
@@ -721,7 +750,7 @@
             const activeWeekType = isPersonal ? window.appState.persMainWeek : window.appState.mainViewWeek;
             const activeWeekNum = isPersonal ? window.appState.persActiveWeekNum : window.appState.mainActiveWeekNum;
             const canEdit = user && (user.id === 19 || user.id === 2);
-            const scheduleList = getMergedSchedule(activeWeekType);
+            const scheduleList = getMergedSchedule(activeWeekType, activeWeekNum);
             
             const setWeekFn = isPersonal ? 'window.app.setPersWeek' : 'window.app.setMainWeek';
 
@@ -734,38 +763,38 @@
                 <div class="animate-fade-in">
                     <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10">
                         <div>
-                            ${isPersonal ? `<span class="inline-block px-3 py-1 bg-gradient-to-r from-${pri}-100 via-${sec}-100 to-${pri}-100 dark:from-${pri}-500/20 dark:via-${sec}-500/20 dark:to-${pri}-500/20 bg-[length:200%_200%] animate-gradient-flow text-${pri}-700 dark:text-${pri}-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-3 shadow-sm border border-${pri}-200/50 dark:border-${pri}-500/20">Актуально</span>` : ''}
+                            ${isPersonal ? `<span class="inline-block px-3 py-1 bg-${pri}-100 dark:bg-${pri}-500/20 text-${pri}-700 dark:text-${pri}-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-3 shadow-sm">Актуально</span>` : ''}
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">${isPersonal ? 'Мій розклад' : 'Загальний'}</h2>
                         </div>
                         
-                        <!-- SLIDING SHIMMERING WEEK TOGGLE -->
-                        <div class="flex w-full sm:w-64 bg-zinc-200/50 dark:bg-zinc-800/50 p-1.5 rounded-2xl shadow-inner shrink-0 backdrop-blur-sm relative overflow-hidden z-10">
-                            <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-gradient-to-r from-white via-${pri}-50 to-white dark:from-zinc-700 dark:via-zinc-600 dark:to-zinc-700 bg-[length:200%_200%] animate-gradient-flow rounded-xl shadow-sm border border-white/60 dark:border-white/10 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
+                        <!-- SLIDING TOGGLE -->
+                        <div class="flex w-full sm:w-64 glass-card p-1.5 rounded-[20px] relative overflow-hidden z-10">
+                            <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-white dark:bg-zinc-800 rounded-[14px] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
                             
-                            <button onclick="${setWeekFn}('upper', null)" class="relative z-10 flex-1 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300 ${isUpper ? 'text-zinc-900 dark:text-white scale-[1.02]' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'}">Верхній</button>
-                            <button onclick="${setWeekFn}('lower', null)" class="relative z-10 flex-1 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300 ${isLower ? 'text-zinc-900 dark:text-white scale-[1.02]' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'}">Нижній</button>
+                            <button onclick="${setWeekFn}('upper', null)" class="relative z-10 flex-1 px-4 py-2.5 rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isUpper ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Верхній</button>
+                            <button onclick="${setWeekFn}('lower', null)" class="relative z-10 flex-1 px-4 py-2.5 rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isLower ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Нижній</button>
                         </div>
                     </div>
 
-                    <!-- Week Selector -->
+                    <!-- Week Selector (Horizontal Scroll) -->
                     <div class="mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 overflow-hidden">
                         <div class="flex gap-4 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-6 snap-x">
                             ${weeksConfig.map(w => {
                                 const isActive = activeWeekNum === w.n;
                                 const itemClass = isActive 
-                                    ? 'bg-gradient-to-br from-zinc-800 via-zinc-900 to-black dark:from-white dark:via-zinc-100 dark:to-zinc-200 bg-[length:200%_200%] animate-gradient-flow border-transparent text-white dark:text-zinc-900 shadow-lg scale-[1.02]' 
-                                    : 'bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border-zinc-200/60 dark:border-white/10 hover:border-zinc-400/50 text-zinc-800 dark:text-zinc-200 hover:scale-[1.02]';
+                                    ? `bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-xl scale-[1.02] border-transparent` 
+                                    : `glass-card text-zinc-800 dark:text-zinc-200 hover:scale-[1.02]`;
 
                                 return `
-                                    <div onclick="${setWeekFn}('${w.t}', ${w.n})" class="snap-start shrink-0 cursor-pointer border transition-all duration-300 p-4 rounded-[24px] flex flex-col min-w-[120px] relative overflow-hidden group ${itemClass}">
-                                        <div class="flex justify-between items-center mb-3 mt-1">
+                                    <div onclick="${setWeekFn}('${w.t}', ${w.n})" class="snap-start shrink-0 cursor-pointer border transition-all duration-300 p-5 rounded-[24px] flex flex-col min-w-[130px] relative group ${itemClass}">
+                                        <div class="flex justify-between items-start mb-4">
                                             <span class="text-3xl leading-none font-black tracking-tighter">${w.n}</span>
                                             <div class="w-6 h-6 rounded-full flex items-center justify-center ${isActive ? 'bg-white/20 dark:bg-black/10' : 'bg-zinc-100 dark:bg-zinc-800'}">
-                                                <i data-lucide="arrow-up-left" class="w-3.5 h-3.5 ${w.t === 'upper' ? 'rotate-45' : '-rotate-[135deg]'}"></i>
+                                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 ${w.t === 'upper' ? '' : 'rotate-90'}"></i>
                                             </div>
                                         </div>
-                                        <span class="text-[10px] font-bold uppercase tracking-widest mb-0.5 whitespace-nowrap ${isActive ? 'text-zinc-300 dark:text-zinc-500' : 'text-zinc-500'}">${w.t === 'upper' ? 'Верхній' : 'Нижній'}</span>
-                                        <span class="text-[11px] font-medium whitespace-nowrap ${isActive ? 'text-zinc-400 dark:text-zinc-600' : 'text-zinc-400'}">${w.d}</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest mb-1 ${isActive ? 'text-zinc-300 dark:text-zinc-500' : 'text-zinc-500'}">${w.t === 'upper' ? 'Верхній' : 'Нижній'}</span>
+                                        <span class="text-[11px] font-medium ${isActive ? 'text-zinc-400 dark:text-zinc-600' : 'text-zinc-400'}">${w.d}</span>
                                     </div>
                                 `;
                             }).join('')}
@@ -775,16 +804,16 @@
 
             if (scheduleList.length === 0) {
                 html += `
-                    <div class="flex flex-col items-center justify-center p-16 text-center bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-dashed border-zinc-300 dark:border-zinc-800 animate-fade-in">
-                        <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-400 mb-4"><i data-lucide="calendar" class="w-8 h-8"></i></div>
+                    <div class="flex flex-col items-center justify-center p-16 text-center glass-card border-dashed rounded-[32px] animate-fade-in">
+                        <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800/50 rounded-full flex items-center justify-center text-zinc-400 mb-4"><i data-lucide="coffee" class="w-8 h-8"></i></div>
                         <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-1">Немає пар</h3>
-                        <p class="text-sm font-medium text-zinc-500">У ці дні розклад порожній. Можна відпочивати.</p>
+                        <p class="text-sm font-medium text-zinc-500">У ці дні розклад порожній. Час для відпочинку.</p>
                     </div>
                 `;
             } else {
                 const todayStr = `${new Date().getDate().toString().padStart(2,'0')}.${(new Date().getMonth()+1).toString().padStart(2,'0')}`;
                 
-                let scheduleHtml = `<div class="space-y-10 relative">`;
+                let scheduleHtml = `<div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 md:before:ml-6 before:-translate-x-px md:before:translate-x-0 before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-200 dark:before:via-zinc-800 before:to-transparent">`;
                 
                 scheduleList.forEach((day, dayIdx) => {
                     let pairsToRender = day.pairs;
@@ -803,80 +832,75 @@
                     const specificDate = getDateForDay(activeWeekNum, day.day);
                     const isToday = specificDate === todayStr;
 
-                    let groupedPairs = {};
-                    pairsToRender.forEach(p => {
-                        if (!groupedPairs[p.num]) groupedPairs[p.num] = [];
-                        groupedPairs[p.num].push(p);
-                    });
-                    const sortedKeys = Object.keys(groupedPairs).sort((a,b) => a - b);
-
                     scheduleHtml += `
-                        <div class="relative animate-fade-in-up" style="animation-delay: ${dayIdx * 50}ms">
-                            <div class="sticky top-20 sm:top-24 z-20 mb-6 flex items-center pointer-events-none">
-                                <h3 class="text-sm font-black uppercase tracking-widest py-3 px-6 rounded-full inline-flex items-center gap-3 whitespace-nowrap pointer-events-auto backdrop-blur-2xl shadow-lg border ${isToday ? "bg-gradient-to-r from-zinc-800 via-zinc-900 to-zinc-800 dark:from-white dark:via-zinc-200 dark:to-white bg-[length:200%_200%] animate-gradient-flow text-white dark:text-zinc-900 border-transparent shadow-zinc-900/20" : "bg-white/80 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 border-zinc-200/50 dark:border-white/5"}">
+                        <div class="relative animate-fade-in-up pl-10 md:pl-16" style="animation-delay: ${dayIdx * 50}ms">
+                            <!-- Day Header & Timeline Dot -->
+                            <div class="absolute left-3 md:left-4 top-4 w-4 h-4 rounded-full border-4 border-[#f8fafc] dark:border-[#09090b] ${isToday ? `bg-${pri}-500 shadow-[0_0_15px_rgba(20,184,166,0.5)]` : 'bg-zinc-300 dark:bg-zinc-700'} z-10"></div>
+                            
+                            <div class="sticky top-20 sm:top-24 z-20 mb-6 inline-flex items-center gap-3">
+                                <h3 class="text-[14px] font-black uppercase tracking-widest py-2 px-5 rounded-full glass-card shadow-sm text-zinc-900 dark:text-white border-none ${isToday ? `ring-2 ring-${pri}-500/50` : ''}">
                                     ${day.day} 
-                                    <span class="font-bold text-xs px-2.5 py-1 rounded-full ${isToday ? 'bg-white/20 dark:bg-black/10' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}">${specificDate}</span>
                                 </h3>
+                                <span class="font-bold text-xs text-zinc-500 dark:text-zinc-400 bg-white/50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-full backdrop-blur-md">${specificDate}</span>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                     `;
 
-                    sortedKeys.forEach((numKey) => {
-                        const pairsGroup = groupedPairs[numKey];
-                        const timeStr = pairsGroup[0].time;
+                    pairsToRender.forEach((p) => {
+                        let displaySubj = p.subj;
+                        if (p.subj.includes('Шматок - Маркова')) {
+                            displaySubj = isPersonal ? 'Англ (Шматок)' : 'Англ (Шматок - Маркова)';
+                        } else if (p.subj.includes('Шматок - Мельник')) {
+                            displaySubj = isPersonal ? 'Англ (Шматок)' : 'Англ (Шматок - Мельник)';
+                        } else if (p.subj.toLowerCase().startsWith('англ')) {
+                            displaySubj = "Англійська мова (" + (p.subj.match(/\((.*?)\)/)?.[1] || "") + ")";
+                        } else if (isPersonal && p.map === 'language_pair') {
+                            const sLang = user.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
+                            if (sLang) displaySubj = `Інземна мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
+                        }
 
-                        pairsGroup.forEach((p, idx) => {
-                            let displaySubj = p.subj;
-                            if (p.subj.toLowerCase().startsWith('англ')) {
-                                displaySubj = "Англійська мова (" + (p.subj.match(/\((.*?)\)/)?.[1] || "") + ")";
-                            } else if (isPersonal && p.map === 'language_pair') {
-                                const sLang = user.electives.find(el => ['німецька','польська','французька','китайська'].includes(el.toLowerCase()));
-                                if (sLang) displaySubj = `Ін.мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
-                            }
+                        let zoomUrl = (p.zoomKey && prebuiltZoomLinks[p.zoomKey]) ? prebuiltZoomLinks[p.zoomKey] : window.appState.zoomLinksData[p.subj];
+                        const hwCount = !isPersonal && activeWeekNum ? window.appState.homeworks.filter(h => h.subj === p.subj && h.weekNum === activeWeekNum && h.day === day.day && h.num == p.num).length : 0;
+                        const tLbl = p.type === 'general' ? 'Загальне' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
+                        const encodedSubj = encodeURIComponent(p.subj);
 
-                            let zoomUrl = (p.zoomKey && prebuiltZoomLinks[p.zoomKey]) ? prebuiltZoomLinks[p.zoomKey] : window.appState.zoomLinksData[p.subj];
-                            const hwCount = !isPersonal && activeWeekNum ? window.appState.homeworks.filter(h => h.subj === p.subj && h.weekNum === activeWeekNum && h.day === day.day && h.num == p.num).length : 0;
-                            const tLbl = p.type === 'general' ? 'Загальне' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
-                            const encodedSubj = encodeURIComponent(p.subj);
-
-                            scheduleHtml += `
-                                <div class="group w-full bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200/50 dark:border-white/5 shadow-sm hover:shadow-xl rounded-[28px] p-6 transition-all duration-300 hover:-translate-y-1 relative flex flex-col">
-                                    ${isToday ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent via-${pri}-500 to-transparent opacity-50"></div>` : ''}
-                                    
-                                    <div class="flex justify-between items-start mb-4">
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[11px] font-black text-zinc-900 dark:text-white shadow-inner">${numKey}</div>
-                                            <div class="text-[11px] font-bold text-zinc-400">${timeStr}</div>
+                        scheduleHtml += `
+                            <div class="group w-full glass-card rounded-[28px] p-6 transition-all duration-300 hover:-translate-y-1 relative flex flex-col">
+                                <div class="flex justify-between items-start mb-5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-[14px] bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[12px] font-black text-zinc-900 dark:text-white shadow-inner">${p.num}</div>
+                                        <div>
+                                            <div class="text-[13px] font-bold text-zinc-900 dark:text-zinc-100">${p.time}</div>
+                                            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mt-0.5">${tLbl}</div>
                                         </div>
-                                        <span class="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-[9px] font-bold uppercase tracking-widest text-zinc-500 whitespace-nowrap">${tLbl}</span>
                                     </div>
-
-                                    <div class="text-[16px] font-extrabold text-zinc-900 dark:text-white leading-snug tracking-tight mb-6 flex-1">${displaySubj}</div>
-                                    
-                                    <div class="flex items-center gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-white/5">
-                                        ${zoomUrl ? `
-                                            <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-10 h-10 flex items-center justify-center rounded-xl bg-${pri}-50 text-${pri}-600 dark:bg-${pri}-500/10 dark:text-${pri}-400 hover:bg-${pri}-100 dark:hover:bg-${pri}-500/20 transition-all hover:scale-105 active:scale-95" title="Join Zoom"><i data-lucide="video" class="w-5 h-5"></i></a>
-                                        ` : canEdit ? `
-                                            <button onclick="window.app.openZoomModal('${encodedSubj}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-50 text-zinc-400 hover:bg-zinc-100 hover:text-${pri}-500 dark:bg-white/5 dark:hover:bg-white/10 transition-all hover:scale-105 active:scale-95"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                                        ` : ''}
-                                        
-                                        <button onclick="window.app.openHwModal('${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 0})" class="px-4 py-2.5 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-all flex items-center gap-2 flex-1 justify-center active:scale-95">
-                                            <i data-lucide="pen-tool" class="w-4 h-4"></i> Д/з
-                                        </button>
-
-                                        ${canEdit ? `
-                                            <button onclick="window.app.handleScheduleAction('${p.id}', ${p.isCustom}, '${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num})" class="w-10 h-10 flex items-center justify-center rounded-xl border border-rose-100 dark:border-rose-900/30 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all hover:scale-105 active:scale-95">
-                                                <i data-lucide="${p.isCustom ? 'trash-2' : 'eye-off'}" class="w-4 h-4"></i>
-                                            </button>
-                                        ` : ''}
-                                        
-                                        ${hwCount > 0 ? `
-                                            <div class="ml-auto flex items-center gap-1.5 px-3 h-10 bg-[var(--sec-50)] text-[var(--sec-600)] dark:bg-[var(--sec-500)]/10 dark:text-[var(--sec-400)] rounded-xl text-xs font-bold" style="background-color: ${themesConfig['emerald'].bg.replace('bg-','')};"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> <span class="text-emerald-600 dark:text-emerald-400">${hwCount}</span></div>
-                                        ` : ''}
-                                    </div>
+                                    ${hwCount > 0 ? `
+                                        <div class="flex items-center gap-1.5 px-3 h-8 bg-${sec}-50 text-${sec}-600 dark:bg-${sec}-500/10 dark:text-${sec}-400 rounded-lg text-[11px] font-bold border border-${sec}-100 dark:border-${sec}-500/20"><i data-lucide="check-square" class="w-3.5 h-3.5"></i> ${hwCount} Д/з</div>
+                                    ` : ''}
                                 </div>
-                            `;
-                        });
+
+                                <div class="text-[16px] font-bold text-zinc-900 dark:text-white leading-snug tracking-tight mb-6 flex-1 pr-4">${displaySubj}</div>
+                                
+                                <div class="flex items-center gap-2 mt-auto pt-5 border-t border-zinc-200/50 dark:border-white/5">
+                                    ${zoomUrl ? `
+                                        <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-12 h-10 flex items-center justify-center rounded-[14px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all hover:scale-105 active:scale-95 border border-blue-100 dark:border-blue-500/20" title="Join Zoom"><i data-lucide="video" class="w-5 h-5"></i></a>
+                                    ` : canEdit ? `
+                                        <button onclick="window.app.openZoomModal('${encodedSubj}')" class="w-12 h-10 flex items-center justify-center rounded-[14px] bg-zinc-50 text-zinc-400 hover:bg-zinc-100 hover:text-blue-500 dark:bg-white/5 dark:hover:bg-white/10 transition-all hover:scale-105 active:scale-95 border border-zinc-200/50 dark:border-white/5"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                                    ` : ''}
+                                    
+                                    <button onclick="window.app.openHwModal('${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 0})" class="px-4 h-10 rounded-[14px] bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-[13px] font-semibold transition-all flex items-center gap-2 flex-1 justify-center active:scale-95">
+                                        <i data-lucide="pen-line" class="w-4 h-4"></i> Д/з
+                                    </button>
+
+                                    ${canEdit ? `
+                                        <button onclick="window.app.handleScheduleAction('${p.id}', ${p.isCustom}, '${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 'null'})" class="w-10 h-10 flex items-center justify-center rounded-[14px] border border-rose-100 dark:border-rose-900/30 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all hover:scale-105 active:scale-95 ml-2">
+                                            <i data-lucide="${p.isCustom ? 'trash-2' : 'eye-off'}" class="w-4 h-4"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
                     });
                     scheduleHtml += `</div></div>`;
                 });
@@ -897,17 +921,17 @@
             const subjectsInUse = ['Всі', 'Загальне', ...new Set(materials.map(m => m.subj).filter(s => s !== 'Загальне'))].sort();
             const filtered = filter === 'Всі' ? materials : materials.filter(m => m.subj === filter);
 
-            const activeFilterClass = "bg-gradient-to-r from-zinc-800 via-zinc-900 to-zinc-800 dark:from-white dark:via-zinc-200 dark:to-white bg-[length:200%_200%] animate-gradient-flow text-white dark:text-zinc-900 shadow-md border-transparent scale-[1.02]";
-            const inactiveFilterClass = "bg-white/60 dark:bg-zinc-800/60 backdrop-blur-md text-zinc-600 dark:text-zinc-300 border-zinc-200/60 dark:border-white/5 hover:bg-white dark:hover:bg-zinc-700";
+            const activeFilterClass = "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent scale-[1.02]";
+            const inactiveFilterClass = "glass-card text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700";
 
             let html = `
                 <div class="animate-fade-in">
                     <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 relative z-10">
                         <div>
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Матеріали</h2>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Корисні посилання, диски та чати</p>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Корисні посилання та диски</p>
                         </div>
-                        <button onclick="window.app.openMaterialModal()" class="w-full sm:w-auto px-6 py-3.5 bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 hover:-translate-y-1 active:scale-95">
+                        <button onclick="window.app.openMaterialModal()" class="w-full sm:w-auto px-6 py-3.5 bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-bold rounded-[18px] shadow-lg transition-all flex items-center justify-center gap-2 hover:-translate-y-1 active:scale-95">
                             <i data-lucide="plus" class="w-5 h-5"></i> Додати
                         </button>
                     </div>
@@ -915,7 +939,7 @@
                     <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-8 relative z-10 overflow-hidden">
                         <div class="flex gap-3 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-4">
                             ${subjectsInUse.map(s => `
-                                <button onclick="window.app.setMatFilter('${s}')" class="px-5 py-2.5 rounded-xl text-[11px] font-bold tracking-wide uppercase transition-all duration-300 whitespace-nowrap border ${filter === s ? activeFilterClass : inactiveFilterClass}">${s}</button>
+                                <button onclick="window.app.setMatFilter('${s}')" class="px-5 py-2.5 rounded-[14px] text-[12px] font-bold tracking-wide transition-all duration-300 whitespace-nowrap border ${filter === s ? activeFilterClass : inactiveFilterClass}">${s}</button>
                             `).join('')}
                         </div>
                     </div>
@@ -924,35 +948,35 @@
             `;
 
             if(filtered.length === 0) {
-                html += `<div class="col-span-full text-center p-16 text-sm text-zinc-500 font-bold border border-dashed border-zinc-300 dark:border-zinc-800 rounded-[32px] bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl">Матеріалів поки немає.</div>`;
+                html += `<div class="col-span-full text-center p-16 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px]">Матеріалів поки немає.</div>`;
             } else {
                 filtered.forEach((m, i) => {
                     const authorObj = students.find(s => s.name === m.author);
                     const canDelete = user.name === m.author || user.isStarosta || user.id === 19;
                     
-                    let iconName = 'link'; let iconColor = `text-${pri}-500`; let iconBg = `bg-${pri}-50 dark:bg-${pri}-500/10 border-${pri}-100 dark:border-${pri}-500/20`;
+                    let iconName = 'link'; let iconColor = `text-${pri}-600 dark:text-${pri}-400`; let iconBg = `bg-${pri}-50 dark:bg-${pri}-500/10 border-${pri}-100 dark:border-${pri}-500/20`;
                     const lowerUrl = m.url.toLowerCase();
-                    if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconName = 'hard-drive'; iconColor = 'text-emerald-500'; iconBg = 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20'; }
-                    if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconName = 'message-circle'; iconColor = 'text-sky-500'; iconBg = 'bg-sky-50 dark:bg-sky-500/10 border-sky-100 dark:border-sky-500/20'; }
-                    if(lowerUrl.includes('zoom.us')) { iconName = 'video'; iconColor = `text-${pri}-500`; iconBg = `bg-${pri}-50 dark:bg-${pri}-500/10 border-${pri}-100 dark:border-${pri}-500/20`; }
-                    if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconName = 'youtube'; iconColor = 'text-rose-500'; iconBg = 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/20'; }
+                    if(lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) { iconName = 'hard-drive'; iconColor = 'text-emerald-600 dark:text-emerald-400'; iconBg = 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20'; }
+                    if(lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) { iconName = 'message-circle'; iconColor = 'text-sky-600 dark:text-sky-400'; iconBg = 'bg-sky-50 dark:bg-sky-500/10 border-sky-100 dark:border-sky-500/20'; }
+                    if(lowerUrl.includes('zoom.us')) { iconName = 'video'; iconColor = 'text-blue-600 dark:text-blue-400'; iconBg = 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20'; }
+                    if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconName = 'youtube'; iconColor = 'text-rose-600 dark:text-rose-400'; iconBg = 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/20'; }
 
                     html += `
-                        <div class="group bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl p-6 rounded-[32px] border border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full animate-fade-in-up relative overflow-hidden" style="animation-delay: ${i*50}ms">
+                        <div class="group glass-card p-6 rounded-[32px] flex flex-col h-full animate-fade-in-up relative overflow-hidden" style="animation-delay: ${i*50}ms">
                             <div class="flex justify-between items-start mb-5">
                                 <div class="w-12 h-12 rounded-[16px] border flex items-center justify-center shadow-sm ${iconBg} ${iconColor}"><i data-lucide="${iconName}" class="w-6 h-6"></i></div>
                                 ${canDelete ? `<button onclick="window.app.deleteMaterial('${m.id}')" class="w-8 h-8 flex items-center justify-center bg-zinc-100 dark:bg-white/5 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-colors opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
                             </div>
-                            <span class="inline-block px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-[9px] font-extrabold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap mb-4 self-start">${m.subj}</span>
-                            <h3 class="font-extrabold text-[17px] text-zinc-900 dark:text-white mb-6 tracking-tight leading-snug line-clamp-2">${m.title}</h3>
-                            <div class="mt-auto pt-5 flex items-center justify-between border-t border-zinc-100 dark:border-white/5">
+                            <span class="inline-block px-3 py-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-[8px] text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap mb-3 self-start border border-zinc-200/50 dark:border-white/5">${m.subj}</span>
+                            <h3 class="font-bold text-[16px] text-zinc-900 dark:text-white mb-6 tracking-tight leading-snug line-clamp-2">${m.title}</h3>
+                            <div class="mt-auto pt-5 flex items-center justify-between border-t border-zinc-200/50 dark:border-white/5">
                                 <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-[11px] font-black text-zinc-600 dark:text-zinc-400">${m.author.charAt(0)}</div>
+                                    <div class="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-[11px] font-black text-zinc-600 dark:text-zinc-400">${m.author.charAt(0)}</div>
                                     <div class="flex flex-col">
-                                        <span class="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 whitespace-nowrap flex items-center">${m.author.split(' ')[0]} ${authorObj?.isStarosta ? `<span class="text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 rounded text-[8px] ml-1.5 font-extrabold uppercase border border-amber-100 dark:border-amber-500/20">Староста</span>` : ''}</span>
+                                        <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 whitespace-nowrap flex items-center">${m.author.split(' ')[0]} ${authorObj?.isStarosta ? `<span class="text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 rounded text-[9px] ml-1.5 font-bold border border-amber-100 dark:border-amber-500/20">Староста</span>` : ''}</span>
                                     </div>
                                 </div>
-                                <a href="${m.url}" target="_blank" rel="noreferrer" class="w-9 h-9 flex items-center justify-center bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full hover:scale-110 active:scale-95 transition-transform shadow-md" title="Відкрити посилання"><i data-lucide="arrow-up-left" class="w-4 h-4 rotate-[135deg]"></i></a>
+                                <a href="${m.url}" target="_blank" rel="noreferrer" class="w-10 h-10 flex items-center justify-center bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-[14px] hover:scale-110 active:scale-95 transition-transform shadow-md" title="Відкрити посилання"><i data-lucide="arrow-up-right" class="w-5 h-5"></i></a>
                             </div>
                         </div>
                     `;
@@ -973,37 +997,41 @@
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Історія Д/з</h2>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Стрічка завдань для МБ-202</p>
                     </div>
-                    <div class="space-y-6">
+                    <div class="space-y-6 max-w-3xl">
             `;
 
             if(homeworks.length === 0) {
-                html += `<div class="text-center p-16 text-sm text-zinc-500 font-bold border border-dashed border-zinc-300 dark:border-zinc-800 rounded-[32px] bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl">Завдань поки немає.</div>`;
+                html += `<div class="text-center p-16 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px]">Завдань поки немає.</div>`;
             } else {
                 homeworks.forEach((hw, i) => {
                     const authorObj = students.find(s => s.name === hw.author);
                     const canDelete = user.name === hw.author || user.isStarosta || user.id === 19;
                     html += `
-                        <div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl p-6 sm:p-8 rounded-[32px] border border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-xl transition-all relative z-10 animate-fade-in-up group" style="animation-delay: ${i*50}ms">
+                        <div class="glass-card p-6 sm:p-8 rounded-[32px] relative z-10 animate-fade-in-up group" style="animation-delay: ${i*50}ms">
                             ${canDelete ? `<button onclick="window.app.deleteHomework('${hw.id}')" class="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-[14px] transition-all absolute top-6 right-6 opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-5 h-5"></i></button>` : ''}
+                            
                             <div class="flex items-center gap-3 mb-6">
-                                <div class="w-10 h-10 rounded-[14px] bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 font-black text-sm shrink-0 shadow-inner">${hw.author.charAt(0)}</div>
+                                <div class="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 font-bold text-sm shrink-0 border border-zinc-300 dark:border-zinc-700">${hw.author.charAt(0)}</div>
                                 <div class="flex flex-col">
-                                    <span class="text-xs font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center">
+                                    <span class="text-[13px] font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center">
                                         ${hw.author.split(' ')[0]} ${hw.author.split(' ')[1]}
-                                        ${authorObj?.isStarosta ? `<span class="text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded text-[9px] ml-2 font-extrabold uppercase tracking-wide border border-amber-100 dark:border-amber-500/20">Староста</span>` : ''}
+                                        ${authorObj?.isStarosta ? `<span class="text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded text-[9px] ml-2 font-bold uppercase tracking-wide border border-amber-100 dark:border-amber-500/20">Староста</span>` : ''}
                                     </span>
-                                    <span class="text-[10px] font-bold text-zinc-400 mt-0.5">${hw.date}</span>
+                                    <span class="text-[11px] font-semibold text-zinc-400 mt-0.5">${hw.date}</span>
                                 </div>
                             </div>
+                            
                             <div class="mb-5">
-                                <span class="inline-block px-3 py-1.5 bg-${pri}-50 text-${pri}-700 border border-${pri}-100 dark:bg-${pri}-500/10 dark:text-${pri}-300 dark:border-${pri}-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest mb-3">${hw.subj}</span>
-                                <div class="text-xs font-bold text-zinc-500 flex items-center gap-2">
-                                    <i data-lucide="calendar-days" class="w-4 h-4"></i> ${hw.day} &bull; ${hw.num} пара &bull; ${hw.weekNum ? `${hw.weekNum} тиж.` : (hw.weekType==='upper'?'Верх.':'Ниж.')}
+                                <span class="inline-block px-3 py-1.5 bg-${pri}-50/80 text-${pri}-700 border border-${pri}-100 dark:bg-${pri}-500/10 dark:text-${pri}-300 dark:border-${pri}-500/20 rounded-xl text-[10px] font-bold uppercase tracking-widest mb-3">${hw.subj}</span>
+                                <div class="text-[12px] font-bold text-zinc-500 flex items-center gap-2">
+                                    <i data-lucide="calendar" class="w-4 h-4"></i> ${hw.day} &bull; ${hw.num} пара &bull; ${hw.weekNum ? `${hw.weekNum} тиж.` : (hw.weekType==='upper'?'Верх.':'Ниж.')}
                                 </div>
                             </div>
-                            <div class="text-[15px] sm:text-base font-medium text-zinc-800 dark:text-zinc-200 leading-relaxed bg-white/50 dark:bg-black/20 p-5 sm:p-6 rounded-[24px] border border-zinc-200/50 dark:border-white/5 shadow-inner whitespace-pre-wrap">${hw.text}</div>
+                            
+                            <div class="text-[15px] sm:text-[16px] font-medium text-zinc-800 dark:text-zinc-200 leading-relaxed bg-white/50 dark:bg-black/20 p-5 rounded-[24px] border border-zinc-200/50 dark:border-white/5 shadow-inner whitespace-pre-wrap">${hw.text}</div>
+                            
                             ${hw.deadline && hw.deadline !== 'Не вказано' ? `
-                                <div class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:border-rose-500/20 rounded-xl text-xs font-bold tracking-wide"><i data-lucide="clock" class="w-4 h-4"></i> Дедлайн: ${hw.deadline}</div>
+                                <div class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:border-rose-500/20 rounded-[14px] text-[12px] font-bold tracking-wide"><i data-lucide="clock" class="w-4 h-4"></i> Дедлайн: ${hw.deadline}</div>
                             ` : ''}
                         </div>
                     `;
@@ -1023,12 +1051,12 @@
                 { id: 'all', label: 'Усі' }, { id: 'німецька', label: 'Німецька' }, { id: 'польська', label: 'Польська' },
                 { id: 'французька', label: 'Французька' }, { id: 'китайська', label: 'Китайська' }, { id: 'політологія', label: 'Політологія' },
                 { id: 'публічне адміністрування', label: 'Публічне адмін.' }, { id: 'соціальне підприємництво', label: 'Соц. підприємництво' },
-                { id: 'соціологія', label: 'Соціологія' }, { id: 'бзвп', label: 'БЗВП' }, { id: 'англ: маркова', label: 'Англійська мова (Маркова)' },
-                { id: 'англ: мельник', label: 'Англійська мова (Мельник)' }
+                { id: 'соціологія', label: 'Соціологія' }, { id: 'бзвп', label: 'БЗВП' }, { id: 'англ: маркова', label: 'Англ (Маркова)' },
+                { id: 'англ: мельник', label: 'Англ (Мельник)' }
             ];
 
-            const activeFilterClass = "bg-gradient-to-r from-zinc-800 via-zinc-900 to-zinc-800 dark:from-white dark:via-zinc-200 dark:to-white bg-[length:200%_200%] animate-gradient-flow text-white dark:text-zinc-900 shadow-md border-transparent scale-[1.02]";
-            const inactiveFilterClass = "bg-white/60 dark:bg-zinc-800/60 backdrop-blur-md text-zinc-600 dark:text-zinc-300 border-zinc-200/60 dark:border-white/5 hover:bg-white dark:hover:bg-zinc-700";
+            const activeFilterClass = "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent scale-[1.02]";
+            const inactiveFilterClass = "glass-card text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700";
 
             const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchStr) && (filter === 'all' || s.electives.includes(filter)));
 
@@ -1042,16 +1070,16 @@
                     <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-6 relative z-10 overflow-hidden">
                         <div class="flex gap-3 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-4">
                             ${filters.map(f => `
-                                <button onclick="window.app.setRegFilter('${f.id}')" class="px-5 py-2.5 rounded-xl text-[11px] font-bold tracking-wide uppercase transition-all duration-300 whitespace-nowrap border ${filter === f.id ? activeFilterClass : inactiveFilterClass}">${f.label}</button>
+                                <button onclick="window.app.setRegFilter('${f.id}')" class="px-5 py-2.5 rounded-[14px] text-[12px] font-bold tracking-wide transition-all duration-300 whitespace-nowrap border ${filter === f.id ? activeFilterClass : inactiveFilterClass}">${f.label}</button>
                             `).join('')}
                         </div>
                     </div>
 
-                    <div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-zinc-200/60 dark:border-white/10 overflow-hidden shadow-lg rounded-[32px]">
+                    <div class="glass-panel overflow-hidden rounded-[32px]">
                         <div class="p-6 border-b border-zinc-200/50 dark:border-white/5 relative z-10 bg-white/30 dark:bg-black/10">
                             <div class="relative group">
-                                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
-                                <input type="text" id="reg-search" value="${searchStr}" oninput="window.app.renderActiveView()" placeholder="Знайти студента..." class="w-full pl-12 pr-5 py-4 bg-white/50 dark:bg-zinc-800/50 rounded-2xl text-sm font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white border border-zinc-200 dark:border-white/10 transition-all shadow-inner text-zinc-900 dark:text-white" />
+                                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
+                                <input type="text" id="reg-search" value="${searchStr}" oninput="window.app.renderActiveView()" placeholder="Знайти студента..." class="w-full pl-11 pr-5 py-3.5 bg-white/60 dark:bg-zinc-800/60 rounded-[18px] text-[14px] font-medium outline-none focus:ring-2 ring-zinc-900 dark:ring-white border border-zinc-200 dark:border-white/10 transition-all shadow-inner text-zinc-900 dark:text-white" />
                             </div>
                         </div>
                         <div class="overflow-x-auto relative z-10 custom-scroll">
@@ -1060,16 +1088,16 @@
                                     ${filteredStudents.map((s, i) => {
                                         const isMe = user.id === s.id;
                                         return `
-                                            <tr class="transition-colors hover:bg-white/50 dark:hover:bg-white/5 group ${isMe ? `bg-${pri}-50/50 dark:bg-${pri}-900/10` : ''}">
-                                                <td class="py-5 px-4 sm:px-6 text-[13px] font-bold text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
-                                                <td class="py-5 px-2 sm:px-4 font-extrabold text-[14px] ${isMe ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-900 dark:text-zinc-100'} tracking-tight whitespace-nowrap">
+                                            <tr class="transition-colors hover:bg-white/60 dark:hover:bg-white/5 group ${isMe ? `bg-${pri}-50/50 dark:bg-${pri}-900/10` : ''}">
+                                                <td class="py-5 px-4 sm:px-6 text-[12px] font-bold text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
+                                                <td class="py-5 px-2 sm:px-4 font-semibold text-[14px] ${isMe ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-900 dark:text-zinc-100'} whitespace-nowrap">
                                                     ${s.name} 
-                                                    ${s.isStarosta ? `<span class="ml-3 px-2 py-0.5 bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-wide rounded border border-transparent shadow-sm">Староста</span>` : ''}
-                                                    ${isMe ? `<span class="ml-2 px-2 py-0.5 text-${pri}-600 dark:text-${pri}-400 text-[9px] font-extrabold uppercase tracking-wide rounded border border-${pri}-200 dark:border-${pri}-500/30">(Це ви)</span>` : ''}
+                                                    ${s.isStarosta ? `<span class="ml-3 px-2 py-0.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-bold uppercase tracking-wide rounded-md shadow-sm">Староста</span>` : ''}
+                                                    ${isMe ? `<span class="ml-2 px-2 py-0.5 text-${pri}-600 dark:text-${pri}-400 text-[9px] font-bold uppercase tracking-wide rounded-md border border-${pri}-200 dark:border-${pri}-500/30">(Ви)</span>` : ''}
                                                 </td>
-                                                <td class="py-5 px-4 sm:px-6 flex flex-wrap gap-1.5 justify-end sm:justify-start">
+                                                <td class="py-5 px-4 sm:px-6 flex flex-wrap gap-2 justify-end sm:justify-start">
                                                     ${s.electives.map(e => `
-                                                        <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest border shadow-sm whitespace-nowrap ${discColors[e] || 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'}">${e}</span>
+                                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border shadow-sm whitespace-nowrap ${discColors[e] || 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'}">${e}</span>
                                                     `).join('')}
                                                 </td>
                                             </tr>
@@ -1082,7 +1110,6 @@
                 </div>
             `;
             document.getElementById('main-content').innerHTML = html;
-            // Restore focus if needed
             if (searchStr) {
                 const searchEl = document.getElementById('reg-search');
                 searchEl.focus();
@@ -1099,33 +1126,33 @@
                 <div class="animate-fade-in">
                     <div class="mb-8 relative z-10">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Редактор</h2>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Керування розкладом (Доступ для адмінів)</p>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Керування розкладом (Admin)</p>
                     </div>
                     
-                    <div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-zinc-200/60 dark:border-white/10 p-6 md:p-8 mb-10 rounded-[32px] relative z-10 border-t-4 border-t-zinc-900 dark:border-t-white shadow-xl">
-                        <h3 class="text-base font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2"><i data-lucide="plus" class="w-5 h-5"></i> Додати пару вручну</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+                    <div class="glass-panel p-6 md:p-8 mb-10 rounded-[32px] relative z-10 border-t-4 border-t-zinc-900 dark:border-t-white">
+                        <h3 class="text-[16px] font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2"><i data-lucide="plus" class="w-5 h-5"></i> Додати пару вручну</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-6">
                             <div>
                                 <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Тиждень</label>
-                                <select id="ed-week" class="w-full p-4 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-2xl text-sm font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
-                                    <option value="upper">Верхній тиждень</option><option value="lower">Нижній тиждень</option>
+                                <select id="ed-week" class="w-full p-3.5 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-[16px] text-[14px] font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
+                                    <option value="upper">Верхній</option><option value="lower">Нижній</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">День</label>
-                                <select id="ed-day" class="w-full p-4 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-2xl text-sm font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
+                                <select id="ed-day" class="w-full p-3.5 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-[16px] text-[14px] font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
                                     ${["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"].map(d => `<option value="${d}">${d}</option>`).join('')}
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Номер</label>
-                                <select id="ed-num" class="w-full p-4 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-2xl text-sm font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
+                                <select id="ed-num" class="w-full p-3.5 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-[16px] text-[14px] font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
                                     ${[1,2,3,4,5,6,7].map(n => `<option value="${n}">${n} пара (${timeSlots[n-1].start})</option>`).join('')}
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Дисципліна</label>
-                                <select id="ed-subj" class="w-full p-4 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-2xl text-sm font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
+                                <select id="ed-subj" class="w-full p-3.5 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-[16px] text-[14px] font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
                                     <option value="Маркетинг п|general|маркетинг">Маркетинг п</option>
                                     <option value="Підприємництво п|general|підприємництво">Підприємництво п</option>
                                     <option value="Екаунтинг-2 п|general|екаунтинг">Екаунтинг п</option>
@@ -1137,25 +1164,34 @@
                                     <option value="Теоретична підготовка БЗВП В п|elective|бзвп">БЗВП п</option>
                                     <option value="Англійська мова (Мельник)|lang|англ: мельник">Англ (Мельник)</option>
                                     <option value="Англійська мова (Маркова)|lang|англ: маркова">Англ (Маркова)</option>
-                                    <option value="Англійська мова (Шматок)|lang|language_pair">Англ (Шматок)</option>
+                                    <option value="Англійська мова (Шматок - Мельник)|lang|англ: мельник">Англ (Шматок - гр. Мельник)</option>
+                                    <option value="Англійська мова (Шматок - Маркова)|lang|англ: маркова">Англ (Шматок - гр. Маркова)</option>
                                     <option value="Друга іноземна мова|lang|language_pair">Друга іноземна</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Тиждень дії (Опціонально)</label>
+                                <select id="ed-target-week" class="w-full p-3.5 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-white/10 rounded-[16px] text-[14px] font-semibold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
+                                    <option value="">Назавжди (Постійна)</option>
+                                    ${weeksConfig.map(w => `<option value="${w.n}">Тільки ${w.n} тиждень</option>`).join('')}
+                                </select>
+                            </div>
                         </div>
-                        <button onclick="window.app.addExtraSchedule()" class="w-full py-4 bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 font-extrabold text-sm uppercase tracking-widest rounded-2xl shadow-lg transition-all hover:-translate-y-1 active:scale-[0.98]">Додати в розклад</button>
+                        <button onclick="window.app.addExtraSchedule()" class="w-full py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-[14px] rounded-[16px] shadow-lg transition-all hover:-translate-y-1 active:scale-[0.98]">Зберегти пару</button>
                     </div>
 
                     <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2">Додані вручну:</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-                        ${extraSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-bold text-zinc-500 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-[32px] bg-white/40 dark:bg-zinc-900/40">Немає доданих пар.</div>` : 
+                        ${extraSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-semibold text-zinc-500 glass-card border-dashed rounded-[32px]">Немає доданих пар.</div>` : 
                             extraSchedule.map(p => `
-                                <div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl p-6 rounded-[28px] border border-zinc-200/60 dark:border-white/5 shadow-sm hover:shadow-md transition-all flex flex-col relative group">
-                                    <div class="flex justify-between items-start mb-4">
-                                        <span class="text-[10px] font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-lg">${p.weekType==='upper'?'Верхній':'Нижній'} • ${p.day}</span>
+                                <div class="glass-card p-6 rounded-[28px] flex flex-col relative group">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-[10px] font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700">${p.weekType==='upper'?'Верхній':'Нижній'} • ${p.day}</span>
                                         <button onclick="window.app.deleteExtraSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                     </div>
-                                    <div class="font-extrabold text-[15px] text-zinc-900 dark:text-white leading-snug tracking-tight mb-2">${p.subj}</div>
-                                    <div class="text-xs font-bold text-zinc-500 mt-auto pt-4 border-t border-zinc-100 dark:border-white/5 flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> ${p.num} пара</div>
+                                    ${p.targetWeekNum ? `<div class="mb-3"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 text-[10px] font-bold border border-amber-100 dark:border-amber-500/20"><i data-lucide="calendar" class="w-3 h-3"></i> Тільки ${p.targetWeekNum} тиждень</span></div>` : ''}
+                                    <div class="font-bold text-[15px] text-zinc-900 dark:text-white leading-snug tracking-tight mb-2">${p.subj}</div>
+                                    <div class="text-[12px] font-semibold text-zinc-500 mt-auto pt-4 border-t border-zinc-200/50 dark:border-white/5 flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> ${p.num} пара</div>
                                 </div>
                             `).join('')
                         }
@@ -1163,15 +1199,16 @@
 
                     <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2 mt-10">Приховані (скасовані):</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        ${hiddenSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-bold text-zinc-500 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-[32px] bg-white/40 dark:bg-zinc-900/40">Немає прихованих пар.</div>` : 
+                        ${hiddenSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-semibold text-zinc-500 glass-card border-dashed rounded-[32px]">Немає прихованих пар.</div>` : 
                             hiddenSchedule.map(p => `
-                                <div class="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md p-6 rounded-[28px] border border-zinc-200/60 dark:border-white/5 flex flex-col relative opacity-80 hover:opacity-100 transition-opacity">
-                                    <div class="flex justify-between items-start mb-4">
-                                        <span class="text-[10px] font-bold uppercase tracking-widest bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i data-lucide="eye-off" class="w-3 h-3"></i> ${p.weekType==='upper'?'Верхній':'Нижній'} • ${p.day}</span>
-                                        <button onclick="window.app.restoreHiddenSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-${pri}-500 hover:bg-${pri}-50 dark:hover:bg-${pri}-500/10 transition-colors"><i data-lucide="arrow-up-left" class="w-4 h-4"></i></button>
+                                <div class="glass-card p-6 rounded-[28px] flex flex-col relative opacity-70 hover:opacity-100 transition-opacity">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-[10px] font-bold uppercase tracking-widest bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i data-lucide="eye-off" class="w-3 h-3"></i> ${p.weekType==='upper'?'Верх.':'Ниж.'} • ${p.day}</span>
+                                        <button onclick="window.app.restoreHiddenSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
                                     </div>
-                                    <div class="font-extrabold text-[15px] text-zinc-900 dark:text-white leading-snug tracking-tight mb-2 line-through decoration-rose-500/50 decoration-2">${p.subj}</div>
-                                    <div class="text-xs font-bold text-zinc-500 mt-auto pt-4 border-t border-zinc-200 dark:border-white/5 flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> ${p.num} пара</div>
+                                    ${p.targetWeekNum ? `<div class="mb-3"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 text-[10px] font-bold border border-amber-100 dark:border-amber-500/20"><i data-lucide="calendar" class="w-3 h-3"></i> Тільки ${p.targetWeekNum} тиждень</span></div>` : ''}
+                                    <div class="font-bold text-[15px] text-zinc-900 dark:text-white leading-snug tracking-tight mb-2 line-through decoration-rose-500/50 decoration-2">${p.subj}</div>
+                                    <div class="text-[12px] font-semibold text-zinc-500 mt-auto pt-4 border-t border-zinc-200/50 dark:border-white/5 flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> ${p.num} пара</div>
                                 </div>
                             `).join('')
                         }
@@ -1186,6 +1223,7 @@
             setView: (viewId) => {
                 window.appState.view = viewId;
                 window.app.renderActiveView();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             },
             
             renderActiveView: () => {
@@ -1239,9 +1277,9 @@
                 if (el.classList.contains('hidden')) {
                     const cur = window.appState.colorTheme;
                     el.innerHTML = Object.entries(themesConfig).map(([k, t]) => `
-                        <button onclick="window.app.setColorTheme('${k}'); event.stopPropagation();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] font-bold transition-all ${cur === k ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5'}">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-3.5 h-3.5 rounded-full ${t.bg} shadow-inner shadow-white/20"></div>
+                        <button onclick="window.app.setColorTheme('${k}'); event.stopPropagation();" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${cur === k ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5'}">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3.5 h-3.5 rounded-full ${t.bg} shadow-sm border border-black/10 dark:border-white/10"></div>
                                 ${t.label}
                             </div>
                             ${cur === k ? `<i data-lucide="check" class="w-4 h-4 text-zinc-900 dark:text-white"></i>` : ''}
@@ -1262,17 +1300,16 @@
                 const { pri, sec } = themesConfig[themeKey];
                 const setCls = (id, cls) => { const el = document.getElementById(id); if(el) el.className = cls; };
                 
-                // Оновлюємо статичні елементи з ID
-                setCls('mesh-1', `absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-${pri}-500/10 blur-[120px] animate-pulse-slow`);
-                setCls('mesh-2', `absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-${sec}-600/10 blur-[100px] animate-pulse-slow`);
-                setCls('auth-mesh-1', `absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-${pri}-500/10 blur-[100px] animate-pulse-slow`);
-                setCls('auth-mesh-2', `absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-${sec}-600/10 blur-[100px] animate-pulse-slow`);
+                setCls('mesh-1', `absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full bg-${pri}-500/15 dark:bg-${pri}-500/10 blur-[100px] animate-float`);
+                setCls('mesh-2', `absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-${sec}-600/15 dark:bg-${sec}-600/10 blur-[100px] animate-float`);
+                setCls('auth-mesh-1', `absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-${pri}-500/20 blur-[100px] animate-float`);
+                setCls('auth-mesh-2', `absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-${sec}-600/20 blur-[100px] animate-float`);
                 
-                setCls('header-logo-bg', `w-10 h-10 bg-gradient-to-br from-${pri}-500 to-${sec}-500 rounded-full flex items-center justify-center text-white shadow-inner shadow-white/20 group-hover:scale-105 transition-transform`);
-                setCls('header-logo-text', `text-[9px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mt-0.5 block`);
+                setCls('header-logo-bg', `w-10 h-10 bg-gradient-to-br from-${pri}-500 to-${sec}-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-${pri}-500/30 group-hover:scale-105 transition-transform duration-300`);
+                setCls('header-logo-text', `text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mt-0.5 block opacity-80`);
                 
                 const avatar = document.getElementById('header-user-avatar');
-                if (avatar) avatar.className = `w-10 h-10 rounded-full bg-gradient-to-tr from-${pri}-100 to-${sec}-50 dark:from-${pri}-900/40 dark:to-${sec}-900/20 text-${pri}-700 dark:text-${pri}-300 flex items-center justify-center font-black text-sm border border-${pri}-200/50 dark:border-${pri}-700/30 cursor-pointer hover:shadow-md transition-all`;
+                if (avatar) avatar.className = `w-10 h-10 rounded-full bg-${pri}-100 dark:bg-${pri}-900/40 text-${pri}-700 dark:text-${pri}-300 flex items-center justify-center font-bold text-sm border border-${pri}-200/50 dark:border-${pri}-700/50 group-hover:ring-2 ring-${pri}-500/50 transition-all shadow-sm`;
 
                 document.getElementById('theme-dropdown-main')?.classList.add('hidden');
                 document.getElementById('theme-dropdown-auth')?.classList.add('hidden');
@@ -1289,10 +1326,10 @@
                 
                 if(filtered.length > 0) {
                     listEl.classList.remove('hidden');
-                    listEl.innerHTML = filtered.map(s => `
-                        <div onclick="window.app.login(${s.id})" class="px-5 py-4 rounded-2xl bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 cursor-pointer font-bold text-[15px] transition-all flex items-center justify-between shadow-sm border border-transparent">
+                    listEl.innerHTML = filtered.map((s, i) => `
+                        <div onclick="window.app.login(${s.id})" class="px-5 py-4 rounded-[18px] bg-white dark:bg-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer font-semibold text-[15px] transition-all flex items-center justify-between shadow-sm border border-zinc-100 dark:border-white/5 animate-fade-in-up" style="animation-delay: ${i*30}ms">
                             <span class="text-zinc-800 dark:text-zinc-200 truncate mr-3">${s.name}</span>
-                            ${s.isStarosta ? '<span class="px-2.5 py-1 bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 text-[10px] font-black uppercase tracking-wide rounded-lg">Староста</span>' : ''}
+                            ${s.isStarosta ? '<span class="px-2 py-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-bold uppercase tracking-wide rounded-md">Староста</span>' : ''}
                         </div>
                     `).join('');
                 } else {
@@ -1318,7 +1355,7 @@
                     if(time < timeSlots[i].start) { nxt = {...timeSlots[i], idx: i+1}; break; }
                 }
                 
-                const searchArr = getMergedSchedule(closestWeekObj.t);
+                const searchArr = getMergedSchedule(closestWeekObj.t, closestWeekObj.n);
                 const today = searchArr.find(d => d.day === curDay);
                 
                 const parseTime = (timeStr) => {
@@ -1328,7 +1365,7 @@
 
                 let status = {};
                 if(cur) {
-                    const subj = today?.pairs.find(p => p.num === cur.idx)?.subj || "Пара йде";
+                    const subj = today?.pairs.find(p => p.num === cur.idx)?.subj || "Пара йде (вікно?)";
                     const start = parseTime(cur.start);
                     const end = parseTime(cur.end);
                     const progress = Math.min(100, Math.max(0, ((Date.now() - start) / (end - start)) * 100));
@@ -1340,22 +1377,32 @@
                     status = { label: 'Статус', title: 'Пари завершено', subtitle: 'Час для відпочинку ☕', progress: 100, isLive: false };
                 }
 
+                // SVG Circle calculations
+                const radius = 40;
+                const circumference = 2 * Math.PI * radius;
+                const strokeDashoffset = circumference - (status.progress / 100) * circumference;
+
                 widget.innerHTML = `
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-${pri}-500/20 blur-[80px] rounded-full pointer-events-none"></div>
-                    <div class="flex flex-col h-full justify-between relative z-10">
-                        <div class="flex items-center gap-3 mb-8">
-                            ${status.isLive ? `<span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-${sec}-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-${sec}-500"></span></span>` : ''}
-                            <span class="text-xs font-bold uppercase tracking-widest text-zinc-400">${status.label}</span>
+                    <div class="absolute top-[-50%] right-[-20%] w-[80%] h-[150%] bg-gradient-to-bl from-${pri}-500/20 to-transparent blur-[80px] rounded-full pointer-events-none"></div>
+                    
+                    <div class="flex items-center gap-2 mb-auto z-10">
+                        ${status.isLive ? `<span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span></span>` : '<div class="w-2.5 h-2.5 rounded-full bg-zinc-600"></div>'}
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-zinc-400">${status.label}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between z-10 mt-6">
+                        <div class="pr-4">
+                            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">${status.title}</h2>
+                            <p class="text-[15px] text-zinc-400 font-medium line-clamp-2 leading-relaxed">${status.subtitle}</p>
                         </div>
-                        <div>
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight mb-2 leading-tight">${status.title}</h2>
-                            <p class="text-lg md:text-xl text-zinc-400 font-medium truncate">${status.subtitle}</p>
-                        </div>
+                        
                         ${status.isLive ? `
-                            <div class="mt-8">
-                                <div class="h-2 w-full bg-zinc-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-${pri}-500 via-${sec}-500 to-${pri}-500 bg-[length:200%_200%] animate-gradient-flow transition-all duration-1000 rounded-full" style="width: ${status.progress}%"></div>
-                                </div>
+                            <div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+                                <svg class="transform -rotate-90 w-24 h-24">
+                                    <circle cx="48" cy="48" r="${radius}" stroke="currentColor" stroke-width="6" fill="transparent" class="text-zinc-800" />
+                                    <circle cx="48" cy="48" r="${radius}" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" class="text-${pri}-500 transition-all duration-1000 ease-in-out" stroke-linecap="round" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center text-white font-bold text-sm">${Math.round(status.progress)}%</div>
                             </div>
                         ` : ''}
                     </div>
@@ -1369,25 +1416,31 @@
 
             openMobileMenu: () => {
                 renderMobileMenu();
-                document.getElementById('mobile-menu').classList.remove('hidden');
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.remove('hidden');
+                setTimeout(() => menu.classList.add('opacity-100'), 10);
                 lucide.createIcons();
             },
-            closeMobileMenu: () => document.getElementById('mobile-menu').classList.add('hidden'),
+            closeMobileMenu: () => {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.remove('opacity-100');
+                setTimeout(() => menu.classList.add('hidden'), 300);
+            },
 
             closeModal: () => document.getElementById('modals').innerHTML = '',
             
             openConfirmModal: (title, text, confirmActionStr) => {
                 const html = `
                     <div class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-sm bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative text-center overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.2s ease-out forwards">
-                            <div class="w-16 h-16 bg-rose-100 dark:bg-rose-500/20 rounded-[24px] flex items-center justify-center text-rose-600 mx-auto mb-5 border border-rose-200/50 dark:border-rose-500/30 transform rotate-3">
-                                <i data-lucide="alert-circle" class="w-8 h-8"></i>
+                        <div class="w-full max-w-sm glass-panel p-8 relative text-center overflow-hidden rounded-[40px]" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                            <div class="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 rounded-[24px] flex items-center justify-center text-rose-500 mx-auto mb-5 border border-rose-100 dark:border-rose-500/20 transform rotate-3">
+                                <i data-lucide="alert-triangle" class="w-8 h-8"></i>
                             </div>
                             <h3 class="text-xl font-black text-zinc-900 dark:text-white mb-2 tracking-tight">${title}</h3>
                             <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">${text}</p>
                             <div class="flex gap-3">
-                                <button onclick="window.app.closeModal()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
-                                <button onclick="${confirmActionStr}; window.app.closeModal()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white shadow-lg shadow-rose-500/30 transition-all active:scale-95">Підтвердити</button>
+                                <button onclick="window.app.closeModal()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors active:scale-95">Скасувати</button>
+                                <button onclick="${confirmActionStr}; window.app.closeModal()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/30 transition-all active:scale-95">Підтвердити</button>
                             </div>
                         </div>
                     </div>
@@ -1404,28 +1457,30 @@
                 
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards">
-                            <div class="absolute inset-0 bg-gradient-to-br from-${sec}-500/10 to-transparent pointer-events-none"></div>
+                        <div class="w-full max-w-lg glass-panel p-8 relative overflow-hidden rounded-[40px]" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-${sec}-500/10 blur-[60px] rounded-full pointer-events-none"></div>
                             <button onclick="window.app.closeModal()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all z-10 hover:scale-110 active:scale-95"><i data-lucide="x" class="w-5 h-5"></i></button>
+                            
                             <div class="relative z-10">
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-${sec}-100 dark:bg-${sec}-500/20 rounded-[18px] flex items-center justify-center text-${sec}-600 dark:text-${sec}-400"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
-                                    <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Додати ДЗ</h2>
+                                    <div class="w-12 h-12 bg-${sec}-50 dark:bg-${sec}-500/20 rounded-[16px] flex items-center justify-center text-${sec}-600 dark:text-${sec}-400 border border-${sec}-100 dark:border-${sec}-500/20"><i data-lucide="pen-line" class="w-6 h-6"></i></div>
+                                    <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Додати Д/з</h2>
                                 </div>
-                                <p class="text-${sec}-700 dark:text-${sec}-300 font-bold text-xs mb-6 px-4 py-2 bg-${sec}-50 dark:bg-${sec}-500/10 rounded-xl inline-block border border-${sec}-100 dark:border-${sec}-500/20 tracking-wide">${wLabel}, ${day}, ${num} пара: ${decSubj}</p>
+                                <p class="text-${sec}-700 dark:text-${sec}-300 font-bold text-[11px] mb-6 px-3 py-1.5 bg-${sec}-50/80 dark:bg-${sec}-500/10 rounded-lg inline-block border border-${sec}-100 dark:border-${sec}-500/20 tracking-wide">${wLabel}, ${day}, ${num} пара:<br><span class="opacity-80">${decSubj}</span></p>
+                                
                                 <div class="space-y-4 mb-8">
-                                    <textarea id="modal-hw-text" autofocus placeholder="Детальний опис завдання..." class="w-full p-5 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 rounded-[24px] outline-none focus:ring-2 ring-zinc-900 dark:ring-white transition font-medium text-[15px] h-36 resize-none custom-scroll placeholder-zinc-400 shadow-inner"></textarea>
+                                    <textarea id="modal-hw-text" autofocus placeholder="Детальний опис завдання..." class="w-full p-5 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 rounded-[24px] outline-none focus:ring-2 ring-zinc-900 dark:ring-white transition font-medium text-[15px] h-36 resize-none custom-scroll placeholder-zinc-400/80 shadow-inner backdrop-blur-sm"></textarea>
                                     <div>
-                                        <label class="block text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Дедлайн (необов'язково)</label>
+                                        <label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Дедлайн (необов'язково)</label>
                                         <div class="relative">
-                                            <i data-lucide="calendar-days" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5"></i>
-                                            <input id="modal-hw-deadline" type="text" placeholder="Напр. 25.02" class="w-full pl-11 pr-4 py-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 rounded-2xl outline-none focus:ring-2 ring-zinc-900 dark:ring-white font-bold text-sm shadow-inner" />
+                                            <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5"></i>
+                                            <input id="modal-hw-deadline" type="text" placeholder="Напр. 25.02" class="w-full pl-11 pr-4 py-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 rounded-[18px] outline-none focus:ring-2 ring-zinc-900 dark:ring-white font-bold text-sm shadow-inner backdrop-blur-sm" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex gap-3">
-                                    <button onclick="window.app.closeModal()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
-                                    <button onclick="window.app.saveHomework()" class="flex-[2] py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 shadow-lg transition-all hover:-translate-y-0.5 active:scale-95 tracking-wide">Зберегти</button>
+                                    <button onclick="window.app.closeModal()" class="flex-1 py-4 rounded-[18px] font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors active:scale-95">Скасувати</button>
+                                    <button onclick="window.app.saveHomework()" class="flex-[2] py-4 rounded-[18px] font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg transition-all active:scale-95 tracking-wide">Зберегти завдання</button>
                                 </div>
                             </div>
                         </div>
@@ -1455,27 +1510,29 @@
                 const { pri } = getTheme();
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards">
-                            <div class="absolute inset-0 bg-gradient-to-br from-${pri}-500/10 to-transparent pointer-events-none"></div>
+                        <div class="w-full max-w-lg glass-panel p-8 relative overflow-hidden rounded-[40px]" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-${pri}-500/10 blur-[60px] rounded-full pointer-events-none"></div>
                             <button onclick="window.app.closeModal()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all z-10 hover:scale-110 active:scale-95"><i data-lucide="x" class="w-5 h-5"></i></button>
+                            
                             <div class="relative z-10">
-                                <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-${pri}-100 dark:bg-${pri}-500/20 rounded-[18px] flex items-center justify-center text-${pri}-600 dark:text-${pri}-400"><i data-lucide="folder" class="w-6 h-6"></i></div>
+                                <div class="flex items-center gap-4 mb-8">
+                                    <div class="w-12 h-12 bg-${pri}-50 dark:bg-${pri}-500/20 rounded-[16px] flex items-center justify-center text-${pri}-600 dark:text-${pri}-400 border border-${pri}-100 dark:border-${pri}-500/20"><i data-lucide="folder-plus" class="w-6 h-6"></i></div>
                                     <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Додати матеріал</h2>
                                 </div>
+                                
                                 <div class="space-y-4 mb-8">
-                                    <input id="modal-mat-title" autofocus type="text" placeholder="Назва ресурсу..." class="w-full p-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[20px] text-[15px] font-bold shadow-inner" />
-                                    <input id="modal-mat-url" type="url" placeholder="Посилання (https://...)" class="w-full p-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[20px] text-[15px] font-medium shadow-inner" />
+                                    <input id="modal-mat-title" autofocus type="text" placeholder="Назва ресурсу..." class="w-full p-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[18px] text-[15px] font-bold shadow-inner backdrop-blur-sm" />
+                                    <input id="modal-mat-url" type="url" placeholder="Посилання (https://...)" class="w-full p-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[18px] text-[15px] font-medium shadow-inner backdrop-blur-sm" />
                                     <div class="relative">
-                                        <select id="modal-mat-subj" class="w-full p-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[20px] text-[15px] font-bold cursor-pointer appearance-none shadow-inner">
-                                            ${['Загальне', 'Маркетинг', 'Політологія', 'Екаунтинг', 'Публічне адміністрування', 'Соціологія', 'Соціальне підприємництво', 'Підприємництво', 'БЗВП', 'Іноземна мова', 'Друга іноземна'].map(o => `<option value="${o}" class="bg-white dark:bg-zinc-900">${o}</option>`).join('')}
+                                        <select id="modal-mat-subj" class="w-full p-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[18px] text-[14px] font-bold cursor-pointer appearance-none shadow-inner backdrop-blur-sm">
+                                            ${['Загальне', 'Маркетинг', 'Політологія', 'Екаунтинг', 'Публічне адміністрування', 'Соціологія', 'Соціальне підприємництво', 'Підприємництво', 'БЗВП', 'Іноземна мова', 'Друга іноземна'].map(o => `<option value="${o}" class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white">${o}</option>`).join('')}
                                         </select>
                                         <i data-lucide="chevron-down" class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 pointer-events-none"></i>
                                     </div>
                                 </div>
                                 <div class="flex gap-3">
-                                    <button onclick="window.app.closeModal()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
-                                    <button onclick="window.app.saveMaterial()" class="flex-[2] py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 shadow-lg transition-all hover:-translate-y-0.5 active:scale-95 tracking-wide">Зберегти</button>
+                                    <button onclick="window.app.closeModal()" class="flex-1 py-4 rounded-[18px] font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors active:scale-95">Скасувати</button>
+                                    <button onclick="window.app.saveMaterial()" class="flex-[2] py-4 rounded-[18px] font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg transition-all active:scale-95 tracking-wide">Додати посилання</button>
                                 </div>
                             </div>
                         </div>
@@ -1511,22 +1568,24 @@
 
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-white/40 dark:border-white/10 p-8 relative overflow-hidden rounded-[40px] shadow-2xl" onclick="event.stopPropagation()" style="animation: slideUp 0.3s ease-out forwards">
-                            <div class="absolute inset-0 bg-gradient-to-br from-${pri}-500/10 to-transparent pointer-events-none"></div>
+                        <div class="w-full max-w-lg glass-panel p-8 relative overflow-hidden rounded-[40px]" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[60px] rounded-full pointer-events-none"></div>
                             <button onclick="window.app.closeModal()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 transition-all z-10 hover:scale-110 active:scale-95"><i data-lucide="x" class="w-5 h-5"></i></button>
+                            
                             <div class="relative z-10">
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-${pri}-100 dark:bg-${pri}-500/20 rounded-[18px] flex items-center justify-center text-${pri}-600 dark:text-${pri}-400"><i data-lucide="video" class="w-6 h-6"></i></div>
+                                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-500/20 rounded-[16px] flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20"><i data-lucide="video" class="w-6 h-6"></i></div>
                                     <h2 class="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Zoom Лінк</h2>
                                 </div>
-                                <p class="text-${pri}-700 dark:text-${pri}-300 font-bold text-xs mb-6 px-4 py-2 bg-${pri}-50 dark:bg-${pri}-500/10 rounded-xl inline-block tracking-wide">${subj}</p>
+                                <p class="text-blue-700 dark:text-blue-300 font-bold text-[11px] mb-8 px-3 py-1.5 bg-blue-50/80 dark:bg-blue-500/10 rounded-lg inline-block tracking-wide border border-blue-100 dark:border-blue-500/20">${subj}</p>
+                                
                                 <div class="relative mb-8">
                                     <i data-lucide="link" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5"></i>
-                                    <input id="modal-zoom-url" autofocus type="url" value="${currentLink}" placeholder="https://zoom.us/j/..." class="w-full pl-11 pr-4 py-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 outline-none focus:ring-2 ring-zinc-900 dark:ring-white rounded-[20px] text-[15px] font-medium shadow-inner" />
+                                    <input id="modal-zoom-url" autofocus type="url" value="${currentLink}" placeholder="https://zoom.us/j/..." class="w-full pl-11 pr-4 py-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 outline-none focus:ring-2 ring-zinc-900 dark:ring-white rounded-[18px] text-[15px] font-medium shadow-inner backdrop-blur-sm" />
                                 </div>
                                 <div class="flex gap-3">
-                                    <button onclick="window.app.closeModal()" class="flex-1 py-4 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Скасувати</button>
-                                    <button onclick="window.app.saveZoomLink()" class="flex-[2] py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-zinc-800 to-black dark:from-white dark:to-zinc-200 text-white dark:text-zinc-900 shadow-lg transition-all hover:-translate-y-0.5 active:scale-95 tracking-wide">Зберегти в хмару</button>
+                                    <button onclick="window.app.closeModal()" class="flex-1 py-4 rounded-[18px] font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors active:scale-95">Скасувати</button>
+                                    <button onclick="window.app.saveZoomLink()" class="flex-[2] py-4 rounded-[18px] font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg transition-all active:scale-95 tracking-wide">Зберегти лінк</button>
                                 </div>
                             </div>
                         </div>
@@ -1550,9 +1609,7 @@
                 window.app.closeModal();
             },
 
-            deleteHomework: (id) => {
-                window.app.openConfirmModal("Видалити ДЗ?", "Завдання буде видалено.", `window.app._doDeleteHW('${id}')`);
-            },
+            deleteHomework: (id) => { window.app.openConfirmModal("Видалити ДЗ?", "Завдання буде видалено для всіх.", `window.app._doDeleteHW('${id}')`); },
             _doDeleteHW: (id) => {
                 removeFromCloud('homeworks', id, () => {
                     window.appState.homeworks = window.appState.homeworks.filter(h => h.id !== id);
@@ -1560,9 +1617,7 @@
                 });
             },
 
-            deleteMaterial: (id) => {
-                window.app.openConfirmModal("Видалити файл?", "Він зникне у всіх.", `window.app._doDeleteMat('${id}')`);
-            },
+            deleteMaterial: (id) => { window.app.openConfirmModal("Видалити матеріал?", "Він зникне у всієї групи.", `window.app._doDeleteMat('${id}')`); },
             _doDeleteMat: (id) => {
                 removeFromCloud('materials', id, () => {
                     window.appState.materials = window.appState.materials.filter(m => m.id !== id);
@@ -1570,12 +1625,13 @@
                 });
             },
 
-            handleScheduleAction: (id, isCustom, encodedSubj, weekType, day, num) => {
+            handleScheduleAction: (id, isCustom, encodedSubj, weekType, day, num, weekNum) => {
                 const subj = decodeURIComponent(encodedSubj);
                 if (isCustom) {
-                    window.app.openConfirmModal("Видалити додану пару?", "Ця пара буде видалена.", `window.app._doDeleteExtra('${id}')`);
+                    window.app.openConfirmModal("Видалити пару?", "Вона зникне з розкладу назавжди.", `window.app._doDeleteExtra('${id}')`);
                 } else {
-                    window.app.openConfirmModal("Приховати пару?", "Ця пара буде прихована для всіх.", `window.app._doHideSubj('${subj}', '${weekType}', '${day}', ${num})`);
+                    const promptText = weekNum ? `Ця пара буде скасована тільки для ${weekNum} тижня.` : `Ця пара буде прихована назавжди (в шаблоні).`;
+                    window.app.openConfirmModal("Скасувати пару?", promptText, `window.app._doHideSubj('${subj}', '${weekType}', '${day}', ${num}, ${weekNum || 'null'})`);
                 }
             },
             _doDeleteExtra: (id) => {
@@ -1584,9 +1640,10 @@
                     window.app.renderActiveView();
                 });
             },
-            _doHideSubj: (subj, weekType, day, num) => {
+            _doHideSubj: (subj, weekType, day, num, targetWeekNum) => {
+                const parsedTargetWeek = (targetWeekNum && targetWeekNum !== 'null') ? parseInt(targetWeekNum) : null;
                 const docId = Date.now().toString();
-                const newHidden = { id: docId, weekType, day, num: parseInt(num), subj, author: window.appState.selectedStudent.name };
+                const newHidden = { id: docId, weekType, day, num: parseInt(num), subj, author: window.appState.selectedStudent.name, targetWeekNum: parsedTargetWeek };
                 writeToCloud('hidden_schedule', docId, newHidden, () => {
                     window.appState.hiddenSchedule.push(newHidden);
                     window.app.renderActiveView();
@@ -1598,10 +1655,11 @@
                 const edDay = document.getElementById('ed-day').value;
                 const edNum = document.getElementById('ed-num').value;
                 const edSubjRaw = document.getElementById('ed-subj').value;
+                const targetWeekNum = document.getElementById('ed-target-week').value || null;
                 const [subj, type, map] = edSubjRaw.split('|');
 
                 const docId = Date.now().toString();
-                const newPair = { id: docId, weekType: edWeek, day: edDay, num: parseInt(edNum), subj, type, map, author: window.appState.selectedStudent.name };
+                const newPair = { id: docId, weekType: edWeek, day: edDay, num: parseInt(edNum), subj, type, map, author: window.appState.selectedStudent.name, targetWeekNum: targetWeekNum ? parseInt(targetWeekNum) : null };
                 
                 writeToCloud('extra_schedule', docId, newPair, () => {
                     window.appState.extraSchedule.push(newPair);
@@ -1609,13 +1667,9 @@
                 });
             },
 
-            deleteExtraSchedule: (id) => {
-                window.app.openConfirmModal("Видалити пару?", "Вона назавжди зникне.", `window.app._doDeleteExtra('${id}')`);
-            },
+            deleteExtraSchedule: (id) => { window.app.openConfirmModal("Видалити пару?", "Вона назавжди зникне.", `window.app._doDeleteExtra('${id}')`); },
 
-            restoreHiddenSchedule: (id) => {
-                window.app.openConfirmModal("Відновити пару?", "Пара знову з'явиться.", `window.app._doRestoreHidden('${id}')`);
-            },
+            restoreHiddenSchedule: (id) => { window.app.openConfirmModal("Відновити пару?", "Пара знову з'явиться в розкладі.", `window.app._doRestoreHidden('${id}')`); },
             _doRestoreHidden: (id) => {
                 removeFromCloud('hidden_schedule', id, () => {
                     window.appState.hiddenSchedule = window.appState.hiddenSchedule.filter(x => x.id !== id);
@@ -1629,7 +1683,6 @@
             if (window.appState.isDark) document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
 
-            // Apply specific stored color theme immediately without re-rendering dynamically
             window.app.setColorTheme(window.appState.colorTheme, true);
 
             try {
@@ -1640,7 +1693,7 @@
                 }
             } catch (err) {
                 console.error(err);
-                showToast("Помилка авторизації!", true);
+                showToast("Помилка підключення до бази", true);
             }
 
             onAuthStateChanged(auth, (user) => {
@@ -1650,7 +1703,7 @@
                         let links = {}; snap.forEach(doc => links[doc.id] = doc.data().url);
                         window.appState.zoomLinksData = links;
                         localStorage.setItem('portal-custom-zoom', JSON.stringify(links));
-                        if (window.appState.view === 'schedule' || window.appState.view === 'main') window.app.renderActiveView();
+                        if (['schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
                     });
 
                     onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'homeworks'), (snap) => {
