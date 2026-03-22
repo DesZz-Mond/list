@@ -23,26 +23,36 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    animation: {
-                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-in': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'float': 'float 6s ease-in-out infinite',
-                        'spin-slow': 'spin 12s linear infinite',
-                    },
                     keyframes: {
-                        fadeIn: { 
-                            '0%': { opacity: '0', filter: 'blur(10px)' }, 
-                            '100%': { opacity: '1', filter: 'blur(0)' } 
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
                         },
-                        fadeInUp: { 
-                            '0%': { opacity: '0', transform: 'translateY(20px)', filter: 'blur(8px)' }, 
-                            '100%': { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' } 
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.94)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.85)' },
+                            '60%': { opacity: '1', transform: 'scale(1.03)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
                         },
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
                         }
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'scale-in': 'scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'pop-in': 'popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     }
                 }
             }
@@ -58,7 +68,7 @@
         ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
         
         @keyframes slideUpModal {
-            from { transform: translateY(100%) scale(0.95); opacity: 0; }
+            from { transform: translateY(20px) scale(0.96); opacity: 0; }
             to { transform: translateY(0) scale(1); opacity: 1; }
         }
         
@@ -79,23 +89,33 @@
         .text-gradient {
             @apply bg-clip-text text-transparent bg-gradient-to-r;
         }
+
+        #main-content {
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
     </style>
 </head>
-<body class="text-slate-800 dark:text-zinc-200 bg-[#f8fafc] dark:bg-[#09090b] transition-colors duration-500 antialiased min-h-screen flex flex-col relative">
+<body class="text-slate-800 dark:text-zinc-200 bg-[#f8fafc] dark:bg-[#09090b] transition-colors duration-500 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <!-- Ambient Background (Apple-like Orbs) -->
+    <!-- Ambient Background (Apple-like Orbs + Interactive Canvas) -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div id="mesh-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full bg-teal-500/15 dark:bg-teal-500/10 blur-[100px] animate-float"></div>
         <div id="mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-emerald-600/15 dark:bg-emerald-600/10 blur-[100px] animate-float" style="animation-delay: -3s;"></div>
         <div class="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] rounded-full bg-indigo-500/5 dark:bg-indigo-500/5 blur-[120px] animate-pulse-slow"></div>
+        
+        <!-- НОВЫЙ ИНТЕРАКТИВНЫЙ ФОН -->
+        <canvas id="interactive-bg" class="absolute inset-0 w-full h-full opacity-60 dark:opacity-30 transition-opacity duration-1000"></canvas>
     </div>
+
+    <!-- КОНТЕЙНЕР ДЛЯ МУЛЬТИПЛЕЕРНЫХ КУРСОРОВ -->
+    <div id="live-cursors" class="fixed inset-0 z-[9999] pointer-events-none overflow-hidden"></div>
 
     <!-- MAIN APP CONTAINER -->
     <div id="app" class="w-full h-full flex flex-col flex-1 relative z-10 hidden">
         
         <!-- Premium Header -->
         <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[96%] max-w-6xl z-50 transition-all">
-            <div class="glass-panel rounded-full px-2 py-2 flex items-center justify-between">
+            <div class="glass-panel rounded-full px-2 py-2 flex items-center justify-between animate-slide-up" style="animation-delay: 0ms;">
                 
                 <!-- Logo & Brand -->
                 <div class="flex items-center gap-3 cursor-pointer group pl-2 pr-4 py-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors" onclick="window.app.setView('dashboard')">
@@ -108,8 +128,8 @@
                     </div>
                 </div>
 
-                <!-- Desktop Nav Navigation (Pill Style) -->
-                <div id="desktop-nav" class="hidden md:flex items-center gap-1 bg-zinc-100/50 dark:bg-black/40 p-1.5 rounded-full border border-zinc-200/50 dark:border-white/5 relative overflow-hidden backdrop-blur-md">
+                <!-- Desktop Nav Navigation -->
+                <div id="desktop-nav" class="hidden md:flex items-center gap-1 bg-zinc-200/50 dark:bg-black/60 p-1.5 rounded-full border border-zinc-300/50 dark:border-white/5 relative backdrop-blur-xl shadow-inner">
                     <!-- Injected via JS -->
                 </div>
 
@@ -121,7 +141,8 @@
                         <button onclick="window.app.toggleThemeDropdown('main')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
                             <i data-lucide="palette" class="w-4 h-4"></i>
                         </button>
-                        <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-48 glass-panel rounded-2xl p-2 hidden z-50 animate-fade-in-up max-h-64 overflow-y-auto">
+                        <!-- Исправлен Z-index и непрозрачность -->
+                        <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-48 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-2xl p-2 hidden z-[1000] animate-scale-in max-h-64 overflow-y-auto" style="transform-origin: top right;">
                             <!-- Injected by JS -->
                         </div>
                     </div>
@@ -147,14 +168,16 @@
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 relative z-10 pt-32 pb-32 md:pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full" id="main-content">
+        <main class="flex-1 relative z-10 pt-32 pb-32 md:pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full" id="main-content" style="opacity: 1; transform: translateY(0) scale(1);">
             <!-- Views will be injected here -->
         </main>
 
         <!-- Mobile Floating Nav Bar -->
-        <nav id="mobile-nav" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] z-[100] glass-panel rounded-full p-1.5 flex justify-between">
-            <!-- Injected via JS -->
-        </nav>
+        <div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] z-[100]">
+            <nav id="mobile-nav" class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl shadow-2xl border border-white/50 dark:border-white/10 rounded-[28px] p-1.5 flex justify-between gap-1 animate-slide-up relative" style="animation-delay: 100ms;">
+                <!-- Injected via JS -->
+            </nav>
+        </div>
 
         <!-- Mobile Menu (Bottom Sheet) -->
         <div id="mobile-menu" class="hidden fixed inset-0 z-[200] bg-zinc-900/40 dark:bg-black/60 flex items-end p-0 backdrop-blur-sm transition-opacity" onclick="window.app.closeMobileMenu()">
@@ -163,21 +186,19 @@
 
     </div>
 
-    <!-- AUTH SCREEN (Premium Design) -->
+    <!-- AUTH SCREEN -->
     <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 hidden bg-[#f8fafc]/80 dark:bg-[#09090b]/80 backdrop-blur-xl">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-teal-500/20 blur-[100px] animate-float"></div>
             <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-emerald-600/20 blur-[100px] animate-float" style="animation-delay: -2s;"></div>
         </div>
 
-        <!-- Auth Controls -->
-        <div class="absolute top-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper glass-panel rounded-full px-2 py-1">
+        <div class="absolute top-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper glass-panel rounded-full px-2 py-1 animate-slide-in-right" style="animation-delay: 100ms;">
             <div class="relative">
                 <button onclick="window.app.toggleThemeDropdown('auth')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all">
                     <i data-lucide="palette" class="w-4 h-4"></i>
                 </button>
-                <div id="theme-dropdown-auth" class="absolute top-full mt-3 right-0 w-48 glass-panel rounded-2xl p-2 hidden animate-fade-in-up max-h-64 overflow-y-auto">
-                    <!-- Injected by JS -->
+                <div id="theme-dropdown-auth" class="absolute top-full mt-3 right-0 w-48 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-2xl p-2 hidden z-[1000] animate-scale-in max-h-64 overflow-y-auto" style="transform-origin: top right;">
                 </div>
             </div>
             <div class="w-px h-4 bg-zinc-300 dark:bg-zinc-700"></div>
@@ -186,15 +207,15 @@
             </button>
         </div>
 
-        <div class="w-full max-w-md glass-panel p-8 sm:p-12 rounded-[40px] flex flex-col relative overflow-hidden animate-fade-in z-10">
-            <div class="w-24 h-24 bg-gradient-to-br from-zinc-900 to-black dark:from-white dark:to-zinc-200 rounded-[28px] flex items-center justify-center mx-auto mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-500 rotate-3 hover:rotate-0">
+        <div class="w-full max-w-md glass-panel p-8 sm:p-12 rounded-[40px] flex flex-col relative overflow-hidden animate-scale-in z-10" style="animation-delay: 0ms;">
+            <div class="w-24 h-24 bg-gradient-to-br from-zinc-900 to-black dark:from-white dark:to-zinc-200 rounded-[28px] flex items-center justify-center mx-auto mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-500 rotate-3 hover:rotate-0 animate-pop-in" style="animation-delay: 200ms;">
                 <i data-lucide="graduation-cap" class="w-12 h-12 text-white dark:text-zinc-900"></i>
             </div>
             
-            <h1 class="text-3xl font-black mb-2 tracking-tight text-zinc-900 dark:text-white text-center">МБ-202</h1>
-            <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-8 font-medium text-center">Студентський портал</p>
+            <h1 class="text-3xl font-black mb-2 tracking-tight text-zinc-900 dark:text-white text-center animate-slide-up" style="animation-delay: 250ms;">МБ-202</h1>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-8 font-medium text-center animate-slide-up" style="animation-delay: 300ms;">Студентський портал</p>
             
-            <div class="relative z-10 mb-2 group">
+            <div class="relative z-10 mb-2 group animate-slide-up" style="animation-delay: 350ms;">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i data-lucide="search" class="w-5 h-5 text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
                 </div>
@@ -224,6 +245,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+        import { getDatabase, ref, set, onValue, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js';
 
         // --- DATA CONSTANTS & THEMES ---
         const themesConfig = {
@@ -283,7 +305,6 @@
             { start: "17:30", end: "18:45" }
         ];
 
-        // Same Schedule Data
         const mainScheduleData = {
             upper: [
                 { day: "Понеділок", pairs: [{ num: 2, time: "10:00-11:15", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 3, time: "11:30-12:45", subj: "Друга іноземна мова", type: "lang", map: "language_pair" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Шматок - Маркова)", type: "lang", map: "англ: маркова" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Шматок - Маркова)", type: "lang", map: "англ: маркова" }, { num: 4, time: "13:00-14:15", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }, { num: 5, time: "14:30-15:45", subj: "Англійська мова (Мельник)", type: "lang", map: "англ: мельник" }]},
@@ -351,7 +372,6 @@
             return 'Доброї ночі';
         };
 
-        // Dropdown closer logic
         document.addEventListener('click', (e) => {
             if(!e.target.closest('#theme-dropdown-wrapper')) {
                 document.getElementById('theme-dropdown-main')?.classList.add('hidden');
@@ -365,13 +385,202 @@
         const myFirebaseConfig = {
             apiKey: "AIzaSyB42c4pQLDd9-SrJWExTfZjTAZikE_YD-Y",
             authDomain: "mb-202-hub.firebaseapp.com",
-            projectId: "mb-202-hub"
+            projectId: "mb-202-hub",
+            databaseURL: "https://mb-202-hub-default-rtdb.firebaseio.com/"
         };
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
         const firebaseApp = initializeApp(firebaseConfig);
         const auth = getAuth(firebaseApp);
         const db = getFirestore(firebaseApp);
+        const rtdb = getDatabase(firebaseApp);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-202-group';
+
+        // --- INTERACTIVE BACKGROUND ENGINE ---
+        const initParticles = () => {
+            const canvas = document.getElementById('interactive-bg');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+            
+            const particleCount = window.innerWidth < 768 ? 40 : 80;
+            const connectionDistance = 120;
+            const mouseAttractionRadius = 150;
+
+            let mouse = { x: null, y: null };
+            window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+            window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
+            const resize = () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    // Увеличиваем множитель скорости с 0.5 до 1.5
+                    this.vx = (Math.random() - 0.5) * 1.5;
+                    this.vy = (Math.random() - 0.5) * 1.5;
+                    this.size = Math.random() * 2 + 1;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                    if (mouse.x) {
+                        const dx = mouse.x - this.x;
+                        const dy = mouse.y - this.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < mouseAttractionRadius) {
+                            // Ускоряем притяжение к курсору (было 0.01)
+                            this.x += dx * 0.025;
+                            this.y += dy * 0.025;
+                        }
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    const isDark = window.appState.isDark;
+                    ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.2)';
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+            const animate = () => {
+                ctx.clearRect(0, 0, width, height);
+                const isDark = window.appState.isDark;
+                const lineColor = isDark ? '255, 255, 255' : '0, 0, 0';
+
+                particles.forEach((p, index) => {
+                    p.update();
+                    p.draw();
+                    
+                    for (let j = index + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < connectionDistance) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            const opacity = 1 - (distance / connectionDistance);
+                            ctx.strokeStyle = `rgba(${lineColor}, ${opacity * 0.15})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                });
+                requestAnimationFrame(animate);
+            };
+            animate();
+        };
+
+        // --- MULTIPLAYER PRESENCE ENGINE ---
+        window.liveCursors = {}; 
+        let myPresenceRef = null;
+        let globalMouseListener = null;
+
+        const initMultiplayer = () => {
+            const student = window.appState.selectedStudent;
+            if (!student) return;
+
+            const safeAppId = appId.replace(/[.#$\[\]]/g, '_');
+            myPresenceRef = ref(rtdb, `presence/${safeAppId}/${student.id}`);
+            
+            onDisconnect(myPresenceRef).remove();
+
+            let lastUpdate = 0;
+            globalMouseListener = (e) => {
+                const now = Date.now();
+                if (now - lastUpdate > 50) { 
+                    lastUpdate = now;
+                    set(myPresenceRef, {
+                        x: e.clientX / window.innerWidth,
+                        y: e.clientY / window.innerHeight,
+                        name: student.name.split(' ')[0],
+                        theme: window.appState.colorTheme || 'teal',
+                        ts: now
+                    });
+                }
+            };
+            window.addEventListener('mousemove', globalMouseListener);
+
+            const allCursorsRef = ref(rtdb, `presence/${safeAppId}`);
+            onValue(allCursorsRef, (snapshot) => {
+                const data = snapshot.val() || {};
+                const container = document.getElementById('live-cursors');
+                const now = Date.now();
+
+                Object.keys(data).forEach(uid => {
+                    if (uid == student.id) return;
+
+                    const cData = data[uid];
+                    
+                    if (now - cData.ts > 15000) {
+                        if (window.liveCursors[uid]) {
+                            window.liveCursors[uid].remove();
+                            delete window.liveCursors[uid];
+                        }
+                        return;
+                    }
+
+                    let cursorEl = window.liveCursors[uid];
+                    if (!cursorEl) {
+                        cursorEl = document.createElement('div');
+                        cursorEl.className = 'absolute top-0 left-0 transition-transform duration-75 ease-linear flex flex-col items-start drop-shadow-xl z-50 pointer-events-none';
+                        
+                        const themeColorClass = `text-${cData.theme}-500`;
+                        const bgThemeClass = `bg-${cData.theme}-500`;
+
+                        cursorEl.innerHTML = `
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="white" stroke-width="2" class="${themeColorClass} transform -rotate-12 drop-shadow-md">
+                                <polygon points="3 3 10.07 19.97 12.58 11.41 21 8.9 3 3"></polygon>
+                            </svg>
+                            <span class="mt-1 ml-4 px-2.5 py-1 ${bgThemeClass} text-white text-[11px] font-bold rounded-full whitespace-nowrap shadow-lg opacity-90">${cData.name}</span>
+                        `;
+                        container.appendChild(cursorEl);
+                        window.liveCursors[uid] = cursorEl;
+                    } else {
+                        const themeColorClass = `text-${cData.theme}-500`;
+                        const bgThemeClass = `bg-${cData.theme}-500`;
+                        const svg = cursorEl.querySelector('svg');
+                        const span = cursorEl.querySelector('span');
+                        if (svg && span && !svg.classList.contains(themeColorClass)) {
+                            svg.setAttribute('class', `${themeColorClass} transform -rotate-12 drop-shadow-md`);
+                            span.className = `mt-1 ml-4 px-2.5 py-1 ${bgThemeClass} text-white text-[11px] font-bold rounded-full whitespace-nowrap shadow-lg opacity-90`;
+                        }
+                    }
+
+                    const xPx = cData.x * window.innerWidth;
+                    const yPx = cData.y * window.innerHeight;
+                    cursorEl.style.transform = `translate(${xPx}px, ${yPx}px)`;
+                });
+
+                Object.keys(window.liveCursors).forEach(uid => {
+                    if (!data[uid]) {
+                        window.liveCursors[uid].remove();
+                        delete window.liveCursors[uid];
+                    }
+                });
+            });
+        };
+
+        const stopMultiplayer = () => {
+            if (myPresenceRef) remove(myPresenceRef);
+            if (globalMouseListener) window.removeEventListener('mousemove', globalMouseListener);
+            document.getElementById('live-cursors').innerHTML = '';
+            window.liveCursors = {};
+        };
 
         // --- GLOBAL APP STATE ---
         const closestWeekObj = getClosestMainWeek();
@@ -394,6 +603,11 @@
             extraSchedule: JSON.parse(localStorage.getItem('portal-extra-schedule')) || [],
             hiddenSchedule: JSON.parse(localStorage.getItem('portal-hidden-schedule')) || [],
             
+            analyticsData: [],
+            analyticsInterval: null,
+            currentSessionId: null,
+            analyticsUnsubscribe: null,
+
             statusInterval: null,
             regFilter: 'all',
             matFilter: 'Всі'
@@ -445,7 +659,7 @@
             const { pri } = getTheme();
             const container = document.getElementById('toasts');
             const toast = document.createElement('div');
-            toast.className = `px-5 py-4 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-fade-in-up flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-rose-500/95 border-rose-400/50' : `bg-${pri}-600/95 border-${pri}-400/50`}`;
+            toast.className = `px-5 py-4 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-slide-up flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-rose-500/95 border-rose-400/50' : `bg-${pri}-600/95 border-${pri}-400/50`}`;
             toast.innerHTML = `
                 <div class="p-1 rounded-full bg-white/20"><i data-lucide="${isError ? 'alert-triangle' : 'check'}" class="w-4 h-4 text-white"></i></div>
                 <span>${msg}</span>
@@ -455,7 +669,7 @@
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(-10px)';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(() => toast.remove(), 400);
             }, 3000);
         };
 
@@ -487,98 +701,88 @@
         const renderNav = () => {
             const { pri, sec } = getTheme();
             const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
+            const isPilipenko = window.appState.selectedStudent && window.appState.selectedStudent.id === 19;
             
             const navItems = [
-                { id: 'dashboard', icon: 'layout-grid' },
-                { id: 'schedule', icon: 'user' },
-                { id: 'main', icon: 'calendar-days' },
-                { id: 'materials', icon: 'folder-open' },
-                { id: 'homework', icon: 'check-square' },
-                { id: 'register', icon: 'users' },
+                { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
+                { id: 'schedule', icon: 'user', label: 'Мій розклад' },
+                { id: 'main', icon: 'calendar-days', label: 'Загальний' },
+                { id: 'materials', icon: 'folder-open', label: 'Матеріали' },
+                { id: 'homework', icon: 'check-square', label: 'Д/з' },
+                { id: 'register', icon: 'users', label: 'Група' },
             ];
-            if (canEdit) navItems.push({ id: 'editor', icon: 'settings' });
+            if (canEdit) navItems.push({ id: 'editor', icon: 'settings', label: 'Редактор' });
+            if (isPilipenko) navItems.push({ id: 'analytics', icon: 'bar-chart-2', label: 'Аналітика' }); 
             
-            const activeIndex = Math.max(0, navItems.findIndex(i => i.id === window.appState.view));
-            const offset = 6 + activeIndex * 44; // Adjust pill offset for padding
-            
-            // DESKTOP NAV
+            // DESKTOP NAV WITH SLIDING PILL
             const deskNav = document.getElementById('desktop-nav');
-            if (deskNav.dataset.itemCount && parseInt(deskNav.dataset.itemCount) !== navItems.length) deskNav.dataset.init = ""; 
+            let dHtml = `<div id="desk-active-pill" class="absolute top-1.5 bottom-1.5 rounded-full bg-white dark:bg-zinc-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>`;
             
-            if (!deskNav.dataset.init) {
-                deskNav.innerHTML = `
-                    <div id="desk-pill" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-zinc-800 shadow-md border border-zinc-200 dark:border-zinc-700 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>
-                    ${navItems.map(item => `
-                        <button id="desk-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300">
-                            <i data-lucide="${item.icon}" class="w-4 h-4 transition-all duration-300"></i>
-                        </button>
-                    `).join('')}
-                `;
-                deskNav.dataset.init = "true";
-                deskNav.dataset.itemCount = navItems.length;
-                lucide.createIcons({ root: deskNav });
-            }
-            
-            const deskPill = document.getElementById('desk-pill');
-            if(deskPill) deskPill.style.transform = `translate(${offset}px, -50%)`;
-
-            navItems.forEach(item => {
+            dHtml += navItems.map((item, i) => {
                 const isActive = window.appState.view === item.id;
-                const btn = document.getElementById(`desk-btn-${item.id}`);
-                if(btn) {
-                    btn.className = `relative z-10 w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'}`;
-                    const svg = btn.querySelector('svg');
-                    if(svg) svg.setAttribute('class', `w-[18px] h-[18px] transition-all duration-300 ${isActive ? `scale-110 drop-shadow-sm` : ''}`);
-                }
-            });
+                const activeClasses = isActive ? `text-${pri}-600 dark:text-${pri}-400` : `text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200`;
+                
+                return `
+                    <button id="nav-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex items-center gap-2 px-3.5 h-9 rounded-full transition-colors duration-300 ${activeClasses} animate-scale-in" style="animation-delay: ${i*30}ms;">
+                        <i data-lucide="${item.icon}" class="w-[18px] h-[18px] ${isActive ? 'scale-110 drop-shadow-sm' : ''} transition-all"></i>
+                        <span class="text-[12px] font-bold ${isActive ? 'block' : 'hidden xl:block'}">${item.label}</span>
+                    </button>
+                `;
+            }).join('');
+            deskNav.innerHTML = dHtml;
 
-            // MOBILE NAV
+            // POSITION DESKTOP PILL
+            setTimeout(() => {
+                const activeBtn = document.getElementById(`nav-btn-${window.appState.view}`);
+                const pill = document.getElementById('desk-active-pill');
+                if (activeBtn && pill) {
+                    pill.style.left = `${activeBtn.offsetLeft}px`;
+                    pill.style.width = `${activeBtn.offsetWidth}px`;
+                }
+            }, 10);
+
+            // MOBILE NAV WITH SLIDING PILL
             const mobileNavItems = [
-                { id: 'dashboard', icon: 'layout-grid' },
-                { id: 'schedule', icon: 'user' },
-                { id: 'main', icon: 'calendar-days' }
+                { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
+                { id: 'schedule', icon: 'user', label: 'Мій розклад' },
+                { id: 'main', icon: 'calendar-days', label: 'Загальний' }
             ];
-            const mActiveIndex = mobileNavItems.findIndex(i => i.id === window.appState.view);
-            const mobileContainer = document.getElementById('mobile-nav');
             
-            if (!mobileContainer.dataset.init) {
-                mobileContainer.innerHTML = `
-                    <div class="flex justify-between items-center w-full relative">
-                        <div id="mob-pill" class="absolute top-1 bottom-1 w-[calc(25%-6px)] bg-${pri}-100 dark:bg-${pri}-500/20 rounded-full z-0 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></div>
-                        ${mobileNavItems.map(item => `
-                            <button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex flex-col items-center justify-center flex-1 h-12 rounded-full transition-colors duration-300">
-                                <i data-lucide="${item.icon}" class="w-5 h-5 transition-all duration-300"></i>
-                            </button>
-                        `).join('')}
-                        <button onclick="window.app.openMobileMenu()" class="relative z-10 flex flex-col items-center justify-center flex-1 h-12 rounded-full transition-colors text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
-                            <i data-lucide="menu" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                `;
-                mobileContainer.dataset.init = "true";
-                lucide.createIcons({ root: mobileContainer });
-            }
-
-            const mobPill = document.getElementById('mob-pill');
-            if(mobPill) {
-                mobPill.className = `absolute top-1 bottom-1 w-[calc(25%-6px)] bg-${pri}-100 dark:bg-${pri}-500/20 rounded-full z-0 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]`;
-                if(mActiveIndex >= 0) {
-                    mobPill.style.opacity = '1';
-                    mobPill.style.left = `calc(6px + ${mActiveIndex * 25}%)`;
-                } else {
-                    mobPill.style.opacity = '0'; 
-                }
-            }
-
-            mobileNavItems.forEach(item => {
+            const mobileContainer = document.getElementById('mobile-nav');
+            let mHtml = `<div id="mob-active-pill" class="absolute top-1.5 bottom-1.5 rounded-[24px] bg-${pri}-50 dark:bg-${pri}-500/20 shadow-inner border border-${pri}-100/50 dark:border-${pri}-500/20 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0 opacity-0"></div>`;
+            
+            mHtml += mobileNavItems.map(item => {
                 const isActive = window.appState.view === item.id;
-                const btn = document.getElementById(`mob-btn-${item.id}`);
-                if(btn) {
-                    btn.className = `relative z-10 flex flex-col items-center justify-center flex-1 h-12 rounded-full transition-colors duration-300 ${isActive ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'}`;
-                    const svg = btn.querySelector('svg');
-                    if(svg) svg.setAttribute('class', `w-5 h-5 transition-all duration-300 ${isActive ? `scale-110` : ''}`);
+                const activeClasses = isActive ? `text-${pri}-600 dark:text-${pri}-400` : `text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200`;
+                
+                return `
+                    <button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex flex-col items-center justify-center flex-1 h-14 rounded-[20px] transition-colors duration-300 ${activeClasses}">
+                        <i data-lucide="${item.icon}" class="w-5 h-5 ${isActive ? 'scale-110 mb-0.5' : 'mb-1'} transition-transform"></i>
+                        <span class="text-[9px] font-bold tracking-wide">${item.label}</span>
+                    </button>
+                `;
+            }).join('');
+
+            mHtml += `
+                <button onclick="window.app.openMobileMenu()" class="relative z-10 flex flex-col items-center justify-center flex-1 h-14 rounded-[20px] transition-colors text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+                    <i data-lucide="menu" class="w-5 h-5 mb-1"></i>
+                    <span class="text-[9px] font-bold tracking-wide">Меню</span>
+                </button>
+            `;
+            mobileContainer.innerHTML = mHtml;
+
+            // POSITION MOBILE PILL
+            setTimeout(() => {
+                const activeMBtn = document.getElementById(`mob-btn-${window.appState.view}`);
+                const mPill = document.getElementById('mob-active-pill');
+                if (activeMBtn && mPill) {
+                    mPill.style.left = `${activeMBtn.offsetLeft}px`;
+                    mPill.style.width = `${activeMBtn.offsetWidth}px`;
+                    mPill.style.opacity = '1';
+                } else if (mPill) {
+                    mPill.style.opacity = '0';
                 }
-            });
+            }, 10);
             
             if(window.appState.selectedStudent) {
                 const [firstName, lastName] = window.appState.selectedStudent.name.split(' ');
@@ -596,30 +800,38 @@
 
         const renderMobileMenu = () => {
             const { pri, sec } = getTheme();
-            const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
+            const user = window.appState.selectedStudent;
+            const canEdit = user && (user.id === 19 || user.id === 2);
+            const isPilipenko = user && user.id === 19;
+            
             const html = `
-                <div class="w-full glass-panel rounded-t-[40px] p-6 pb-12 shadow-[0_-20px_40px_rgba(0,0,0,0.15)] border-t border-white/50 dark:border-white/10" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+                <div class="w-full glass-panel rounded-t-[40px] p-6 pb-12 shadow-[0_-20px_40px_rgba(0,0,0,0.15)] border-t border-white/50 dark:border-white/10" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;">
                     <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-8"></div>
-                    <div class="space-y-3 mb-8">
-                        <button onclick="window.app.setView('materials'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group">
+                    <div class="space-y-3 mb-8 max-h-[50vh] overflow-y-auto custom-scroll pr-1">
+                        <button onclick="window.app.setView('materials'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 50ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-${pri}-50 dark:bg-${pri}-500/10 text-${pri}-600 dark:text-${pri}-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="folder-open" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-semibold text-zinc-900 dark:text-white">Матеріали</span>
                         </button>
-                        <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group">
+                        <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 100ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-${sec}-50 dark:bg-${sec}-500/10 text-${sec}-600 dark:text-${sec}-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="check-square" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-semibold text-zinc-900 dark:text-white">Історія Д/з</span>
                         </button>
-                        <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group">
+                        <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 150ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-semibold text-zinc-900 dark:text-white">Реєстр групи</span>
                         </button>
                         ${canEdit ? `
-                        <button onclick="window.app.setView('editor'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-500/10 text-left active:scale-[0.98] transition-all group">
+                        <button onclick="window.app.setView('editor'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-500/10 text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 200ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="settings" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-semibold text-amber-700 dark:text-amber-400">Редактор розкладу</span>
                         </button>` : ''}
+                        ${isPilipenko ? `
+                        <button onclick="window.app.setView('analytics'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/10 text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 250ms;">
+                            <div class="w-12 h-12 rounded-[18px] bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="bar-chart-2" class="w-6 h-6"></i></div>
+                            <span class="text-[16px] font-semibold text-indigo-700 dark:text-indigo-400">Аналітика сайту</span>
+                        </button>` : ''}
                     </div>
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 animate-slide-up" style="animation-delay: 300ms;">
                         <button onclick="window.app.toggleDark(); window.app.closeMobileMenu();" class="flex-1 py-4 rounded-2xl font-semibold text-sm glass-card text-zinc-800 dark:text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-all">
                             <i data-lucide="${window.appState.isDark ? 'sun' : 'moon'}" class="w-5 h-5"></i> Тема
                         </button>
@@ -653,8 +865,8 @@
             const recentMat = window.appState.materials.slice(0, 3);
 
             let html = `
-                <div class="animate-fade-in space-y-6">
-                    <div class="mb-8">
+                <div class="space-y-6">
+                    <div class="mb-8 animate-slide-in-right" style="animation-delay: 0ms;">
                         <p class="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-1">${getGreeting()},</p>
                         <h1 class="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
                             ${user.name.split(' ')[0]} 👋
@@ -663,13 +875,12 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
-                        <!-- HERO LIVE WIDGET (Bento Main) -->
-                        <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] p-8 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[280px]" id="live-widget">
-                            <!-- Populated by interval -->
+                        <!-- HERO LIVE WIDGET -->
+                        <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] p-8 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[280px] animate-scale-in" style="animation-delay: 100ms;" id="live-widget">
                         </div>
 
-                        <!-- TODAY SCHEDULE (Bento Side) -->
-                        <div class="md:col-span-1 glass-card rounded-[32px] p-6 flex flex-col group cursor-pointer" onclick="window.app.setView('schedule')">
+                        <!-- TODAY SCHEDULE -->
+                        <div class="md:col-span-1 glass-card rounded-[32px] p-6 flex flex-col group cursor-pointer animate-slide-up" style="animation-delay: 150ms;" onclick="window.app.setView('schedule')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Сьогодні</h3>
                                 <div class="w-8 h-8 rounded-full bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
@@ -702,8 +913,8 @@
                             </div>
                         </div>
 
-                        <!-- RECENT HOMEWORK (Bento Bottom Left) -->
-                        <div class="md:col-span-2 glass-card rounded-[32px] p-6 group cursor-pointer" onclick="window.app.setView('homework')">
+                        <!-- RECENT HOMEWORK -->
+                        <div class="md:col-span-2 glass-card rounded-[32px] p-6 group cursor-pointer animate-slide-up" style="animation-delay: 200ms;" onclick="window.app.setView('homework')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Останні Д/з</h3>
                                 <div class="flex items-center gap-1 text-[12px] font-bold text-${pri}-500 group-hover:text-${pri}-600 transition-colors">Всі <i data-lucide="chevron-right" class="w-3 h-3"></i></div>
@@ -718,8 +929,8 @@
                             </div>
                         </div>
 
-                        <!-- RECENT MATERIALS (Bento Bottom Right) -->
-                        <div class="md:col-span-1 glass-card rounded-[32px] p-6 group cursor-pointer" onclick="window.app.setView('materials')">
+                        <!-- RECENT MATERIALS -->
+                        <div class="md:col-span-1 glass-card rounded-[32px] p-6 group cursor-pointer animate-slide-up" style="animation-delay: 250ms;" onclick="window.app.setView('materials')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder-open" class="w-4 h-4"></i> Матеріали</h3>
                                 <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
@@ -760,8 +971,8 @@
             const pillTranslate = isUpper ? '0' : (isLower ? '100%' : '-100%');
 
             let html = `
-                <div class="animate-fade-in">
-                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10">
+                <div>
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-5 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
                         <div>
                             ${isPersonal ? `<span class="inline-block px-3 py-1 bg-${pri}-100 dark:bg-${pri}-500/20 text-${pri}-700 dark:text-${pri}-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-3 shadow-sm">Актуально</span>` : ''}
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">${isPersonal ? 'Мій розклад' : 'Загальний'}</h2>
@@ -776,8 +987,8 @@
                         </div>
                     </div>
 
-                    <!-- Week Selector (Horizontal Scroll) -->
-                    <div class="mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 overflow-hidden">
+                    <!-- Week Selector -->
+                    <div class="mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
                         <div class="flex gap-4 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-6 snap-x">
                             ${weeksConfig.map(w => {
                                 const isActive = activeWeekNum === w.n;
@@ -804,7 +1015,7 @@
 
             if (scheduleList.length === 0) {
                 html += `
-                    <div class="flex flex-col items-center justify-center p-16 text-center glass-card border-dashed rounded-[32px] animate-fade-in">
+                    <div class="flex flex-col items-center justify-center p-16 text-center glass-card border-dashed rounded-[32px] animate-scale-in" style="animation-delay: 100ms;">
                         <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800/50 rounded-full flex items-center justify-center text-zinc-400 mb-4"><i data-lucide="coffee" class="w-8 h-8"></i></div>
                         <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-1">Немає пар</h3>
                         <p class="text-sm font-medium text-zinc-500">У ці дні розклад порожній. Час для відпочинку.</p>
@@ -833,8 +1044,8 @@
                     const isToday = specificDate === todayStr;
 
                     scheduleHtml += `
-                        <div class="relative animate-fade-in-up pl-10 md:pl-16" style="animation-delay: ${dayIdx * 50}ms">
-                            <!-- Day Header & Timeline Dot -->
+                        <div class="relative animate-slide-up pl-10 md:pl-16" style="animation-delay: ${100 + dayIdx * 50}ms">
+                            <!-- Day Header -->
                             <div class="absolute left-3 md:left-4 top-4 w-4 h-4 rounded-full border-4 border-[#f8fafc] dark:border-[#09090b] ${isToday ? `bg-${pri}-500 shadow-[0_0_15px_rgba(20,184,166,0.5)]` : 'bg-zinc-300 dark:bg-zinc-700'} z-10"></div>
                             
                             <div class="sticky top-20 sm:top-24 z-20 mb-6 inline-flex items-center gap-3">
@@ -866,7 +1077,7 @@
                         const encodedSubj = encodeURIComponent(p.subj);
 
                         scheduleHtml += `
-                            <div class="group w-full glass-card rounded-[28px] p-6 transition-all duration-300 hover:-translate-y-1 relative flex flex-col">
+                            <div class="group w-full glass-card rounded-[28px] p-6 transition-all duration-300 hover:-translate-y-1 relative flex flex-col animate-pop-in" style="animation-delay: ${150 + dayIdx * 50}ms">
                                 <div class="flex justify-between items-start mb-5">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-[14px] bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[12px] font-black text-zinc-900 dark:text-white shadow-inner">${p.num}</div>
@@ -925,8 +1136,8 @@
             const inactiveFilterClass = "glass-card text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700";
 
             let html = `
-                <div class="animate-fade-in">
-                    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 relative z-10">
+                <div>
+                    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-5 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
                         <div>
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Матеріали</h2>
                             <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Корисні посилання та диски</p>
@@ -936,7 +1147,7 @@
                         </button>
                     </div>
                     
-                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-8 relative z-10 overflow-hidden">
+                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-8 relative z-10 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
                         <div class="flex gap-3 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-4">
                             ${subjectsInUse.map(s => `
                                 <button onclick="window.app.setMatFilter('${s}')" class="px-5 py-2.5 rounded-[14px] text-[12px] font-bold tracking-wide transition-all duration-300 whitespace-nowrap border ${filter === s ? activeFilterClass : inactiveFilterClass}">${s}</button>
@@ -948,7 +1159,7 @@
             `;
 
             if(filtered.length === 0) {
-                html += `<div class="col-span-full text-center p-16 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px]">Матеріалів поки немає.</div>`;
+                html += `<div class="col-span-full text-center p-16 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px] animate-scale-in" style="animation-delay: 100ms;">Матеріалів поки немає.</div>`;
             } else {
                 filtered.forEach((m, i) => {
                     const authorObj = students.find(s => s.name === m.author);
@@ -962,7 +1173,7 @@
                     if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) { iconName = 'youtube'; iconColor = 'text-rose-600 dark:text-rose-400'; iconBg = 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/20'; }
 
                     html += `
-                        <div class="group glass-card p-6 rounded-[32px] flex flex-col h-full animate-fade-in-up relative overflow-hidden" style="animation-delay: ${i*50}ms">
+                        <div class="group glass-card p-6 rounded-[32px] flex flex-col h-full relative overflow-hidden animate-pop-in" style="animation-delay: ${100 + i * 40}ms">
                             <div class="flex justify-between items-start mb-5">
                                 <div class="w-12 h-12 rounded-[16px] border flex items-center justify-center shadow-sm ${iconBg} ${iconColor}"><i data-lucide="${iconName}" class="w-6 h-6"></i></div>
                                 ${canDelete ? `<button onclick="window.app.deleteMaterial('${m.id}')" class="w-8 h-8 flex items-center justify-center bg-zinc-100 dark:bg-white/5 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-colors opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
@@ -992,8 +1203,8 @@
             const user = window.appState.selectedStudent;
 
             let html = `
-                <div class="animate-fade-in">
-                    <div class="mb-8 relative z-10">
+                <div>
+                    <div class="mb-8 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Історія Д/з</h2>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Стрічка завдань для МБ-202</p>
                     </div>
@@ -1001,13 +1212,13 @@
             `;
 
             if(homeworks.length === 0) {
-                html += `<div class="text-center p-16 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px]">Завдань поки немає.</div>`;
+                html += `<div class="text-center p-16 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px] animate-scale-in" style="animation-delay: 50ms;">Завдань поки немає.</div>`;
             } else {
                 homeworks.forEach((hw, i) => {
                     const authorObj = students.find(s => s.name === hw.author);
                     const canDelete = user.name === hw.author || user.isStarosta || user.id === 19;
                     html += `
-                        <div class="glass-card p-6 sm:p-8 rounded-[32px] relative z-10 animate-fade-in-up group" style="animation-delay: ${i*50}ms">
+                        <div class="glass-card p-6 sm:p-8 rounded-[32px] relative z-10 group animate-slide-up" style="animation-delay: ${50 + i * 40}ms">
                             ${canDelete ? `<button onclick="window.app.deleteHomework('${hw.id}')" class="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-[14px] transition-all absolute top-6 right-6 opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-5 h-5"></i></button>` : ''}
                             
                             <div class="flex items-center gap-3 mb-6">
@@ -1061,13 +1272,13 @@
             const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchStr) && (filter === 'all' || s.electives.includes(filter)));
 
             let html = `
-                <div class="animate-fade-in">
-                    <div class="mb-8 relative z-10">
+                <div>
+                    <div class="mb-8 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Група</h2>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Студенти МБ-202 та дисципліни</p>
                     </div>
                     
-                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-6 relative z-10 overflow-hidden">
+                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-6 relative z-10 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
                         <div class="flex gap-3 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-4">
                             ${filters.map(f => `
                                 <button onclick="window.app.setRegFilter('${f.id}')" class="px-5 py-2.5 rounded-[14px] text-[12px] font-bold tracking-wide transition-all duration-300 whitespace-nowrap border ${filter === f.id ? activeFilterClass : inactiveFilterClass}">${f.label}</button>
@@ -1075,7 +1286,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-panel overflow-hidden rounded-[32px]">
+                    <div class="glass-panel overflow-hidden rounded-[32px] animate-slide-up" style="animation-delay: 100ms;">
                         <div class="p-6 border-b border-zinc-200/50 dark:border-white/5 relative z-10 bg-white/30 dark:bg-black/10">
                             <div class="relative group">
                                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
@@ -1088,7 +1299,7 @@
                                     ${filteredStudents.map((s, i) => {
                                         const isMe = user.id === s.id;
                                         return `
-                                            <tr class="transition-colors hover:bg-white/60 dark:hover:bg-white/5 group ${isMe ? `bg-${pri}-50/50 dark:bg-${pri}-900/10` : ''}">
+                                            <tr class="transition-colors hover:bg-white/60 dark:hover:bg-white/5 group animate-slide-in-right ${isMe ? `bg-${pri}-50/50 dark:bg-${pri}-900/10` : ''}" style="animation-delay: ${120 + i * 15}ms;">
                                                 <td class="py-5 px-4 sm:px-6 text-[12px] font-bold text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
                                                 <td class="py-5 px-2 sm:px-4 font-semibold text-[14px] ${isMe ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-900 dark:text-zinc-100'} whitespace-nowrap">
                                                     ${s.name} 
@@ -1123,13 +1334,13 @@
             const hiddenSchedule = window.appState.hiddenSchedule;
 
             let html = `
-                <div class="animate-fade-in">
-                    <div class="mb-8 relative z-10">
+                <div>
+                    <div class="mb-8 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Редактор</h2>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Керування розкладом (Admin)</p>
                     </div>
                     
-                    <div class="glass-panel p-6 md:p-8 mb-10 rounded-[32px] relative z-10 border-t-4 border-t-zinc-900 dark:border-t-white">
+                    <div class="glass-panel p-6 md:p-8 mb-10 rounded-[32px] relative z-10 border-t-4 border-t-zinc-900 dark:border-t-white animate-scale-in" style="animation-delay: 50ms;">
                         <h3 class="text-[16px] font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2"><i data-lucide="plus" class="w-5 h-5"></i> Додати пару вручну</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-6">
                             <div>
@@ -1180,11 +1391,11 @@
                         <button onclick="window.app.addExtraSchedule()" class="w-full py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-[14px] rounded-[16px] shadow-lg transition-all hover:-translate-y-1 active:scale-[0.98]">Зберегти пару</button>
                     </div>
 
-                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2">Додані вручну:</h3>
+                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2 animate-slide-in-right" style="animation-delay: 100ms;">Додані вручну:</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-                        ${extraSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-semibold text-zinc-500 glass-card border-dashed rounded-[32px]">Немає доданих пар.</div>` : 
-                            extraSchedule.map(p => `
-                                <div class="glass-card p-6 rounded-[28px] flex flex-col relative group">
+                        ${extraSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-semibold text-zinc-500 glass-card border-dashed rounded-[32px] animate-scale-in" style="animation-delay: 150ms;">Немає доданих пар.</div>` : 
+                            extraSchedule.map((p, i) => `
+                                <div class="glass-card p-6 rounded-[28px] flex flex-col relative group animate-pop-in" style="animation-delay: ${150 + i * 30}ms;">
                                     <div class="flex justify-between items-start mb-3">
                                         <span class="text-[10px] font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700">${p.weekType==='upper'?'Верхній':'Нижній'} • ${p.day}</span>
                                         <button onclick="window.app.deleteExtraSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
@@ -1197,11 +1408,11 @@
                         }
                     </div>
 
-                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2 mt-10">Приховані (скасовані):</h3>
+                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-5 ml-2 mt-10 animate-slide-in-right" style="animation-delay: 200ms;">Приховані (скасовані):</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        ${hiddenSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-semibold text-zinc-500 glass-card border-dashed rounded-[32px]">Немає прихованих пар.</div>` : 
-                            hiddenSchedule.map(p => `
-                                <div class="glass-card p-6 rounded-[28px] flex flex-col relative opacity-70 hover:opacity-100 transition-opacity">
+                        ${hiddenSchedule.length === 0 ? `<div class="col-span-full text-center p-10 text-sm font-semibold text-zinc-500 glass-card border-dashed rounded-[32px] animate-scale-in" style="animation-delay: 250ms;">Немає прихованих пар.</div>` : 
+                            hiddenSchedule.map((p, i) => `
+                                <div class="glass-card p-6 rounded-[28px] flex flex-col relative opacity-70 hover:opacity-100 transition-opacity animate-pop-in" style="animation-delay: ${250 + i * 30}ms;">
                                     <div class="flex justify-between items-start mb-3">
                                         <span class="text-[10px] font-bold uppercase tracking-widest bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i data-lucide="eye-off" class="w-3 h-3"></i> ${p.weekType==='upper'?'Верх.':'Ниж.'} • ${p.day}</span>
                                         <button onclick="window.app.restoreHiddenSchedule('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-xl text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
@@ -1218,12 +1429,89 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
+        const renderAnalytics = () => {
+            const logs = window.appState.analyticsData;
+            
+            let html = `
+                <div>
+                    <div class="mb-8 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-slide-in-right" style="animation-delay: 0ms;">
+                        <div>
+                            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Аналітика (Admin)</h2>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Журнал відвідувань порталу студентами</p>
+                        </div>
+                        <div class="glass-card px-5 py-3 rounded-2xl flex items-center gap-3">
+                            <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span class="text-[13px] font-bold text-zinc-700 dark:text-zinc-300">Запис активний</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel overflow-hidden rounded-[32px] relative z-10 animate-slide-up" style="animation-delay: 50ms;">
+                        <div class="overflow-x-auto custom-scroll max-h-[65vh]">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-zinc-100/80 dark:bg-zinc-800/80 text-[10px] font-black uppercase tracking-widest text-zinc-500 sticky top-0 z-20 backdrop-blur-md">
+                                    <tr>
+                                        <th class="py-5 px-6">Студент</th>
+                                        <th class="py-5 px-6">Час входу</th>
+                                        <th class="py-5 px-6">Остання активність</th>
+                                        <th class="py-5 px-6 text-right">Тривалість сесії</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-zinc-200/50 dark:divide-white/5">
+                                    ${logs.length === 0 ? `<tr><td colspan="4" class="text-center py-10 text-sm font-semibold text-zinc-500">Журнал порожній.</td></tr>` : 
+                                      logs.map((log, i) => {
+                                        const d1 = new Date(log.start);
+                                        const d2 = new Date(log.end);
+                                        const durMins = Math.round((log.end - log.start) / 60000);
+                                        const timeFmt = (d) => d.toLocaleTimeString('uk-UA', {hour: '2-digit', minute:'2-digit'});
+                                        const dateFmt = (d) => d.toLocaleDateString('uk-UA', {day: '2-digit', month: '2-digit'});
+                                        
+                                        const isActiveNow = (Date.now() - log.end) < 120000;
+
+                                        return `
+                                            <tr class="transition-colors hover:bg-white/60 dark:hover:bg-white/5 animate-slide-in-right ${isActiveNow ? 'bg-emerald-50/30 dark:bg-emerald-900/10' : ''}" style="animation-delay: ${100 + i * 15}ms;">
+                                                <td class="py-4 px-6 font-bold text-[14px] text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-xs text-zinc-600 dark:text-zinc-300 font-bold border border-zinc-300 dark:border-zinc-700">${log.name.charAt(0)}</div>
+                                                        ${log.name}
+                                                    </div>
+                                                </td>
+                                                <td class="py-4 px-6 text-[13px] font-semibold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">${dateFmt(d1)} <span class="text-zinc-400 dark:text-zinc-600 px-1">•</span> ${timeFmt(d1)}</td>
+                                                <td class="py-4 px-6 text-[13px] font-semibold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                                                    ${isActiveNow ? `<span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-500/20"><i data-lucide="activity" class="w-3 h-3"></i> Онлайн</span>` : `${dateFmt(d2)} <span class="text-zinc-400 dark:text-zinc-600 px-1">•</span> ${timeFmt(d2)}`}
+                                                </td>
+                                                <td class="py-4 px-6 text-[13px] font-black text-right whitespace-nowrap ${durMins > 30 ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-700 dark:text-zinc-300'}">
+                                                    ${durMins < 1 ? '< 1 хв' : durMins + ' хв'}
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+        };
+
         // --- GLOBAL APP LOGIC EXPOSED TO WINDOW ---
         window.app = {
             setView: (viewId) => {
-                window.appState.view = viewId;
-                window.app.renderActiveView();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (window.appState.view === viewId) return;
+                
+                const content = document.getElementById('main-content');
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(10px) scale(0.98)';
+                
+                setTimeout(() => {
+                    window.appState.view = viewId;
+                    window.app.renderActiveView();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    content.style.opacity = '1';
+                    content.style.transform = 'translateY(0) scale(1)';
+                }, 200);
             },
             
             renderActiveView: () => {
@@ -1237,8 +1525,59 @@
                 else if(v === 'homework') renderHomework();
                 else if(v === 'register') renderRegister();
                 else if(v === 'editor') renderEditor();
+                else if(v === 'analytics') renderAnalytics();
                 
                 lucide.createIcons();
+            },
+
+            startAnalyticsSession: () => {
+                if (window.appState.analyticsInterval) clearInterval(window.appState.analyticsInterval);
+                const s = window.appState.selectedStudent;
+                if (!s) return;
+                
+                const now = Date.now();
+                const sessionId = `${s.id}_${now}`;
+                window.appState.currentSessionId = sessionId;
+                
+                const updateSession = async () => {
+                    if(!window.appState.currentSessionId || !window.appState.firebaseUser) return;
+                    try {
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'analytics_logs', window.appState.currentSessionId), {
+                            studentId: s.id,
+                            name: s.name,
+                            start: now,
+                            end: Date.now()
+                        }, { merge: true });
+                    } catch(e) {}
+                };
+                
+                updateSession(); 
+                window.appState.analyticsInterval = setInterval(updateSession, 30000); 
+            },
+
+            stopAnalyticsSession: () => {
+                if (window.appState.analyticsInterval) {
+                    clearInterval(window.appState.analyticsInterval);
+                    window.appState.analyticsInterval = null;
+                }
+                window.appState.currentSessionId = null;
+            },
+
+            initAnalyticsListener: () => {
+                const s = window.appState.selectedStudent;
+                if (s && s.id === 19 && !window.appState.analyticsUnsubscribe && window.appState.firebaseUser) {
+                    window.appState.analyticsUnsubscribe = onSnapshot(
+                        collection(db, 'artifacts', appId, 'public', 'data', 'analytics_logs'),
+                        (snap) => {
+                            let logs = [];
+                            snap.forEach(doc => logs.push({ id: doc.id, ...doc.data() }));
+                            logs.sort((a,b) => b.start - a.start); 
+                            window.appState.analyticsData = logs;
+                            if (window.appState.view === 'analytics') window.app.renderActiveView();
+                        },
+                        (error) => console.error('Analytics listener error:', error)
+                    );
+                }
             },
 
             login: (studentId) => {
@@ -1248,11 +1587,24 @@
                     localStorage.setItem('selectedStudentId', s.id);
                     document.getElementById('auth-screen').classList.add('hidden');
                     document.getElementById('app').classList.remove('hidden');
-                    window.app.setView('dashboard');
+                    window.appState.view = 'dashboard';
+                    window.app.renderActiveView();
+                    
+                    initMultiplayer();
+                    window.app.startAnalyticsSession(); 
+                    window.app.initAnalyticsListener(); 
                 }
             },
 
             logout: () => {
+                stopMultiplayer();
+                window.app.stopAnalyticsSession(); 
+                
+                if (window.appState.analyticsUnsubscribe) {
+                    window.appState.analyticsUnsubscribe();
+                    window.appState.analyticsUnsubscribe = null;
+                }
+
                 window.appState.selectedStudent = null;
                 localStorage.removeItem('selectedStudentId');
                 document.getElementById('app').classList.add('hidden');
@@ -1327,7 +1679,7 @@
                 if(filtered.length > 0) {
                     listEl.classList.remove('hidden');
                     listEl.innerHTML = filtered.map((s, i) => `
-                        <div onclick="window.app.login(${s.id})" class="px-5 py-4 rounded-[18px] bg-white dark:bg-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer font-semibold text-[15px] transition-all flex items-center justify-between shadow-sm border border-zinc-100 dark:border-white/5 animate-fade-in-up" style="animation-delay: ${i*30}ms">
+                        <div onclick="window.app.login(${s.id})" class="px-5 py-4 rounded-[18px] bg-white dark:bg-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer font-semibold text-[15px] transition-all flex items-center justify-between shadow-sm border border-zinc-100 dark:border-white/5 animate-slide-up" style="animation-delay: ${i*30}ms">
                             <span class="text-zinc-800 dark:text-zinc-200 truncate mr-3">${s.name}</span>
                             ${s.isStarosta ? '<span class="px-2 py-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-bold uppercase tracking-wide rounded-md">Староста</span>' : ''}
                         </div>
@@ -1377,7 +1729,6 @@
                     status = { label: 'Статус', title: 'Пари завершено', subtitle: 'Час для відпочинку ☕', progress: 100, isLive: false };
                 }
 
-                // SVG Circle calculations
                 const radius = 40;
                 const circumference = 2 * Math.PI * radius;
                 const strokeDashoffset = circumference - (status.progress / 100) * circumference;
@@ -1680,6 +2031,8 @@
 
         // --- INIT APP ---
         const initApp = async () => {
+            initParticles();
+
             if (window.appState.isDark) document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
 
@@ -1699,42 +2052,64 @@
             onAuthStateChanged(auth, (user) => {
                 window.appState.firebaseUser = user;
                 if(user) {
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'zoom_links'), (snap) => {
-                        let links = {}; snap.forEach(doc => links[doc.id] = doc.data().url);
-                        window.appState.zoomLinksData = links;
-                        localStorage.setItem('portal-custom-zoom', JSON.stringify(links));
-                        if (['schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
-                    });
+                    onSnapshot(
+                        collection(db, 'artifacts', appId, 'public', 'data', 'zoom_links'),
+                        (snap) => {
+                            let links = {}; snap.forEach(doc => links[doc.id] = doc.data().url);
+                            window.appState.zoomLinksData = links;
+                            localStorage.setItem('portal-custom-zoom', JSON.stringify(links));
+                            if (['schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                        },
+                        (error) => console.error('Zoom links error:', error)
+                    );
 
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'homeworks'), (snap) => {
-                        let hw = []; snap.forEach(doc => hw.push(doc.data()));
-                        hw.sort((a, b) => b.id - a.id);
-                        window.appState.homeworks = hw;
-                        localStorage.setItem('portal-homeworks', JSON.stringify(hw));
-                        if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
-                    });
+                    onSnapshot(
+                        collection(db, 'artifacts', appId, 'public', 'data', 'homeworks'),
+                        (snap) => {
+                            let hw = []; snap.forEach(doc => hw.push(doc.data()));
+                            hw.sort((a, b) => b.id - a.id);
+                            window.appState.homeworks = hw;
+                            localStorage.setItem('portal-homeworks', JSON.stringify(hw));
+                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                        },
+                        (error) => console.error('Homeworks error:', error)
+                    );
 
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'materials'), (snap) => {
-                        let mat = []; snap.forEach(doc => mat.push(doc.data()));
-                        mat.sort((a, b) => b.id - a.id);
-                        window.appState.materials = mat;
-                        localStorage.setItem('portal-materials', JSON.stringify(mat));
-                        if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
-                    });
+                    onSnapshot(
+                        collection(db, 'artifacts', appId, 'public', 'data', 'materials'),
+                        (snap) => {
+                            let mat = []; snap.forEach(doc => mat.push(doc.data()));
+                            mat.sort((a, b) => b.id - a.id);
+                            window.appState.materials = mat;
+                            localStorage.setItem('portal-materials', JSON.stringify(mat));
+                            if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                        },
+                        (error) => console.error('Materials error:', error)
+                    );
 
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'extra_schedule'), (snap) => {
-                        let extra = []; snap.forEach(doc => extra.push({id: doc.id, ...doc.data()}));
-                        window.appState.extraSchedule = extra;
-                        localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
-                        if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
-                    });
+                    onSnapshot(
+                        collection(db, 'artifacts', appId, 'public', 'data', 'extra_schedule'),
+                        (snap) => {
+                            let extra = []; snap.forEach(doc => extra.push({id: doc.id, ...doc.data()}));
+                            window.appState.extraSchedule = extra;
+                            localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                        },
+                        (error) => console.error('Extra schedule error:', error)
+                    );
 
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'hidden_schedule'), (snap) => {
-                        let hidden = []; snap.forEach(doc => hidden.push({id: doc.id, ...doc.data()}));
-                        window.appState.hiddenSchedule = hidden;
-                        localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
-                        if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
-                    });
+                    onSnapshot(
+                        collection(db, 'artifacts', appId, 'public', 'data', 'hidden_schedule'),
+                        (snap) => {
+                            let hidden = []; snap.forEach(doc => hidden.push({id: doc.id, ...doc.data()}));
+                            window.appState.hiddenSchedule = hidden;
+                            localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                        },
+                        (error) => console.error('Hidden schedule error:', error)
+                    );
+                    
+                    window.app.initAnalyticsListener();
                 }
             });
 
@@ -1745,6 +2120,10 @@
                     window.appState.selectedStudent = s;
                     document.getElementById('app').classList.remove('hidden');
                     window.app.renderActiveView();
+                    
+                    initMultiplayer();
+                    window.app.startAnalyticsSession();
+
                     return;
                 }
             }
