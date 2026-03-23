@@ -97,17 +97,16 @@
 </head>
 <body class="text-slate-800 dark:text-zinc-200 bg-[#f8fafc] dark:bg-[#09090b] transition-colors duration-500 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <!-- Ambient Background (Apple-like Orbs + Interactive Canvas) -->
+    <!-- Ambient Background -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div id="mesh-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full bg-teal-500/15 dark:bg-teal-500/10 blur-[100px] animate-float"></div>
         <div id="mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-emerald-600/15 dark:bg-emerald-600/10 blur-[100px] animate-float" style="animation-delay: -3s;"></div>
         <div class="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] rounded-full bg-indigo-500/5 dark:bg-indigo-500/5 blur-[120px] animate-pulse-slow"></div>
         
-        <!-- НОВЫЙ ИНТЕРАКТИВНЫЙ ФОН -->
         <canvas id="interactive-bg" class="absolute inset-0 w-full h-full opacity-60 dark:opacity-30 transition-opacity duration-1000"></canvas>
     </div>
 
-    <!-- КОНТЕЙНЕР ДЛЯ МУЛЬТИПЛЕЕРНЫХ КУРСОРОВ -->
+    <!-- Live Cursors -->
     <div id="live-cursors" class="fixed inset-0 z-[9999] pointer-events-none overflow-hidden"></div>
 
     <!-- MAIN APP CONTAINER -->
@@ -117,7 +116,6 @@
         <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[96%] max-w-6xl z-50 transition-all">
             <div class="glass-panel rounded-full px-2 py-2 flex items-center justify-between animate-slide-up" style="animation-delay: 0ms;">
                 
-                <!-- Logo & Brand -->
                 <div class="flex items-center gap-3 cursor-pointer group pl-2 pr-4 py-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors" onclick="window.app.setView('dashboard')">
                     <div id="header-logo-bg" class="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-teal-500/30 group-hover:scale-105 transition-transform duration-300">
                         <i data-lucide="graduation-cap" class="w-5 h-5"></i>
@@ -128,36 +126,26 @@
                     </div>
                 </div>
 
-                <!-- Desktop Nav Navigation -->
                 <div id="desktop-nav" class="hidden md:flex items-center gap-1 bg-zinc-200/50 dark:bg-black/60 p-1.5 rounded-full border border-zinc-300/50 dark:border-white/5 relative backdrop-blur-xl shadow-inner">
-                    <!-- Injected via JS -->
                 </div>
 
-                <!-- Right Actions -->
                 <div class="flex items-center gap-1.5 pr-1">
-                    
-                    <!-- Theme Dropdown -->
                     <div class="relative" id="theme-dropdown-wrapper">
                         <button onclick="window.app.toggleThemeDropdown('main')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
                             <i data-lucide="palette" class="w-4 h-4"></i>
                         </button>
-                        <!-- Исправлен Z-index и непрозрачность -->
                         <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-48 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-2xl p-2 hidden z-[1000] animate-scale-in max-h-64 overflow-y-auto" style="transform-origin: top right;">
-                            <!-- Injected by JS -->
                         </div>
                     </div>
 
-                    <!-- Dark Mode Toggle -->
                     <button onclick="window.app.toggleDark()" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
                         <i id="theme-icon-header" data-lucide="sun" class="w-4 h-4"></i>
                     </button>
                     
                     <div class="h-5 w-px bg-zinc-300 dark:bg-zinc-700 mx-2 hidden sm:block"></div>
                     
-                    <!-- User Profile -->
                     <div class="flex items-center gap-3 pl-1 group cursor-pointer" onclick="window.app.logout()">
                         <div class="text-right hidden lg:block" id="header-user-info">
-                            <!-- Injected via JS -->
                         </div>
                         <div id="header-user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-100 to-emerald-50 dark:from-teal-900/60 dark:to-emerald-900/40 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold text-sm border border-teal-200/50 dark:border-teal-700/50 group-hover:ring-2 ring-teal-500/50 transition-all shadow-sm">
                             A
@@ -175,13 +163,11 @@
         <!-- Mobile Floating Nav Bar -->
         <div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] z-[100]">
             <nav id="mobile-nav" class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl shadow-2xl border border-white/50 dark:border-white/10 rounded-[28px] p-1.5 flex justify-between gap-1 animate-slide-up relative" style="animation-delay: 100ms;">
-                <!-- Injected via JS -->
             </nav>
         </div>
 
-        <!-- Mobile Menu (Bottom Sheet) -->
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden fixed inset-0 z-[200] bg-zinc-900/40 dark:bg-black/60 flex items-end p-0 backdrop-blur-sm transition-opacity" onclick="window.app.closeMobileMenu()">
-            <!-- Injected via JS -->
         </div>
 
     </div>
@@ -229,7 +215,6 @@
             </div>
 
             <div id="auth-list" class="mt-4 max-h-[35vh] overflow-y-auto custom-scroll flex flex-col gap-2 z-10 hidden pr-1">
-                <!-- Injected via JS -->
             </div>
         </div>
     </div>
@@ -371,6 +356,31 @@
             if (hour >= 18 && hour < 23) return 'Доброго вечора';
             return 'Доброї ночі';
         };
+        
+        const getDeviceInfo = () => {
+            const ua = navigator.userAgent;
+            let browser = "Невідомий";
+            if(ua.includes("Telegram") || ua.includes("Instagram")) browser = "In-App Browser";
+            else if(ua.includes("Firefox")) browser = "Firefox";
+            else if(ua.includes("SamsungBrowser")) browser = "Samsung Browser";
+            else if(ua.includes("Opera") || ua.includes("OPR")) browser = "Opera";
+            else if(ua.includes("Edge") || ua.includes("Edg")) browser = "Edge";
+            else if(ua.includes("Chrome")) browser = "Chrome";
+            else if(ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+
+            let os = "Невідома ОС";
+            if(ua.indexOf("Win")!=-1) os = "Windows";
+            else if(ua.indexOf("Mac")!=-1) os = "MacOS";
+            else if(ua.indexOf("X11")!=-1) os = "UNIX";
+            else if(ua.indexOf("Linux")!=-1) os = "Linux";
+            if(/Android/.test(ua)) os = "Android";
+            if(/iPhone|iPad|iPod/.test(ua)) os = "iOS";
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+            const device = isMobile ? "Mobile" : "Desktop";
+
+            return { browser, os, device, ua };
+        };
 
         document.addEventListener('click', (e) => {
             if(!e.target.closest('#theme-dropdown-wrapper')) {
@@ -421,7 +431,6 @@
                 constructor() {
                     this.x = Math.random() * width;
                     this.y = Math.random() * height;
-                    // Увеличиваем множитель скорости с 0.5 до 1.5
                     this.vx = (Math.random() - 0.5) * 1.5;
                     this.vy = (Math.random() - 0.5) * 1.5;
                     this.size = Math.random() * 2 + 1;
@@ -437,7 +446,6 @@
                         const dy = mouse.y - this.y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
                         if (distance < mouseAttractionRadius) {
-                            // Ускоряем притяжение к курсору (было 0.01)
                             this.x += dx * 0.025;
                             this.y += dy * 0.025;
                         }
@@ -714,7 +722,7 @@
             if (canEdit) navItems.push({ id: 'editor', icon: 'settings', label: 'Редактор' });
             if (isPilipenko) navItems.push({ id: 'analytics', icon: 'bar-chart-2', label: 'Аналітика' }); 
             
-            // DESKTOP NAV WITH SLIDING PILL
+            // DESKTOP NAV
             const deskNav = document.getElementById('desktop-nav');
             let dHtml = `<div id="desk-active-pill" class="absolute top-1.5 bottom-1.5 rounded-full bg-white dark:bg-zinc-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>`;
             
@@ -731,7 +739,6 @@
             }).join('');
             deskNav.innerHTML = dHtml;
 
-            // POSITION DESKTOP PILL
             setTimeout(() => {
                 const activeBtn = document.getElementById(`nav-btn-${window.appState.view}`);
                 const pill = document.getElementById('desk-active-pill');
@@ -741,7 +748,7 @@
                 }
             }, 10);
 
-            // MOBILE NAV WITH SLIDING PILL
+            // MOBILE NAV
             const mobileNavItems = [
                 { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
                 { id: 'schedule', icon: 'user', label: 'Мій розклад' },
@@ -771,7 +778,6 @@
             `;
             mobileContainer.innerHTML = mHtml;
 
-            // POSITION MOBILE PILL
             setTimeout(() => {
                 const activeMBtn = document.getElementById(`mob-btn-${window.appState.view}`);
                 const mPill = document.getElementById('mob-active-pill');
@@ -875,11 +881,9 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
-                        <!-- HERO LIVE WIDGET -->
                         <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] p-8 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[280px] animate-scale-in" style="animation-delay: 100ms;" id="live-widget">
                         </div>
 
-                        <!-- TODAY SCHEDULE -->
                         <div class="md:col-span-1 glass-card rounded-[32px] p-6 flex flex-col group cursor-pointer animate-slide-up" style="animation-delay: 150ms;" onclick="window.app.setView('schedule')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Сьогодні</h3>
@@ -913,7 +917,6 @@
                             </div>
                         </div>
 
-                        <!-- RECENT HOMEWORK -->
                         <div class="md:col-span-2 glass-card rounded-[32px] p-6 group cursor-pointer animate-slide-up" style="animation-delay: 200ms;" onclick="window.app.setView('homework')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Останні Д/з</h3>
@@ -929,7 +932,6 @@
                             </div>
                         </div>
 
-                        <!-- RECENT MATERIALS -->
                         <div class="md:col-span-1 glass-card rounded-[32px] p-6 group cursor-pointer animate-slide-up" style="animation-delay: 250ms;" onclick="window.app.setView('materials')">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder-open" class="w-4 h-4"></i> Матеріали</h3>
@@ -978,7 +980,6 @@
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">${isPersonal ? 'Мій розклад' : 'Загальний'}</h2>
                         </div>
                         
-                        <!-- SLIDING TOGGLE -->
                         <div class="flex w-full sm:w-64 glass-card p-1.5 rounded-[20px] relative overflow-hidden z-10">
                             <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-white dark:bg-zinc-800 rounded-[14px] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
                             
@@ -987,7 +988,6 @@
                         </div>
                     </div>
 
-                    <!-- Week Selector -->
                     <div class="mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
                         <div class="flex gap-4 overflow-x-auto custom-scroll px-4 sm:px-8 md:px-1 py-2 pb-6 snap-x">
                             ${weeksConfig.map(w => {
@@ -1045,7 +1045,6 @@
 
                     scheduleHtml += `
                         <div class="relative animate-slide-up pl-10 md:pl-16" style="animation-delay: ${100 + dayIdx * 50}ms">
-                            <!-- Day Header -->
                             <div class="absolute left-3 md:left-4 top-4 w-4 h-4 rounded-full border-4 border-[#f8fafc] dark:border-[#09090b] ${isToday ? `bg-${pri}-500 shadow-[0_0_15px_rgba(20,184,166,0.5)]` : 'bg-zinc-300 dark:bg-zinc-700'} z-10"></div>
                             
                             <div class="sticky top-20 sm:top-24 z-20 mb-6 inline-flex items-center gap-3">
@@ -1432,32 +1431,81 @@
         const renderAnalytics = () => {
             const logs = window.appState.analyticsData;
             
+            // Расчет расширенной статистики
+            const uniqueUsers = new Set(logs.map(l => l.studentId)).size;
+            const totalSessions = logs.length;
+            const activeNow = logs.filter(l => (Date.now() - l.end) < 120000).length;
+            
+            let totalDur = 0;
+            logs.forEach(l => { totalDur += (l.end - l.start); });
+            const avgDurMins = totalSessions > 0 ? Math.round((totalDur / totalSessions) / 60000) : 0;
+
             let html = `
                 <div>
                     <div class="mb-8 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-slide-in-right" style="animation-delay: 0ms;">
                         <div>
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Аналітика (Admin)</h2>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Журнал відвідувань порталу студентами</p>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Журнал відвідувань порталу та пристрої</p>
                         </div>
                         <div class="glass-card px-5 py-3 rounded-2xl flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
                             <span class="text-[13px] font-bold text-zinc-700 dark:text-zinc-300">Запис активний</span>
                         </div>
                     </div>
 
-                    <div class="glass-panel overflow-hidden rounded-[32px] relative z-10 animate-slide-up" style="animation-delay: 50ms;">
-                        <div class="overflow-x-auto custom-scroll max-h-[65vh]">
+                    <!-- Дашборд статистики -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="glass-card p-5 rounded-[24px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
+                            <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/10 rounded-full blur-xl"></div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-[12px] bg-blue-50 dark:bg-blue-500/10 text-blue-500 flex items-center justify-center"><i data-lucide="users" class="w-4 h-4"></i></div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Унікальні</span>
+                            </div>
+                            <div class="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">${uniqueUsers}</div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-[24px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 100ms;">
+                            <div class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-[12px] bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i data-lucide="activity" class="w-4 h-4"></i></div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Онлайн</span>
+                            </div>
+                            <div class="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">${activeNow}</div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-[24px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 150ms;">
+                            <div class="absolute -right-4 -top-4 w-16 h-16 bg-purple-500/10 rounded-full blur-xl"></div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-[12px] bg-purple-50 dark:bg-purple-500/10 text-purple-500 flex items-center justify-center"><i data-lucide="zap" class="w-4 h-4"></i></div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Всього сесій</span>
+                            </div>
+                            <div class="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">${totalSessions}</div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-[24px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 200ms;">
+                            <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl"></div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-[12px] bg-amber-50 dark:bg-amber-500/10 text-amber-500 flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Сер. час сесії</span>
+                            </div>
+                            <div class="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">${avgDurMins} <span class="text-base font-bold text-zinc-400">хв</span></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel overflow-hidden rounded-[32px] relative z-10 animate-slide-up" style="animation-delay: 250ms;">
+                        <div class="overflow-x-auto custom-scroll max-h-[55vh]">
                             <table class="w-full text-left border-collapse">
-                                <thead class="bg-zinc-100/80 dark:bg-zinc-800/80 text-[10px] font-black uppercase tracking-widest text-zinc-500 sticky top-0 z-20 backdrop-blur-md">
+                                <thead class="bg-zinc-100/80 dark:bg-zinc-800/80 text-[10px] font-black uppercase tracking-widest text-zinc-500 sticky top-0 z-20 backdrop-blur-md border-b border-zinc-200/50 dark:border-white/5">
                                     <tr>
                                         <th class="py-5 px-6">Студент</th>
+                                        <th class="py-5 px-6">Пристрій та ОС</th>
                                         <th class="py-5 px-6">Час входу</th>
                                         <th class="py-5 px-6">Остання активність</th>
                                         <th class="py-5 px-6 text-right">Тривалість сесії</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-zinc-200/50 dark:divide-white/5">
-                                    ${logs.length === 0 ? `<tr><td colspan="4" class="text-center py-10 text-sm font-semibold text-zinc-500">Журнал порожній.</td></tr>` : 
+                                    ${logs.length === 0 ? `<tr><td colspan="5" class="text-center py-10 text-sm font-semibold text-zinc-500">Журнал порожній.</td></tr>` : 
                                       logs.map((log, i) => {
                                         const d1 = new Date(log.start);
                                         const d2 = new Date(log.end);
@@ -1466,18 +1514,32 @@
                                         const dateFmt = (d) => d.toLocaleDateString('uk-UA', {day: '2-digit', month: '2-digit'});
                                         
                                         const isActiveNow = (Date.now() - log.end) < 120000;
+                                        
+                                        const dInfo = log.deviceInfo || { os: 'Невідомо', browser: 'Невідомо', device: 'Desktop' };
+                                        const devIcon = dInfo.device === 'Mobile' ? 'smartphone' : 'monitor';
 
                                         return `
                                             <tr class="transition-colors hover:bg-white/60 dark:hover:bg-white/5 animate-slide-in-right ${isActiveNow ? 'bg-emerald-50/30 dark:bg-emerald-900/10' : ''}" style="animation-delay: ${100 + i * 15}ms;">
                                                 <td class="py-4 px-6 font-bold text-[14px] text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
                                                     <div class="flex items-center gap-3">
-                                                        <div class="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-xs text-zinc-600 dark:text-zinc-300 font-bold border border-zinc-300 dark:border-zinc-700">${log.name.charAt(0)}</div>
+                                                        <div class="w-8 h-8 rounded-[12px] bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-xs text-zinc-600 dark:text-zinc-300 font-bold shadow-inner">${log.name.charAt(0)}</div>
                                                         ${log.name}
+                                                    </div>
+                                                </td>
+                                                <td class="py-4 px-6 whitespace-nowrap">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                                                            <i data-lucide="${devIcon}" class="w-4 h-4"></i>
+                                                        </div>
+                                                        <div class="flex flex-col">
+                                                            <span class="text-[13px] text-zinc-900 dark:text-white font-bold tracking-tight">${dInfo.os}</span>
+                                                            <span class="text-[10px] font-semibold text-zinc-500 tracking-wide">${dInfo.browser}</span>
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td class="py-4 px-6 text-[13px] font-semibold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">${dateFmt(d1)} <span class="text-zinc-400 dark:text-zinc-600 px-1">•</span> ${timeFmt(d1)}</td>
                                                 <td class="py-4 px-6 text-[13px] font-semibold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
-                                                    ${isActiveNow ? `<span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-500/20"><i data-lucide="activity" class="w-3 h-3"></i> Онлайн</span>` : `${dateFmt(d2)} <span class="text-zinc-400 dark:text-zinc-600 px-1">•</span> ${timeFmt(d2)}`}
+                                                    ${isActiveNow ? `<span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-100 dark:border-emerald-500/20 text-[11px] font-bold tracking-wide"><i data-lucide="activity" class="w-3.5 h-3.5"></i> Онлайн</span>` : `${dateFmt(d2)} <span class="text-zinc-400 dark:text-zinc-600 px-1">•</span> ${timeFmt(d2)}`}
                                                 </td>
                                                 <td class="py-4 px-6 text-[13px] font-black text-right whitespace-nowrap ${durMins > 30 ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-700 dark:text-zinc-300'}">
                                                     ${durMins < 1 ? '< 1 хв' : durMins + ' хв'}
@@ -1539,6 +1601,8 @@
                 const sessionId = `${s.id}_${now}`;
                 window.appState.currentSessionId = sessionId;
                 
+                const devInfo = getDeviceInfo();
+                
                 const updateSession = async () => {
                     if(!window.appState.currentSessionId || !window.appState.firebaseUser) return;
                     try {
@@ -1546,7 +1610,8 @@
                             studentId: s.id,
                             name: s.name,
                             start: now,
-                            end: Date.now()
+                            end: Date.now(),
+                            deviceInfo: devInfo
                         }, { merge: true });
                     } catch(e) {}
                 };
@@ -1577,6 +1642,45 @@
                         },
                         (error) => console.error('Analytics listener error:', error)
                     );
+                }
+            },
+
+            // Новая система аутентификации с проверкой админа
+            loginAttempt: (studentId) => {
+                if (studentId === 19) {
+                    const html = `
+                        <div class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
+                            <div class="w-full max-w-sm glass-panel p-8 relative text-center overflow-hidden rounded-[40px]" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                                <div class="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 rounded-[24px] flex items-center justify-center text-rose-500 mx-auto mb-5 border border-rose-100 dark:border-rose-500/20 transform rotate-3">
+                                    <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-zinc-900 dark:text-white mb-2 tracking-tight">Доступ закрито</h3>
+                                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-6 leading-relaxed">Введіть пароль адміністратора</p>
+                                
+                                <input type="password" id="admin-pwd-input" placeholder="••••••••" class="w-full text-center tracking-widest px-4 py-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 rounded-[18px] outline-none focus:ring-2 ring-rose-500 dark:ring-rose-400 transition-all font-bold text-lg mb-8 shadow-inner backdrop-blur-sm" />
+                                
+                                <div class="flex gap-3">
+                                    <button onclick="window.app.closeModal()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors active:scale-95">Скасувати</button>
+                                    <button onclick="window.app.checkAdminPassword(${studentId})" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/30 transition-all active:scale-95">Увійти</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('modals').innerHTML = html;
+                    lucide.createIcons();
+                    setTimeout(() => document.getElementById('admin-pwd-input')?.focus(), 100);
+                } else {
+                    window.app.login(studentId);
+                }
+            },
+
+            checkAdminPassword: (studentId) => {
+                const pwd = document.getElementById('admin-pwd-input').value;
+                if (pwd === '12589') {
+                    window.app.closeModal();
+                    window.app.login(studentId);
+                } else {
+                    showToast("Невірний пароль!", true);
                 }
             },
 
@@ -1678,8 +1782,9 @@
                 
                 if(filtered.length > 0) {
                     listEl.classList.remove('hidden');
+                    // Изменено: вызываем loginAttempt вместо login для перехвата админа
                     listEl.innerHTML = filtered.map((s, i) => `
-                        <div onclick="window.app.login(${s.id})" class="px-5 py-4 rounded-[18px] bg-white dark:bg-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer font-semibold text-[15px] transition-all flex items-center justify-between shadow-sm border border-zinc-100 dark:border-white/5 animate-slide-up" style="animation-delay: ${i*30}ms">
+                        <div onclick="window.app.loginAttempt(${s.id})" class="px-5 py-4 rounded-[18px] bg-white dark:bg-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer font-semibold text-[15px] transition-all flex items-center justify-between shadow-sm border border-zinc-100 dark:border-white/5 animate-slide-up" style="animation-delay: ${i*30}ms">
                             <span class="text-zinc-800 dark:text-zinc-200 truncate mr-3">${s.name}</span>
                             ${s.isStarosta ? '<span class="px-2 py-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-bold uppercase tracking-wide rounded-md">Староста</span>' : ''}
                         </div>
