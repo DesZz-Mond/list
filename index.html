@@ -357,7 +357,40 @@
                 if (!href.match('^https?:\/\/')) {
                     href = 'http://' + href;
                 }
-                return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-bold" onclick="event.stopPropagation()">${url}</a>`;
+                
+                let hostname = '';
+                try {
+                    hostname = new URL(href).hostname.replace('www.', '');
+                } catch (e) {
+                    hostname = 'Посилання';
+                }
+
+                let icon = 'link';
+                let label = hostname;
+                let colorClass = 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700';
+
+                const lowerUrl = href.toLowerCase();
+                if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) {
+                    icon = 'youtube'; label = 'YouTube';
+                    colorClass = 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 hover:bg-rose-100 dark:hover:bg-rose-500/20';
+                } else if (lowerUrl.includes('drive.google') || lowerUrl.includes('docs.google')) {
+                    icon = 'hard-drive'; label = 'Google Drive';
+                    colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/20';
+                } else if (lowerUrl.includes('zoom.us')) {
+                    icon = 'video'; label = 'Zoom';
+                    colorClass = 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20';
+                } else if (lowerUrl.includes('t.me') || lowerUrl.includes('telegram')) {
+                    icon = 'message-circle'; label = 'Telegram';
+                    colorClass = 'bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20 hover:bg-sky-100 dark:hover:bg-sky-500/20';
+                } else if (lowerUrl.includes('meet.google')) {
+                    icon = 'video'; label = 'Google Meet';
+                    colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/20';
+                } else if (lowerUrl.includes('classroom.google')) {
+                    icon = 'graduation-cap'; label = 'Classroom';
+                    colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/20';
+                }
+
+                return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide border shadow-sm transition-all hover:scale-105 active:scale-95 no-underline align-middle mx-1 mb-1 ${colorClass}" onclick="event.stopPropagation()"><i data-lucide="${icon}" class="w-3.5 h-3.5"></i> ${label}</a>`;
             });
         };
 
