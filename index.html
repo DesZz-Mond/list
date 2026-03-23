@@ -349,6 +349,18 @@
 
         const getTheme = () => themesConfig[window.appState.colorTheme] || themesConfig['teal'];
 
+        const linkify = (text) => {
+            if (!text) return '';
+            const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
+            return text.replace(urlRegex, (url) => {
+                let href = url;
+                if (!href.match('^https?:\/\/')) {
+                    href = 'http://' + href;
+                }
+                return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-bold" onclick="event.stopPropagation()">${url}</a>`;
+            });
+        };
+
         const getGreeting = () => {
             const hour = new Date().getHours();
             if (hour >= 5 && hour < 12) return 'Доброго ранку';
@@ -926,7 +938,7 @@
                                 ${recentHw.length === 0 ? `<p class="text-sm text-zinc-500 col-span-3">Немає нових Д/з</p>` : recentHw.map(hw => `
                                     <div class="bg-white/80 dark:bg-zinc-900/80 p-5 rounded-[24px] border border-zinc-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
                                         <div class="text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mb-2 truncate">${hw.subj}</div>
-                                        <p class="text-[13px] font-medium text-zinc-700 dark:text-zinc-300 line-clamp-2 leading-relaxed">${hw.text}</p>
+                                        <p class="text-[13px] font-medium text-zinc-700 dark:text-zinc-300 line-clamp-2 leading-relaxed">${linkify(hw.text)}</p>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1238,7 +1250,7 @@
                                 </div>
                             </div>
                             
-                            <div class="text-[15px] sm:text-[16px] font-medium text-zinc-800 dark:text-zinc-200 leading-relaxed bg-white/50 dark:bg-black/20 p-5 rounded-[24px] border border-zinc-200/50 dark:border-white/5 shadow-inner whitespace-pre-wrap">${hw.text}</div>
+                            <div class="text-[15px] sm:text-[16px] font-medium text-zinc-800 dark:text-zinc-200 leading-relaxed bg-white/50 dark:bg-black/20 p-5 rounded-[24px] border border-zinc-200/50 dark:border-white/5 shadow-inner whitespace-pre-wrap">${linkify(hw.text)}</div>
                             
                             ${hw.deadline && hw.deadline !== 'Не вказано' ? `
                                 <div class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:border-rose-500/20 rounded-[14px] text-[12px] font-bold tracking-wide"><i data-lucide="clock" class="w-4 h-4"></i> Дедлайн: ${hw.deadline}</div>
