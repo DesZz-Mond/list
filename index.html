@@ -918,6 +918,7 @@
         const renderDashboard = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
+            const canEdit = user && (user.id === 19 || user.id === 2);
             const todayDay = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"][new Date().getDay()];
             const merged = getMergedSchedule(closestWeekObj.t, closestWeekObj.n);
             const todayScheduleObj = merged.find(d => d.day === todayDay);
@@ -973,14 +974,18 @@
                                         
                                         const locInfo = window.appState.locationsData[p.subj] || {};
                                         const roomNum = locInfo.room || null;
+                                        const encodedSubj = encodeURIComponent(p.subj);
 
                                         return `
-                                            <div class="flex items-center gap-3 md:gap-4 relative">
+                                            <div class="flex items-center gap-3 md:gap-4 relative group/dash">
                                                 <div class="absolute left-3.5 top-8 bottom-[-16px] w-px bg-zinc-200 dark:bg-zinc-800 last:hidden"></div>
                                                 <div class="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300 shrink-0 border-2 border-[#f8fafc] dark:border-[#09090b] z-10 shadow-sm">${p.num}</div>
                                                 <div class="flex items-center justify-between flex-1 min-w-0 pt-0.5 gap-2">
                                                     <div class="text-[13px] md:text-[14px] font-semibold text-zinc-900 dark:text-white truncate">${displaySubj}</div>
-                                                    ${roomNum ? `<div class="shrink-0 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-200/50 dark:border-amber-500/20 shadow-sm whitespace-nowrap">Ауд. ${roomNum}</div>` : ''}
+                                                    <div class="flex items-center gap-1.5 shrink-0">
+                                                        ${roomNum ? `<div class="shrink-0 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-200/50 dark:border-amber-500/20 shadow-sm whitespace-nowrap">Ауд. ${roomNum}</div>` : ''}
+                                                        ${canEdit ? `<button onclick="window.app.openLocationModal('${encodedSubj}'); event.stopPropagation();" class="text-zinc-300 dark:text-zinc-600 hover:text-${pri}-500 dark:hover:text-${pri}-400 transition-colors p-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></button>` : ''}
+                                                    </div>
                                                 </div>
                                             </div>
                                         `;
@@ -2218,7 +2223,7 @@
                                     <input id="modal-mat-url" type="url" placeholder="Посилання (https://...)" class="w-full p-4 md:p-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[16px] md:rounded-[18px] text-[14px] md:text-[15px] font-medium shadow-inner backdrop-blur-sm" />
                                     <div class="relative">
                                         <select id="modal-mat-subj" class="w-full p-4 md:p-4 bg-white/50 dark:bg-black/40 text-zinc-900 dark:text-white border border-zinc-200/80 dark:border-white/10 focus:ring-2 ring-zinc-900 dark:ring-white outline-none rounded-[16px] md:rounded-[18px] text-[13px] md:text-[14px] font-bold cursor-pointer appearance-none shadow-inner backdrop-blur-sm">
-                                            ${['Загальне', 'Маркетинг', 'Політологія', 'Екаунтинг', 'Публічне адміністрування', 'Соціологія', 'Соціальне підприємництво', 'Підприємництво', 'БЗВП', 'Іноземна мова', 'Друга іноземна'].map(o => `<option value="${o}" class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white">${o}</option>`).join('')}
+                                            ${['Загальне', 'Маркетинг', 'Політологія', 'Екаунтинг', 'Публічне адміністрування', 'Соціологія', 'Соціальне підприємництво', 'Підприємництво', 'БЗВП', 'Інозем мова', 'Друга іноземна'].map(o => `<option value="${o}" class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white">${o}</option>`).join('')}
                                         </select>
                                         <i data-lucide="chevron-down" class="absolute right-4 md:right-5 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4 md:w-5 md:h-5 pointer-events-none"></i>
                                     </div>
@@ -2307,10 +2312,16 @@
                 let room = document.getElementById('modal-loc-room').value.trim();
                 const subj = window.appState.tempZoomSubj;
                 
-                if(!url && !room) return;
+                const safeId = subj.replace(/\//g, '_');
+
+                if(!url && !room) {
+                    removeFromCloud('zoom_links', safeId, () => {});
+                    window.app.closeModal();
+                    return;
+                }
+                
                 if(url && !url.startsWith('http')) url = 'https://' + url;
                 
-                const safeId = subj.replace(/\//g, '_');
                 writeToCloud('zoom_links', safeId, { url: url, room: room }, () => {}); // saving to same collection for backward compat.
                 window.app.closeModal();
             },
@@ -2426,7 +2437,7 @@
                     onSnapshot(
                         collection(db, 'artifacts', appId, 'public', 'data', 'materials'),
                         (snap) => {
-                            let mat = []; snap.forEach(doc => mat.push(doc.data()));
+                            let mat = []; snap.forEach(doc => push(doc.data()));
                             mat.sort((a, b) => b.id - a.id);
                             window.appState.materials = mat;
                             localStorage.setItem('portal-materials', JSON.stringify(mat));
