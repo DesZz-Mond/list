@@ -972,7 +972,10 @@
                                             displaySubj = 'Ін. мова';
                                         }
                                         
-                                        const locInfo = window.appState.locationsData[p.subj] || {};
+                                        const weekType = closestWeekObj.t;
+                                        const locKey = `${weekType}_${p.subj}`;
+                                        // Ищем привязку конкретно к этой неделе, если её нет - смотрим глобальную
+                                        const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
                                         const roomNum = locInfo.room || null;
                                         const encodedSubj = encodeURIComponent(p.subj);
 
@@ -984,7 +987,7 @@
                                                     <div class="text-[13px] md:text-[14px] font-semibold text-zinc-900 dark:text-white truncate">${displaySubj}</div>
                                                     <div class="flex items-center gap-1.5 shrink-0">
                                                         ${roomNum ? `<div class="shrink-0 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-200/50 dark:border-amber-500/20 shadow-sm whitespace-nowrap">Ауд. ${roomNum}</div>` : ''}
-                                                        ${canEdit ? `<button onclick="window.app.openLocationModal('${encodedSubj}'); event.stopPropagation();" class="text-zinc-300 dark:text-zinc-600 hover:text-${pri}-500 dark:hover:text-${pri}-400 transition-colors p-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></button>` : ''}
+                                                        ${canEdit ? `<button onclick="window.app.openLocationModal('${encodedSubj}', '${weekType}'); event.stopPropagation();" class="text-zinc-300 dark:text-zinc-600 hover:text-${pri}-500 dark:hover:text-${pri}-400 transition-colors p-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></button>` : ''}
                                                     </div>
                                                 </div>
                                             </div>
@@ -1147,7 +1150,8 @@
                             if (sLang) displaySubj = `Іноземна мова (${sLang.charAt(0).toUpperCase() + sLang.slice(1)})`;
                         }
 
-                        const locInfo = window.appState.locationsData[p.subj] || {};
+                        const locKey = `${activeWeekType}_${p.subj}`;
+                        const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
                         let zoomUrl = locInfo.url || null;
                         let roomNum = locInfo.room || null;
 
@@ -1201,7 +1205,7 @@
                                     ` : ''}
                                     
                                     ${canEdit ? `
-                                        <button onclick="window.app.openLocationModal('${encodedSubj}')" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-blue-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-white/10 transition-all active:scale-95 border border-zinc-200/50 dark:border-white/5" title="Місце проведення"><i data-lucide="map-pin" class="w-4.5 h-4.5"></i></button>
+                                        <button onclick="window.app.openLocationModal('${encodedSubj}', '${activeWeekType}')" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-blue-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-white/10 transition-all active:scale-95 border border-zinc-200/50 dark:border-white/5" title="Місце проведення"><i data-lucide="map-pin" class="w-4.5 h-4.5"></i></button>
                                     ` : ''}
                                     
                                     <button onclick="window.app.openHwModal('${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 0})" class="px-3 md:px-4 h-10 md:h-11 rounded-[12px] md:rounded-[14px] bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-[12px] md:text-[13px] font-semibold transition-all flex items-center gap-1.5 md:gap-2 flex-1 justify-center active:scale-95">
@@ -2255,14 +2259,19 @@
                 window.app.closeModal();
             },
 
-            openLocationModal: (encodedSubj) => {
+            openLocationModal: (encodedSubj, weekType) => {
                 const { pri } = getTheme();
                 const subj = decodeURIComponent(encodedSubj);
                 
-                const locInfo = window.appState.locationsData[subj] || {};
+                const locKey = `${weekType}_${subj}`;
+                const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[subj] || {};
                 const currentLink = locInfo.url || '';
                 const currentRoom = locInfo.room || '';
+                
                 window.appState.tempZoomSubj = subj;
+                window.appState.tempZoomWeekType = weekType;
+                
+                const wLabel = weekType === 'upper' ? 'Верхній тиждень' : 'Нижній тиждень';
 
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-md animate-fade-in" onclick="window.app.closeModal()">
@@ -2277,7 +2286,7 @@
                                     <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-50 dark:bg-blue-500/20 rounded-[14px] md:rounded-[16px] flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20"><i data-lucide="map-pin" class="w-5 h-5 md:w-6 md:h-6"></i></div>
                                     <h2 class="text-xl md:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Місце проведення</h2>
                                 </div>
-                                <p class="text-blue-700 dark:text-blue-300 font-bold text-[10px] md:text-[11px] mb-5 md:mb-6 px-3 py-2 bg-blue-50/80 dark:bg-blue-500/10 rounded-lg inline-block tracking-wide border border-blue-100 dark:border-blue-500/20">${subj}</p>
+                                <p class="text-blue-700 dark:text-blue-300 font-bold text-[10px] md:text-[11px] mb-5 md:mb-6 px-3 py-2 bg-blue-50/80 dark:bg-blue-500/10 rounded-lg inline-block tracking-wide border border-blue-100 dark:border-blue-500/20">${wLabel} • ${subj}</p>
                                 
                                 <div class="space-y-4 mb-6 md:mb-8">
                                     <div>
@@ -2311,18 +2320,21 @@
                 let url = document.getElementById('modal-loc-url').value.trim();
                 let room = document.getElementById('modal-loc-room').value.trim();
                 const subj = window.appState.tempZoomSubj;
+                const weekType = window.appState.tempZoomWeekType;
                 
-                const safeId = subj.replace(/\//g, '_');
+                const specificId = `${weekType}_${subj}`.replace(/\//g, '_');
+                const globalId = subj.replace(/\//g, '_'); // Для очистки старых записей
 
                 if(!url && !room) {
-                    removeFromCloud('zoom_links', safeId, () => {});
+                    removeFromCloud('zoom_links', specificId, () => {});
+                    removeFromCloud('zoom_links', globalId, () => {}); // Удаляем и глобальную привязку, если она была, чтобы сбросить полностью
                     window.app.closeModal();
                     return;
                 }
                 
                 if(url && !url.startsWith('http')) url = 'https://' + url;
                 
-                writeToCloud('zoom_links', safeId, { url: url, room: room }, () => {}); // saving to same collection for backward compat.
+                writeToCloud('zoom_links', specificId, { url: url, room: room }, () => {});
                 window.app.closeModal();
             },
 
