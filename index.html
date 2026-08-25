@@ -268,35 +268,32 @@
         ];
 
         const students = [
-            { id: 1, name: "Бельтюкова Анастасія Дмитрівна", electives: ["німецька", "англ: мельник"] },
-            { id: 2, name: "Великоконь Дар'я Андріївна", electives: ["французька", "англ: мельник"], isStarosta: true },
-            { id: 3, name: "Галабудська Софія Костянтинівна", electives: ["польська", "англ: мельник"] },
-            { id: 4, name: "Гіткіс Ілля Михайлович", electives: ["англ: мельник"] },
-            { id: 5, name: "Гордієнко Катерина Володимирівна", electives: ["французька", "англ: мельник"] },
-            { id: 6, name: "Гуменюк Анна Володимирівна", electives: ["німецька", "англ: мельник"] },
-            { id: 7, name: "Жидченко Анастасія Костянтинівна", electives: ["німецька", "англ: маркова"] },
-            { id: 8, name: "Кельвич Катерина Костянтинівна", electives: ["англ: мельник"] },
-            { id: 9, name: "Кисленко Наталія Іванівна", electives: ["французька", "англ: мельник"] },
-            { id: 10, name: "Клічук Михайло Васильович", electives: ["німецька", "англ: маркова"] },
-            { id: 11, name: "Колодій Юлія Василівна", electives: ["німецька", "англ: мельник"] },
-            { id: 12, name: "Кохан Олексій Віталійович", electives: ["німецька", "англ: маркова"] },
-            { id: 13, name: "Май Денис Вікторович", electives: ["німецька", "англ: маркова"] },
-            { id: 14, name: "Мартин Максим Андрійович", electives: ["французька", "англ: маркова"] },
-            { id: 15, name: "Масяєв Ярослав Олександрович", electives: ["німецька", "англ: маркова"] },
-            { id: 16, name: "Могилянська Софія Олегівна", electives: ["китайська", "англ: мельник"] },
-            { id: 17, name: "Мурін Андрій Олексійович", electives: ["французька", "англ: мельник"] },
-            { id: 18, name: "Петричка Валерія Сергіївна", electives: ["французька", "англ: маркова"] },
-            { id: 19, name: "Пилипенко Даніїл Олександрович", electives: ["німецька", "англ: мельник"] },
-            { id: 20, name: "Поправка Анастасія Юріївна", electives: ["польська", "англ: маркова"] },
-            { id: 21, name: "Рижук Анна Сергіївна", electives: ["французька", "англ: маркова"] },
-            { id: 22, name: "Солярик Владислав Ярославович", electives: ["німецька", "англ: маркова"] },
-            { id: 23, name: "Степаненко Максим Юрійович", electives: ["польська", "англ: маркова"] },
-            { id: 24, name: "Тимощук Владислав Володимирович", electives: ["французька", "англ: маркова"] },
-            { id: 25, name: "Троцька Діана Русланівна", electives: ["німецька", "англ: мельник"] },
-            { id: 26, name: "Устименко Даяна Віталіївна", electives: ["англ: маркова"] },
-            { id: 27, name: "Черняк Діана Іванівна", electives: ["французька", "англ: маркова"] },
-            { id: 28, name: "Чуприна Аріна Олексіївна", electives: ["французька", "англ: мельник"] },
-            { id: 29, name: "Шелепа Михайло Владиславович", electives: ["польська", "англ: маркова"] }
+            { id: 1, name: "Бєльтюкова А.Д.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
+            { id: 2, name: "Великоконь Д.А.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"], isStarosta: true },
+            { id: 3, name: "Галабудська С.К.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 4, name: "Гіткіс І.М.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
+            { id: 5, name: "Гордієнко К.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 6, name: "Гуменюк А.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 7, name: "Жидченко А.К.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 8, name: "Кельвич К.К.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "Світовий фінансовий ринок"] },
+            { id: 9, name: "Кисленко Н.І.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 10, name: "Клічук М.В.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 11, name: "Колодій Ю.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 12, name: "Кохан О.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "Світовий фінансовий ринок"] },
+            { id: 13, name: "Май Д.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 14, name: "Мартин М.А.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
+            { id: 15, name: "Масяєв Я.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 16, name: "Могилянська С.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "китайська"] },
+            { id: 17, name: "Мурін А.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
+            { id: 18, name: "Петричка В.С.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
+            { id: 19, name: "Пилипенко Д.О.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 20, name: "Поправка А.Ю.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 21, name: "Солярик В.Я.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 22, name: "Степаненко М.Ю.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 23, name: "Троцька Д.Р.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 24, name: "Устименко Д.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 25, name: "Чуприна А.О.", electives: ["Бренд менеджмент", "Світовий фінансовий ринок", "французька"] },
+            { id: 26, name: "Шелепа М.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] }
         ];
 
         const timeSlots = [
@@ -329,8 +326,10 @@
             "польська": "bg-amber-100/80 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border-amber-200/50",
             "французька": "bg-blue-100/80 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300 border-blue-200/50",
             "китайська": "bg-rose-100/80 text-rose-800 dark:bg-rose-500/20 dark:text-rose-300 border-rose-200/50",
-            "англ: маркова": "bg-sky-100/80 text-sky-800 dark:bg-sky-500/20 dark:text-sky-300 border-sky-200/50",
-            "англ: мельник": "bg-fuchsia-100/80 text-fuchsia-800 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 border-fuchsia-200/50"
+            "іспанська": "bg-orange-100/80 text-orange-800 dark:bg-orange-500/20 dark:text-orange-300 border-orange-200/50",
+            "Міжнародна торгівля": "bg-violet-100/80 text-violet-800 dark:bg-violet-500/20 dark:text-violet-300 border-violet-200/50",
+            "Світовий фінансовий ринок": "bg-teal-100/80 text-teal-800 dark:bg-teal-500/20 dark:text-teal-300 border-teal-200/50",
+            "Бренд менеджмент": "bg-fuchsia-100/80 text-fuchsia-800 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 border-fuchsia-200/50"
         };
 
         const dayOffsets = { "Понеділок": 0, "Вівторок": 1, "Середа": 2, "Четвер": 3, "П'ятниця": 4, "Субота": 5, "Неділя": 6 };
@@ -428,18 +427,14 @@
         const isHwRelevant = (hwSubj, student) => {
             if (!student || !student.electives) return true;
             const sSubj = hwSubj.toLowerCase();
-            const electives = student.electives.map(e => e.toLowerCase());
+            const electives = student.electives;
 
             if (sSubj.includes('начитка')) return true;
-            if (sSubj.includes('маркова')) return electives.includes('англ: маркова');
-            if (sSubj.includes('мельник')) return electives.includes('англ: мельник');
-            if (sSubj.includes('іноземна') || sSubj.includes('language_pair')) return electives.some(el => ['німецька','польська','французька','китайська'].includes(el));
+            if (sSubj.includes('іноземна') || sSubj.includes('language_pair')) return electives.some(el => ['німецька','польська','французька','китайська','іспанська'].includes(el));
 
-            if (sSubj.includes('політологія')) return electives.includes('політологія');
-            if (sSubj.includes('публічне адміністрування')) return electives.includes('публічне адміністрування');
-            if (sSubj.includes('соціальне підприємництво')) return electives.includes('соціальне підприємництво');
-            if (sSubj.includes('соціологія')) return electives.includes('соціологія');
-            if (sSubj.includes('бзвп')) return electives.includes('бзвп');
+            if (sSubj.includes('міжнародна торгівля')) return electives.includes('Міжнародна торгівля');
+            if (sSubj.includes('світовий фінансовий ринок') || sSubj.includes('світовий фондовий ринок')) return electives.includes('Світовий фінансовий ринок');
+            if (sSubj.includes('бренд менеджмент') || sSubj.includes('бренд-менеджмент')) return electives.includes('Бренд менеджмент');
 
             return true;
         };
@@ -1352,9 +1347,14 @@
             const searchStr = document.getElementById('reg-search')?.value.toLowerCase() || '';
             
             const filters = [
-                { id: 'all', label: 'Усі' }, { id: 'німецька', label: 'Німецька' }, { id: 'польська', label: 'Польська' },
-                { id: 'французька', label: 'Французька' }, { id: 'китайська', label: 'Китайська' }, { id: 'англ: маркова', label: 'Англ (Маркова)' },
-                { id: 'англ: мельник', label: 'Англ (Мельник)' }
+                { id: 'all', label: 'Усі' }, 
+                { id: 'Міжнародна торгівля', label: 'Міжнар. торгівля' }, 
+                { id: 'Світовий фінансовий ринок', label: 'Фін. ринок' },
+                { id: 'Бренд менеджмент', label: 'Бренд менеджмент' }, 
+                { id: 'іспанська', label: 'Іспанська' },
+                { id: 'французька', label: 'Французька' }, 
+                { id: 'німецька', label: 'Німецька' }, 
+                { id: 'китайська', label: 'Китайська' }
             ];
 
             const activeFilterClass = "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent scale-[1.02]";
@@ -1563,7 +1563,7 @@
                         <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
                             <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl"></div>
                             <div class="flex items-center gap-2 md:gap-3 mb-3">
-                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[14px] bg-blue-50 dark:bg-blue-500/10 text-blue-500 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[14px] bg-blue-50 dark:bg-blue-500/10 text-blue-50 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i></div>
                                 <span class="text-[10px] md:text-[11px] font-black text-zinc-500 uppercase tracking-widest leading-tight">Унікальні<br class="hidden md:block">(${selDate === todayStr ? 'сьогодні' : 'за день'})</span>
                             </div>
                             <div class="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mt-1" id="stat-unique">-</div>
