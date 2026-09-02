@@ -11,7 +11,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Fonts (Plus Jakarta Sans for a fresh look) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -75,17 +75,11 @@
             ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 12px; border: 2px solid transparent; background-clip: padding-box; }
             .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border: 2px solid transparent; background-clip: padding-box; }
             ::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.7); }
-            
-            /* Allow horizontal scrollbars on desktop for lists */
-            .hide-scrollbar::-webkit-scrollbar { display: block; height: 6px; }
         }
 
         /* Hide scrollbar for mobile horizontal scroll areas */
-        @media (max-width: 767px) {
-            .hide-scrollbar::-webkit-scrollbar { display: none; }
-            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        }
-        .hide-scrollbar { scroll-behavior: smooth; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
         
         @keyframes slideUpModal {
             from { transform: translateY(100%); opacity: 0; }
@@ -252,21 +246,6 @@
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
         import { getDatabase, ref, set, onValue, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js';
 
-        // --- FIREBASE INIT ---
-        const myFirebaseConfig = {
-            apiKey: "AIzaSyB42c4pQLDd9-SrJWExTfZjTAZikE_YD-Y",
-            authDomain: "mb-202-hub.firebaseapp.com",
-            projectId: "mb-202-hub",
-            databaseURL: "https://mb-202-hub-default-rtdb.firebaseio.com/"
-        };
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
-        const firebaseApp = initializeApp(firebaseConfig);
-        const auth = getAuth(firebaseApp);
-        const db = getFirestore(firebaseApp);
-        const rtdb = getDatabase(firebaseApp);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-302-group';
-
-        // --- STREAMING_CHUNK:Theme Configurations ---
         // --- DATA CONSTANTS & THEMES ---
         const themesConfig = {
             'purple': { pri: 'violet', sec: 'fuchsia', label: 'Ультрафіолет (Default)', bg: 'bg-violet-500' },
@@ -277,7 +256,6 @@
             'zinc': { pri: 'zinc', sec: 'slate', label: 'Мінімалізм', bg: 'bg-zinc-500' },
         };
 
-        // Autumn semester 2026 weeks configuration
         const weeksConfig = [
             {n:1, t:'upper', d:'31.08-06.09'}, {n:2, t:'lower', d:'07.09-13.09'},
             {n:3, t:'upper', d:'14.09-20.09'}, {n:4, t:'lower', d:'21.09-27.09'},
@@ -288,7 +266,6 @@
             {n:13, t:'upper', d:'23.11-29.11'}, {n:14, t:'lower', d:'30.11-06.12'}
         ];
 
-        // --- STREAMING_CHUNK:Student Data Array ---
         const students = [
             { id: 1, name: "Бєльтюкова А.Д.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
             { id: 2, name: "Великоконь Д.А.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"], isStarosta: true },
@@ -318,7 +295,6 @@
             { id: 26, name: "Шелепа М.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] }
         ];
 
-        // --- STREAMING_CHUNK:Time Slots and Main Schedule Config ---
         const timeSlots = [
             { start: "08:30", end: "09:45" }, { start: "10:00", end: "11:15" },
             { start: "11:30", end: "12:45" }, { start: "13:00", end: "14:15" },
@@ -326,20 +302,19 @@
             { start: "17:30", end: "18:45" }
         ];
 
-        // Schedule for the 3rd year (МЕіМ 3 курс)
         const mainScheduleData = {
             upper: [
-                { day: "Вівторок", pairs: [{ num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Менеджмент персоналу Л", type: "general" }]},
-                { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародна торгівля В Л", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Світовий фондовий ринок В Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Світовий фондовий ринок В Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Міжнародна торгівля В Л", type: "general" }]},
-                { day: "Четвер", pairs: [{ num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Міжнародний маркетинг Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Бренд менеджмент В Л", type: "general" }]},
-                { day: "П'ятниця", pairs: [{ num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Друга іноз мова В п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Друга іноз мова В п", type: "general" }]}
+                { day: "Вівторок", pairs: [{ num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Менеджмент персоналу Л", type: "general" }]},
+                { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В Л", type: "elective" }, { num: 3, time: "11:30-12:45", subj: "Міжнародна торгівля В Л", type: "elective" }, { num: 5, time: "14:30-15:45", subj: "Світовий фінансовий ринок В Л", type: "elective" }, { num: 6, time: "16:00-17:15", subj: "Світовий фінансовий ринок В Л", type: "elective" }, { num: 7, time: "17:30-18:45", subj: "Міжнародна торгівля В Л", type: "elective" }]},
+                { day: "Четвер", pairs: [{ num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Міжнародний маркетинг Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Бренд менеджмент В Л", type: "elective" }]},
+                { day: "П'ятниця", pairs: [{ num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 3, time: "11:30-12:45", subj: "Друга іноз мова В п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Друга іноз мова В п", type: "lang" }]}
             ],
             lower: [
-                { day: "Понеділок", pairs: [{ num: 4, time: "13:00-14:15", subj: "Бренд менеджмент В Л", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Менеджмент персоналу Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Менеджмент персоналу Л", type: "general" }]},
-                { day: "Вівторок", pairs: [{ num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "general" }]},
-                { day: "Середа", pairs: [{ num: 4, time: "13:00-14:15", subj: "Стартап-менеджмент Л", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Стартап-менеджмент Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Світовий фондовий ринок В Л", type: "general" }]},
-                { day: "Четвер", pairs: [{ num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }]},
-                { day: "П'ятниця", pairs: [{ num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Друга іноз мова В п", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Друга іноз мова В п", type: "general" }]}
+                { day: "Понеділок", pairs: [{ num: 4, time: "13:00-14:15", subj: "Бренд менеджмент В Л", type: "elective" }, { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В Л", type: "elective" }, { num: 6, time: "16:00-17:15", subj: "Менеджмент персоналу Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Менеджмент персоналу Л", type: "general" }]},
+                { day: "Вівторок", pairs: [{ num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }]},
+                { day: "Середа", pairs: [{ num: 4, time: "13:00-14:15", subj: "Стартап-менеджмент Л", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Стартап-менеджмент Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Світовий фінансовий ринок В Л", type: "elective" }]},
+                { day: "Четвер", pairs: [{ num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }]},
+                { day: "П'ятниця", pairs: [{ num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 3, time: "11:30-12:45", subj: "Друга іноз мова В п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Друга іноз мова В п", type: "lang" }]}
             ]
         };
 
@@ -356,8 +331,6 @@
 
         const dayOffsets = { "Понеділок": 0, "Вівторок": 1, "Середа": 2, "Четвер": 3, "П'ятниця": 4, "Субота": 5, "Неділя": 6 };
 
-        // --- STREAMING_CHUNK:App State Initialization ---
-        // --- GLOBAL APP STATE ---
         const getClosestMainWeek = () => {
             const now = new Date();
             for (let w of weeksConfig) {
@@ -379,9 +352,8 @@
             isDark: localStorage.getItem('darkMode') !== 'false',
             colorTheme: localStorage.getItem('portal-color-theme') || 'purple',
             view: 'dashboard',
-            shouldScrollToPair: false,
-            
             scheduleMode: 'personal', // personal or general
+            shouldScrollToPair: false,
             
             persMainWeek: closestWeekObj.t,
             persActiveWeekNum: closestWeekObj.n,
@@ -408,8 +380,6 @@
             matFilter: 'Всі'
         };
 
-        // --- STREAMING_CHUNK:Core Utility Functions ---
-        // --- CORE FUNCTIONS ---
         const getMergedSchedule = (weekType, weekNum) => {
             let base = mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : [];
             let extras = window.appState.extraSchedule.filter(ep => {
@@ -507,7 +477,6 @@
             return 'Доброї ночі';
         };
         
-        // --- STREAMING_CHUNK:Device info tracking setup ---
         const getDeviceInfo = () => {
             const ua = navigator.userAgent;
             let browser = "Невідомий";
@@ -538,7 +507,19 @@
             if(!e.target.closest('.auth-theme-wrapper')) document.getElementById('theme-dropdown-auth')?.classList.add('hidden');
         });
 
-        // --- STREAMING_CHUNK:Interactive Background Engine ---
+        const myFirebaseConfig = {
+            apiKey: "AIzaSyB42c4pQLDd9-SrJWExTfZjTAZikE_YD-Y",
+            authDomain: "mb-202-hub.firebaseapp.com",
+            projectId: "mb-202-hub",
+            databaseURL: "https://mb-202-hub-default-rtdb.firebaseio.com/"
+        };
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
+        const rtdb = getDatabase(firebaseApp);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-302-group'; 
+
         // --- INTERACTIVE BACKGROUND ENGINE ---
         const initParticles = () => {
             const canvas = document.getElementById('interactive-bg');
@@ -627,8 +608,6 @@
             animate();
         };
 
-        // --- STREAMING_CHUNK:Multiplayer Presence Functions ---
-        // --- MULTIPLAYER PRESENCE ENGINE ---
         window.liveCursors = {}; 
         let myPresenceRef = null;
         let globalMouseListener = null;
@@ -725,7 +704,6 @@
             window.liveCursors = {};
         };
 
-        // --- STREAMING_CHUNK:Toast and Firebase Writing Actions ---
         const showToast = (msg, isError = false) => {
             const { pri } = getTheme();
             const container = document.getElementById('toasts');
@@ -767,7 +745,6 @@
             }
         };
 
-        // --- STREAMING_CHUNK:Rendering Engine - Navigation ---
         // --- RENDERING ENGINES ---
         const renderNav = () => {
             const { pri, sec } = getTheme();
@@ -815,7 +792,7 @@
                 }, 10);
             }
 
-            // MOBILE NAV - App Style Bottom Tabs
+            // MOBILE NAV
             const mobileNavItems = [
                 { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
                 { id: 'schedule', icon: 'calendar-days', label: 'Розклад' }
@@ -878,7 +855,6 @@
             lucide.createIcons();
         };
 
-        // --- STREAMING_CHUNK:Rendering Mobile Menu Bottom Sheet ---
         const renderMobileMenu = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
@@ -933,7 +909,6 @@
             document.getElementById('mobile-menu').innerHTML = html;
         };
 
-        // --- STREAMING_CHUNK:Rendering Dashboard Overview ---
         const renderDashboard = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
@@ -943,8 +918,8 @@
             const todayScheduleObj = merged.find(d => d.day === todayDay);
             const todaySchedule = todayScheduleObj ? todayScheduleObj.pairs : [];
 
-            // Для 3 курсу начитки відображаємо всім всі пари, які type="general"
-            const personalToday = todaySchedule.filter(p => p.type === 'general');
+            // Мої пари
+            const personalToday = todaySchedule.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
 
             const recentHw = window.appState.homeworks.filter(hw => isHwRelevant(hw.subj, user)).slice(0, 3);
             const recentMat = window.appState.materials.slice(0, 3);
@@ -1043,12 +1018,10 @@
             window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 60000);
         };
 
-        // --- STREAMING_CHUNK:Rendering Schedule with unified tabs ---
         const renderSchedule = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
             
-            // Unified tabs mode detection
             const isPersonal = window.appState.scheduleMode === 'personal';
             
             const activeWeekType = isPersonal ? window.appState.persMainWeek : window.appState.mainViewWeek;
@@ -1119,12 +1092,12 @@
             } else {
                 const todayStr = `${new Date().getDate().toString().padStart(2,'0')}.${(new Date().getMonth()+1).toString().padStart(2,'0')}`;
                 
-                let scheduleHtml = `<div class="space-y-6 md:space-y-12 relative before:absolute before:inset-0 before:ml-3 md:before:ml-6 before:-translate-x-px md:before:translate-x-0 before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-300 dark:before:via-zinc-700 before:to-transparent">`;
+                let scheduleHtml = `<div class="space-y-8 md:space-y-10 relative z-10">`;
                 
                 scheduleList.forEach((day, dayIdx) => {
                     let pairsToRender = day.pairs;
                     if (isPersonal) {
-                        pairsToRender = pairsToRender.filter(p => p.type === 'general' || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                        pairsToRender = pairsToRender.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
                     }
                     if (pairsToRender.length === 0) return;
 
@@ -1132,17 +1105,17 @@
                     const isToday = specificDate === todayStr;
 
                     scheduleHtml += `
-                        <div class="relative animate-slide-up pl-5 md:pl-16" style="animation-delay: ${100 + dayIdx * 50}ms">
-                            <div class="absolute left-0 md:left-4 top-3 md:top-4 w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-4 border-brandBgLight dark:border-brandBgDark ${isToday ? `bg-${pri}-500 shadow-[0_0_20px_rgba(139,92,246,0.6)]` : 'bg-zinc-300 dark:bg-zinc-700'} z-10 transition-colors duration-500"></div>
+                        <div class="glass-card mb-6 rounded-[32px] p-5 md:p-8 animate-slide-up relative overflow-hidden" style="animation-delay: ${100 + dayIdx * 50}ms">
                             
-                            <div class="sticky top-20 sm:top-24 z-20 mb-4 md:mb-6 inline-flex items-center gap-2 md:gap-3">
-                                <h3 class="text-[12px] md:text-[14px] font-black uppercase tracking-widest py-2 px-5 md:py-2.5 md:px-6 rounded-full glass-card shadow-sm text-zinc-900 dark:text-white border-none ${isToday ? `ring-2 ring-${pri}-500/50` : ''}">
-                                    ${day.day} 
-                                </h3>
-                                <span class="font-bold text-[10px] md:text-xs text-zinc-500 dark:text-zinc-400 bg-white/60 dark:bg-zinc-800/60 px-3 md:px-4 py-1.5 md:py-2 rounded-full backdrop-blur-md border border-zinc-200/80 dark:border-white/10 shadow-sm">${specificDate}</span>
+                            <div class="flex items-center justify-between mb-5 border-b border-zinc-200/80 dark:border-white/10 pb-4 relative z-10">
+                                <div>
+                                    <h3 class="text-xl md:text-2xl font-black text-zinc-900 dark:text-white leading-none">${day.day}</h3>
+                                    <span class="text-xs md:text-sm font-bold ${isToday ? `text-${pri}-500 dark:text-${pri}-400` : 'text-zinc-500'} mt-1.5 block">${specificDate} ${isToday ? '• Сьогодні' : ''}</span>
+                                </div>
+                                ${isToday ? `<div class="w-3 h-3 rounded-full bg-${pri}-500 shadow-[0_0_12px_rgba(139,92,246,0.8)] animate-pulse"></div>` : ''}
                             </div>
                             
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                            <div class="space-y-4 md:space-y-5 relative z-10">
                     `;
 
                     pairsToRender.forEach((p) => {
@@ -1156,73 +1129,72 @@
                         const classHws = activeWeekNum ? window.appState.homeworks.filter(h => h.subj === p.subj && h.weekNum === activeWeekNum && h.day === day.day && h.num == p.num) : [];
                         const hwCount = classHws.length;
 
-                        const tLbl = p.type === 'general' ? 'Начитка (Загальне)' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
+                        const tLbl = p.type === 'general' ? 'Начитка' : (p.type === 'lang' ? 'Мова' : 'Вибіркова');
                         const encodedSubj = encodeURIComponent(p.subj);
 
                         scheduleHtml += `
-                            <div id="pair-${dayOffsets[day.day]}-${p.num}" class="group w-full glass-card rounded-[20px] md:rounded-[32px] p-4 md:p-6 transition-all duration-500 relative flex flex-col animate-pop-in border-t border-t-white/80 dark:border-t-white/10 hover:border-t-${pri}-500/30 dark:hover:border-t-${pri}-500/30" style="animation-delay: ${150 + dayIdx * 50}ms">
-                                <div class="flex justify-between items-start mb-3 md:mb-5">
-                                    <div class="flex items-center gap-2.5 md:gap-3">
-                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-[12px] md:rounded-[18px] bg-zinc-100 dark:bg-zinc-800 flex flex-col items-center justify-center shadow-inner border border-zinc-200/80 dark:border-zinc-700/80 transition-colors shrink-0">
-                                            <span class="text-[13px] md:text-[16px] font-black text-zinc-900 dark:text-white leading-none">${p.num}</span>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[11px] md:text-[14px] font-bold text-zinc-900 dark:text-zinc-100">${p.time}</span>
-                                            <span class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-${pri}-500 dark:text-${pri}-400 mt-0.5 md:mt-1">${tLbl}</span>
-                                        </div>
+                            <div id="pair-${dayOffsets[day.day]}-${p.num}" class="flex flex-col md:flex-row gap-4 p-4 md:p-5 rounded-[24px] bg-white/40 dark:bg-black/20 border border-zinc-200/80 dark:border-white/5 hover:border-${pri}-500/50 dark:hover:border-${pri}-500/50 transition-colors group relative">
+                                
+                                <!-- Ліва частина -->
+                                <div class="flex md:flex-col items-center md:items-start justify-between md:justify-center md:w-32 shrink-0 md:pr-4 md:border-r border-zinc-200/80 dark:border-zinc-800">
+                                    <div class="flex items-center gap-3 md:gap-0 md:flex-col md:items-start">
+                                        <span class="w-8 h-8 md:w-auto md:h-auto flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 md:bg-transparent text-sm md:text-[22px] font-black text-zinc-900 dark:text-white md:mb-1 shadow-sm md:shadow-none border border-zinc-200/50 dark:border-zinc-700/50 md:border-transparent">${p.num}</span>
+                                        <span class="text-[13px] md:text-[15px] font-bold text-zinc-600 dark:text-zinc-400 whitespace-nowrap">${p.time}</span>
                                     </div>
-                                    <div class="flex flex-col items-end gap-1.5 ml-2">
-                                        ${roomNum ? `
-                                            <div class="flex items-center gap-1.5 px-2 py-1 md:px-2.5 md:py-1 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 rounded-lg text-[9px] md:text-[11px] font-bold border border-amber-200/50 dark:border-amber-500/20 shadow-sm whitespace-nowrap"><i data-lucide="map-pin" class="w-3 h-3 md:w-3.5 md:h-3.5"></i> Ауд. ${roomNum}</div>
-                                        ` : ''}
-                                    </div>
+                                    <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md bg-zinc-200/50 dark:bg-zinc-800/80 text-zinc-500 md:mt-2 shadow-sm">${tLbl}</span>
                                 </div>
 
-                                <div class="text-[15px] md:text-[18px] font-black text-zinc-900 dark:text-white leading-snug tracking-tight mb-4 md:mb-5 flex-1 pr-2">${displaySubj}</div>
-                                
-                                ${classHws.length > 0 ? `
-                                    <div class="mb-5 space-y-2">
-                                        ${classHws.map(hw => {
-                                            const canDeleteHw = canEdit || user.name === hw.author;
-                                            return `
-                                            <div class="p-3 bg-white/60 dark:bg-black/30 rounded-[16px] md:rounded-[20px] border border-zinc-200/80 dark:border-white/5 shadow-sm text-[12px] md:text-[13px] text-zinc-800 dark:text-zinc-200 relative group/hw">
-                                                <div class="flex justify-between items-start mb-1.5">
-                                                    <span class="text-[9px] md:text-[10px] font-bold text-zinc-500 flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> ${hw.author.split(' ')[0]}</span>
-                                                    ${canDeleteHw ? `<button onclick="window.app.deleteHomework('${hw.id}')" class="text-zinc-400 hover:text-rose-500 bg-white dark:bg-zinc-800 p-1.5 rounded-lg opacity-0 group-hover/hw:opacity-100 transition-opacity absolute top-2 right-2 shadow-sm border border-zinc-100 dark:border-zinc-700"><i data-lucide="trash-2" class="w-3 h-3"></i></button>` : ''}
-                                                </div>
-                                                <div class="whitespace-pre-wrap font-semibold leading-relaxed pr-6">${linkify(hw.text)}</div>
-                                            </div>
-                                            `;
-                                        }).join('')}
+                                <!-- Права частина -->
+                                <div class="flex-1 flex flex-col min-w-0">
+                                    <div class="flex items-start justify-between gap-3 mb-3 md:mb-4">
+                                        <h4 class="text-[15px] md:text-[18px] font-black text-zinc-900 dark:text-white leading-tight">${displaySubj}</h4>
+                                        ${roomNum ? `<div class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 rounded-lg text-[10px] md:text-[11px] font-bold border border-amber-200/50 dark:border-amber-500/20 shadow-sm"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Ауд. ${roomNum}</div>` : ''}
                                     </div>
-                                ` : ''}
-                                
-                                <div class="flex items-center gap-2 mt-auto pt-4 border-t border-zinc-200/80 dark:border-white/10">
-                                    ${zoomUrl ? `
-                                        <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all active:scale-95 border border-blue-100 dark:border-blue-500/20 shadow-sm shrink-0" title="Онлайн посилання"><i data-lucide="video" class="w-4.5 h-4.5 md:w-5 md:h-5"></i></a>
+                                    
+                                    ${classHws.length > 0 ? `
+                                        <div class="mb-4 space-y-2">
+                                            ${classHws.map(hw => {
+                                                const canDeleteHw = canEdit || user.name === hw.author;
+                                                return `
+                                                <div class="p-3 bg-white dark:bg-zinc-900/60 rounded-[16px] border border-zinc-200/80 dark:border-zinc-800 shadow-sm text-[12px] md:text-[13px] text-zinc-800 dark:text-zinc-200 relative group/hw">
+                                                    <div class="flex justify-between items-start mb-1.5">
+                                                        <span class="text-[9px] md:text-[10px] font-bold text-zinc-500 flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> ${hw.author.split(' ')[0]}</span>
+                                                        ${canDeleteHw ? `<button onclick="window.app.deleteHomework('${hw.id}')" class="text-zinc-400 hover:text-rose-500 bg-zinc-50 dark:bg-zinc-800 p-1.5 rounded-lg opacity-0 group-hover/hw:opacity-100 transition-opacity absolute top-2 right-2"><i data-lucide="trash-2" class="w-3 h-3"></i></button>` : ''}
+                                                    </div>
+                                                    <div class="whitespace-pre-wrap font-semibold leading-relaxed pr-6">${linkify(hw.text)}</div>
+                                                </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
                                     ` : ''}
                                     
-                                    ${canEdit ? `
-                                        <button onclick="window.app.openLocationModal('${encodedSubj}', '${activeWeekType}')" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-violet-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-white/10 transition-all active:scale-95 border border-zinc-200/80 dark:border-white/5 shadow-sm shrink-0" title="Місце проведення"><i data-lucide="map-pin" class="w-4.5 h-4.5 md:w-5 md:h-5"></i></button>
-                                    ` : ''}
-                                    
-                                    <button onclick="window.app.openHwModal('${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 0})" class="px-3 md:px-4 h-10 md:h-11 rounded-[12px] md:rounded-[14px] bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 text-[12px] md:text-[13px] font-bold transition-all flex items-center gap-1.5 md:gap-2 flex-1 justify-center active:scale-95 shadow-sm truncate">
-                                        <i data-lucide="${hwCount > 0 ? 'plus' : 'pen-line'}" class="w-4 h-4 md:w-4.5 md:h-4.5 shrink-0"></i> 
-                                        <span class="truncate">Додати Д/з</span>
-                                    </button>
-
-                                    ${canEdit ? `
-                                        <button onclick="window.app.handleScheduleAction('${p.id}', ${p.isCustom}, '${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 'null'})" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] border border-rose-100 dark:border-rose-900/30 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 shrink-0 shadow-sm ml-0.5 md:ml-1">
-                                            <i data-lucide="${p.isCustom ? 'trash-2' : 'eye-off'}" class="w-4.5 h-4.5 md:w-5 md:h-5"></i>
+                                    <div class="flex flex-wrap items-center gap-2 mt-auto pt-3 border-t border-zinc-200/80 dark:border-zinc-800/50">
+                                        ${zoomUrl ? `
+                                            <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="h-10 md:h-11 px-3 md:px-4 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all font-bold text-xs gap-1.5 border border-blue-100 dark:border-blue-500/20 shadow-sm" title="Онлайн посилання"><i data-lucide="video" class="w-4 h-4 md:w-4.5 md:h-4.5"></i><span class="hidden md:inline">Онлайн</span></a>
+                                        ` : ''}
+                                        
+                                        ${canEdit ? `
+                                            <button onclick="window.app.openLocationModal('${encodedSubj}', '${activeWeekType}')" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-white dark:bg-zinc-800 text-zinc-500 hover:text-${pri}-500 transition-all border border-zinc-200 dark:border-zinc-700 shadow-sm"><i data-lucide="map-pin" class="w-4 h-4 md:w-4.5 md:h-4.5"></i></button>
+                                        ` : ''}
+                                        
+                                        <button onclick="window.app.openHwModal('${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 0})" class="px-3 md:px-4 h-10 md:h-11 rounded-[12px] md:rounded-[14px] bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 text-[11px] md:text-[13px] font-bold transition-all flex items-center gap-1.5 flex-1 justify-center active:scale-95 truncate shadow-sm">
+                                            <i data-lucide="${hwCount > 0 ? 'plus' : 'pen-line'}" class="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0"></i> 
+                                            <span class="truncate">Додати Д/з</span>
                                         </button>
-                                    ` : ''}
+
+                                        ${canEdit ? `
+                                            <button onclick="window.app.handleScheduleAction('${p.id}', ${p.isCustom}, '${encodedSubj}', '${activeWeekType}', '${day.day}', ${p.num}, ${activeWeekNum || 'null'})" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] text-rose-500 bg-white dark:bg-zinc-800 hover:bg-rose-50 border border-zinc-200 dark:border-zinc-700 transition-all active:scale-95 shadow-sm">
+                                                <i data-lucide="${p.isCustom ? 'trash-2' : 'eye-off'}" class="w-4 h-4 md:w-4.5 md:h-4.5"></i>
+                                            </button>
+                                        ` : ''}
+                                    </div>
                                 </div>
                             </div>
                         `;
                     });
-                    scheduleHtml += `</div></div>`;
+                    scheduleHtml += `</div></div>`; // End pairs & day container
                 });
-                scheduleHtml += `</div>`;
+                scheduleHtml += `</div>`; // End schedule main container
                 html += scheduleHtml;
             }
 
@@ -1239,7 +1211,6 @@
             lucide.createIcons();
         };
 
-        // --- STREAMING_CHUNK:Rendering Materials View ---
         const renderMaterials = () => {
             const { pri, sec } = getTheme();
             const materials = window.appState.materials;
@@ -1313,7 +1284,6 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
-        // --- STREAMING_CHUNK:Rendering Homework View ---
         const renderHomework = () => {
             const { pri, sec } = getTheme();
             const homeworks = window.appState.homeworks;
@@ -1378,7 +1348,6 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
-        // --- STREAMING_CHUNK:Rendering Register (Student List) View ---
         const renderRegister = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
@@ -1458,7 +1427,6 @@
             }
         };
 
-        // --- STREAMING_CHUNK:Rendering Editor (Admin) View ---
         const renderEditor = () => {
             const { pri, sec } = getTheme();
             const extraSchedule = window.appState.extraSchedule;
@@ -1497,13 +1465,13 @@
                                 <select id="ed-subj" class="w-full p-4 md:p-4 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-white/10 rounded-[16px] md:rounded-[18px] text-[14px] md:text-[15px] font-bold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white max-w-full">
                                     <option value="Міжнародний бізнес Л|general|начитка">Міжнародний бізнес Л</option>
                                     <option value="Менеджмент персоналу Л|general|начитка">Менеджмент персоналу Л</option>
-                                    <option value="Міжнародна торгівля В Л|general|начитка">Міжнародна торгівля В Л</option>
-                                    <option value="Світовий фондовий ринок В Л|general|начитка">Світовий фондовий ринок В Л</option>
+                                    <option value="Міжнародна торгівля В Л|elective|начитка">Міжнародна торгівля В Л</option>
+                                    <option value="Світовий фінансовий ринок В Л|elective|начитка">Світовий фінансовий ринок В Л</option>
                                     <option value="Міжнародний маркетинг Л|general|начитка">Міжнародний маркетинг Л</option>
-                                    <option value="Бренд менеджмент В Л|general|начитка">Бренд менеджмент В Л</option>
+                                    <option value="Бренд менеджмент В Л|elective|начитка">Бренд менеджмент В Л</option>
                                     <option value="Стартап-менеджмент Л|general|начитка">Стартап-менеджмент Л</option>
-                                    <option value="Ділова іноземна мова п|general|начитка">Ділова іноземна мова п</option>
-                                    <option value="Друга іноз мова В п|general|начитка">Друга іноз мова В п</option>
+                                    <option value="Ділова іноземна мова п|lang|начитка">Ділова іноземна мова п</option>
+                                    <option value="Друга іноз мова В п|lang|начитка">Друга іноз мова В п</option>
                                 </select>
                             </div>
                             <div>
@@ -1555,7 +1523,6 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
-        // --- STREAMING_CHUNK:Rendering Analytics Engine (Admin) ---
         const renderAnalytics = () => {
             const logs = window.appState.analyticsData;
             
@@ -1677,8 +1644,6 @@
             window.app.updateAnalyticsDOM(true);
         };
 
-        // --- STREAMING_CHUNK:Global App Object and Event Handlers ---
-        // --- GLOBAL APP LOGIC EXPOSED TO WINDOW ---
         window.app = {
             setView: (viewId) => {
                 if (window.appState.view === viewId) {
@@ -1714,7 +1679,83 @@
                 }, 250);
             },
             
-            // --- STREAMING_CHUNK:Smart Scrolling and Drag Logic ---
+            attachScrollDrag: () => {
+                const containers = document.querySelectorAll('.hide-scrollbar');
+                containers.forEach(el => {
+                    if(el.dataset.dragAttached) return; 
+                    el.dataset.dragAttached = 'true';
+                    
+                    if (!el.classList.contains('overflow-x-auto') && el.tagName !== 'TABLE') return;
+
+                    el.classList.add('cursor-grab');
+
+                    let isDown = false;
+                    let isDragging = false;
+                    let startX;
+                    let scrollLeft;
+
+                    el.addEventListener('mousedown', (e) => {
+                        isDown = true;
+                        isDragging = false;
+                        el.classList.remove('cursor-grab');
+                        el.style.cursor = 'grabbing';
+                        el.style.scrollBehavior = 'auto';
+                        el.style.scrollSnapType = 'none';
+                        startX = e.pageX - el.offsetLeft;
+                        scrollLeft = el.scrollLeft;
+                    });
+
+                    const stopDrag = () => {
+                        if(!isDown) return;
+                        isDown = false;
+                        el.style.cursor = '';
+                        el.classList.add('cursor-grab');
+                        el.style.scrollBehavior = 'smooth';
+                        el.style.scrollSnapType = '';
+                        setTimeout(() => { isDragging = false; }, 50);
+                    };
+
+                    el.addEventListener('mouseleave', stopDrag);
+                    el.addEventListener('mouseup', stopDrag);
+
+                    el.addEventListener('mousemove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.pageX - el.offsetLeft;
+                        const walk = (x - startX) * 1.5; 
+                        if (Math.abs(walk) > 10) isDragging = true;
+                        el.scrollLeft = scrollLeft - walk;
+                    });
+
+                    el.addEventListener('click', (e) => {
+                        if (isDragging) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }, { capture: true });
+
+                    el.addEventListener('wheel', (e) => {
+                        if (e.deltaY !== 0 && Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+                            const canScrollRight = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
+                            const canScrollLeft = el.scrollLeft > 0;
+                            
+                            if ((e.deltaY > 0 && canScrollRight) || (e.deltaY < 0 && canScrollLeft)) {
+                                e.preventDefault();
+                                el.style.scrollBehavior = 'auto';
+                                el.style.scrollSnapType = 'none';
+                                el.scrollLeft += e.deltaY;
+                                
+                                clearTimeout(el.wheelTimeout);
+                                el.wheelTimeout = setTimeout(() => {
+                                    el.style.scrollBehavior = 'smooth';
+                                    el.style.scrollSnapType = '';
+                                }, 150);
+                            }
+                        }
+                    }, { passive: false });
+                });
+            },
+
             scrollToActivePair: (scheduleList, isPersonal) => {
                 if (!scheduleList || scheduleList.length === 0) return;
                 const now = new Date();
@@ -1725,11 +1766,11 @@
 
                 let targetId = null;
                 let isCurrentLive = false;
-
                 const user = window.appState.selectedStudent;
+
                 let todayPairs = scheduleList.find(d => d.day === todayStr)?.pairs || [];
                 if (isPersonal) {
-                    todayPairs = todayPairs.filter(p => p.type === 'general' || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                    todayPairs = todayPairs.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
                 }
 
                 if (todayPairs.length > 0) {
@@ -1755,7 +1796,7 @@
                         const nextDay = sortedDays[0];
                         let nextPairs = nextDay.pairs;
                         if (isPersonal) {
-                            nextPairs = nextPairs.filter(p => p.type === 'general' || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                            nextPairs = nextPairs.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
                         }
                         
                         if (nextPairs.length > 0) {
@@ -1787,70 +1828,13 @@
                 }
             },
 
-            attachScrollDrag: () => {
-                const containers = document.querySelectorAll('.hide-scrollbar');
-                containers.forEach(el => {
-                    if(el.dataset.dragAttached) return; 
-                    el.dataset.dragAttached = 'true';
-                    
-                    // Only apply to actually scrollable horizontal areas
-                    if (el.scrollWidth <= el.clientWidth) return; 
-
-                    el.classList.add('cursor-grab');
-
-                    let isDown = false;
-                    let startX;
-                    let scrollLeft;
-
-                    // Mouse Drag Logic
-                    el.addEventListener('mousedown', (e) => {
-                        isDown = true;
-                        el.classList.remove('cursor-grab');
-                        el.style.cursor = 'grabbing';
-                        startX = e.pageX - el.offsetLeft;
-                        scrollLeft = el.scrollLeft;
-                    });
-                    
-                    const stopDrag = () => {
-                        isDown = false;
-                        el.style.cursor = '';
-                        el.classList.add('cursor-grab');
-                    };
-                    
-                    el.addEventListener('mouseleave', stopDrag);
-                    el.addEventListener('mouseup', stopDrag);
-                    
-                    el.addEventListener('mousemove', (e) => {
-                        if (!isDown) return;
-                        e.preventDefault();
-                        const x = e.pageX - el.offsetLeft;
-                        const walk = (x - startX) * 2; // scroll speed multiplier
-                        el.scrollLeft = scrollLeft - walk;
-                    });
-
-                    // Mouse Wheel Logic for horizontal scrolling
-                    el.addEventListener('wheel', (e) => {
-                        if (e.deltaY !== 0 && Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
-                            const canScrollRight = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
-                            const canScrollLeft = el.scrollLeft > 0;
-                            
-                            // If user is trying to scroll vertically inside this box, map it to horizontal
-                            if ((e.deltaY > 0 && canScrollRight) || (e.deltaY < 0 && canScrollLeft)) {
-                                e.preventDefault();
-                                el.scrollLeft += e.deltaY;
-                            }
-                        }
-                    }, { passive: false });
-                });
-            },
-
-            // --- STREAMING_CHUNK:Routing and Analytics ---
             renderActiveView: () => {
                 if(!window.appState.selectedStudent) return;
                 renderNav();
                 const v = window.appState.view;
                 if(v === 'dashboard') renderDashboard();
-                else if(v === 'schedule') renderSchedule(window.appState.scheduleMode === 'personal');
+                else if(v === 'schedule') renderSchedule(true);
+                else if(v === 'main') renderSchedule(false);
                 else if(v === 'materials') renderMaterials();
                 else if(v === 'homework') renderHomework();
                 else if(v === 'register') renderRegister();
@@ -1858,9 +1842,7 @@
                 else if(v === 'analytics') renderAnalytics();
                 
                 lucide.createIcons();
-                
-                // Attach dragging behaviors to any new horizontal lists
-                setTimeout(() => window.app.attachScrollDrag(), 100);
+                window.app.attachScrollDrag();
             },
 
             updateAnalyticsDOM: (isInitial = false) => {
@@ -1986,7 +1968,6 @@
                 }
             },
 
-            // --- STREAMING_CHUNK:User Session Handlers ---
             startAnalyticsSession: () => {
                 if (window.appState.analyticsInterval) clearInterval(window.appState.analyticsInterval);
                 const s = window.appState.selectedStudent;
@@ -2114,7 +2095,6 @@
                 window.app.renderAuthList();
             },
 
-            // --- STREAMING_CHUNK:UI Toggles and Helpers ---
             toggleDark: () => {
                 window.appState.isDark = !window.appState.isDark;
                 localStorage.setItem('darkMode', window.appState.isDark);
@@ -2265,7 +2245,6 @@
                 `;
             },
 
-            // --- STREAMING_CHUNK:Filter Config Setters ---
             setScheduleMode: (mode) => { 
                 window.appState.scheduleMode = mode; 
                 window.app.renderActiveView(); 
@@ -2292,7 +2271,6 @@
 
             closeModal: () => document.getElementById('modals').innerHTML = '',
             
-            // --- STREAMING_CHUNK:Modals and Data Operations ---
             openConfirmModal: (title, text, confirmActionStr) => {
                 const html = `
                     <div class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
@@ -2546,8 +2524,6 @@
             _doRestoreHidden: (id) => { removeFromCloud('hidden_schedule', id, () => {}); }
         };
 
-        // --- STREAMING_CHUNK:App Initialization and Firebase Listeners ---
-        // --- INIT APP ---
         const initApp = async () => {
             initParticles();
 
@@ -2671,7 +2647,6 @@
 
         // Run Init
         document.addEventListener('DOMContentLoaded', initApp);
-
     </script>
 </body>
 </html>
