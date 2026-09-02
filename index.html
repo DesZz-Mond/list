@@ -355,7 +355,9 @@
             isDark: localStorage.getItem('darkMode') !== 'false',
             colorTheme: localStorage.getItem('portal-color-theme') || 'purple',
             view: 'dashboard',
-            shouldScrollToPair: false, // Flag for auto-scroll
+            shouldScrollToPair: false,
+            
+            scheduleMode: 'personal',
             
             persMainWeek: closestWeekObj.t,
             persActiveWeekNum: closestWeekObj.n,
@@ -758,8 +760,7 @@
             
             const navItems = [
                 { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
-                { id: 'schedule', icon: 'user', label: 'Мій розклад' },
-                { id: 'main', icon: 'calendar-days', label: 'Загальний' },
+                { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
                 { id: 'materials', icon: 'folder-open', label: 'Матеріали' },
                 { id: 'homework', icon: 'check-square', label: 'Д/з' },
                 { id: 'register', icon: 'users', label: 'Група' },
@@ -801,8 +802,7 @@
             // MOBILE NAV - App Style Bottom Tabs
             const mobileNavItems = [
                 { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
-                { id: 'schedule', icon: 'user', label: 'Розклад' },
-                { id: 'main', icon: 'calendar-days', label: 'Загальний' }
+                { id: 'schedule', icon: 'calendar-days', label: 'Розклад' }
             ];
             
             const mobileContainer = document.getElementById('mobile-nav');
@@ -1025,9 +1025,10 @@
             window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 60000);
         };
 
-        const renderSchedule = (isPersonal) => {
+        const renderSchedule = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
+            const isPersonal = window.appState.scheduleMode === 'personal';
             const activeWeekType = isPersonal ? window.appState.persMainWeek : window.appState.mainViewWeek;
             const activeWeekNum = isPersonal ? window.appState.persActiveWeekNum : window.appState.mainActiveWeekNum;
             const canEdit = user && (user.id === 19 || user.id === 2);
@@ -1043,12 +1044,16 @@
             let html = `
                 <div>
                     <div class="mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
-                        <div>
-                            ${isPersonal ? `<span class="inline-block px-3 py-1 bg-${pri}-100 dark:bg-${pri}-500/20 text-${pri}-700 dark:text-${pri}-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-2 sm:mb-3 shadow-sm border border-${pri}-200/50 dark:border-${pri}-500/30">Актуально</span>` : ''}
-                            <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">${isPersonal ? 'Мій розклад' : 'Загальний'}</h2>
+                        <div class="flex flex-col gap-3 md:gap-4 w-full sm:w-auto">
+                            <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">Розклад</h2>
+                            
+                            <div class="flex bg-zinc-200/80 dark:bg-zinc-800/80 p-1.5 rounded-[16px] md:rounded-[18px] w-full sm:w-fit shadow-inner">
+                                <button onclick="window.app.setScheduleMode('personal')" class="flex-1 sm:flex-none px-4 py-2.5 md:py-2 rounded-[12px] md:rounded-[14px] text-[13px] md:text-[14px] font-bold transition-all ${isPersonal ? `bg-white dark:bg-zinc-700 text-${pri}-600 dark:text-${pri}-400 shadow-sm` : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}">Мій розклад</button>
+                                <button onclick="window.app.setScheduleMode('general')" class="flex-1 sm:flex-none px-4 py-2.5 md:py-2 rounded-[12px] md:rounded-[14px] text-[13px] md:text-[14px] font-bold transition-all ${!isPersonal ? `bg-white dark:bg-zinc-700 text-${pri}-600 dark:text-${pri}-400 shadow-sm` : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}">Загальний</button>
+                            </div>
                         </div>
                         
-                        <div class="flex w-full sm:w-64 glass-card p-1.5 rounded-[16px] md:rounded-[20px] relative overflow-hidden z-10 shadow-inner">
+                        <div class="flex w-full sm:w-64 glass-card p-1.5 rounded-[16px] md:rounded-[20px] relative overflow-hidden z-10 shadow-inner mt-2 sm:mt-0">
                             <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-white dark:bg-zinc-800 rounded-[12px] md:rounded-[14px] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
                             
                             <button onclick="${setWeekFn}('upper', null)" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isUpper ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Верхній</button>
@@ -1650,9 +1655,8 @@
         window.app = {
             setView: (viewId) => {
                 if (window.appState.view === viewId) {
-                    // Якщо вже на сторінці розкладу - скролимо до поточної пари
-                    if (viewId === 'schedule' || viewId === 'main') {
-                        const isPers = viewId === 'schedule';
+                    if (viewId === 'schedule') {
+                        const isPers = window.appState.scheduleMode === 'personal';
                         const activeWeekType = isPers ? window.appState.persMainWeek : window.appState.mainViewWeek;
                         const activeWeekNum = isPers ? window.appState.persActiveWeekNum : window.appState.mainActiveWeekNum;
                         window.app.scrollToActivePair(getMergedSchedule(activeWeekType, activeWeekNum), isPers);
@@ -1660,8 +1664,7 @@
                     return;
                 }
                 
-                // Встановлюємо флаг, що після переходу треба проскролити
-                if (viewId === 'schedule' || viewId === 'main') {
+                if (viewId === 'schedule') {
                     window.appState.shouldScrollToPair = true;
                 }
 
@@ -1762,8 +1765,7 @@
                 renderNav();
                 const v = window.appState.view;
                 if(v === 'dashboard') renderDashboard();
-                else if(v === 'schedule') renderSchedule(true);
-                else if(v === 'main') renderSchedule(false);
+                else if(v === 'schedule') renderSchedule();
                 else if(v === 'materials') renderMaterials();
                 else if(v === 'homework') renderHomework();
                 else if(v === 'register') renderRegister();
@@ -2175,6 +2177,7 @@
 
             setPersWeek: (type, num) => { window.appState.persMainWeek = type; window.appState.persActiveWeekNum = num; window.app.renderActiveView(); },
             setMainWeek: (type, num) => { window.appState.mainViewWeek = type; window.appState.mainActiveWeekNum = num; window.app.renderActiveView(); },
+            setScheduleMode: (mode) => { window.appState.scheduleMode = mode; window.app.renderActiveView(); },
             setRegFilter: (f) => { window.appState.regFilter = f; window.app.renderActiveView(); },
             setMatFilter: (f) => { window.appState.matFilter = f; window.app.renderActiveView(); },
             setHwFilter: (f) => { window.appState.hwFilter = f; window.app.renderActiveView(); },
@@ -2477,7 +2480,7 @@
                             let links = {}; snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
-                            if (['schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Locations error:', error)
                     );
@@ -2503,7 +2506,7 @@
                             window.appState.homeworks = newHwList;
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
                             
-                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) {
+                            if (['homework', 'dashboard', 'schedule'].includes(window.appState.view)) {
                                 window.app.renderActiveView();
                             } else if (window.appState.selectedStudent) {
                                 renderNav(); 
@@ -2530,7 +2533,7 @@
                             let extra = []; snap.forEach(doc => extra.push({id: doc.id, ...doc.data()}));
                             window.appState.extraSchedule = extra;
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Extra schedule error:', error)
                     );
@@ -2541,7 +2544,7 @@
                             let hidden = []; snap.forEach(doc => hidden.push({id: doc.id, ...doc.data()}));
                             window.appState.hiddenSchedule = hidden;
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Hidden schedule error:', error)
                     );
