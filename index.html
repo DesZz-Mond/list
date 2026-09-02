@@ -75,11 +75,17 @@
             ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 12px; border: 2px solid transparent; background-clip: padding-box; }
             .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border: 2px solid transparent; background-clip: padding-box; }
             ::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.7); }
+            
+            /* Allow horizontal scrollbars on desktop for lists */
+            .hide-scrollbar::-webkit-scrollbar { display: block; height: 6px; }
         }
 
         /* Hide scrollbar for mobile horizontal scroll areas */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
+        @media (max-width: 767px) {
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        }
+        .hide-scrollbar { scroll-behavior: smooth; }
         
         @keyframes slideUpModal {
             from { transform: translateY(100%); opacity: 0; }
@@ -260,6 +266,7 @@
         const rtdb = getDatabase(firebaseApp);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-302-group';
 
+        // --- STREAMING_CHUNK:Theme Configurations ---
         // --- DATA CONSTANTS & THEMES ---
         const themesConfig = {
             'purple': { pri: 'violet', sec: 'fuchsia', label: 'Ультрафіолет (Default)', bg: 'bg-violet-500' },
@@ -281,6 +288,7 @@
             {n:13, t:'upper', d:'23.11-29.11'}, {n:14, t:'lower', d:'30.11-06.12'}
         ];
 
+        // --- STREAMING_CHUNK:Student Data Array ---
         const students = [
             { id: 1, name: "Бєльтюкова А.Д.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
             { id: 2, name: "Великоконь Д.А.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"], isStarosta: true },
@@ -310,6 +318,7 @@
             { id: 26, name: "Шелепа М.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] }
         ];
 
+        // --- STREAMING_CHUNK:Time Slots and Main Schedule Config ---
         const timeSlots = [
             { start: "08:30", end: "09:45" }, { start: "10:00", end: "11:15" },
             { start: "11:30", end: "12:45" }, { start: "13:00", end: "14:15" },
@@ -347,6 +356,7 @@
 
         const dayOffsets = { "Понеділок": 0, "Вівторок": 1, "Середа": 2, "Четвер": 3, "П'ятниця": 4, "Субота": 5, "Неділя": 6 };
 
+        // --- STREAMING_CHUNK:App State Initialization ---
         // --- GLOBAL APP STATE ---
         const getClosestMainWeek = () => {
             const now = new Date();
@@ -398,6 +408,7 @@
             matFilter: 'Всі'
         };
 
+        // --- STREAMING_CHUNK:Core Utility Functions ---
         // --- CORE FUNCTIONS ---
         const getMergedSchedule = (weekType, weekNum) => {
             let base = mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : [];
@@ -496,6 +507,7 @@
             return 'Доброї ночі';
         };
         
+        // --- STREAMING_CHUNK:Device info tracking setup ---
         const getDeviceInfo = () => {
             const ua = navigator.userAgent;
             let browser = "Невідомий";
@@ -526,6 +538,7 @@
             if(!e.target.closest('.auth-theme-wrapper')) document.getElementById('theme-dropdown-auth')?.classList.add('hidden');
         });
 
+        // --- STREAMING_CHUNK:Interactive Background Engine ---
         // --- INTERACTIVE BACKGROUND ENGINE ---
         const initParticles = () => {
             const canvas = document.getElementById('interactive-bg');
@@ -614,6 +627,7 @@
             animate();
         };
 
+        // --- STREAMING_CHUNK:Multiplayer Presence Functions ---
         // --- MULTIPLAYER PRESENCE ENGINE ---
         window.liveCursors = {}; 
         let myPresenceRef = null;
@@ -711,6 +725,7 @@
             window.liveCursors = {};
         };
 
+        // --- STREAMING_CHUNK:Toast and Firebase Writing Actions ---
         const showToast = (msg, isError = false) => {
             const { pri } = getTheme();
             const container = document.getElementById('toasts');
@@ -752,13 +767,13 @@
             }
         };
 
+        // --- STREAMING_CHUNK:Rendering Engine - Navigation ---
         // --- RENDERING ENGINES ---
         const renderNav = () => {
             const { pri, sec } = getTheme();
             const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
             const isPilipenko = window.appState.selectedStudent && window.appState.selectedStudent.id === 19;
             
-            // Залишаємо лише одну кнопку Розкладу
             const navItems = [
                 { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
                 { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
@@ -863,6 +878,7 @@
             lucide.createIcons();
         };
 
+        // --- STREAMING_CHUNK:Rendering Mobile Menu Bottom Sheet ---
         const renderMobileMenu = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
@@ -917,6 +933,7 @@
             document.getElementById('mobile-menu').innerHTML = html;
         };
 
+        // --- STREAMING_CHUNK:Rendering Dashboard Overview ---
         const renderDashboard = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
@@ -926,6 +943,7 @@
             const todayScheduleObj = merged.find(d => d.day === todayDay);
             const todaySchedule = todayScheduleObj ? todayScheduleObj.pairs : [];
 
+            // Для 3 курсу начитки відображаємо всім всі пари, які type="general"
             const personalToday = todaySchedule.filter(p => p.type === 'general');
 
             const recentHw = window.appState.homeworks.filter(hw => isHwRelevant(hw.subj, user)).slice(0, 3);
@@ -1025,11 +1043,12 @@
             window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 60000);
         };
 
+        // --- STREAMING_CHUNK:Rendering Schedule with unified tabs ---
         const renderSchedule = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
             
-            // Вкладки об'єднані, тому ми зчитуємо поточний режим з appState
+            // Unified tabs mode detection
             const isPersonal = window.appState.scheduleMode === 'personal';
             
             const activeWeekType = isPersonal ? window.appState.persMainWeek : window.appState.mainViewWeek;
@@ -1180,7 +1199,7 @@
                                 
                                 <div class="flex items-center gap-2 mt-auto pt-4 border-t border-zinc-200/80 dark:border-white/10">
                                     ${zoomUrl ? `
-                                        <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-10 h-10 md:w-11 h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all active:scale-95 border border-blue-100 dark:border-blue-500/20 shadow-sm shrink-0" title="Онлайн посилання"><i data-lucide="video" class="w-4.5 h-4.5 md:w-5 md:h-5"></i></a>
+                                        <a href="${zoomUrl}" target="_blank" rel="noreferrer" class="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-[12px] md:rounded-[14px] bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all active:scale-95 border border-blue-100 dark:border-blue-500/20 shadow-sm shrink-0" title="Онлайн посилання"><i data-lucide="video" class="w-4.5 h-4.5 md:w-5 md:h-5"></i></a>
                                     ` : ''}
                                     
                                     ${canEdit ? `
@@ -1220,6 +1239,7 @@
             lucide.createIcons();
         };
 
+        // --- STREAMING_CHUNK:Rendering Materials View ---
         const renderMaterials = () => {
             const { pri, sec } = getTheme();
             const materials = window.appState.materials;
@@ -1293,6 +1313,7 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
+        // --- STREAMING_CHUNK:Rendering Homework View ---
         const renderHomework = () => {
             const { pri, sec } = getTheme();
             const homeworks = window.appState.homeworks;
@@ -1357,6 +1378,7 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
+        // --- STREAMING_CHUNK:Rendering Register (Student List) View ---
         const renderRegister = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
@@ -1436,6 +1458,7 @@
             }
         };
 
+        // --- STREAMING_CHUNK:Rendering Editor (Admin) View ---
         const renderEditor = () => {
             const { pri, sec } = getTheme();
             const extraSchedule = window.appState.extraSchedule;
@@ -1532,6 +1555,7 @@
             document.getElementById('main-content').innerHTML = html;
         };
 
+        // --- STREAMING_CHUNK:Rendering Analytics Engine (Admin) ---
         const renderAnalytics = () => {
             const logs = window.appState.analyticsData;
             
@@ -1653,6 +1677,7 @@
             window.app.updateAnalyticsDOM(true);
         };
 
+        // --- STREAMING_CHUNK:Global App Object and Event Handlers ---
         // --- GLOBAL APP LOGIC EXPOSED TO WINDOW ---
         window.app = {
             setView: (viewId) => {
@@ -1689,6 +1714,7 @@
                 }, 250);
             },
             
+            // --- STREAMING_CHUNK:Smart Scrolling and Drag Logic ---
             scrollToActivePair: (scheduleList, isPersonal) => {
                 if (!scheduleList || scheduleList.length === 0) return;
                 const now = new Date();
@@ -1700,9 +1726,9 @@
                 let targetId = null;
                 let isCurrentLive = false;
 
+                const user = window.appState.selectedStudent;
                 let todayPairs = scheduleList.find(d => d.day === todayStr)?.pairs || [];
                 if (isPersonal) {
-                    const user = window.appState.selectedStudent;
                     todayPairs = todayPairs.filter(p => p.type === 'general' || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
                 }
 
@@ -1729,7 +1755,6 @@
                         const nextDay = sortedDays[0];
                         let nextPairs = nextDay.pairs;
                         if (isPersonal) {
-                            const user = window.appState.selectedStudent;
                             nextPairs = nextPairs.filter(p => p.type === 'general' || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
                         }
                         
@@ -1762,12 +1787,70 @@
                 }
             },
 
+            attachScrollDrag: () => {
+                const containers = document.querySelectorAll('.hide-scrollbar');
+                containers.forEach(el => {
+                    if(el.dataset.dragAttached) return; 
+                    el.dataset.dragAttached = 'true';
+                    
+                    // Only apply to actually scrollable horizontal areas
+                    if (el.scrollWidth <= el.clientWidth) return; 
+
+                    el.classList.add('cursor-grab');
+
+                    let isDown = false;
+                    let startX;
+                    let scrollLeft;
+
+                    // Mouse Drag Logic
+                    el.addEventListener('mousedown', (e) => {
+                        isDown = true;
+                        el.classList.remove('cursor-grab');
+                        el.style.cursor = 'grabbing';
+                        startX = e.pageX - el.offsetLeft;
+                        scrollLeft = el.scrollLeft;
+                    });
+                    
+                    const stopDrag = () => {
+                        isDown = false;
+                        el.style.cursor = '';
+                        el.classList.add('cursor-grab');
+                    };
+                    
+                    el.addEventListener('mouseleave', stopDrag);
+                    el.addEventListener('mouseup', stopDrag);
+                    
+                    el.addEventListener('mousemove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.pageX - el.offsetLeft;
+                        const walk = (x - startX) * 2; // scroll speed multiplier
+                        el.scrollLeft = scrollLeft - walk;
+                    });
+
+                    // Mouse Wheel Logic for horizontal scrolling
+                    el.addEventListener('wheel', (e) => {
+                        if (e.deltaY !== 0 && Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+                            const canScrollRight = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
+                            const canScrollLeft = el.scrollLeft > 0;
+                            
+                            // If user is trying to scroll vertically inside this box, map it to horizontal
+                            if ((e.deltaY > 0 && canScrollRight) || (e.deltaY < 0 && canScrollLeft)) {
+                                e.preventDefault();
+                                el.scrollLeft += e.deltaY;
+                            }
+                        }
+                    }, { passive: false });
+                });
+            },
+
+            // --- STREAMING_CHUNK:Routing and Analytics ---
             renderActiveView: () => {
                 if(!window.appState.selectedStudent) return;
                 renderNav();
                 const v = window.appState.view;
                 if(v === 'dashboard') renderDashboard();
-                else if(v === 'schedule') renderSchedule();
+                else if(v === 'schedule') renderSchedule(window.appState.scheduleMode === 'personal');
                 else if(v === 'materials') renderMaterials();
                 else if(v === 'homework') renderHomework();
                 else if(v === 'register') renderRegister();
@@ -1775,6 +1858,9 @@
                 else if(v === 'analytics') renderAnalytics();
                 
                 lucide.createIcons();
+                
+                // Attach dragging behaviors to any new horizontal lists
+                setTimeout(() => window.app.attachScrollDrag(), 100);
             },
 
             updateAnalyticsDOM: (isInitial = false) => {
@@ -1900,6 +1986,7 @@
                 }
             },
 
+            // --- STREAMING_CHUNK:User Session Handlers ---
             startAnalyticsSession: () => {
                 if (window.appState.analyticsInterval) clearInterval(window.appState.analyticsInterval);
                 const s = window.appState.selectedStudent;
@@ -2027,6 +2114,7 @@
                 window.app.renderAuthList();
             },
 
+            // --- STREAMING_CHUNK:UI Toggles and Helpers ---
             toggleDark: () => {
                 window.appState.isDark = !window.appState.isDark;
                 localStorage.setItem('darkMode', window.appState.isDark);
@@ -2177,6 +2265,7 @@
                 `;
             },
 
+            // --- STREAMING_CHUNK:Filter Config Setters ---
             setScheduleMode: (mode) => { 
                 window.appState.scheduleMode = mode; 
                 window.app.renderActiveView(); 
@@ -2203,6 +2292,7 @@
 
             closeModal: () => document.getElementById('modals').innerHTML = '',
             
+            // --- STREAMING_CHUNK:Modals and Data Operations ---
             openConfirmModal: (title, text, confirmActionStr) => {
                 const html = `
                     <div class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
@@ -2456,6 +2546,7 @@
             _doRestoreHidden: (id) => { removeFromCloud('hidden_schedule', id, () => {}); }
         };
 
+        // --- STREAMING_CHUNK:App Initialization and Firebase Listeners ---
         // --- INIT APP ---
         const initApp = async () => {
             initParticles();
