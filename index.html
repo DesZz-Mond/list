@@ -28,26 +28,30 @@
                         brandBgDark: '#0a0a0c',
                     },
                     keyframes: {
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        fadeBlur: {
+                            '0%': { opacity: '0', filter: 'blur(12px)', transform: 'translateY(20px) scale(0.95)' },
+                            '100%': { opacity: '1', filter: 'blur(0)', transform: 'translateY(0) scale(1)' }
                         },
-                        slideInRight: {
-                            '0%': { opacity: '0', transform: 'translateX(-20px)' },
-                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        swingDrop: {
+                            '0%': { opacity: '0', filter: 'blur(8px)', transform: 'perspective(1000px) rotateX(-15deg) translateY(-30px) scale(0.95)' },
+                            '100%': { opacity: '1', filter: 'blur(0)', transform: 'perspective(1000px) rotateX(0deg) translateY(0) scale(1)' }
                         },
-                        scaleIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.92)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        springRight: {
+                            '0%': { opacity: '0', filter: 'blur(8px)', transform: 'translateX(-40px) scale(0.95)' },
+                            '60%': { transform: 'translateX(5px) scale(1.02)' },
+                            '100%': { opacity: '1', filter: 'blur(0)', transform: 'translateX(0) scale(1)' }
                         },
-                        popIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.85)' },
-                            '60%': { opacity: '1', transform: 'scale(1.03)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        zoomReveal: {
+                            '0%': { opacity: '0', filter: 'blur(10px)', transform: 'scale(1.1) translateY(15px)' },
+                            '100%': { opacity: '1', filter: 'blur(0)', transform: 'scale(1) translateY(0)' }
                         },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0) scale(1)' },
-                            '50%': { transform: 'translateY(-15px) scale(1.05)' },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        float3D: {
+                            '0%, 100%': { transform: 'translateY(0) rotateX(0) rotateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-20px) rotateX(5deg) rotateY(-5deg) scale(1.05)' },
                         },
                         pulseGlow: {
                             '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
@@ -55,12 +59,13 @@
                         }
                     },
                     animation: {
-                        'slide-up': 'slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both',
-                        'slide-in-right': 'slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both',
-                        'scale-in': 'scaleIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both',
-                        'pop-in': 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                        'fade-blur': 'fadeBlur 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'swing-drop': 'swingDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                        'spring-right': 'springRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                        'zoom-reveal': 'zoomReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
+                        'fade-in': 'fadeIn 0.3s ease-out both',
+                        'float-3d': 'float3D 8s ease-in-out infinite',
                         'pulse-slow': 'pulseGlow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 8s ease-in-out infinite',
                     }
                 }
             }
@@ -82,13 +87,13 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
         
         @keyframes slideUpModal {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(100%); opacity: 0; filter: blur(10px); }
+            to { transform: translateY(0); opacity: 1; filter: blur(0); }
         }
         @media (min-width: 768px) {
             @keyframes slideUpModal {
-                from { transform: translateY(20px) scale(0.96); opacity: 0; }
-                to { transform: translateY(0) scale(1); opacity: 1; }
+                from { transform: translateY(40px) scale(0.9); opacity: 0; filter: blur(15px) perspective(1000px) rotateX(-10deg); transform-origin: center top; }
+                to { transform: translateY(0) scale(1); opacity: 1; filter: blur(0) perspective(1000px) rotateX(0); transform-origin: center top; }
             }
         }
         
@@ -103,7 +108,8 @@
         /* Gradient Text */
         .text-gradient { @apply bg-clip-text text-transparent bg-gradient-to-r; }
 
-        #main-content { transition: opacity 0.25s ease, transform 0.25s ease; }
+        /* Dynamic Main Content Transition */
+        #main-content { transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
         /* Safe area padding for mobile bottom nav and modals */
         .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
@@ -114,8 +120,8 @@
 
     <!-- Ambient Background -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div id="mesh-1" class="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[900px] max-h-[900px] rounded-full bg-violet-500/20 dark:bg-violet-600/15 blur-[120px] animate-float"></div>
-        <div id="mesh-2" class="absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-fuchsia-500/20 dark:bg-fuchsia-600/15 blur-[120px] animate-float" style="animation-delay: -4s;"></div>
+        <div id="mesh-1" class="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[900px] max-h-[900px] rounded-full bg-violet-500/20 dark:bg-violet-600/15 blur-[120px] animate-float-3d"></div>
+        <div id="mesh-2" class="absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-fuchsia-500/20 dark:bg-fuchsia-600/15 blur-[120px] animate-float-3d" style="animation-delay: -4s;"></div>
         <div class="absolute top-[35%] left-[55%] w-[40vw] h-[40vw] rounded-full bg-indigo-500/10 dark:bg-indigo-500/10 blur-[150px] animate-pulse-slow"></div>
         
         <canvas id="interactive-bg" class="absolute inset-0 w-full h-full opacity-70 dark:opacity-40 transition-opacity duration-1000"></canvas>
@@ -129,7 +135,7 @@
         
         <!-- Premium Header -->
         <header class="fixed top-2 md:top-4 left-1/2 -translate-x-1/2 w-[96%] max-w-6xl z-50 transition-all pt-safe md:pt-0">
-            <div class="glass-panel rounded-[24px] md:rounded-full px-2 py-2 flex items-center justify-between animate-slide-up" style="animation-delay: 0ms;">
+            <div class="glass-panel rounded-[24px] md:rounded-full px-2 py-2 flex items-center justify-between animate-fade-blur" style="animation-delay: 0ms;">
                 
                 <div class="flex items-center gap-3 cursor-pointer group pl-2 md:pr-4 py-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors" onclick="window.app.setView('dashboard')">
                     <div id="header-logo-bg" class="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-violet-500/30 group-hover:scale-105 transition-transform duration-300 shrink-0">
@@ -149,7 +155,7 @@
                         <button onclick="window.app.toggleThemeDropdown('main')" class="w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700">
                             <i data-lucide="palette" class="w-4.5 h-4.5"></i>
                         </button>
-                        <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-56 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-3xl p-2.5 hidden z-[1000] animate-scale-in max-h-72 overflow-y-auto" style="transform-origin: top right;">
+                        <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-56 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-3xl p-2.5 hidden z-[1000] animate-zoom-reveal max-h-72 overflow-y-auto" style="transform-origin: top right;">
                         </div>
                     </div>
 
@@ -170,13 +176,13 @@
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 relative z-10 pt-32 pb-28 md:pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full" id="main-content" style="opacity: 1; transform: translateY(0) scale(1);">
+        <main class="flex-1 relative z-10 pt-32 pb-28 md:pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full" id="main-content" style="opacity: 1; transform: translateY(0) scale(1); filter: blur(0);">
             <!-- Views will be injected here -->
         </main>
 
         <!-- Mobile App-like Docked Nav Bar -->
         <div class="md:hidden fixed bottom-0 left-0 w-full z-[100] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl border-t border-zinc-200/80 dark:border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] pb-[env(safe-area-inset-bottom)]">
-            <nav id="mobile-nav" class="flex justify-around items-center h-[72px] px-2 relative animate-slide-up" style="animation-delay: 100ms;">
+            <nav id="mobile-nav" class="flex justify-around items-center h-[72px] px-2 relative animate-swing-drop" style="animation-delay: 100ms;">
             </nav>
         </div>
 
@@ -189,16 +195,16 @@
     <!-- AUTH SCREEN -->
     <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 hidden bg-brandBgLight/80 dark:bg-brandBgDark/80 backdrop-blur-2xl">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-violet-500/20 blur-[120px] animate-float"></div>
-            <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-fuchsia-600/20 blur-[120px] animate-float" style="animation-delay: -2s;"></div>
+            <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-violet-500/20 blur-[120px] animate-float-3d"></div>
+            <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-fuchsia-600/20 blur-[120px] animate-float-3d" style="animation-delay: -2s;"></div>
         </div>
 
-        <div class="absolute pt-safe top-2 mt-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper glass-panel rounded-full px-2 py-1 animate-slide-in-right" style="animation-delay: 100ms;">
+        <div class="absolute pt-safe top-2 mt-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper glass-panel rounded-full px-2 py-1 animate-spring-right" style="animation-delay: 100ms;">
             <div class="relative">
                 <button onclick="window.app.toggleThemeDropdown('auth')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700">
                     <i data-lucide="palette" class="w-4.5 h-4.5"></i>
                 </button>
-                <div id="theme-dropdown-auth" class="absolute top-full mt-3 right-0 w-56 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-3xl p-2.5 hidden z-[1000] animate-scale-in max-h-72 overflow-y-auto" style="transform-origin: top right;">
+                <div id="theme-dropdown-auth" class="absolute top-full mt-3 right-0 w-56 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border border-zinc-200/80 dark:border-white/10 shadow-2xl rounded-3xl p-2.5 hidden z-[1000] animate-zoom-reveal max-h-72 overflow-y-auto" style="transform-origin: top right;">
                 </div>
             </div>
             <div class="w-px h-5 bg-zinc-300 dark:bg-zinc-700"></div>
@@ -207,15 +213,15 @@
             </button>
         </div>
 
-        <div class="w-full max-w-md glass-panel p-6 sm:p-12 rounded-[32px] sm:rounded-[40px] flex flex-col relative overflow-hidden animate-scale-in z-10" style="animation-delay: 0ms;">
-            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-violet-600 to-fuchsia-600 dark:from-white dark:to-zinc-300 rounded-[24px] sm:rounded-[28px] flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-transform duration-500 rotate-3 hover:rotate-0 animate-pop-in" style="animation-delay: 200ms;">
+        <div class="w-full max-w-md glass-panel p-6 sm:p-12 rounded-[32px] sm:rounded-[40px] flex flex-col relative overflow-hidden animate-fade-blur z-10" style="animation-delay: 0ms;">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-violet-600 to-fuchsia-600 dark:from-white dark:to-zinc-300 rounded-[24px] sm:rounded-[28px] flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-transform duration-500 rotate-3 hover:rotate-0 animate-zoom-reveal" style="animation-delay: 200ms;">
                 <i data-lucide="layers" class="w-10 h-10 sm:w-12 sm:h-12 text-white dark:text-zinc-900"></i>
             </div>
             
-            <h1 class="text-2xl sm:text-3xl font-black mb-1 sm:mb-2 tracking-tight text-zinc-900 dark:text-white text-center animate-slide-up" style="animation-delay: 250ms;">МБ-302</h1>
-            <p class="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mb-6 sm:mb-8 font-semibold text-center animate-slide-up" style="animation-delay: 300ms;">Студентський портал (3 курс)</p>
+            <h1 class="text-2xl sm:text-3xl font-black mb-1 sm:mb-2 tracking-tight text-zinc-900 dark:text-white text-center animate-swing-drop" style="animation-delay: 250ms;">МБ-302</h1>
+            <p class="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mb-6 sm:mb-8 font-semibold text-center animate-swing-drop" style="animation-delay: 300ms;">Студентський портал (3 курс)</p>
             
-            <div class="relative z-10 mb-2 group animate-slide-up" style="animation-delay: 350ms;">
+            <div class="relative z-10 mb-2 group animate-swing-drop" style="animation-delay: 350ms;">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i data-lucide="search" class="w-5 h-5 text-zinc-400 group-focus-within:text-violet-500 transition-colors"></i>
                 </div>
@@ -375,7 +381,7 @@
             analyticsDate: null,
 
             statusInterval: null,
-            regFilter: 'all'
+            regFilter: 'all',
         };
 
         const getMergedSchedule = (weekType, weekNum) => {
@@ -657,7 +663,7 @@
                     let cursorEl = window.liveCursors[uid];
                     if (!cursorEl) {
                         cursorEl = document.createElement('div');
-                        cursorEl.className = 'absolute top-0 left-0 transition-transform duration-75 ease-linear flex flex-col items-start drop-shadow-xl z-50 pointer-events-none';
+                        cursorEl.className = 'absolute top-0 left-0 transition-transform duration-75 ease-linear flex flex-col items-start drop-shadow-xl z-50 pointer-events-none animate-zoom-reveal';
                         
                         const themeColorClass = `text-${cData.theme}-500`;
                         const bgThemeClass = `bg-${cData.theme}-500`;
@@ -706,7 +712,7 @@
             const { pri } = getTheme();
             const container = document.getElementById('toasts');
             const toast = document.createElement('div');
-            toast.className = `w-full md:w-auto max-w-sm px-5 py-4 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-slide-up flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-rose-500/95 border-rose-400/50' : `bg-${pri}-600/95 border-${pri}-400/50`}`;
+            toast.className = `w-full md:w-auto max-w-sm px-5 py-4 rounded-2xl shadow-2xl z-[999] text-sm font-semibold text-white transition-all animate-swing-drop flex items-center gap-3 backdrop-blur-2xl border ${isError ? 'bg-rose-500/95 border-rose-400/50' : `bg-${pri}-600/95 border-${pri}-400/50`}`;
             toast.innerHTML = `
                 <div class="p-1.5 rounded-full bg-white/20 shrink-0"><i data-lucide="${isError ? 'alert-triangle' : 'bell-ring'}" class="w-4 h-4 text-white"></i></div>
                 <span>${msg}</span>
@@ -715,7 +721,8 @@
             lucide.createIcons({ root: toast });
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-10px)';
+                toast.style.transform = 'translateY(-20px) scale(0.95)';
+                toast.style.filter = 'blur(10px)';
                 setTimeout(() => toast.remove(), 400);
             }, 4000);
         };
@@ -746,8 +753,8 @@
         // --- RENDERING ENGINES ---
         const renderNav = () => {
             const { pri, sec } = getTheme();
-            const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
-            const isPilipenko = window.appState.selectedStudent && window.appState.selectedStudent.id === 19;
+            const user = window.appState.selectedStudent;
+            const isPilipenko = user && user.id === 19;
             
             const navItems = [
                 { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
@@ -767,7 +774,7 @@
                     const activeClasses = isActive ? `text-${pri}-600 dark:text-${pri}-400 px-4` : `text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 w-9 justify-center`;
                     
                     return `
-                        <button id="nav-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex items-center gap-2 h-9 rounded-full transition-colors duration-300 ${activeClasses} animate-scale-in" style="animation-delay: ${i*30}ms;">
+                        <button id="nav-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex items-center gap-2 h-9 rounded-full transition-colors duration-300 ${activeClasses} animate-zoom-reveal" style="animation-delay: ${i*30}ms;">
                             <div class="relative flex items-center justify-center">
                                 <i data-lucide="${item.icon}" class="w-[18px] h-[18px] ${isActive ? 'scale-110 drop-shadow-sm' : ''} transition-all"></i>
                                 ${item.id === 'homework' && window.appState.unreadHwCount > 0 ? `<div class="absolute -top-1 -right-1.5 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-[#09090b] animate-pulse"></div>` : ''}
@@ -857,10 +864,10 @@
             const isPilipenko = user && user.id === 19;
             
             const html = `
-                <div class="w-full glass-panel rounded-t-[32px] p-5 pb-safe shadow-[0_-20px_40px_rgba(0,0,0,0.15)] border-t border-white/50 dark:border-white/10" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;">
+                <div class="w-full glass-panel rounded-t-[32px] p-5 pb-safe shadow-[0_-20px_40px_rgba(0,0,0,0.15)] border-t border-white/50 dark:border-white/10" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;">
                     <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-6"></div>
                     <div class="space-y-3 mb-6 max-h-[60vh] overflow-y-auto hide-scrollbar">
-                        <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 50ms;">
+                        <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-spring-right" style="animation-delay: 50ms;">
                             <div class="relative">
                                 <div class="w-12 h-12 rounded-[18px] bg-${sec}-50 dark:bg-${sec}-500/10 text-${sec}-600 dark:text-${sec}-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="check-square" class="w-6 h-6"></i></div>
                                 ${window.appState.unreadHwCount > 0 ? `<div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-white dark:border-[#09090b]"></div>` : ''}
@@ -871,17 +878,17 @@
                             </div>
                         </button>
 
-                        <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 100ms;">
+                        <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-spring-right" style="animation-delay: 100ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-bold text-zinc-900 dark:text-white">Реєстр групи</span>
                         </button>
                         ${isPilipenko ? `
-                        <button onclick="window.app.setView('analytics'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/10 text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 150ms;">
+                        <button onclick="window.app.setView('analytics'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/10 text-left active:scale-[0.98] transition-all group animate-spring-right" style="animation-delay: 150ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="bar-chart-2" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-bold text-indigo-700 dark:text-indigo-400">Аналітика сайту</span>
                         </button>` : ''}
                     </div>
-                    <div class="flex gap-4 mb-4 animate-slide-up" style="animation-delay: 200ms;">
+                    <div class="flex gap-4 mb-4 animate-fade-blur" style="animation-delay: 200ms;">
                         <button onclick="window.app.toggleDark(); window.app.closeMobileMenu();" class="flex-1 h-14 rounded-2xl font-bold text-sm glass-card text-zinc-800 dark:text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-all border border-zinc-200 dark:border-zinc-700">
                             <i data-lucide="${window.appState.isDark ? 'sun' : 'moon'}" class="w-5 h-5"></i> Тема
                         </button>
@@ -897,7 +904,6 @@
         const renderDashboard = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
-            const canEdit = user && (user.id === 19 || user.id === 2);
             const todayDay = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"][new Date().getDay()];
             const merged = getMergedSchedule(closestWeekObj.t, closestWeekObj.n);
             const todayScheduleObj = merged.find(d => d.day === todayDay);
@@ -908,22 +914,21 @@
 
             const recentHw = window.appState.homeworks.filter(hw => isHwRelevant(hw.subj, user)).slice(0, 3);
             
-            // Гарячі дедлайни
+            // Гарячі дедлайни (ДЗ з вказаним дедлайном)
             const hotHw = window.appState.homeworks
                 .filter(hw => isHwRelevant(hw.subj, user) && hw.deadline && hw.deadline.trim() !== '' && hw.deadline !== 'Не вказано')
                 .slice(0, 4);
 
             const hotDeadlinesHtml = hotHw.length > 0 ? `
-                <div class="glass-card rounded-[28px] md:rounded-[32px] p-5 md:p-6 animate-slide-up cursor-pointer" style="animation-delay: 150ms;" onclick="window.app.setView('homework')">
+                <div class="glass-card rounded-[28px] md:rounded-[32px] p-5 md:p-6 animate-fade-blur cursor-pointer" style="animation-delay: 150ms;" onclick="window.app.setView('homework')">
                     <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-rose-500 flex items-center gap-2 mb-4"><i data-lucide="flame" class="w-4 h-4"></i> Гарячі дедлайни</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                         ${hotHw.map(hw => `
-                            <div class="bg-rose-50 dark:bg-rose-500/10 p-4 rounded-[20px] border border-rose-100 dark:border-rose-500/20 shadow-sm hover:shadow-md transition-shadow">
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="text-[10px] md:text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest truncate pr-2">${hw.subj.replace(' (Начитка)','')}</span>
-                                    <span class="text-[10px] font-black text-white bg-rose-500 px-2.5 py-1 rounded-md shadow-sm whitespace-nowrap">${hw.deadline}</span>
-                                </div>
-                                <p class="text-[12px] md:text-[13px] font-semibold text-rose-900 dark:text-rose-200 line-clamp-2 leading-snug">${hw.text}</p>
+                            <div class="bg-white/80 dark:bg-zinc-900/80 p-4 rounded-[20px] border border-rose-200/50 dark:border-rose-500/20 shadow-sm relative overflow-hidden group/hw">
+                                <div class="absolute right-0 top-0 w-16 h-16 bg-gradient-to-bl from-rose-500/10 to-transparent blur-xl rounded-full"></div>
+                                <div class="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1 truncate">${hw.subj.replace(' (Начитка)','')}</div>
+                                <p class="text-[12px] md:text-[13px] font-semibold text-zinc-700 dark:text-zinc-300 line-clamp-1 mb-2">${hw.text}</p>
+                                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 rounded-lg text-[10px] font-black tracking-wide border border-rose-100 dark:border-rose-500/20"><i data-lucide="clock" class="w-3.5 h-3.5"></i> До ${hw.deadline}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -932,7 +937,7 @@
 
             let html = `
                 <div class="space-y-6 md:space-y-8">
-                    <div class="mb-6 md:mb-8 animate-slide-in-right flex flex-col gap-2" style="animation-delay: 0ms;">
+                    <div class="mb-6 md:mb-8 animate-spring-right flex flex-col gap-2" style="animation-delay: 0ms;">
                         <div class="flex items-center gap-2 text-xs md:text-sm font-semibold text-zinc-500 dark:text-zinc-400 bg-white/50 dark:bg-zinc-800/50 w-max px-3 py-1 rounded-full border border-zinc-200/80 dark:border-white/10 shadow-sm backdrop-blur-sm">
                             <i data-lucide="sun" class="w-3.5 h-3.5"></i> ${getGreeting()}
                         </div>
@@ -941,70 +946,69 @@
                         </h1>
                     </div>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
                         
-                        <div class="lg:col-span-8 flex flex-col gap-5 md:gap-6">
-                            <!-- Компактний Live Віджет -->
-                            <div class="bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] p-6 md:p-8 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[140px] md:min-h-[160px] animate-scale-in" style="animation-delay: 100ms;" id="live-widget">
+                        <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black dark:from-zinc-900 dark:to-black rounded-[32px] md:rounded-[40px] p-6 md:p-8 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[250px] md:min-h-[280px] animate-zoom-reveal" style="animation-delay: 100ms;" id="live-widget">
+                        </div>
+
+                        <div class="md:col-span-1 glass-card rounded-[32px] md:rounded-[40px] p-5 md:p-6 flex flex-col group cursor-pointer animate-fade-blur" style="animation-delay: 150ms;" onclick="window.app.setView('schedule')">
+                            <div class="flex items-center justify-between mb-5 md:mb-6">
+                                <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Сьогодні</h3>
+                                <div class="w-8 h-8 rounded-full bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
                             </div>
+                            <div class="flex-1 overflow-y-auto hide-scrollbar pr-2 space-y-4 max-h-[200px]">
+                                ${personalToday.length === 0 ? `
+                                    <div class="flex flex-col items-center justify-center h-full text-center opacity-60 py-4">
+                                        <i data-lucide="coffee" class="w-8 h-8 text-zinc-400 mb-2"></i>
+                                        <div class="text-zinc-500 text-sm font-medium">Пар немає. Відпочиваємо!</div>
+                                    </div>` : 
+                                    personalToday.map(p => {
+                                        let displaySubj = p.subj.replace(' (Начитка)', '');
+                                        const weekType = closestWeekObj.t;
+                                        const locKey = `${weekType}_${p.subj}`;
+                                        const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
+                                        const roomNum = locInfo.room || null;
 
-                            ${hotDeadlinesHtml}
-
-                            <!-- Останні Д/з -->
-                            <div class="glass-card rounded-[28px] md:rounded-[32px] p-5 md:p-6 group cursor-pointer animate-slide-up" style="animation-delay: 200ms;" onclick="window.app.setView('homework')">
-                                <div class="flex items-center justify-between mb-5 md:mb-6">
-                                    <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Останні Д/з</h3>
-                                    <div class="flex items-center gap-1 text-[12px] font-bold text-${pri}-500 group-hover:text-${pri}-600 transition-colors">Всі <i data-lucide="chevron-right" class="w-3 h-3"></i></div>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-                                    ${recentHw.length === 0 ? `<p class="text-sm font-semibold text-zinc-500 col-span-3 pb-2">Немає нових Д/з для вашої групи</p>` : recentHw.map(hw => `
-                                        <div class="bg-white/80 dark:bg-zinc-900/80 p-4 md:p-5 rounded-[20px] md:rounded-[24px] border border-zinc-200/80 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow relative">
-                                            <div class="text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mb-2 truncate pr-2">${hw.subj.replace(' (Начитка)','')}</div>
-                                            <p class="text-[12px] md:text-[13px] font-semibold text-zinc-700 dark:text-zinc-300 line-clamp-2 leading-relaxed">${linkify(hw.text)}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
+                                        return `
+                                            <div class="flex items-center gap-3 md:gap-4 relative group/dash">
+                                                <div class="absolute left-3.5 top-8 bottom-[-16px] w-px bg-zinc-200 dark:bg-zinc-800 last:hidden"></div>
+                                                <div class="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300 shrink-0 border-2 border-brandBgLight dark:border-brandBgDark z-10 shadow-sm">${p.num}</div>
+                                                <div class="flex items-center justify-between flex-1 min-w-0 pt-0.5 gap-2">
+                                                    <div class="text-[13px] md:text-[14px] font-bold text-zinc-900 dark:text-white truncate">${displaySubj}</div>
+                                                    ${roomNum ? `<div class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 rounded-lg text-[10px] md:text-[11px] font-bold border border-amber-200/50 dark:border-amber-500/20 shadow-sm"><i data-lucide="map-pin" class="w-3 h-3"></i> ${roomNum}</div>` : ''}
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')
+                                }
                             </div>
                         </div>
 
-                        <!-- Правий стовпець: Розклад -->
-                        <div class="lg:col-span-4 flex flex-col gap-5 md:gap-6">
-                            <div class="glass-card rounded-[28px] md:rounded-[32px] p-5 md:p-6 flex flex-col group cursor-pointer animate-slide-up h-full" style="animation-delay: 250ms;" onclick="window.app.setView('schedule')">
-                                <div class="flex items-center justify-between mb-5 md:mb-6">
-                                    <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Сьогодні</h3>
-                                    <div class="w-8 h-8 rounded-full bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
-                                </div>
-                                <div class="flex-1 overflow-y-auto hide-scrollbar pr-2 space-y-4 max-h-[400px]">
-                                    ${personalToday.length === 0 ? `
-                                        <div class="flex flex-col items-center justify-center h-full text-center opacity-60 py-4">
-                                            <i data-lucide="coffee" class="w-8 h-8 text-zinc-400 mb-2"></i>
-                                            <div class="text-zinc-500 text-sm font-medium">Пар немає. Відпочиваємо!</div>
-                                        </div>` : 
-                                        personalToday.map(p => {
-                                            let displaySubj = p.subj.replace(' (Начитка)', '');
-                                            
-                                            const weekType = closestWeekObj.t;
-                                            const locKey = `${weekType}_${p.subj}`;
-                                            const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
-                                            const roomNum = locInfo.room || null;
-                                            const encodedSubj = encodeURIComponent(p.subj);
+                        ${hotDeadlinesHtml ? `<div class="md:col-span-3">${hotDeadlinesHtml}</div>` : ''}
 
-                                            return `
-                                                <div class="flex items-center gap-3 md:gap-4 relative group/dash">
-                                                    <div class="absolute left-3.5 top-8 bottom-[-16px] w-px bg-zinc-200 dark:bg-zinc-800 last:hidden"></div>
-                                                    <div class="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300 shrink-0 border-2 border-brandBgLight dark:border-brandBgDark z-10 shadow-sm">${p.num}</div>
-                                                    <div class="flex items-center justify-between flex-1 min-w-0 pt-0.5 gap-2">
-                                                        <div class="text-[13px] md:text-[14px] font-bold text-zinc-900 dark:text-white truncate">${displaySubj}</div>
-                                                        <div class="flex items-center gap-1.5 shrink-0">
-                                                            ${roomNum ? `<div class="shrink-0 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-200/50 dark:border-amber-500/20 shadow-sm whitespace-nowrap">Ауд. ${roomNum}</div>` : ''}
-                                                            ${canEdit ? `<button onclick="window.app.openLocationModal('${encodedSubj}', '${weekType}'); event.stopPropagation();" class="text-zinc-300 dark:text-zinc-600 hover:text-${pri}-500 dark:hover:text-${pri}-400 transition-colors p-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></button>` : ''}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `;
-                                        }).join('')
-                                    }
-                                </div>
+                        <div class="md:col-span-2 glass-card rounded-[32px] md:rounded-[40px] p-5 md:p-6 group cursor-pointer animate-swing-drop" style="animation-delay: 200ms;" onclick="window.app.setView('homework')">
+                            <div class="flex items-center justify-between mb-5 md:mb-6">
+                                <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Останні Д/з</h3>
+                                <div class="flex items-center gap-1 text-[12px] font-bold text-${pri}-500 group-hover:text-${pri}-600 transition-colors">Всі <i data-lucide="chevron-right" class="w-3 h-3"></i></div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+                                ${recentHw.length === 0 ? `<p class="text-sm font-semibold text-zinc-500 col-span-3 pb-2">Немає нових Д/з для вашої групи</p>` : recentHw.map(hw => `
+                                    <div class="bg-white/80 dark:bg-zinc-900/80 p-4 md:p-5 rounded-[20px] md:rounded-[24px] border border-zinc-200/80 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow relative">
+                                        <div class="text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mb-2 truncate pr-2">${hw.subj.replace(' (Начитка)','')}</div>
+                                        <p class="text-[12px] md:text-[13px] font-semibold text-zinc-700 dark:text-zinc-300 line-clamp-2 leading-relaxed">${linkify(hw.text)}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-1 glass-card rounded-[32px] md:rounded-[40px] p-5 md:p-6 group cursor-pointer animate-fade-blur" style="animation-delay: 250ms;" onclick="window.app.setView('schedule')">
+                            <div class="flex items-center justify-between mb-5 md:mb-6">
+                                <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder-open" class="w-4 h-4"></i> Розклад</h3>
+                                <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <p class="text-[14px] font-semibold text-zinc-600 dark:text-zinc-300">Перевірте повний розклад на тиждень, та посилання на онлайн-заняття.</p>
+                                <div class="w-full py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-center rounded-[16px] text-sm shadow-md mt-auto">Відкрити розклад</div>
                             </div>
                         </div>
 
@@ -1021,12 +1025,12 @@
         const renderSchedule = () => {
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
-            const canEdit = user && (user.id === 19 || user.id === 2);
             
             const isPersonal = window.appState.scheduleMode === 'personal';
             
             const activeWeekType = isPersonal ? window.appState.persMainWeek : window.appState.mainViewWeek;
             const activeWeekNum = isPersonal ? window.appState.persActiveWeekNum : window.appState.mainActiveWeekNum;
+            const canEdit = user && (user.id === 19 || user.id === 2);
             const scheduleList = getMergedSchedule(activeWeekType, activeWeekNum);
             
             const setWeekFn = isPersonal ? 'window.app.setPersWeek' : 'window.app.setMainWeek';
@@ -1038,7 +1042,7 @@
 
             let html = `
                 <div>
-                    <div class="mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
+                    <div class="mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 relative z-10 animate-spring-right" style="animation-delay: 0ms;">
                         <div class="flex flex-col gap-3 md:gap-4 w-full sm:w-auto">
                             <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-white whitespace-nowrap">Розклад</h2>
                             
@@ -1056,7 +1060,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-8 md:mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
+                    <div class="mb-8 md:mb-10 relative z-10 w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 overflow-hidden animate-fade-blur" style="animation-delay: 50ms;">
                         <div class="flex gap-3 md:gap-4 overflow-x-auto hide-scrollbar px-4 sm:px-8 md:px-1 py-2 pb-4 md:pb-6 snap-x snap-mandatory">
                             ${weeksConfig.map(w => {
                                 const isActive = activeWeekNum === w.n;
@@ -1083,7 +1087,7 @@
 
             if (scheduleList.length === 0) {
                 html += `
-                    <div class="flex flex-col items-center justify-center p-12 md:p-16 text-center glass-card border-dashed rounded-[32px] md:rounded-[40px] animate-scale-in" style="animation-delay: 100ms;">
+                    <div class="flex flex-col items-center justify-center p-12 md:p-16 text-center glass-card border-dashed rounded-[32px] md:rounded-[40px] animate-zoom-reveal" style="animation-delay: 100ms;">
                         <div class="w-16 h-16 md:w-20 md:h-20 bg-zinc-100 dark:bg-zinc-800/50 rounded-full flex items-center justify-center text-zinc-400 mb-5 border border-zinc-200 dark:border-zinc-700 shadow-sm"><i data-lucide="coffee" class="w-8 h-8 md:w-10 md:h-10"></i></div>
                         <h3 class="text-lg md:text-xl font-black text-zinc-900 dark:text-white mb-2">Немає пар</h3>
                         <p class="text-xs md:text-sm font-semibold text-zinc-500">У ці дні розклад порожній. Час для відпочинку.</p>
@@ -1105,7 +1109,7 @@
                     const isToday = specificDate === todayStr;
 
                     scheduleHtml += `
-                        <div class="glass-card mb-6 rounded-[32px] p-5 md:p-8 animate-slide-up relative overflow-hidden" style="animation-delay: ${100 + dayIdx * 50}ms">
+                        <div class="glass-card mb-6 rounded-[32px] p-5 md:p-8 animate-swing-drop relative overflow-hidden" style="animation-delay: ${100 + dayIdx * 50}ms">
                             
                             <div class="flex items-center justify-between mb-5 border-b border-zinc-200/80 dark:border-white/10 pb-4 relative z-10">
                                 <div>
@@ -1154,7 +1158,7 @@
                                     ${classHws.length > 0 ? `
                                         <div class="mb-4 space-y-2">
                                             ${classHws.map(hw => {
-                                                const canDeleteHw = user.name === hw.author || user.isStarosta || user.id === 19;
+                                                const canDeleteHw = canEdit || user.name === hw.author;
                                                 return `
                                                 <div class="p-3 bg-white dark:bg-zinc-900/60 rounded-[16px] border border-zinc-200/80 dark:border-zinc-800 shadow-sm text-[12px] md:text-[13px] text-zinc-800 dark:text-zinc-200 relative group/hw">
                                                     <div class="flex justify-between items-start mb-1.5">
@@ -1186,9 +1190,9 @@
                             </div>
                         `;
                     });
-                    scheduleHtml += `</div></div>`; 
+                    scheduleHtml += `</div></div>`; // End pairs & day container
                 });
-                scheduleHtml += `</div>`; 
+                scheduleHtml += `</div>`; // End schedule main container
                 html += scheduleHtml;
             }
 
@@ -1215,12 +1219,12 @@
 
             let html = `
                 <div>
-                    <div class="mb-6 md:mb-8 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
+                    <div class="mb-6 md:mb-8 relative z-10 animate-spring-right" style="animation-delay: 0ms;">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Історія Д/з</h2>
                         <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 font-semibold whitespace-nowrap">Стрічка завдань для МБ-302</p>
                     </div>
 
-                    <div class="flex bg-zinc-200/80 dark:bg-zinc-800/80 p-1.5 rounded-[18px] md:rounded-[20px] mb-6 md:mb-8 w-fit shadow-inner animate-slide-in-right" style="animation-delay: 50ms;">
+                    <div class="flex bg-zinc-200/80 dark:bg-zinc-800/80 p-1.5 rounded-[18px] md:rounded-[20px] mb-6 md:mb-8 w-fit shadow-inner animate-spring-right" style="animation-delay: 50ms;">
                         <button onclick="window.app.setHwFilter('my')" class="px-4 py-2.5 md:px-5 md:py-3 rounded-[14px] md:rounded-[16px] text-[12px] md:text-[14px] font-bold transition-all ${isMy ? `bg-white dark:bg-zinc-700 text-${pri}-600 dark:text-${pri}-400 shadow-sm` : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}">Мої завдання</button>
                         <button onclick="window.app.setHwFilter('all')" class="px-4 py-2.5 md:px-5 md:py-3 rounded-[14px] md:rounded-[16px] text-[12px] md:text-[14px] font-bold transition-all ${!isMy ? `bg-white dark:bg-zinc-700 text-${pri}-600 dark:text-${pri}-400 shadow-sm` : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}">Усі завдання</button>
                     </div>
@@ -1229,13 +1233,13 @@
             `;
 
             if(filteredHw.length === 0) {
-                html += `<div class="text-center p-12 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px] animate-scale-in" style="animation-delay: 100ms;">Завдань для вибраного фільтру немає.</div>`;
+                html += `<div class="text-center p-12 text-sm text-zinc-500 font-bold glass-card border-dashed rounded-[32px] animate-zoom-reveal" style="animation-delay: 100ms;">Завдань для вибраного фільтру немає.</div>`;
             } else {
                 filteredHw.forEach((hw, i) => {
                     const authorObj = students.find(s => s.name === hw.author);
                     const canDelete = user.name === hw.author || user.isStarosta || user.id === 19;
                     html += `
-                        <div class="glass-card p-6 sm:p-8 rounded-[28px] md:rounded-[36px] relative z-10 group animate-slide-up border-t border-t-white/80 dark:border-t-white/10" style="animation-delay: ${100 + i * 40}ms">
+                        <div class="glass-card p-6 sm:p-8 rounded-[28px] md:rounded-[36px] relative z-10 group animate-fade-blur border-t border-t-white/80 dark:border-t-white/10" style="animation-delay: ${100 + i * 40}ms">
                             ${canDelete ? `<button onclick="window.app.deleteHomework('${hw.id}')" class="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-[14px] transition-all absolute top-4 right-4 md:top-6 md:right-6 md:opacity-0 group-hover:opacity-100 active:scale-95"><i data-lucide="trash-2" class="w-5 h-5"></i></button>` : ''}
                             
                             <div class="flex items-center gap-3.5 mb-5 md:mb-6">
@@ -1293,12 +1297,12 @@
 
             let html = `
                 <div>
-                    <div class="mb-6 md:mb-8 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
+                    <div class="mb-6 md:mb-8 relative z-10 animate-spring-right" style="animation-delay: 0ms;">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Група</h2>
                         <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 font-semibold whitespace-nowrap">Студенти МБ-302 та вибіркові дисципліни</p>
                     </div>
                     
-                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-5 md:mb-6 relative z-10 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
+                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-5 md:mb-6 relative z-10 overflow-hidden animate-fade-blur" style="animation-delay: 50ms;">
                         <div class="flex gap-2.5 md:gap-3 overflow-x-auto hide-scrollbar px-4 sm:px-8 md:px-1 py-2 pb-4 snap-x snap-mandatory">
                             ${filters.map(f => `
                                 <button onclick="window.app.setRegFilter('${f.id}')" class="snap-start px-4 py-2.5 md:px-5 md:py-3 rounded-[14px] md:rounded-[16px] text-[11px] md:text-[13px] font-bold tracking-wide transition-all duration-300 whitespace-nowrap border ${filter === f.id ? activeFilterClass : inactiveFilterClass}">${f.label}</button>
@@ -1306,7 +1310,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-panel overflow-hidden rounded-[28px] md:rounded-[36px] animate-slide-up" style="animation-delay: 100ms;">
+                    <div class="glass-panel overflow-hidden rounded-[28px] md:rounded-[36px] animate-swing-drop" style="animation-delay: 100ms;">
                         <div class="p-4 md:p-6 border-b border-zinc-200/80 dark:border-white/10 relative z-10 bg-white/40 dark:bg-black/20">
                             <div class="relative group">
                                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
@@ -1319,7 +1323,7 @@
                                     ${filteredStudents.map((s, i) => {
                                         const isMe = user.id === s.id;
                                         return `
-                                            <tr class="transition-colors hover:bg-white/80 dark:hover:bg-white/10 group animate-slide-in-right ${isMe ? `bg-${pri}-50/60 dark:bg-${pri}-900/10` : ''}" style="animation-delay: ${120 + i * 15}ms;">
+                                            <tr class="transition-colors hover:bg-white/80 dark:hover:bg-white/10 group animate-spring-right ${isMe ? `bg-${pri}-50/60 dark:bg-${pri}-900/10` : ''}" style="animation-delay: ${120 + i * 15}ms;">
                                                 <td class="py-4 md:py-5 px-4 text-[12px] md:text-[13px] font-black text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
                                                 <td class="py-4 md:py-5 px-2 md:px-4 font-bold text-[14px] md:text-[15px] ${isMe ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-900 dark:text-zinc-100'} whitespace-nowrap">
                                                     ${s.name} 
@@ -1371,7 +1375,7 @@
 
             let html = `
                 <div>
-                    <div class="mb-6 md:mb-8 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-slide-in-right" style="animation-delay: 0ms;">
+                    <div class="mb-6 md:mb-8 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-spring-right" style="animation-delay: 0ms;">
                         <div>
                             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Аналітика (Admin)</h2>
                             <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 font-semibold">Історія відвідувань порталу</p>
@@ -1382,7 +1386,7 @@
                         </div>
                     </div>
 
-                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-6 relative z-10 overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
+                    <div class="w-[calc(100%+2rem)] -ml-4 sm:w-[calc(100%+4rem)] sm:-ml-8 md:w-full md:ml-0 mb-6 relative z-10 overflow-hidden animate-fade-blur" style="animation-delay: 50ms;">
                         <div class="flex gap-2.5 md:gap-3 overflow-x-auto hide-scrollbar px-4 sm:px-8 md:px-1 py-2 pb-4 snap-x snap-mandatory">
                             ${availableDates.map(dStr => `
                                 <button onclick="window.app.setAnalyticsDate('${dStr}')" class="snap-start px-4 py-2.5 md:px-5 md:py-3 rounded-[14px] md:rounded-[16px] text-[11px] md:text-[13px] font-bold tracking-wide transition-all duration-300 whitespace-nowrap border ${selDate === dStr ? activeFilterClass : inactiveFilterClass}">
@@ -1393,7 +1397,7 @@
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8 md:mb-10">
-                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 50ms;">
+                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-zoom-reveal" style="animation-delay: 50ms;">
                             <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl"></div>
                             <div class="flex items-center gap-2 md:gap-3 mb-3">
                                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[14px] bg-blue-50 dark:bg-blue-500/10 text-blue-50 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i></div>
@@ -1402,7 +1406,7 @@
                             <div class="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mt-1" id="stat-unique">-</div>
                         </div>
 
-                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 100ms;">
+                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-zoom-reveal" style="animation-delay: 100ms;">
                             <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl"></div>
                             <div class="flex items-center gap-2 md:gap-3 mb-3">
                                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[14px] bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i data-lucide="activity" class="w-5 h-5 md:w-6 md:h-6"></i></div>
@@ -1411,7 +1415,7 @@
                             <div class="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mt-1" id="stat-online">-</div>
                         </div>
 
-                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 150ms;">
+                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-zoom-reveal" style="animation-delay: 150ms;">
                             <div class="absolute -right-4 -top-4 w-20 h-20 bg-purple-500/10 rounded-full blur-2xl"></div>
                             <div class="flex items-center gap-2 md:gap-3 mb-3">
                                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[14px] bg-purple-50 dark:bg-purple-500/10 text-purple-500 flex items-center justify-center"><i data-lucide="zap" class="w-5 h-5 md:w-6 md:h-6"></i></div>
@@ -1420,7 +1424,7 @@
                             <div class="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mt-1" id="stat-sessions">-</div>
                         </div>
 
-                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-scale-in" style="animation-delay: 200ms;">
+                        <div class="glass-card p-5 md:p-6 rounded-[24px] md:rounded-[28px] flex flex-col justify-center relative overflow-hidden animate-zoom-reveal" style="animation-delay: 200ms;">
                             <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-500/10 rounded-full blur-2xl"></div>
                             <div class="flex items-center gap-2 md:gap-3 mb-3">
                                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[14px] bg-amber-50 dark:bg-amber-500/10 text-amber-500 flex items-center justify-center"><i data-lucide="clock" class="w-5 h-5 md:w-6 md:h-6"></i></div>
@@ -1430,7 +1434,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 relative z-10 animate-slide-up" style="animation-delay: 250ms;">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 relative z-10 animate-swing-drop" style="animation-delay: 250ms;">
                         
                         <div class="lg:col-span-1 flex flex-col gap-3 md:gap-4">
                             <h3 class="text-[16px] md:text-[18px] font-black text-zinc-900 dark:text-white ml-2 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-zinc-500"></i> Відвідувачі за день</h3>
@@ -1491,16 +1495,31 @@
                 }
                 
                 const content = document.getElementById('main-content');
+                
+                // Exit Animation
                 content.style.opacity = '0';
-                content.style.transform = 'translateY(15px) scale(0.98)';
+                content.style.transform = 'translateY(15px) scale(0.96)';
+                content.style.filter = 'blur(10px)';
                 
                 setTimeout(() => {
                     window.appState.view = viewId;
                     window.app.renderActiveView();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     
+                    // Setup initial state for entry
+                    content.style.transition = 'none';
+                    content.style.opacity = '0';
+                    content.style.transform = 'translateY(20px) scale(0.96)';
+                    content.style.filter = 'blur(10px)';
+
+                    // Trigger reflow
+                    void content.offsetWidth;
+                    
+                    // Entry animation
+                    content.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
                     content.style.opacity = '1';
                     content.style.transform = 'translateY(0) scale(1)';
+                    content.style.filter = 'blur(0)';
                 }, 250);
             },
             
@@ -1722,7 +1741,7 @@
                     groupedUsers.map((u, i) => {
                         const mins = Math.round(u.totalDur / 60000);
                         return `
-                            <div class="p-3.5 md:p-4 rounded-[20px] md:rounded-[24px] bg-white/60 dark:bg-black/30 border border-zinc-200/80 dark:border-white/5 flex items-center justify-between shadow-sm ${isInitial ? 'animate-slide-in-right' : ''}" ${isInitial ? `style="animation-delay: ${50 + i * 20}ms;"` : ''}>
+                            <div class="p-3.5 md:p-4 rounded-[20px] md:rounded-[24px] bg-white/60 dark:bg-black/30 border border-zinc-200/80 dark:border-white/5 flex items-center justify-between shadow-sm ${isInitial ? 'animate-spring-right' : ''}" ${isInitial ? `style="animation-delay: ${50 + i * 20}ms;"` : ''}>
                                 <div class="flex items-center gap-3 overflow-hidden pr-2">
                                     <div class="w-10 h-10 md:w-12 md:h-12 rounded-[14px] md:rounded-[16px] bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[13px] md:text-[15px] text-zinc-600 dark:text-zinc-300 font-black shrink-0 shadow-inner border border-zinc-300 dark:border-zinc-700">${u.name.charAt(0)}</div>
                                     <div class="truncate">
@@ -1750,7 +1769,7 @@
                         const devIcon = dInfo.device === 'Mobile' ? 'smartphone' : 'monitor';
 
                         return `
-                            <tr class="transition-colors hover:bg-white/80 dark:hover:bg-white/10 ${isInitial ? 'animate-slide-in-right' : ''} ${isActiveNow ? 'bg-emerald-50/50 dark:bg-emerald-900/15' : ''}" ${isInitial ? `style="animation-delay: ${50 + i * 15}ms;"` : ''}>
+                            <tr class="transition-colors hover:bg-white/80 dark:hover:bg-white/10 ${isInitial ? 'animate-spring-right' : ''} ${isActiveNow ? 'bg-emerald-50/50 dark:bg-emerald-900/15' : ''}" ${isInitial ? `style="animation-delay: ${50 + i * 15}ms;"` : ''}>
                                 <td class="py-4 md:py-5 px-5 md:px-6 font-bold text-[13px] md:text-[14px] text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
                                     ${log.name}
                                 </td>
@@ -1851,7 +1870,7 @@
                 if (studentId === 19) {
                     const html = `
                         <div class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-xl transition-opacity animate-fade-in" onclick="window.app.closeModal()">
-                            <div class="w-full max-w-sm glass-panel p-6 md:p-8 relative text-center overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                            <div class="w-full max-w-sm glass-panel p-6 md:p-8 relative text-center overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards">
                                 <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-6 block md:hidden"></div>
                                 <div class="w-16 h-16 md:w-20 md:h-20 bg-rose-50 dark:bg-rose-500/10 rounded-[20px] md:rounded-[24px] flex items-center justify-center text-rose-500 mx-auto mb-5 border border-rose-100 dark:border-rose-500/20 transform rotate-3">
                                     <i data-lucide="shield-alert" class="w-8 h-8 md:w-10 md:h-10"></i>
@@ -1958,10 +1977,10 @@
                 const { pri, sec } = themesConfig[themeKey];
                 const setCls = (id, cls) => { const el = document.getElementById(id); if(el) el.className = cls; };
                 
-                setCls('mesh-1', `absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[900px] max-h-[900px] rounded-full bg-${pri}-500/20 dark:bg-${pri}-600/15 blur-[120px] animate-float`);
-                setCls('mesh-2', `absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-${sec}-500/20 dark:bg-${sec}-600/15 blur-[120px] animate-float`);
-                setCls('auth-mesh-1', `absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-${pri}-500/20 blur-[120px] animate-float`);
-                setCls('auth-mesh-2', `absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-${sec}-600/20 blur-[120px] animate-float`);
+                setCls('mesh-1', `absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[900px] max-h-[900px] rounded-full bg-${pri}-500/20 dark:bg-${pri}-600/15 blur-[120px] animate-float-3d`);
+                setCls('mesh-2', `absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-${sec}-500/20 dark:bg-${sec}-600/15 blur-[120px] animate-float-3d`);
+                setCls('auth-mesh-1', `absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-${pri}-500/20 blur-[120px] animate-float-3d`);
+                setCls('auth-mesh-2', `absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-${sec}-600/20 blur-[120px] animate-float-3d`);
                 
                 setCls('header-logo-bg', `w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-${pri}-500 to-${sec}-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-${pri}-500/30 group-hover:scale-105 transition-transform duration-300 shrink-0`);
                 setCls('header-logo-text', `text-[9px] md:text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mt-1 block opacity-90`);
@@ -1985,7 +2004,7 @@
                 if(filtered.length > 0) {
                     listEl.classList.remove('hidden');
                     listEl.innerHTML = filtered.map((s, i) => `
-                        <div onclick="window.app.loginAttempt(${s.id})" class="px-5 py-4 sm:px-6 sm:py-5 rounded-[20px] sm:rounded-[24px] bg-white/80 dark:bg-zinc-800/80 hover:bg-white dark:hover:bg-zinc-700 cursor-pointer font-bold text-[15px] sm:text-[16px] transition-all flex items-center justify-between shadow-sm border border-zinc-200/80 dark:border-white/5 animate-slide-up hover:shadow-md" style="animation-delay: ${i*30}ms">
+                        <div onclick="window.app.loginAttempt(${s.id})" class="px-5 py-4 sm:px-6 sm:py-5 rounded-[20px] sm:rounded-[24px] bg-white/80 dark:bg-zinc-800/80 hover:bg-white dark:hover:bg-zinc-700 cursor-pointer font-bold text-[15px] sm:text-[16px] transition-all flex items-center justify-between shadow-sm border border-zinc-200/80 dark:border-white/5 animate-spring-right hover:shadow-md" style="animation-delay: ${i*30}ms">
                             <span class="text-zinc-900 dark:text-zinc-100 truncate mr-3">${s.name}</span>
                             ${s.isStarosta ? '<span class="px-2.5 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] sm:text-[10px] font-black uppercase tracking-wide rounded-lg">Староста</span>' : ''}
                         </div>
@@ -2000,7 +2019,7 @@
                 const widget = document.getElementById('live-widget');
                 if(!widget) return;
                 
-                const { pri } = getTheme();
+                const { pri, sec } = getTheme();
 
                 const now = new Date();
                 const days = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
@@ -2035,30 +2054,31 @@
                     status = { label: 'Статус', title: 'Пари завершено', subtitle: 'Час для відпочинку ☕', progress: 100, isLive: false };
                 }
 
-                const radius = window.innerWidth < 768 ? 26 : 32;
-                const centerP = window.innerWidth < 768 ? 30 : 36;
+                const radius = window.innerWidth < 768 ? 26 : 36;
                 const circumference = 2 * Math.PI * radius;
                 const strokeDashoffset = circumference - (status.progress / 100) * circumference;
-                const svgSize = window.innerWidth < 768 ? "w-[60px] h-[60px]" : "w-[72px] h-[72px]";
+                const svgSize = window.innerWidth < 768 ? "w-[64px] h-[64px]" : "w-[88px] h-[88px]";
+                const centerP = window.innerWidth < 768 ? 32 : 44;
 
                 widget.innerHTML = `
-                    <div class="absolute top-[-50%] right-[-10%] w-[60%] h-[150%] bg-gradient-to-bl from-${pri}-500/20 to-transparent blur-[60px] rounded-full pointer-events-none"></div>
+                    <div class="absolute top-[-50%] right-[-20%] w-[80%] h-[150%] bg-gradient-to-bl from-${pri}-500/20 to-transparent blur-[80px] rounded-full pointer-events-none"></div>
                     
-                    <div class="flex flex-col md:flex-row md:items-center justify-between z-10 w-full gap-4">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2.5 mb-2 md:mb-3">
-                                ${status.isLive ? `<span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>` : '<div class="w-2.5 h-2.5 rounded-full bg-zinc-600"></div>'}
-                                <span class="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-zinc-400">${status.label}</span>
-                            </div>
-                            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight mb-1 truncate">${status.title}</h2>
-                            <p class="text-[13px] md:text-[14px] text-zinc-400 font-bold truncate">${status.subtitle}</p>
+                    <div class="flex items-center gap-2.5 mb-auto z-10 absolute top-5 left-6 md:top-6 md:left-8">
+                        ${status.isLive ? `<span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>` : '<div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-zinc-600"></div>'}
+                        <span class="text-[10px] md:text-[12px] font-black uppercase tracking-widest text-zinc-400">${status.label}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between z-10 w-full mt-6 md:mt-8">
+                        <div class="flex-1 pr-4">
+                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight mb-2 md:mb-3">${status.title}</h2>
+                            <p class="text-[14px] md:text-[16px] text-zinc-400 font-bold line-clamp-2 leading-relaxed">${status.subtitle}</p>
                         </div>
                         
                         ${status.isLive ? `
-                            <div class="relative ${svgSize} shrink-0 flex items-center justify-center drop-shadow-xl self-end md:self-center">
+                            <div class="relative ${svgSize} shrink-0 flex items-center justify-center drop-shadow-xl">
                                 <svg class="transform -rotate-90 ${svgSize}">
-                                    <circle cx="${centerP}" cy="${centerP}" r="${radius}" stroke="currentColor" stroke-width="4" fill="transparent" class="text-zinc-800" />
-                                    <circle cx="${centerP}" cy="${centerP}" r="${radius}" stroke="currentColor" stroke-width="4" fill="transparent" stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" class="text-${pri}-500 transition-all duration-1000 ease-in-out" stroke-linecap="round" />
+                                    <circle cx="${centerP}" cy="${centerP}" r="${radius}" stroke="currentColor" stroke-width="6" fill="transparent" class="text-zinc-800" />
+                                    <circle cx="${centerP}" cy="${centerP}" r="${radius}" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" class="text-${pri}-500 transition-all duration-1000 ease-in-out" stroke-linecap="round" />
                                 </svg>
                                 <div class="absolute inset-0 flex items-center justify-center text-white font-black text-xs md:text-sm">${Math.round(status.progress)}%</div>
                             </div>
@@ -2095,7 +2115,7 @@
             openConfirmModal: (title, text, confirmActionStr) => {
                 const html = `
                     <div class="fixed inset-0 z-[400] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-sm glass-panel p-6 md:p-8 relative text-center overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                        <div class="w-full max-w-sm glass-panel p-6 md:p-8 relative text-center overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards">
                             <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-6 block md:hidden"></div>
                             <div class="w-16 h-16 md:w-20 md:h-20 bg-rose-50 dark:bg-rose-500/10 rounded-[20px] md:rounded-[24px] flex items-center justify-center text-rose-500 mx-auto mb-5 border border-rose-100 dark:border-rose-500/20 transform rotate-3">
                                 <i data-lucide="alert-triangle" class="w-8 h-8 md:w-10 md:h-10"></i>
@@ -2121,7 +2141,7 @@
                 
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-lg glass-panel p-6 md:p-8 relative overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                        <div class="w-full max-w-lg glass-panel p-6 md:p-8 relative overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards">
                             <div class="absolute top-0 right-0 w-72 h-72 bg-${sec}-500/10 blur-[80px] rounded-full pointer-events-none"></div>
                             
                             <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-5 block md:hidden"></div>
@@ -2185,7 +2205,7 @@
 
                 const html = `
                     <div class="fixed inset-0 z-[300] bg-zinc-900/60 dark:bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-xl animate-fade-in" onclick="window.app.closeModal()">
-                        <div class="w-full max-w-lg glass-panel p-6 md:p-8 relative overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards">
+                        <div class="w-full max-w-lg glass-panel p-6 md:p-8 relative overflow-hidden rounded-t-[32px] md:rounded-[40px] mt-auto md:mt-0 pb-safe" onclick="event.stopPropagation()" style="animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards">
                             <div class="absolute top-0 right-0 w-72 h-72 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none"></div>
                             
                             <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-5 block md:hidden"></div>
@@ -2249,7 +2269,25 @@
             },
 
             deleteHomework: (id) => { window.app.openConfirmModal("Видалити ДЗ?", "Завдання буде видалено для всіх.", `window.app._doDeleteHW('${id}')`); },
-            _doDeleteHW: (id) => { removeFromCloud('homeworks', id, () => {}); }
+            _doDeleteHW: (id) => { removeFromCloud('homeworks', id, () => {}); },
+
+            handleScheduleAction: (id, isCustom, encodedSubj, weekType, day, num, weekNum) => {
+                const subj = decodeURIComponent(encodedSubj);
+                if (isCustom) {
+                    window.app.openConfirmModal("Видалити пару?", "Вона зникне з розкладу назавжди.", `window.app._doDeleteExtra('${id}')`);
+                } else {
+                    const promptText = weekNum ? `Ця пара буде скасована тільки для ${weekNum} тижня.` : `Ця пара буде прихована назавжди (в шаблоні).`;
+                    window.app.openConfirmModal("Скасувати пару?", promptText, `window.app._doHideSubj('${subj}', '${weekType}', '${day}', ${num}, ${weekNum || 'null'})`);
+                }
+            },
+            _doDeleteExtra: (id) => { removeFromCloud('extra_schedule', id, () => {}); },
+            
+            _doHideSubj: (subj, weekType, day, num, targetWeekNum) => {
+                const parsedTargetWeek = (targetWeekNum && targetWeekNum !== 'null') ? parseInt(targetWeekNum) : null;
+                const docId = Date.now().toString();
+                const newHidden = { id: docId, weekType, day, num: parseInt(num), subj, author: window.appState.selectedStudent.name, targetWeekNum: parsedTargetWeek };
+                writeToCloud('hidden_schedule', docId, newHidden, () => {});
+            }
         };
 
         const initApp = async () => {
