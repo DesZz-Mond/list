@@ -911,36 +911,229 @@
         }
 
 
-        /* ===== PERFORMANCE CORE ===== */
-        html { overflow-x:hidden; }
-        body { overscroll-behavior-x:none; }
-        #ambient-background { contain: strict; }
-        #ambient-background > .animate-float,
-        #ambient-background > .animate-pulse-slow { will-change: transform, opacity; transform: translateZ(0); }
-        .glass-panel, .glass-card, #mobile-dock, header > div {
-            transform: translateZ(0);
-            backface-visibility: hidden;
+        /* =========================================================
+           V6 INTERACTIVE BACKGROUND — silky pointer parallax
+           GPU-first: transform/opacity only, single RAF loop.
+           ========================================================= */
+        #ambient-background,
+        #mesh-1,
+        #mesh-2,
+        .geometry-field,
+        .geometry-field::before,
+        .geometry-field::after,
+        .ambient-grid {
+            --pointer-rx: 0;
+            --pointer-ry: 0;
         }
-        .nav-item-premium, .nav-active, #mobile-nav > button { will-change: transform, opacity; }
-        #main-content { contain: layout paint style; }
-        #main-content > div { contain: layout style; }
-        .view-enter, .view-leave { will-change: transform, opacity; }
+        #ambient-background { perspective: 900px; }
+        #mesh-1,
+        #mesh-2,
+        .geometry-field,
+        .ambient-grid {
+            will-change: transform;
+            transform: translate3d(0,0,0);
+        }
+        #mesh-1 { transform: translate3d(calc(var(--pointer-rx) * -14px), calc(var(--pointer-ry) * -10px), 0); }
+        #mesh-2 { transform: translate3d(calc(var(--pointer-rx) * 18px), calc(var(--pointer-ry) * 14px), 0); }
+        .geometry-field { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px), 0); }
+        .geometry-field::before { transform: translate3d(calc(var(--pointer-rx) * -18px), calc(var(--pointer-ry) * -14px), 0) scale(1.025); }
+        .geometry-field::after { transform: translate3d(calc(var(--pointer-rx) * 8px), calc(var(--pointer-ry) * 6px), 0); }
+        .ambient-grid { transform: translate3d(calc(var(--pointer-rx) * -5px), calc(var(--pointer-ry) * -4px), 0); }
+        #interactive-bg { display:none !important; }
+        @media (max-width:767px) {
+            #ambient-background { perspective:none; }
+            #mesh-1 { transform: translate3d(calc(var(--pointer-rx) * -7px), calc(var(--pointer-ry) * -5px), 0); }
+            #mesh-2 { transform: translate3d(calc(var(--pointer-rx) * 9px), calc(var(--pointer-ry) * 7px), 0); }
+            .geometry-field { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px), 0); }
+            .geometry-field::before { transform: translate3d(calc(var(--pointer-rx) * -7px), calc(var(--pointer-ry) * -5px), 0) scale(1.018); }
+            .geometry-field::after { transform: none; }
+            .ambient-grid { transform: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #mesh-1,#mesh-2,.geometry-field,.geometry-field::before,.geometry-field::after,.ambient-grid { transform:none !important; }
+        }
+
+
+        /* =========================================================
+           V7 LIVE GEOMETRY BACKGROUNDS
+           Each background has its own visible motion. The same
+           low-cost GPU transforms are used on desktop and mobile.
+           ========================================================= */
+        .portal-bg-layer {
+            --bg-shift-x: 0px;
+            --bg-shift-y: 0px;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .portal-bg-layer::before {
+            z-index: 0;
+            background-size: 180% 180%;
+            background-position: 50% 50%;
+            opacity: .78;
+            will-change: background-position, transform;
+            animation: bgAmbientDrift 18s ease-in-out infinite alternate;
+        }
+        .portal-bg-layer::after { z-index: 0; }
+        .geometry-field { z-index: 1; transform-style: preserve-3d; }
+        .geometry-shape, .geometry-line { will-change: transform, opacity; }
+        .geometry-shape-a { animation: geoFloatA 13s ease-in-out infinite; }
+        .geometry-shape-b { animation: geoFloatB 16s ease-in-out infinite; animation-delay: -4s; }
+        .geometry-shape-c { animation: geoFloatC 11s ease-in-out infinite; animation-delay: -2s; }
+        .geometry-line-a { animation: geoLineA 19s ease-in-out infinite; }
+        .geometry-line-b { animation: geoLineB 23s ease-in-out infinite; animation-delay: -7s; }
+
+        @keyframes bgAmbientDrift {
+            0% { background-position: 44% 46%; transform: scale(1.01) translate3d(0,0,0); }
+            50% { background-position: 57% 53%; transform: scale(1.035) translate3d(calc(var(--pointer-rx) * -4px), calc(var(--pointer-ry) * -3px), 0); }
+            100% { background-position: 48% 58%; transform: scale(1.015) translate3d(calc(var(--pointer-rx) * 4px), calc(var(--pointer-ry) * 3px), 0); }
+        }
+        @keyframes geoFloatA {
+            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(45deg) translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(49deg) translate3d(-10px,12px,0) scale(1.025); }
+        }
+        @keyframes geoFloatB {
+            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(45deg) translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(40deg) translate3d(14px,-9px,0) scale(1.035); }
+        }
+        @keyframes geoFloatC {
+            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(18deg) translate3d(0,0,0); }
+            50% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(28deg) translate3d(-7px,8px,0); }
+        }
+        @keyframes geoLineA {
+            0%,100% { opacity:.48; transform: rotate(-13deg) translate3d(0,0,0); }
+            50% { opacity:.72; transform: rotate(-9deg) translate3d(20px,10px,0); }
+        }
+        @keyframes geoLineB {
+            0%,100% { opacity:.35; transform: rotate(19deg) translate3d(0,0,0); }
+            50% { opacity:.64; transform: rotate(24deg) translate3d(-18px,-6px,0); }
+        }
+
+        /* Distinct live textures for every selectable background. */
+        body[data-premium-background="aurora"] .portal-bg-layer::before {
+            background:
+                radial-gradient(circle at 18% 26%, color-mix(in srgb,var(--portal-accent-a) 72%, transparent), transparent 28%),
+                radial-gradient(circle at 80% 22%, color-mix(in srgb,var(--portal-accent-b) 58%, transparent), transparent 30%),
+                radial-gradient(circle at 55% 82%, color-mix(in srgb,var(--portal-accent-c) 52%, transparent), transparent 34%);
+            animation: auroraMove 16s ease-in-out infinite alternate;
+        }
+        @keyframes auroraMove {
+            0% { transform: translate3d(-2%,-1%,0) scale(1.02); background-position: 20% 30%, 78% 20%, 52% 84%; }
+            100% { transform: translate3d(2%,2%,0) scale(1.06); background-position: 28% 24%, 68% 30%, 60% 72%; }
+        }
+
+        body[data-premium-background="prism"] .portal-bg-layer::before {
+            background:
+                linear-gradient(132deg, transparent 0 18%, color-mix(in srgb,var(--portal-accent-a) 34%,transparent) 18.2% 18.6%, transparent 19% 48%, color-mix(in srgb,var(--portal-accent-b) 32%,transparent) 48.2% 48.6%, transparent 49% 78%, color-mix(in srgb,var(--portal-accent-c) 27%,transparent) 78.2% 78.6%, transparent 79%),
+                linear-gradient(34deg, transparent 0 34%, rgba(255,255,255,.075) 34.3% 34.8%, transparent 35% 65%, rgba(255,255,255,.055) 65.3% 65.8%, transparent 66%);
+            background-size: 150% 150%, 170% 170%;
+            animation: prismSweep 11s linear infinite;
+        }
+        @keyframes prismSweep {
+            from { background-position: 0% 0%, 30% 10%; transform: rotate(.001deg) scale(1.03); }
+            to { background-position: 100% 100%, 65% 85%; transform: rotate(.001deg) scale(1.09); }
+        }
+
+        body[data-premium-background="orbit"] .portal-bg-layer::before {
+            background:
+                radial-gradient(ellipse at 72% 38%, transparent 0 10%, color-mix(in srgb,var(--portal-accent-a) 55%,transparent) 10.5% 11%, transparent 11.4% 22%, color-mix(in srgb,var(--portal-accent-b) 46%,transparent) 22.5% 23%, transparent 23.4% 36%, color-mix(in srgb,var(--portal-accent-c) 36%,transparent) 36.5% 37%, transparent 37.6%),
+                radial-gradient(ellipse at 30% 72%, transparent 0 7%, rgba(255,255,255,.075) 7.5% 8.1%, transparent 8.6% 19%, rgba(255,255,255,.04) 19.5% 20.2%, transparent 20.7%);
+            background-size: 130% 130%, 120% 120%;
+            animation: orbitSpin 24s linear infinite;
+        }
+        @keyframes orbitSpin {
+            from { transform: rotate(0deg) scale(1.02); background-position: 50% 50%, 50% 50%; }
+            to { transform: rotate(360deg) scale(1.08); background-position: 54% 48%, 46% 52%; }
+        }
+
+        body[data-premium-background="mesh"] .portal-bg-layer::before {
+            background-image:
+                linear-gradient(color-mix(in srgb,var(--portal-accent-a) 28%,transparent) 1px, transparent 1px),
+                linear-gradient(90deg,color-mix(in srgb,var(--portal-accent-b) 25%,transparent) 1px, transparent 1px),
+                linear-gradient(135deg,transparent 0 47%,rgba(255,255,255,.05) 47.4% 48%,transparent 48.4%);
+            background-size: 58px 58px, 58px 58px, 100% 100%;
+            mask-image: radial-gradient(ellipse at center, black 15%, transparent 84%);
+            animation: meshPan 15s linear infinite;
+        }
+        @keyframes meshPan {
+            from { background-position: 0 0, 0 0, 0 0; }
+            to { background-position: 58px 58px, -58px 58px, 24px -18px; }
+        }
+
+        body[data-premium-background="wave"] .portal-bg-layer::before {
+            background:
+                repeating-linear-gradient(22deg, transparent 0 30px, color-mix(in srgb,var(--portal-accent-a) 34%,transparent) 31px, transparent 33px 62px),
+                repeating-linear-gradient(-18deg, transparent 0 46px, color-mix(in srgb,var(--portal-accent-b) 28%,transparent) 47px, transparent 49px 96px),
+                radial-gradient(circle at 50% 50%, color-mix(in srgb,var(--portal-accent-c) 22%,transparent), transparent 60%);
+            background-size: 150% 150%, 160% 160%, 130% 130%;
+            animation: waveFlow 13s ease-in-out infinite alternate;
+        }
+        @keyframes waveFlow {
+            0% { background-position: -12% 8%, 4% 0%, 50% 50%; transform: translate3d(-1%,0,0) scale(1.02); }
+            100% { background-position: 12% -8%, -6% 10%, 54% 46%; transform: translate3d(1%,1%,0) scale(1.07); }
+        }
+
         @media (max-width: 767px) {
-            .glass-panel, .glass-card { backdrop-filter: blur(16px) saturate(125%) !important; -webkit-backdrop-filter: blur(16px) saturate(125%) !important; }
-            .geometry-field { opacity:.34 !important; }
-            .ambient-noise, .ambient-grid { opacity:.08 !important; }
-            #interactive-bg { display:none !important; }
-            #pointer-glow { display:none !important; }
-            .glass-card { box-shadow: 0 8px 26px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.03) !important; }
+            .portal-bg-layer::before { opacity:.64; animation-duration: 20s; }
+            .geometry-field { opacity:.58 !important; }
+            .geometry-shape-a { animation-duration: 16s; }
+            .geometry-shape-b { animation-duration: 18s; }
+            .geometry-shape-c { animation-duration: 14s; }
+            body[data-premium-background="orbit"] .portal-bg-layer::before { animation-duration: 30s; }
+            body[data-premium-background="mesh"] .portal-bg-layer::before { animation-duration: 20s; }
         }
-        @media (prefers-reduced-motion: reduce), (update: slow) {
-            *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
+        @media (prefers-reduced-motion: reduce) {
+            .portal-bg-layer::before,.geometry-shape-a,.geometry-shape-b,.geometry-shape-c,.geometry-line-a,.geometry-line-b { animation:none !important; }
         }
-        .portal-paused .animate-float, .portal-paused .animate-pulse-slow { animation-play-state: paused !important; }
-        .portal-paused #pointer-glow { opacity:0 !important; }
-        @media (max-width: 767px) and (max-height: 800px) {
-            .geometry-field { display:none !important; }
+
+
+        /* =========================================================
+           V8 MOBILE LIVE GEOMETRY — visible on touch devices
+           ========================================================= */
+        .geometry-field { pointer-events:none !important; }
+        .geometry-shape-a,
+        .geometry-shape-b,
+        .geometry-shape-c,
+        .geometry-line-a,
+        .geometry-line-b { will-change: transform, opacity; }
+
+        @media (max-width: 767px) {
+            .portal-bg-layer::before {
+                opacity: .88 !important;
+                background-size: 150% 150% !important;
+            }
+            .geometry-field {
+                opacity: .82 !important;
+                mix-blend-mode: screen !important;
+            }
+            .geometry-field::before { opacity: .95 !important; }
+            .geometry-field::after { opacity: .22 !important; }
+            .geometry-shape-a { animation: mobileGeoA 10s ease-in-out infinite !important; }
+            .geometry-shape-b { animation: mobileGeoB 13s ease-in-out infinite !important; }
+            .geometry-shape-c { animation: mobileGeoC 9s ease-in-out infinite !important; }
+            .geometry-line-a { animation: mobileGeoLineA 14s ease-in-out infinite !important; }
+            .geometry-line-b { animation: mobileGeoLineB 16s ease-in-out infinite !important; }
         }
+        @keyframes mobileGeoA {
+            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(42deg) scale(1); }
+            50% { transform: translate3d(calc(var(--pointer-rx) * 16px + 8px), calc(var(--pointer-ry) * 12px - 8px),0) rotate(50deg) scale(1.055); }
+        }
+        @keyframes mobileGeoB {
+            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(10deg) scale(1); }
+            50% { transform: translate3d(calc(var(--pointer-rx) * 7px - 12px), calc(var(--pointer-ry) * 6px + 10px),0) rotate(20deg) scale(1.07); }
+        }
+        @keyframes mobileGeoC {
+            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(12deg); }
+            50% { transform: translate3d(calc(var(--pointer-rx) * 14px + 10px), calc(var(--pointer-ry) * 10px - 6px),0) rotate(32deg); }
+        }
+        @keyframes mobileGeoLineA {
+            0%,100% { opacity:.38; transform: rotate(-15deg) translate3d(0,0,0); }
+            50% { opacity:.78; transform: rotate(-8deg) translate3d(24px,12px,0); }
+        }
+        @keyframes mobileGeoLineB {
+            0%,100% { opacity:.28; transform: rotate(17deg) translate3d(0,0,0); }
+            50% { opacity:.68; transform: rotate(27deg) translate3d(-22px,-8px,0); }
+        }
+
     </style>
 </head>
 <body class="text-zinc-200 bg-zinc-950 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -2532,7 +2725,7 @@
                     window.appState.view = viewId;
                     window.appState.navSignature = '';
                     window.app.renderActiveView();
-                    window.scrollTo({ top: 0, behavior: 'instant' });
+                    window.scrollTo({ top: 0, behavior: 'auto' });
 
                     requestAnimationFrame(() => {
                         if (token !== window.appState.viewTransitionToken) return;
@@ -2862,7 +3055,7 @@
                 };
                 
                 updateSession(); 
-                window.appState.analyticsInterval = setInterval(updateSession, 15000); 
+                window.appState.analyticsInterval = setInterval(updateSession, 5000); 
             },
 
             stopAnalyticsSession: () => {
@@ -3454,17 +3647,6 @@
             _doRestoreHidden: (id) => { removeFromCloud('hidden_schedule', id, () => {}); }
         };
 
-
-        // Coalesce bursts of remote updates into a single paint per frame.
-        let scheduledRenderFrame = 0;
-        const scheduleActiveRender = () => {
-            if (scheduledRenderFrame) return;
-            scheduledRenderFrame = requestAnimationFrame(() => {
-                scheduledRenderFrame = 0;
-                if (window.appState.selectedStudent) window.app.renderActiveView();
-            });
-        };
-
         const initRemoteServices = () => {
             // Firebase/auth is deliberately non-blocking: the portal UI must work even when
             // Firebase is slow/offline. Local storage provides the immediate first paint.
@@ -3483,7 +3665,7 @@
                             snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
-                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
+                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Locations error:', error)
                     );
@@ -3504,7 +3686,7 @@
                             }
                             window.appState.homeworks = newHwList;
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
-                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) scheduleActiveRender();
+                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
                             else if (window.appState.selectedStudent) renderNav();
                         },
                         (error) => console.error('Homeworks error:', error)
@@ -3518,7 +3700,7 @@
                             mat.sort((a, b) => Number(b.id) - Number(a.id));
                             window.appState.materials = mat;
                             localStorage.setItem('portal-materials', JSON.stringify(mat));
-                            if (['materials', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
+                            if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Materials error:', error)
                     );
@@ -3530,7 +3712,7 @@
                             snap.forEach(doc => extra.push({ id: doc.id, ...doc.data() }));
                             window.appState.extraSchedule = extra;
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Extra schedule error:', error)
                     );
@@ -3542,7 +3724,7 @@
                             snap.forEach(doc => hidden.push({ id: doc.id, ...doc.data() }));
                             window.appState.hiddenSchedule = hidden;
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Hidden schedule error:', error)
                     );
@@ -3584,7 +3766,7 @@
 
         const initApp = () => {
             // Paint local UI first. Remote services are started afterwards.
-            try { if (!window.matchMedia?.('(pointer: coarse)').matches && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) initParticles(); } catch (e) { console.warn('Background animation disabled:', e); }
+            try { initInteractiveBackground(); } catch (e) { console.warn('Interactive background disabled:', e); }
 
             if (window.appState.isDark) document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
@@ -3627,6 +3809,72 @@
             }
         });
 
+        // Lightweight interactive background. Pointer input is sampled and smoothed
+        // once per animation frame; only CSS transforms are updated.
+        const initInteractiveBackground = () => {
+            const root = document.getElementById('ambient-background');
+            if (!root) return;
+            const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+            const fine = window.matchMedia?.('(pointer: fine)').matches;
+            const coarse = window.matchMedia?.('(pointer: coarse)').matches;
+            if (reduce) return;
+
+            let targetX = 0, targetY = 0;
+            let currentX = 0, currentY = 0;
+            let raf = 0;
+            let active = !document.hidden;
+
+            const write = () => {
+                raf = 0;
+                if (!active) return;
+                currentX += (targetX - currentX) * (fine ? 0.12 : 0.09);
+                currentY += (targetY - currentY) * (fine ? 0.12 : 0.09);
+                root.style.setProperty('--pointer-rx', currentX.toFixed(4));
+                root.style.setProperty('--pointer-ry', currentY.toFixed(4));
+                if (Math.abs(targetX-currentX) > 0.001 || Math.abs(targetY-currentY) > 0.001) {
+                    raf = requestAnimationFrame(write);
+                }
+            };
+            const schedule = () => { if (!raf && active) raf = requestAnimationFrame(write); };
+
+            const setFromPoint = (clientX, clientY, strength) => {
+                const w = window.innerWidth || 1;
+                const h = window.innerHeight || 1;
+                targetX = ((clientX / w) - 0.5) * 2 * strength;
+                targetY = ((clientY / h) - 0.5) * 2 * strength;
+                schedule();
+            };
+
+            if (fine) {
+                window.addEventListener('pointermove', (e) => setFromPoint(e.clientX, e.clientY, 1), {passive:true});
+                window.addEventListener('pointerout', (e) => {
+                    if (e.relatedTarget) return;
+                    targetX = targetY = 0;
+                    schedule();
+                }, {passive:true});
+            } else if (coarse) {
+                window.addEventListener('touchmove', (e) => {
+                    const t = e.touches?.[0];
+                    if (t) setFromPoint(t.clientX, t.clientY, 0.42);
+                }, {passive:true});
+                window.addEventListener('touchend', () => { targetX = targetY = 0; schedule(); }, {passive:true});
+                window.addEventListener('touchcancel', () => { targetX = targetY = 0; schedule(); }, {passive:true});
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                active = !document.hidden;
+                if (!active) {
+                    if (raf) cancelAnimationFrame(raf);
+                    raf = 0;
+                } else {
+                    schedule();
+                }
+            }, {passive:true});
+
+            window.addEventListener('resize', schedule, {passive:true});
+            schedule();
+        };
+
         // Premium pointer spotlight — disabled on touch/reduced-motion devices.
         (() => {
             const glow = document.getElementById('pointer-glow');
@@ -3654,18 +3902,6 @@
             document.addEventListener('pointerenter', () => {
                 glow.style.opacity = '';
             });
-        })();
-
-
-        // Browser lifecycle tuning: pause non-essential visual motion when hidden/backgrounded.
-        (() => {
-            const root = document.documentElement;
-            const setPassiveMode = (paused) => {
-                root.classList.toggle('portal-paused', paused);
-            };
-            document.addEventListener('visibilitychange', () => setPassiveMode(document.hidden));
-            window.addEventListener('pagehide', () => setPassiveMode(true), { passive:true });
-            window.addEventListener('pageshow', () => setPassiveMode(false), { passive:true });
         })();
 
         // Run Init
