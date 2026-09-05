@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>МБ-302 — Student Portal</title>
+    <title>МБ-302 — Студентський портал</title>
     <meta name="theme-color" content="#09090b">
     <meta name="color-scheme" content="dark">
-    <meta name="description" content="Преміальний студентський портал МБ-302 з розкладом, Д/з, матеріалами та аналітикою.">
+    <meta name="description" content="Преміальний студентський портал МБ-302 з розкладом, завданнями, матеріалами та аналітикою.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,11 +98,11 @@
         }
 
         /* Redesigned Glassmorphism Utilities */
-        .glass-panel { @apply bg-white/70 dark:bg-zinc-900/70 backdrop-blur-3xl border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]; }
-        .glass-card { @apply bg-white/60 dark:bg-zinc-900/50 backdrop-blur-2xl border border-white/70 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.15)] hover:shadow-xl hover:bg-white/80 dark:hover:bg-zinc-900/80 transition-all duration-300; }
+        .glass-panel { background: rgba(255,255,255,.70); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,.60); box-shadow: 0 8px 30px rgba(0,0,0,.04); }
+        .glass-card { background: rgba(255,255,255,.60); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.70); box-shadow: 0 4px 20px rgba(0,0,0,.03); transition: all .3s ease; }
         
         /* Gradient Text */
-        .text-gradient { @apply bg-clip-text text-transparent bg-gradient-to-r; }
+        .text-gradient { background-clip: text; -webkit-background-clip: text; color: transparent; }
 
         #main-content { transition: opacity 0.25s ease, transform 0.25s ease; }
 
@@ -328,7 +328,12 @@
         }
 
         .premium-enter {
-            animation: premiumPageEnter .7s var(--premium-ease) both;
+            animation: premiumPageEnterOpacity .45s ease both;
+        }
+
+        @keyframes premiumPageEnterOpacity {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .premium-shine {
@@ -422,6 +427,7 @@
         .compact-live-widget { min-height: 0 !important; }
 
         @media (max-width: 767px) {
+            #app { transform: none !important; }
             .portal-bg-layer {
                 background: radial-gradient(circle at 18% 10%, var(--portal-accent-a), transparent 40%),
                             radial-gradient(circle at 88% 18%, var(--portal-accent-b), transparent 36%),
@@ -597,6 +603,34 @@
             background-color: #08090c !important;
         }
 
+        /* Premium geometry background */
+        .geometry-field {
+            position:absolute; inset:0; overflow:hidden; opacity:.55;
+            pointer-events:none;
+        }
+        .geometry-shape {
+            position:absolute; display:block; border:1px solid rgba(255,255,255,.075);
+            border-radius:28px; transform:rotate(45deg);
+            box-shadow:0 0 70px rgba(139,92,246,.045) inset, 0 0 35px rgba(255,255,255,.02);
+        }
+        .geometry-shape-a { width:320px; height:320px; right:-120px; top:14%; }
+        .geometry-shape-b { width:210px; height:210px; left:-100px; bottom:14%; border-radius:52px; opacity:.8; }
+        .geometry-shape-c { width:120px; height:120px; right:22%; bottom:7%; border-radius:18px; transform:rotate(18deg); opacity:.6; }
+        .geometry-line { position:absolute; display:block; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent); transform-origin:left center; }
+        .geometry-line-a { width:68vw; left:-8vw; top:34%; transform:rotate(-13deg); }
+        .geometry-line-b { width:54vw; right:-10vw; top:63%; transform:rotate(19deg); }
+        .appearance-trigger, .appearance-trigger * { pointer-events:auto !important; }
+        .appearance-trigger { position:relative; z-index:80; isolation:isolate; }
+        #mobile-dock { padding-bottom: env(safe-area-inset-bottom); }
+        @media (max-width:767px) {
+            body { padding-bottom: 5.2rem; }
+            .geometry-shape-a { width:220px; height:220px; right:-100px; top:10%; }
+            .geometry-shape-b { width:160px; height:160px; left:-80px; bottom:18%; }
+            .geometry-shape-c { width:90px; height:90px; right:17%; bottom:10%; }
+            .geometry-line-a { width:120vw; left:-22vw; top:31%; }
+            .geometry-line-b { width:105vw; right:-35vw; top:66%; }
+        }
+
     </style>
 </head>
 <body class="text-zinc-200 bg-zinc-950 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -610,10 +644,14 @@
         <div id="pointer-glow" aria-hidden="true"></div>
         <div class="ambient-grid" aria-hidden="true"></div>
         <div class="ambient-noise" aria-hidden="true"></div>
+        <div class="geometry-field" aria-hidden="true">
+            <span class="geometry-shape geometry-shape-a"></span>
+            <span class="geometry-shape geometry-shape-b"></span>
+            <span class="geometry-shape geometry-shape-c"></span>
+            <span class="geometry-line geometry-line-a"></span>
+            <span class="geometry-line geometry-line-b"></span>
+        </div>
     </div>
-
-    <!-- Live Cursors -->
-    <div id="live-cursors" class="fixed inset-0 z-[9999] pointer-events-none overflow-hidden"></div>
 
     <!-- MAIN APP CONTAINER -->
     <div id="app" class="w-full h-full flex flex-col flex-1 relative z-[10] hidden premium-enter">
@@ -638,13 +676,13 @@
                 <div class="flex items-center gap-2 pr-1">
                     <div class="hidden sm:flex items-center gap-1.5">
                         <div class="relative" id="theme-dropdown-wrapper">
-                            <button type="button" aria-label="Акцентний колір" aria-expanded="false" onclick="window.app.toggleThemeDropdown('main')" class="w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/8 transition-all border border-transparent hover:border-white/10" title="Акцент">
+                            <button type="button" aria-label="Акцентний колір" aria-expanded="false" onclick="window.app.toggleThemeDropdown('main')" class="appearance-trigger w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/8 transition-all border border-transparent hover:border-white/10" title="Акцент">
                                 <i data-lucide="palette" class="w-4.5 h-4.5"></i>
                             </button>
                             <div id="theme-dropdown-main" class="absolute top-full mt-3 right-0 w-56 bg-zinc-950/96 backdrop-blur-3xl border border-white/10 shadow-2xl rounded-3xl p-2.5 hidden z-[1000] animate-scale-in max-h-72 overflow-y-auto" style="transform-origin: top right;"></div>
                         </div>
                         <div class="relative" id="background-dropdown-wrapper">
-                            <button type="button" aria-label="Фон порталу" aria-expanded="false" onclick="window.app.toggleBackgroundDropdown('main')" class="w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/8 transition-all border border-transparent hover:border-white/10" title="Фон порталу">
+                            <button type="button" aria-label="Фон порталу" aria-expanded="false" onclick="window.app.toggleBackgroundDropdown('main')" class="appearance-trigger w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/8 transition-all border border-transparent hover:border-white/10" title="Фон порталу">
                                 <i data-lucide="image" class="w-4.5 h-4.5"></i>
                             </button>
                             <div id="background-dropdown-main" class="absolute top-full mt-3 right-0 w-[min(22rem,calc(100vw-2rem))] bg-zinc-950/96 backdrop-blur-3xl border border-white/10 shadow-2xl rounded-3xl p-3 hidden z-[1000] animate-scale-in" style="transform-origin: top right;"></div>
@@ -668,9 +706,9 @@
             <!-- Views will be injected here -->
         </main>
 
-        <!-- Mobile App-like Docked Nav Bar -->
-        <div class="md:hidden fixed bottom-0 left-0 w-full z-[100] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl border-t border-zinc-200/80 dark:border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] pb-[env(safe-area-inset-bottom)]">
-            <nav id="mobile-nav" class="flex justify-around items-center h-[72px] px-2 relative animate-slide-up" style="animation-delay: 100ms;">
+        <!-- Premium Mobile Dock -->
+        <div id="mobile-dock" class="md:hidden fixed left-3 right-3 bottom-2 z-[100] pointer-events-none">
+            <nav id="mobile-nav" aria-label="Основна навігація" class="pointer-events-auto flex items-center h-[68px] px-1.5 rounded-[24px] border border-white/10 bg-zinc-950/88 backdrop-blur-2xl shadow-[0_18px_55px_rgba(0,0,0,.35),0_2px_10px_rgba(0,0,0,.18)]">
             </nav>
         </div>
 
@@ -681,7 +719,7 @@
     </div>
 
     <!-- AUTH SCREEN -->
-    <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 hidden bg-zinc-950/82 backdrop-blur-2xl">
+    <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 bg-zinc-950/82 backdrop-blur-2xl">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-violet-500/20 blur-[120px] animate-float"></div>
             <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-fuchsia-600/20 blur-[120px] animate-float" style="animation-delay: -2s;"></div>
@@ -689,7 +727,7 @@
 
         <div class="absolute pt-safe top-2 mt-6 right-6 flex items-center gap-2 z-20 auth-theme-wrapper glass-panel rounded-full px-2 py-1 animate-slide-in-right" style="animation-delay: 100ms;">
             <div class="relative">
-                <button type="button" aria-label="Акцентний колір" aria-expanded="false" onclick="window.app.toggleThemeDropdown('auth')" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all border border-transparent hover:border-white/10">
+                <button type="button" aria-label="Акцентний колір" aria-expanded="false" onclick="window.app.toggleThemeDropdown('auth')" class="appearance-trigger w-10 h-10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all border border-transparent hover:border-white/10">
                     <i data-lucide="palette" class="w-4.5 h-4.5"></i>
                 </button>
                 <div id="theme-dropdown-auth" class="absolute top-full mt-3 right-0 w-56 bg-zinc-950/96 backdrop-blur-3xl border border-white/10 shadow-2xl rounded-3xl p-2.5 hidden z-[1000] animate-scale-in max-h-72 overflow-y-auto" style="transform-origin: top right;"></div>
@@ -728,16 +766,32 @@
     <!-- TOAST CONTAINER -->
     <div id="toasts" class="fixed top-24 pt-safe left-4 right-4 md:left-auto md:right-8 z-[999] flex flex-col gap-3 pointer-events-none items-center md:items-end"></div>
 
+    <!-- Boot fail-safe: never leave the user on a blank screen while remote services initialize. -->
+    <script>
+        (() => {
+            try {
+                document.documentElement.classList.add('dark');
+                const auth = document.getElementById('auth-screen');
+                if (auth) auth.classList.remove('hidden');
+            } catch (e) {}
+            window.setTimeout(() => {
+                try {
+                    const auth = document.getElementById('auth-screen');
+                    if (auth) auth.classList.remove('hidden');
+                } catch (e) {}
+            }, 1200);
+        })();
+    </script>
+
     <!-- FIREBASE & APP SCRIPT -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-        import { getDatabase, ref, set, onValue, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js';
-
+        
         // --- DATA CONSTANTS & THEMES ---
         const themesConfig = {
-            'purple': { pri: 'violet', sec: 'fuchsia', label: 'Ультрафіолет (Default)', bg: 'bg-violet-500' },
+            'purple': { pri: 'violet', sec: 'fuchsia', label: 'Ультрафіолет', bg: 'bg-violet-500' },
             'blue': { pri: 'blue', sec: 'indigo', label: 'Океан', bg: 'bg-blue-500' },
             'teal': { pri: 'teal', sec: 'emerald', label: 'Смарагд', bg: 'bg-teal-500' },
             'rose': { pri: 'rose', sec: 'pink', label: 'Вогонь', bg: 'bg-rose-500' },
@@ -774,7 +828,7 @@
             { id: 16, name: "Могилянська С.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "китайська"] },
             { id: 17, name: "Мурін А.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
             { id: 18, name: "Петричка В.С.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
-            { id: 19, name: "Пилипенко Д.О.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 19, name: "Пилипенко Д.О.", preferredName: "Даня", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
             { id: 20, name: "Поправка А.Ю.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
             { id: 21, name: "Солярик В.Я.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
             { id: 22, name: "Степаненко М.Ю.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
@@ -822,18 +876,32 @@
 
         const getClosestMainWeek = () => {
             const now = new Date();
-            for (let w of weeksConfig) {
-                const [s, e] = w.d.split('-');
-                const [sd, sm] = s.split('.').map(Number);
-                const [ed, em] = e.split('.').map(Number);
+            for (const w of weeksConfig) {
+                const [sd, sm] = w.d.split('-')[0].split('.').map(Number);
+                const [ed, em] = w.d.split('-')[1].split('.').map(Number);
                 const start = new Date(2026, sm - 1, sd);
                 const end = new Date(2026, em - 1, ed, 23, 59, 59);
                 if (now >= start && now <= end) return w;
             }
-            return weeksConfig[0];
+            if (now < new Date(2026, 7, 31)) return weeksConfig[0];
+            return weeksConfig[weeksConfig.length - 1];
         };
 
         const closestWeekObj = getClosestMainWeek();
+
+        // Corrupted/old localStorage must never stop the portal from booting.
+        const safeStorageJson = (key, fallback) => {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return fallback;
+                const value = JSON.parse(raw);
+                return value ?? fallback;
+            } catch (error) {
+                console.warn(`Invalid local data for ${key}; resetting it.`, error);
+                try { localStorage.removeItem(key); } catch (e) {}
+                return fallback;
+            }
+        };
         
         window.appState = {
             firebaseUser: null,
@@ -849,12 +917,13 @@
             persActiveWeekNum: closestWeekObj.n,
             mainViewWeek: closestWeekObj.t,
             mainActiveWeekNum: closestWeekObj.n,
+            scheduleAutoDateKey: '',
 
-            locationsData: JSON.parse(localStorage.getItem('portal-custom-locations')) || {},
-            homeworks: JSON.parse(localStorage.getItem('portal-homeworks')) || [],
-            materials: JSON.parse(localStorage.getItem('portal-materials')) || [],
-            extraSchedule: JSON.parse(localStorage.getItem('portal-extra-schedule')) || [],
-            hiddenSchedule: JSON.parse(localStorage.getItem('portal-hidden-schedule')) || [],
+            locationsData: safeStorageJson('portal-custom-locations', {}),
+            homeworks: safeStorageJson('portal-homeworks', []),
+            materials: safeStorageJson('portal-materials', []),
+            extraSchedule: safeStorageJson('portal-extra-schedule', []),
+            hiddenSchedule: safeStorageJson('portal-hidden-schedule', []),
             
             hwFilter: 'my',
             unreadHwCount: 0,
@@ -871,44 +940,87 @@
         };
 
         const getMergedSchedule = (weekType, weekNum) => {
-            let base = mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : [];
-            let extras = window.appState.extraSchedule.filter(ep => {
+            let base = (weekNum && Number(weekNum) >= 3) ? [] : (mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : []);
+
+            // Поки у порталі є лише лекційна начитка: практичні/мовні пари не показуємо.
+            base.forEach(d => {
+                d.pairs = d.pairs.filter(p => /\sЛ(?:$|\s)/i.test(p.subj));
+            });
+
+            const extras = window.appState.extraSchedule.filter(ep => {
                 if (ep.weekType !== weekType) return false;
                 if (ep.targetWeekNum) {
-                    if (weekNum) {
-                        if (parseInt(ep.targetWeekNum) !== parseInt(weekNum)) return false;
-                    } else {
-                        return false;
-                    }
+                    if (!weekNum || parseInt(ep.targetWeekNum) !== parseInt(weekNum)) return false;
                 }
                 return true;
             });
-            
+
             extras.forEach(ep => {
                 let dayObj = base.find(d => d.day === ep.day);
                 if (!dayObj) { dayObj = { day: ep.day, pairs: [] }; base.push(dayObj); }
                 dayObj.pairs.push({
                     id: ep.id, num: parseInt(ep.num),
-                    time: timeSlots[parseInt(ep.num)-1].start + "-" + timeSlots[parseInt(ep.num)-1].end,
+                    time: timeSlots[parseInt(ep.num)-1].start + '-' + timeSlots[parseInt(ep.num)-1].end,
                     subj: ep.subj, type: ep.type, map: ep.map, isCustom: true
                 });
             });
 
             base.forEach(d => {
-                d.pairs = d.pairs.filter(p => {
-                    return !window.appState.hiddenSchedule.some(hp => {
-                        if (hp.weekType !== weekType || hp.day !== d.day || hp.num != p.num || hp.subj !== p.subj) return false;
-                        if (hp.targetWeekNum) {
-                            return weekNum && parseInt(hp.targetWeekNum) === parseInt(weekNum);
-                        }
-                        return true;
-                    });
-                });
+                d.pairs = d.pairs.filter(p => !window.appState.hiddenSchedule.some(hp => {
+                    if (hp.weekType !== weekType || hp.day !== d.day || hp.num != p.num || hp.subj !== p.subj) return false;
+                    return !hp.targetWeekNum || (weekNum && parseInt(hp.targetWeekNum) === parseInt(weekNum));
+                }));
             });
+
             base = base.filter(d => d.pairs.length > 0);
             base.forEach(d => d.pairs.sort((a,b) => a.num - b.num));
             base.sort((a,b) => dayOffsets[a.day] - dayOffsets[b.day]);
             return base;
+        };
+
+        const getSchedulePairsForStudent = (weekNum, isPersonal) => {
+            const w = weeksConfig.find(x => x.n === Number(weekNum));
+            if (!w) return [];
+            let pairs = getMergedSchedule(w.t, w.n).flatMap(d => d.pairs.map(p => ({...p, day: d.day})));
+            if (isPersonal && window.appState.selectedStudent) {
+                const electives = window.appState.selectedStudent.electives || [];
+                pairs = pairs.filter(p => p.type === 'general' || p.type === 'lang' || electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+            }
+            return pairs;
+        };
+
+        const hasRemainingSchedule = (weekNum, isPersonal) => {
+            const now = new Date();
+            const current = getClosestMainWeek();
+            const pairs = getSchedulePairsForStudent(weekNum, isPersonal);
+            if (!pairs.length) return false;
+            if (Number(weekNum) !== Number(current.n)) return pairs.length > 0;
+            const todayName = ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'][now.getDay()];
+            const time = now.toTimeString().slice(0,5);
+            return pairs.some(p => dayOffsets[p.day] > (now.getDay() === 0 ? 6 : now.getDay()-1) || (p.day === todayName && p.time.split('-')[1] >= time));
+        };
+
+        const getRecommendedWeek = (isPersonal) => {
+            const current = getClosestMainWeek();
+            for (let n = current.n; n <= weeksConfig.length; n++) {
+                if (hasRemainingSchedule(n, isPersonal)) {
+                    const w = weeksConfig.find(x => x.n === n);
+                    if (w) return w;
+                }
+            }
+            return current;
+        };
+
+        const applyAutomaticWeekSelection = () => {
+            const today = new Date(); const key = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            if (window.appState.scheduleAutoDateKey === key) return;
+            const personal = getRecommendedWeek(true);
+            const general = getRecommendedWeek(false);
+            window.appState.persMainWeek = personal.t;
+            window.appState.persActiveWeekNum = personal.n;
+            window.appState.mainViewWeek = general.t;
+            window.appState.mainActiveWeekNum = general.n;
+            window.appState.scheduleAutoDateKey = key;
         };
 
         const isHwRelevant = (hwSubj, student) => {
@@ -937,12 +1049,21 @@
         };
 
 
+        const defaultZoomLinks = {
+            "Міжнародний бізнес Л": "https://us02web.zoom.us/j/83901723856?pwd=CMo5YplgP7abg9clDTRMlegmaa4ye3.1",
+            "Менеджмент персоналу Л": "https://us02web.zoom.us/j/4985041677?pwd=aXcybTROU2IzTFlDSGNuVVFCR2xnZz09",
+            "Міжнародна торгівля В Л": "https://us04web.zoom.us/j/73168331234?pwd=hgdrVQSKTHbFWYixTWW81u30awJJzO.1",
+            "Світовий фінансовий ринок В Л": "https://us02web.zoom.us/j/89787082194?pwd=YnRSRU1vblFxVGNMMStIWjZudDJYdz09",
+            "Міжнародний маркетинг Л": "https://us02web.zoom.us/j/4568239364?pwd=aWpZRWtHbWhpN0hyck1LaG5pMmNLQT09",
+            "Світовий фондовий ринок В Л": "https://us02web.zoom.us/j/89787082194?pwd=YnRSRU1vblFxVGNMMStIWjZudDJYdz09"
+        };
+
         const backgroundsConfig = {
-            aurora: { label: 'Aurora', icon: 'sparkles', base: '#08090d', a: 'rgba(124,58,237,.30)', b: 'rgba(217,70,239,.24)', c: 'rgba(59,130,246,.15)' },
-            ocean:  { label: 'Ocean', icon: 'waves', base: '#061117', a: 'rgba(14,165,233,.30)', b: 'rgba(6,182,212,.24)', c: 'rgba(37,99,235,.16)' },
-            forest: { label: 'Forest', icon: 'trees', base: '#07110d', a: 'rgba(16,185,129,.27)', b: 'rgba(132,204,22,.17)', c: 'rgba(20,83,45,.25)' },
-            sunset: { label: 'Sunset', icon: 'sunset', base: '#120a0d', a: 'rgba(251,146,60,.30)', b: 'rgba(244,63,94,.25)', c: 'rgba(168,85,247,.17)' },
-            mono:   { label: 'Mono', icon: 'contrast', base: '#080808', a: 'rgba(255,255,255,.11)', b: 'rgba(148,163,184,.07)', c: 'rgba(255,255,255,.05)' }
+            aurora: { label: 'Полярне сяйво', icon: 'sparkles', base: '#08090d', a: 'rgba(124,58,237,.30)', b: 'rgba(217,70,239,.24)', c: 'rgba(59,130,246,.15)' },
+            ocean:  { label: 'Океан', icon: 'waves', base: '#061117', a: 'rgba(14,165,233,.30)', b: 'rgba(6,182,212,.24)', c: 'rgba(37,99,235,.16)' },
+            forest: { label: 'Ліс', icon: 'trees', base: '#07110d', a: 'rgba(16,185,129,.27)', b: 'rgba(132,204,22,.17)', c: 'rgba(20,83,45,.25)' },
+            sunset: { label: 'Захід сонця', icon: 'sunset', base: '#120a0d', a: 'rgba(251,146,60,.30)', b: 'rgba(244,63,94,.25)', c: 'rgba(168,85,247,.17)' },
+            mono:   { label: 'Монохром', icon: 'contrast', base: '#080808', a: 'rgba(255,255,255,.11)', b: 'rgba(148,163,184,.07)', c: 'rgba(255,255,255,.05)' }
         };
 
         const applyBackgroundTheme = () => {
@@ -999,7 +1120,7 @@
         const getDeviceInfo = () => {
             const ua = navigator.userAgent;
             let browser = "Невідомий";
-            if(ua.includes("Telegram") || ua.includes("Instagram")) browser = "In-App Browser";
+            if(ua.includes("Telegram") || ua.includes("Instagram")) browser = "Вбудований браузер";
             else if(ua.includes("Firefox")) browser = "Firefox";
             else if(ua.includes("SamsungBrowser")) browser = "Samsung Browser";
             else if(ua.includes("Opera") || ua.includes("OPR")) browser = "Opera";
@@ -1009,14 +1130,14 @@
 
             let os = "Невідома ОС";
             if(ua.indexOf("Win")!=-1) os = "Windows";
-            else if(ua.indexOf("Mac")!=-1) os = "MacOS";
+            else if(ua.indexOf("Mac")!=-1) os = "macOS";
             else if(ua.indexOf("X11")!=-1) os = "UNIX";
             else if(ua.indexOf("Linux")!=-1) os = "Linux";
             if(/Android/.test(ua)) os = "Android";
             if(/iPhone|iPad|iPod/.test(ua)) os = "iOS";
 
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-            const device = isMobile ? "Mobile" : "Desktop";
+            const device = isMobile ? "Телефон" : "Компʼютер";
 
             return { browser, os, device, ua };
         };
@@ -1038,192 +1159,7 @@
         const firebaseApp = initializeApp(firebaseConfig);
         const auth = getAuth(firebaseApp);
         const db = getFirestore(firebaseApp);
-        const rtdb = getDatabase(firebaseApp);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mb-302-group'; 
-
-        // --- INTERACTIVE BACKGROUND ENGINE ---
-        const initParticles = () => {
-            const canvas = document.getElementById('interactive-bg');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let width, height, particles = [];
-            
-            const particleCount = window.innerWidth < 768 ? 40 : 80;
-            const connectionDistance = 120;
-            const mouseAttractionRadius = 150;
-
-            let mouse = { x: null, y: null };
-            window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-            window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
-
-            const resize = () => {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-            };
-            window.addEventListener('resize', resize);
-            resize();
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
-                    this.vx = (Math.random() - 0.5) * 1.5;
-                    this.vy = (Math.random() - 0.5) * 1.5;
-                    this.size = Math.random() * 2 + 1;
-                }
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    if (this.x < 0 || this.x > width) this.vx *= -1;
-                    if (this.y < 0 || this.y > height) this.vy *= -1;
-
-                    if (mouse.x) {
-                        const dx = mouse.x - this.x;
-                        const dy = mouse.y - this.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < mouseAttractionRadius) {
-                            this.x += dx * 0.025;
-                            this.y += dy * 0.025;
-                        }
-                    }
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    const isDark = window.appState.isDark;
-                    ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.15)';
-                    ctx.fill();
-                }
-            }
-
-            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-
-            const animate = () => {
-                ctx.clearRect(0, 0, width, height);
-                const isDark = window.appState.isDark;
-                const lineColor = isDark ? '255, 255, 255' : '0, 0, 0';
-
-                particles.forEach((p, index) => {
-                    p.update();
-                    p.draw();
-                    
-                    for (let j = index + 1; j < particles.length; j++) {
-                        const p2 = particles[j];
-                        const dx = p.x - p2.x;
-                        const dy = p.y - p2.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < connectionDistance) {
-                            ctx.beginPath();
-                            ctx.moveTo(p.x, p.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            const opacity = 1 - (distance / connectionDistance);
-                            ctx.strokeStyle = `rgba(${lineColor}, ${opacity * 0.15})`;
-                            ctx.lineWidth = 1;
-                            ctx.stroke();
-                        }
-                    }
-                });
-                requestAnimationFrame(animate);
-            };
-            animate();
-        };
-
-        window.liveCursors = {}; 
-        let myPresenceRef = null;
-        let globalMouseListener = null;
-
-        const initMultiplayer = () => {
-            const student = window.appState.selectedStudent;
-            if (!student) return;
-
-            const safeAppId = appId.replace(/[.#$\[\]]/g, '_');
-            myPresenceRef = ref(rtdb, `presence/${safeAppId}/${student.id}`);
-            
-            onDisconnect(myPresenceRef).remove();
-
-            let lastUpdate = 0;
-            globalMouseListener = (e) => {
-                const now = Date.now();
-                if (now - lastUpdate > 50) { 
-                    lastUpdate = now;
-                    set(myPresenceRef, {
-                        x: e.clientX / window.innerWidth,
-                        y: e.clientY / window.innerHeight,
-                        name: student.name.split(' ')[0],
-                        theme: window.appState.colorTheme || 'purple',
-                        ts: now
-                    });
-                }
-            };
-            window.addEventListener('mousemove', globalMouseListener);
-
-            const allCursorsRef = ref(rtdb, `presence/${safeAppId}`);
-            onValue(allCursorsRef, (snapshot) => {
-                const data = snapshot.val() || {};
-                const container = document.getElementById('live-cursors');
-                const now = Date.now();
-
-                Object.keys(data).forEach(uid => {
-                    if (uid == student.id) return;
-
-                    const cData = data[uid];
-                    
-                    if (now - cData.ts > 15000) {
-                        if (window.liveCursors[uid]) {
-                            window.liveCursors[uid].remove();
-                            delete window.liveCursors[uid];
-                        }
-                        return;
-                    }
-
-                    let cursorEl = window.liveCursors[uid];
-                    if (!cursorEl) {
-                        cursorEl = document.createElement('div');
-                        cursorEl.className = 'absolute top-0 left-0 transition-transform duration-75 ease-linear flex flex-col items-start drop-shadow-xl z-50 pointer-events-none';
-                        
-                        const themeColorClass = `text-${cData.theme}-500`;
-                        const bgThemeClass = `bg-${cData.theme}-500`;
-
-                        cursorEl.innerHTML = `
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="white" stroke-width="2" class="${themeColorClass} transform -rotate-12 drop-shadow-md">
-                                <polygon points="3 3 10.07 19.97 12.58 11.41 21 8.9 3 3"></polygon>
-                            </svg>
-                            <span class="mt-1 ml-4 px-2.5 py-1 ${bgThemeClass} text-white text-[11px] font-bold rounded-full whitespace-nowrap shadow-lg opacity-90">${cData.name}</span>
-                        `;
-                        container.appendChild(cursorEl);
-                        window.liveCursors[uid] = cursorEl;
-                    } else {
-                        const themeColorClass = `text-${cData.theme}-500`;
-                        const bgThemeClass = `bg-${cData.theme}-500`;
-                        const svg = cursorEl.querySelector('svg');
-                        const span = cursorEl.querySelector('span');
-                        if (svg && span && !svg.classList.contains(themeColorClass)) {
-                            svg.setAttribute('class', `${themeColorClass} transform -rotate-12 drop-shadow-md`);
-                            span.className = `mt-1 ml-4 px-2.5 py-1 ${bgThemeClass} text-white text-[11px] font-bold rounded-full whitespace-nowrap shadow-lg opacity-90`;
-                        }
-                    }
-
-                    const xPx = cData.x * window.innerWidth;
-                    const yPx = cData.y * window.innerHeight;
-                    cursorEl.style.transform = `translate(${xPx}px, ${yPx}px)`;
-                });
-
-                Object.keys(window.liveCursors).forEach(uid => {
-                    if (!data[uid]) {
-                        window.liveCursors[uid].remove();
-                        delete window.liveCursors[uid];
-                    }
-                });
-            });
-        };
-
-        const stopMultiplayer = () => {
-            if (myPresenceRef) remove(myPresenceRef);
-            if (globalMouseListener) window.removeEventListener('mousemove', globalMouseListener);
-            document.getElementById('live-cursors').innerHTML = '';
-            window.liveCursors = {};
-        };
 
         const showToast = (msg, isError = false) => {
             const { pri } = getTheme();
@@ -1268,111 +1204,40 @@
 
         // --- RENDERING ENGINES ---
         const renderNav = () => {
-            const { pri, sec } = getTheme();
-            const canEdit = window.appState.selectedStudent && (window.appState.selectedStudent.id === 19 || window.appState.selectedStudent.id === 2);
-            const isPilipenko = window.appState.selectedStudent && window.appState.selectedStudent.id === 19;
-            
+            const { pri } = getTheme();
+            const isPilipenko = window.appState.selectedStudent?.id === 19;
             const navItems = [
-                { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
-                { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
-                { id: 'homework', icon: 'check-square', label: 'Д/з' },
-                { id: 'register', icon: 'users', label: 'Група' },
-            ];
-            if (isPilipenko) navItems.push({ id: 'analytics', icon: 'bar-chart-2', label: 'Аналітика' }); 
-            
-            // DESKTOP NAV
-            const deskNav = document.getElementById('desktop-nav');
-            if (deskNav) {
-                let dHtml = `<div id="desk-active-pill" class="absolute top-1.5 bottom-1.5 rounded-full bg-white dark:bg-zinc-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0"></div>`;
-                
-                dHtml += navItems.map((item, i) => {
-                    const isActive = window.appState.view === item.id;
-                    const activeClasses = isActive ? `text-${pri}-600 dark:text-${pri}-400 px-4` : `text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 w-9 justify-center`;
-                    
-                    return `
-                        <button id="nav-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex items-center gap-2 h-9 rounded-full transition-colors duration-300 ${activeClasses} animate-scale-in" style="animation-delay: ${i*30}ms;">
-                            <div class="relative flex items-center justify-center">
-                                <i data-lucide="${item.icon}" class="w-[18px] h-[18px] ${isActive ? 'scale-110 drop-shadow-sm' : ''} transition-all"></i>
-                                ${item.id === 'homework' && window.appState.unreadHwCount > 0 ? `<div class="absolute -top-1 -right-1.5 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-[#09090b] animate-pulse"></div>` : ''}
-                            </div>
-                            <span class="text-[13px] font-bold ${isActive ? 'block' : 'hidden'} whitespace-nowrap">${item.label}</span>
-                        </button>
-                    `;
-                }).join('');
-                deskNav.innerHTML = dHtml;
-
-                setTimeout(() => {
-                    const activeBtn = document.getElementById(`nav-btn-${window.appState.view}`);
-                    const pill = document.getElementById('desk-active-pill');
-                    if (activeBtn && pill) {
-                        pill.style.left = `${activeBtn.offsetLeft}px`;
-                        pill.style.width = `${activeBtn.offsetWidth}px`;
-                    }
-                }, 10);
-            }
-
-            // MOBILE NAV
-            const mobileNavItems = [
-                { id: 'dashboard', icon: 'layout-grid', label: 'Головна' },
+                { id: 'dashboard', icon: 'home', label: 'Головна' },
                 { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
                 { id: 'homework', icon: 'check-square', label: 'Д/з' },
                 { id: 'register', icon: 'users', label: 'Група' }
             ];
-            
+            if (isPilipenko) navItems.push({ id: 'analytics', icon: 'bar-chart-2', label: 'Аналітика' });
+
+            const deskNav = document.getElementById('desktop-nav');
+            if (deskNav) {
+                deskNav.innerHTML = navItems.map(item => {
+                    const active = window.appState.view === item.id;
+                    return `<button id="nav-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative flex items-center gap-2 h-9 rounded-full px-3.5 text-[13px] font-bold transition-all ${active ? `bg-white dark:bg-zinc-800 text-${pri}-600 dark:text-${pri}-400 shadow-sm` : 'text-zinc-500 hover:text-zinc-100'}">${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-rose-500"></span>' : ''}<i data-lucide="${item.icon}" class="w-[17px] h-[17px]"></i><span>${item.label}</span></button>`;
+                }).join('');
+            }
+
             const mobileContainer = document.getElementById('mobile-nav');
             if (mobileContainer) {
-                let mHtml = `<div id="mob-active-pill" class="absolute top-1.5 bottom-1.5 rounded-[20px] bg-${pri}-50 dark:bg-${pri}-500/20 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-0 opacity-0 hidden"></div>`;
-                
-                mHtml += mobileNavItems.map(item => {
-                    const isActive = window.appState.view === item.id;
-                    const activeClasses = isActive ? `text-${pri}-600 dark:text-${pri}-400` : `text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200`;
-                    
-                    return `
-                        <button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative z-10 flex flex-col items-center justify-center flex-1 h-full rounded-[20px] transition-colors duration-300 ${activeClasses}">
-                            <i data-lucide="${item.icon}" class="w-6 h-6 md:w-7 md:h-7 ${isActive ? 'scale-110 mb-0.5' : 'mb-1'} transition-transform"></i>
-                            <span class="text-[10px] md:text-[11px] font-bold tracking-wide ${isActive ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'} transition-all">${item.label}</span>
-                        </button>
-                    `;
+                mobileContainer.innerHTML = navItems.slice(0,5).map(item => {
+                    const active = window.appState.view === item.id;
+                    return `<button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" aria-current="${active ? 'page' : 'false'}" class="relative flex-1 h-[58px] rounded-[18px] flex flex-col items-center justify-center gap-1 transition-all ${active ? `bg-white/[.09] text-${pri}-400 shadow-inner` : 'text-zinc-500 hover:text-zinc-200'}"><span class="absolute top-1.5 h-0.5 w-5 rounded-full ${active ? `bg-${pri}-400` : 'bg-transparent'}"></span><i data-lucide="${item.icon}" class="w-5 h-5 ${active ? 'scale-110' : ''} transition-transform"></i><span class="text-[9px] font-black tracking-wide">${item.label}</span>${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-2 right-[22%] w-2 h-2 rounded-full bg-rose-500 border border-zinc-950"></span>' : ''}</button>`;
                 }).join('');
-
-                mHtml += `
-                    <button onclick="window.app.openMobileMenu()" class="relative z-10 flex flex-col items-center justify-center flex-1 h-full rounded-[20px] transition-colors text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
-                        <div class="relative">
-                            <i data-lucide="menu" class="w-6 h-6 md:w-7 md:h-7 mb-1"></i>
-                            ${window.appState.unreadHwCount > 0 ? `<div class="absolute -top-0.5 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-[#09090b] animate-pulse"></div>` : ''}
-                        </div>
-                        <span class="text-[10px] md:text-[11px] font-bold tracking-wide opacity-0 h-0 overflow-hidden transition-all">Меню</span>
-                    </button>
-                `;
-                mobileContainer.innerHTML = mHtml;
-
-                setTimeout(() => {
-                    const activeMBtn = document.getElementById(`mob-btn-${window.appState.view}`);
-                    const mPill = document.getElementById('mob-active-pill');
-                    if (activeMBtn && mPill) {
-                        mPill.classList.remove('hidden');
-                        mPill.style.left = `${activeMBtn.offsetLeft + 4}px`;
-                        mPill.style.width = `${activeMBtn.offsetWidth - 8}px`;
-                        mPill.style.opacity = '1';
-                    } else if (mPill) {
-                        mPill.style.opacity = '0';
-                    }
-                }, 10);
-            }
-            
-            if(window.appState.selectedStudent) {
-                const [firstName, lastName] = window.appState.selectedStudent.name.split(' ');
-                document.getElementById('header-user-info').innerHTML = `
-                    <div class="text-[13px] font-bold text-zinc-900 dark:text-white leading-tight">${firstName} ${lastName}</div>
-                    <div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold">${window.appState.selectedStudent.isStarosta ? 'Староста' : 'Студент'} 3 курсу</div>
-                `;
-                document.getElementById('header-user-avatar').innerText = window.appState.selectedStudent.name.charAt(0);
-                document.getElementById('header-user-avatar').className = `w-10 h-10 md:w-11 md:h-11 rounded-full bg-${pri}-100 dark:bg-${pri}-900/40 text-${pri}-700 dark:text-${pri}-300 flex items-center justify-center font-bold text-sm border border-${pri}-200/50 dark:border-${pri}-700/50 group-hover:ring-2 ring-${pri}-500/50 transition-all shadow-sm shrink-0`;
-                
-                document.getElementById('header-logo-bg').className = `w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-${pri}-500 to-${sec}-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-${pri}-500/30 group-hover:scale-105 transition-transform duration-300 shrink-0`;
-                document.getElementById('header-logo-text').className = `text-[9px] md:text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mt-1 block opacity-90`;
             }
 
+            if (window.appState.selectedStudent) {
+                const s = window.appState.selectedStudent;
+                const firstName = s.preferredName || s.name.split(' ')[1]?.replace(/\./g,'') || s.name.split(' ')[0];
+                const info = document.getElementById('header-user-info');
+                if (info) info.innerHTML = `<div class="text-[13px] font-bold text-zinc-100 leading-tight">${firstName}</div><div class="text-[10px] text-zinc-500 font-semibold">${s.isStarosta ? 'Староста' : 'Студент'} • 3 курс</div>`;
+                const avatar = document.getElementById('header-user-avatar');
+                if (avatar) avatar.innerText = firstName.charAt(0).toUpperCase();
+            }
             lucide.createIcons();
         };
 
@@ -1425,136 +1290,60 @@
         };
 
         const renderDashboard = () => {
-            const { pri, sec } = getTheme();
+            applyAutomaticWeekSelection();
+            const { pri } = getTheme();
             const user = window.appState.selectedStudent;
-            const canEdit = user && (user.id === 19 || user.id === 2);
-            const todayDay = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"][new Date().getDay()];
-            const merged = getMergedSchedule(closestWeekObj.t, closestWeekObj.n);
-            const todayScheduleObj = merged.find(d => d.day === todayDay);
-            const todaySchedule = todayScheduleObj ? todayScheduleObj.pairs : [];
+            const currentWeek = getClosestMainWeek();
+            const now = new Date();
+            const dayNames = ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'];
+            const todayDay = dayNames[now.getDay()];
+            const todayObj = getMergedSchedule(currentWeek.t, currentWeek.n).find(d => d.day === todayDay);
+            const personalToday = (todayObj?.pairs || []).filter(p => p.type === 'general' || p.type === 'lang' || (user.electives || []).some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+            const nextWeek = getRecommendedWeek(true);
+            const isNextWeek = nextWeek.n !== currentWeek.n;
+            const firstName = user.preferredName || user.name.split(' ')[1]?.replace(/\./g,'') || user.name.split(' ')[0];
+            const weekLabel = `${currentWeek.n} тиждень • ${currentWeek.t === 'upper' ? 'верхній' : 'нижній'}`;
 
-            // Мої пари
-            const personalToday = todaySchedule.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+            const pairRows = personalToday.map((p,i) => {
+                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url || window.appState.locationsData?.[p.subj]?.url || defaultZoomLinks[p.subj] || null;
+                return `<div class="flex items-center gap-3 p-3.5 md:p-4 rounded-[20px] border ${i === 0 ? `border-${pri}-500/20 bg-${pri}-500/[.05]` : 'border-white/5 bg-white/[.025]'}">
+                    <div class="w-9 h-9 rounded-[12px] bg-white/[.06] flex items-center justify-center text-xs font-black text-zinc-300">${p.num}</div>
+                    <div class="min-w-0 flex-1"><div class="text-[13px] md:text-[14px] font-black text-white truncate">${p.subj.replace(' (Начитка)','')}</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${p.time}</div></div>
+                    ${zoom ? `<a href="${zoom}" target="_blank" rel="noopener noreferrer" class="shrink-0 w-10 h-10 rounded-[13px] bg-blue-500/10 text-blue-400 border border-blue-500/15 flex items-center justify-center" aria-label="Відкрити Zoom"><i data-lucide="video" class="w-4 h-4"></i></a>` : ''}
+                </div>`;
+            }).join('');
 
-            const recentHw = window.appState.homeworks.filter(hw => isHwRelevant(hw.subj, user)).slice(0, 3);
-            const recentMat = window.appState.materials.slice(0, 3);
+            document.getElementById('main-content').innerHTML = `
+                <div class="space-y-4 md:space-y-5">
+                    <section class="flex items-end justify-between gap-4">
+                        <div><div class="text-[11px] font-black uppercase tracking-[.18em] text-zinc-500 mb-2">${getGreeting()}</div><h1 class="text-3xl md:text-5xl font-black tracking-tight text-white">${firstName} <span class="opacity-50">✦</span></h1><p class="text-xs md:text-sm font-semibold text-zinc-500 mt-2">МБ-302 • ${weekLabel}</p></div>
+                        <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-white/[.04] border border-white/5 text-[11px] font-bold text-zinc-400"><i data-lucide="calendar-days" class="w-4 h-4"></i>${now.toLocaleDateString('uk-UA',{day:'2-digit',month:'long'})}</div>
+                    </section>
 
-            let html = `
-                <div class="space-y-5 md:space-y-6">
-                    <div class="mb-6 md:mb-8 animate-slide-in-right flex flex-col gap-2" style="animation-delay: 0ms;">
-                        <div class="flex items-center gap-2 text-xs md:text-sm font-semibold text-zinc-500 dark:text-zinc-400 bg-white/50 dark:bg-zinc-800/50 w-max px-3 py-1 rounded-full border border-zinc-200/80 dark:border-white/10 shadow-sm backdrop-blur-sm">
-                            <i data-lucide="sun" class="w-3.5 h-3.5"></i> ${getGreeting()}
+                    <section id="live-widget" class="rounded-[28px] md:rounded-[34px] border border-white/10 bg-gradient-to-br from-white/[.065] to-white/[.018] p-5 md:p-6 relative overflow-hidden shadow-[0_22px_70px_rgba(0,0,0,.24)]"></section>
+
+                    <section class="glass-card rounded-[28px] md:rounded-[32px] p-4 md:p-5">
+                        <div class="flex items-center justify-between gap-3 mb-4"><div><div class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500">Сьогодні</div><h2 class="text-lg md:text-xl font-black text-white mt-1">Пари на сьогодні</h2></div><button onclick="window.app.setView('schedule')" class="h-9 px-3 rounded-xl bg-white/[.06] border border-white/5 text-[11px] font-bold text-zinc-300">Увесь розклад</button></div>
+                        <div class="space-y-2.5">
+                        ${personalToday.length ? pairRows : `<div class="py-7 text-center rounded-[22px] border border-dashed border-white/10 bg-white/[.02]"><i data-lucide="coffee" class="w-7 h-7 mx-auto mb-2 text-zinc-600"></i><div class="text-sm font-black text-zinc-300">Сьогодні пар немає</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${isNextWeek ? `Наступні пари — з ${nextWeek.n} тижня, з понеділка.` : 'Можна відпочити або зайнятися завданнями.'}</div></div>`}
                         </div>
-                        <h1 class="text-3xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight">
-                            ${user.name.split(' ')[0]} 👋
-                        </h1>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-                        
-                        <div class="md:col-span-2 bg-gradient-to-br from-zinc-900 to-black rounded-[32px] md:rounded-[40px] p-5 md:p-7 relative overflow-hidden shadow-2xl border border-zinc-800 flex flex-col justify-center min-h-[220px] md:min-h-[250px] animate-scale-in premium-shine compact-live-widget" style="animation-delay: 100ms;" id="live-widget">
-                        </div>
-                        <div class="md:col-span-2 glass-card rounded-[32px] md:rounded-[36px] p-5 md:p-6 animate-slide-up" style="animation-delay: 130ms;">
-                            <div class="flex items-center justify-between gap-3 mb-4 md:mb-5">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-500/10 text-rose-500 flex items-center justify-center">
-                                            <i data-lucide="flame" class="w-4 h-4"></i>
-                                        </div>
-                                        <h3 class="text-[12px] md:text-[13px] font-black uppercase tracking-widest text-zinc-700 dark:text-zinc-300">Горящие дедлайны</h3>
-                                    </div>
-                                    <p class="text-[10px] md:text-[11px] font-semibold text-zinc-400 mt-1 ml-10">То, что нужно закрыть в первую очередь</p>
-                                </div>
-                                <button onclick="window.app.setView('homework')" class="text-[11px] md:text-[12px] font-bold text-zinc-500 hover:text-rose-500 flex items-center gap-1.5">
-                                    Все Д/з <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
-                            <div id="hot-deadlines-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <!-- dynamic -->
-                            </div>
-                        </div>
+                    </section>
 
-
-                        <div class="md:col-span-1 glass-card rounded-[32px] md:rounded-[40px] p-5 md:p-6 flex flex-col group cursor-pointer animate-slide-up" style="animation-delay: 150ms;" onclick="window.app.setView('schedule')">
-                            <div class="flex items-center justify-between mb-5 md:mb-6">
-                                <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Сьогодні</h3>
-                                <div class="w-8 h-8 rounded-full bg-${pri}-50 dark:bg-${pri}-500/10 flex items-center justify-center text-${pri}-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
-                            </div>
-                            <div class="flex-1 overflow-y-auto hide-scrollbar pr-2 space-y-4 max-h-[200px]">
-                                ${personalToday.length === 0 ? `
-                                    <div class="flex flex-col items-center justify-center h-full text-center opacity-60 py-4">
-                                        <i data-lucide="coffee" class="w-8 h-8 text-zinc-400 mb-2"></i>
-                                        <div class="text-zinc-500 text-sm font-medium">Пар немає. Відпочиваємо!</div>
-                                    </div>` : 
-                                    personalToday.map(p => {
-                                        let displaySubj = p.subj.replace(' (Начитка)', '');
-                                        
-                                        const weekType = closestWeekObj.t;
-                                        const locKey = `${weekType}_${p.subj}`;
-                                        const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
-                                        const roomNum = locInfo.room || null;
-                                        const encodedSubj = encodeURIComponent(p.subj);
-
-                                        return `
-                                            <div class="flex items-center gap-3 md:gap-4 relative group/dash">
-                                                <div class="absolute left-3.5 top-8 bottom-[-16px] w-px bg-zinc-200 dark:bg-zinc-800 last:hidden"></div>
-                                                <div class="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300 shrink-0 border-2 border-zinc-950 z-10 shadow-sm">${p.num}</div>
-                                                <div class="flex items-center justify-between flex-1 min-w-0 pt-0.5 gap-2">
-                                                    <div class="text-[13px] md:text-[14px] font-bold text-zinc-900 dark:text-white truncate">${displaySubj}</div>
-                                                    <div class="flex items-center gap-1.5 shrink-0">
-                                                        ${roomNum ? `<div class="shrink-0 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-200/50 dark:border-amber-500/20 shadow-sm whitespace-nowrap">Ауд. ${roomNum}</div>` : ''}
-                                                        ${canEdit ? `<button onclick="window.app.openLocationModal('${encodedSubj}', '${weekType}'); event.stopPropagation();" class="text-zinc-300 dark:text-zinc-600 hover:text-${pri}-500 dark:hover:text-${pri}-400 transition-colors p-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i></button>` : ''}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        `;
-                                    }).join('')
-                                }
-                            </div>
-                        </div>
-
-                        <div class="md:col-span-2 glass-card rounded-[32px] md:rounded-[40px] p-5 md:p-6 group cursor-pointer animate-slide-up" style="animation-delay: 200ms;" onclick="window.app.setView('homework')">
-                            <div class="flex items-center justify-between mb-5 md:mb-6">
-                                <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Останні Д/з</h3>
-                                <div class="flex items-center gap-1 text-[12px] font-bold text-${pri}-500 group-hover:text-${pri}-600 transition-colors">Всі <i data-lucide="chevron-right" class="w-3 h-3"></i></div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-                                ${recentHw.length === 0 ? `<p class="text-sm font-semibold text-zinc-500 col-span-3 pb-2">Немає нових Д/з для вашої групи</p>` : recentHw.map(hw => `
-                                    <div class="bg-white/80 dark:bg-zinc-900/80 p-4 md:p-5 rounded-[20px] md:rounded-[24px] border border-zinc-200/80 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow relative">
-                                        <div class="text-[10px] font-bold text-${pri}-600 dark:text-${pri}-400 uppercase tracking-widest mb-2 truncate pr-2">${hw.subj.replace(' (Начитка)','')}</div>
-                                        <p class="text-[12px] md:text-[13px] font-semibold text-zinc-700 dark:text-zinc-300 line-clamp-2 leading-relaxed">${linkify(hw.text)}</p>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <div class="md:col-span-1 glass-card rounded-[32px] md:rounded-[40px] p-5 md:p-6 group cursor-pointer animate-slide-up" style="animation-delay: 250ms;" onclick="window.app.setView('materials')">
-                            <div class="flex items-center justify-between mb-5 md:mb-6">
-                                <h3 class="text-[12px] md:text-[13px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 flex items-center gap-2"><i data-lucide="folder-open" class="w-4 h-4"></i> Матеріали</h3>
-                                <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:translate-x-1 transition-transform"><i data-lucide="arrow-right" class="w-4 h-4"></i></div>
-                            </div>
-                            <div class="space-y-3">
-                                ${recentMat.length === 0 ? `<p class="text-sm font-semibold text-zinc-500 pb-2">Порожньо</p>` : recentMat.map(m => `
-                                    <div class="flex items-center gap-3 bg-white/80 dark:bg-zinc-900/80 p-2.5 md:p-3 rounded-[16px] md:rounded-[20px] border border-zinc-200/80 dark:border-white/5 shadow-sm">
-                                        <div class="w-9 h-9 md:w-10 md:h-10 rounded-[12px] md:rounded-[14px] bg-${sec}-50 dark:bg-${sec}-500/10 flex items-center justify-center text-${sec}-500 shrink-0"><i data-lucide="link" class="w-4 h-4"></i></div>
-                                        <div class="text-[12px] md:text-[13px] font-bold text-zinc-900 dark:text-zinc-200 truncate pr-2">${m.title}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('main-content').innerHTML = html;
+                    <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <button onclick="window.app.setView('schedule')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-${pri}-500/10 text-${pri}-400 flex items-center justify-center mb-3"><i data-lucide="calendar-days" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Розклад</div><div class="text-[10px] text-zinc-500 mt-1">${isNextWeek ? `Далі: ${nextWeek.n} тиждень` : 'Поточний тиждень'}</div></button>
+                        <button onclick="window.app.setView('homework')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3"><i data-lucide="check-square" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Завдання</div><div class="text-[10px] text-zinc-500 mt-1">Д/з групи</div></button>
+                        <button onclick="window.app.setView('register')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-3"><i data-lucide="users" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Група</div><div class="text-[10px] text-zinc-500 mt-1">Студенти МБ-302</div></button>
+                        <button onclick="window.app.openAppearanceSheet('background')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-fuchsia-500/10 text-fuchsia-400 flex items-center justify-center mb-3"><i data-lucide="sparkles" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Оформлення</div><div class="text-[10px] text-zinc-500 mt-1">Фон і акцент</div></button>
+                    </section>
+                </div>`;
             window.app.updateLiveWidget();
-            window.app.updateHotDeadlines();
-            if(window.appState.statusInterval) clearInterval(window.appState.statusInterval);
+            if (window.appState.statusInterval) clearInterval(window.appState.statusInterval);
             window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 60000);
+            lucide.createIcons();
         };
 
         const renderSchedule = () => {
+            applyAutomaticWeekSelection();
             const { pri, sec } = getTheme();
             const user = window.appState.selectedStudent;
             
@@ -1587,8 +1376,8 @@
                         <div class="flex w-full sm:w-64 glass-card p-1.5 rounded-[16px] md:rounded-[20px] relative overflow-hidden z-10 shadow-inner mt-2 sm:mt-0">
                             <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-white dark:bg-zinc-800 rounded-[12px] md:rounded-[14px] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
                             
-                            <button onclick="${setWeekFn}('upper', null)" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isUpper ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Верхній</button>
-                            <button onclick="${setWeekFn}('lower', null)" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isLower ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Нижній</button>
+                            <button onclick="${setWeekFn}('upper', ${(() => { const w = weeksConfig.find(x => x.t === 'upper' && x.n <= (activeWeekNum || 14)); return (w || weeksConfig.find(x => x.t === 'upper')).n; })()})" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isUpper ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Верхній</button>
+                            <button onclick="${setWeekFn}('lower', ${(() => { const w = weeksConfig.find(x => x.t === 'lower' && x.n <= (activeWeekNum || 14)); return (w || weeksConfig.find(x => x.t === 'lower')).n; })()})" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isLower ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Нижній</button>
                         </div>
                     </div>
 
@@ -1659,7 +1448,7 @@
                         
                         const locKey = `${activeWeekType}_${p.subj}`;
                         const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
-                        let zoomUrl = locInfo.url || null;
+                        let zoomUrl = locInfo.url || defaultZoomLinks[p.subj] || null;
                         let roomNum = locInfo.room || null;
 
                         const classHws = activeWeekNum ? window.appState.homeworks.filter(h => h.subj === p.subj && h.weekNum === activeWeekNum && h.day === day.day && h.num == p.num) : [];
@@ -1972,7 +1761,7 @@
                 <div>
                     <div class="mb-6 md:mb-8 relative z-10 animate-slide-in-right" style="animation-delay: 0ms;">
                         <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Редактор</h2>
-                        <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 font-semibold whitespace-nowrap">Керування розкладом (Admin)</p>
+                        <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 font-semibold whitespace-nowrap">Керування розкладом (адміністратор)</p>
                     </div>
                     
                     <div class="glass-panel p-5 md:p-7 mb-8 md:mb-10 rounded-[28px] md:rounded-[36px] relative z-10 border-t-4 border-t-zinc-900 dark:border-t-white animate-scale-in" style="animation-delay: 50ms;">
@@ -2084,12 +1873,12 @@
                 <div>
                     <div class="mb-6 md:mb-8 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-slide-in-right" style="animation-delay: 0ms;">
                         <div>
-                            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Аналітика (Admin)</h2>
+                            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-2 whitespace-nowrap">Аналітика (адміністратор)</h2>
                             <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 font-semibold">Історія відвідувань порталу</p>
                         </div>
                         <div class="glass-card px-4 py-3.5 md:px-5 md:py-3.5 rounded-[16px] md:rounded-[20px] flex items-center gap-2.5 md:gap-3 w-full md:w-auto justify-center md:justify-start">
                             <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
-                            <span class="text-[12px] md:text-[14px] font-bold text-zinc-700 dark:text-zinc-300">Live (автооновлення)</span>
+                            <span class="text-[12px] md:text-[14px] font-bold text-zinc-700 dark:text-zinc-300">Онлайн • автооновлення</span>
                         </div>
                     </div>
 
@@ -2459,8 +2248,8 @@
                         
                         const isActiveNow = (Date.now() - log.end) < 15000;
                         
-                        const dInfo = log.deviceInfo || { os: 'Невідомо', browser: 'Невідомо', device: 'Desktop' };
-                        const devIcon = dInfo.device === 'Mobile' ? 'smartphone' : 'monitor';
+                        const dInfo = log.deviceInfo || { os: 'Невідомо', browser: 'Невідомо', device: 'Компʼютер' };
+                        const devIcon = dInfo.device === 'Телефон' ? 'smartphone' : 'monitor';
 
                         return `
                             <tr class="transition-colors hover:bg-white/80 dark:hover:bg-white/10 ${isInitial ? 'animate-slide-in-right' : ''} ${isActiveNow ? 'bg-emerald-50/50 dark:bg-emerald-900/15' : ''}" ${isInitial ? `style="animation-delay: ${50 + i * 15}ms;"` : ''}>
@@ -2609,14 +2398,12 @@
                     window.appState.view = 'dashboard';
                     window.app.renderActiveView();
                     
-                    initMultiplayer();
                     window.app.startAnalyticsSession(); 
                     window.app.initAnalyticsListener(); 
                 }
             },
 
             logout: () => {
-                stopMultiplayer();
                 window.app.stopAnalyticsSession(); 
                 
                 if (window.appState.analyticsUnsubscribe) {
@@ -2792,146 +2579,43 @@
                 }
             },
 
-            updateHotDeadlines: () => {
-                if (window.appState.view !== 'dashboard') return;
-                const box = document.getElementById('hot-deadlines-list');
-                const user = window.appState.selectedStudent;
-                if (!box || !user) return;
-
-                const parseDeadline = (value) => {
-                    if (!value || value === 'Не вказано') return Number.POSITIVE_INFINITY;
-                    const m = String(value).match(/(\d{1,2})[./-](\d{1,2})(?:[./-](\d{2,4}))?/);
-                    if (!m) return Number.POSITIVE_INFINITY;
-
-                    let year = Number(m[3] || new Date().getFullYear());
-                    if (year < 100) year += 2000;
-
-                    const d = new Date(year, Number(m[2]) - 1, Number(m[1]), 23, 59, 59);
-                    return d.getTime();
-                };
-
-                const now = Date.now();
-                const relevant = window.appState.homeworks
-                    .filter(hw => isHwRelevant(hw.subj, user))
-                    .filter(hw => hw.deadline && hw.deadline !== 'Не вказано')
-                    .map(hw => ({ ...hw, deadlineTs: parseDeadline(hw.deadline) }))
-                    .filter(hw => hw.deadlineTs !== Number.POSITIVE_INFINITY)
-                    .filter(hw => hw.deadlineTs >= now - 86400000)
-                    .sort((a, b) => a.deadlineTs - b.deadlineTs)
-                    .slice(0, 3);
-
-                if (!relevant.length) {
-                    box.innerHTML = `
-                        <div class="sm:col-span-2 lg:col-span-3 py-5 px-4 rounded-2xl border border-dashed border-zinc-200 dark:border-white/10 text-center text-[12px] font-semibold text-zinc-400">
-                            Наразі немає термінових дедлайнів ✨
-                        </div>`;
-                    return;
-                }
-
-                const { pri } = getTheme();
-                const daysLeft = (ts) => Math.max(0, Math.ceil((ts - now) / 86400000));
-
-                box.innerHTML = relevant.map((hw, i) => {
-                    const left = daysLeft(hw.deadlineTs);
-                    const urgent = left <= 1;
-                    const label = left === 0 ? 'Сьогодні' : (left === 1 ? 'Завтра' : `${left} дн.`);
-                    return `
-                        <div class="deadline-card bg-white/70 dark:bg-black/20 border ${urgent ? 'border-rose-200 dark:border-rose-500/20' : 'border-zinc-200/80 dark:border-white/10'} rounded-[20px] p-4 relative overflow-hidden">
-                            <div class="absolute -top-8 -right-8 w-20 h-20 rounded-full ${urgent ? 'bg-rose-500/10' : 'bg-${pri}-500/10'} blur-2xl"></div>
-                            <div class="relative z-10 flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <div class="text-[9px] font-black uppercase tracking-widest ${urgent ? 'text-rose-500' : 'text-${pri}-500'} mb-1.5 truncate">${hw.subj.replace(' (Начитка)','')}</div>
-                                    <div class="text-[13px] font-black text-zinc-900 dark:text-white line-clamp-2 leading-snug">${hw.text}</div>
-                                </div>
-                                <div class="shrink-0 px-2 py-1.5 rounded-xl ${urgent ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' : 'bg-zinc-100 text-zinc-700 dark:bg-white/5 dark:text-zinc-300'} text-[9px] font-black uppercase tracking-wide border border-current/10">
-                                    ${label}
-                                </div>
-                            </div>
-                            <div class="relative z-10 mt-3 pt-3 border-t border-zinc-200/70 dark:border-white/10 flex items-center justify-between text-[10px] font-semibold text-zinc-400">
-                                <span>${hw.deadline}</span>
-                                <span>${hw.day || ''} • ${hw.num || ''} пара</span>
-                            </div>
-                        </div>`;
-                }).join('');
-
-                lucide.createIcons({ root: box });
-            },
-
             updateLiveWidget: () => {
-                if(window.appState.view !== 'dashboard') return;
+                if (window.appState.view !== 'dashboard') return;
                 const widget = document.getElementById('live-widget');
-                if(!widget) return;
-                
-                const { pri, sec } = getTheme();
-
+                if (!widget) return;
+                const { pri } = getTheme();
                 const now = new Date();
-                const days = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
-                const curDay = days[now.getDay()];
-                const time = now.toTimeString().slice(0,5);
-                let cur = null, nxt = null;
-                
-                for(let i=0; i<timeSlots.length; i++) {
-                    if(time >= timeSlots[i].start && time <= timeSlots[i].end) { cur = {...timeSlots[i], idx: i+1}; break; }
-                    if(time < timeSlots[i].start) { nxt = {...timeSlots[i], idx: i+1}; break; }
+                const dayNames = ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'];
+                const curDay = dayNames[now.getDay()];
+                const currentTime = now.toTimeString().slice(0,5);
+                const week = getClosestMainWeek();
+                let pairs = getMergedSchedule(week.t, week.n).flatMap(d => d.pairs.map(p => ({...p, day:d.day})));
+                const user = window.appState.selectedStudent;
+                pairs = pairs.filter(p => p.type === 'general' || p.type === 'lang' || (user?.electives || []).some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                const todayPairs = pairs.filter(p => p.day === curDay).sort((a,b) => a.num-b.num);
+                let cur = todayPairs.find(p => currentTime >= p.time.split('-')[0] && currentTime <= p.time.split('-')[1]);
+                let nxt = todayPairs.find(p => currentTime < p.time.split('-')[0]);
+                if (!nxt && !cur) {
+                    const next = pairs.find(p => dayOffsets[p.day] > ((now.getDay()===0?6:now.getDay()-1)));
+                    nxt = next || null;
                 }
-                
-                const searchArr = getMergedSchedule(closestWeekObj.t, closestWeekObj.n);
-                const today = searchArr.find(d => d.day === curDay);
-                
-                const parseTime = (timeStr) => {
-                    const [h, m] = timeStr.split(':').map(Number);
-                    const d = new Date(); d.setHours(h, m, 0, 0); return d.getTime();
-                };
 
-                let status = {};
-                if(cur) {
-                    const subj = today?.pairs.find(p => p.num === cur.idx)?.subj || "Пара йде (вікно?)";
-                    const start = parseTime(cur.start);
-                    const end = parseTime(cur.end);
-                    const progress = Math.min(100, Math.max(0, ((Date.now() - start) / (end - start)) * 100));
-                    status = { label: 'Зараз триває', title: `${cur.idx} Пара`, subtitle: subj.replace(' (Начитка)',''), progress, isLive: true };
-                } else if(nxt) {
-                    const subj = today?.pairs.find(p => p.num === nxt.idx)?.subj || "Чекаємо...";
-                    status = { label: 'Наступна пара', title: `${nxt.idx} Пара (${nxt.start})`, subtitle: subj.replace(' (Начитка)',''), progress: 0, isLive: false };
+                let status;
+                if (cur) {
+                    const [sh,sm] = cur.time.split('-')[0].split(':').map(Number);
+                    const [eh,em] = cur.time.split('-')[1].split(':').map(Number);
+                    const start = new Date(now); start.setHours(sh,sm,0,0);
+                    const end = new Date(now); end.setHours(eh,em,0,0);
+                    const progress = Math.min(100, Math.max(0, ((Date.now()-start.getTime())/(end.getTime()-start.getTime()))*100));
+                    status = {label:'Зараз триває', title:`${cur.num} пара`, subtitle:cur.subj.replace(' (Начитка)',''), progress, isLive:true, zoom:defaultZoomLinks[cur.subj] || null};
+                } else if (nxt) {
+                    status = {label:nxt.day === curDay ? 'Наступна пара' : `Далі • ${nxt.day}`, title:`${nxt.num} пара • ${nxt.time.split('-')[0]}`, subtitle:nxt.subj.replace(' (Начитка)',''), progress:0, isLive:false, zoom:defaultZoomLinks[nxt.subj] || null};
                 } else {
-                    status = { label: 'Статус', title: 'Пари завершено', subtitle: 'Час для відпочинку ☕', progress: 100, isLive: false };
+                    const rw = getRecommendedWeek(true);
+                    status = {label:'Пари завершено', title:rw.n !== week.n ? `Далі — ${rw.n} тиждень` : 'На сьогодні все', subtitle:rw.n !== week.n ? 'Наступні лекції почнуться з понеділка.' : 'Можна відпочити ☕', progress:100, isLive:false};
                 }
-
-                const radius = window.innerWidth < 768 ? 32 : 44;
-                const circumference = 2 * Math.PI * radius;
-                const strokeDashoffset = circumference - (status.progress / 100) * circumference;
-                const svgSize = window.innerWidth < 768 ? "w-20 h-20" : "w-28 h-28";
-                const centerP = window.innerWidth < 768 ? 40 : 56;
-
-                widget.innerHTML = `
-                    <div class="absolute top-[-50%] right-[-20%] w-[80%] h-[150%] bg-gradient-to-bl from-${pri}-500/20 to-transparent blur-[80px] rounded-full pointer-events-none"></div>
-                    
-                    <div class="flex items-center gap-2.5 mb-auto z-10">
-                        ${status.isLive ? `<span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>` : '<div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-zinc-600"></div>'}
-                        <span class="text-[10px] md:text-[12px] font-black uppercase tracking-widest text-zinc-400">${status.label}</span>
-                    </div>
-
-                    <div class="flex items-center justify-between z-10 mt-6 md:mt-8">
-                        <div class="pr-3 md:pr-4">
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight mb-2 md:mb-3">${status.title}</h2>
-                            <p class="text-[14px] md:text-[16px] text-zinc-400 font-bold line-clamp-2 leading-relaxed">${status.subtitle}</p>
-                        </div>
-                        
-                        ${status.isLive ? `
-                            <div class="relative ${svgSize} shrink-0 flex items-center justify-center drop-shadow-xl">
-                                <svg class="transform -rotate-90 ${svgSize}">
-                                    <circle cx="${centerP}" cy="${centerP}" r="${radius}" stroke="currentColor" stroke-width="6" fill="transparent" class="text-zinc-800" />
-                                    <circle cx="${centerP}" cy="${centerP}" r="${radius}" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" class="text-${pri}-500 transition-all duration-1000 ease-in-out" stroke-linecap="round" />
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-white font-black text-sm md:text-base">${Math.round(status.progress)}%</div>
-                            </div>
-                        ` : `
-                            <div class="live-widget-progress w-11 h-11 md:w-14 md:h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 shrink-0">
-                                <i data-lucide="coffee" class="w-5 h-5 md:w-6 md:h-6"></i>
-                            </div>
-                        `}
-                    </div>
-                `;
+                widget.innerHTML = `<div class="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-${pri}-500/10 blur-[80px]"></div><div class="relative z-10 flex items-center justify-between gap-4"><div class="min-w-0"><div class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500 mb-3">${status.label}</div><h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">${status.title}</h2><p class="text-[12px] md:text-sm font-semibold text-zinc-500 mt-2 line-clamp-2">${status.subtitle}</p>${status.zoom ? `<a href="${status.zoom}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3.5 h-10 rounded-xl bg-blue-500/10 border border-blue-500/15 text-blue-300 text-[11px] font-black"><i data-lucide="video" class="w-4 h-4"></i> Відкрити Zoom</a>` : ''}</div><div class="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-[22px] bg-white/[.04] border border-white/10 flex items-center justify-center">${status.isLive ? `<span class="text-sm md:text-base font-black text-${pri}-400">${Math.round(status.progress)}%</span>` : `<i data-lucide="coffee" class="w-6 h-6 text-zinc-500"></i>`}</div></div>`;
+                lucide.createIcons({root:widget});
             },
 
             setScheduleMode: (mode) => { 
@@ -3096,7 +2780,7 @@
                 
                 const locKey = `${weekType}_${subj}`;
                 const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[subj] || {};
-                const currentLink = locInfo.url || '';
+                const currentLink = locInfo.url || defaultZoomLinks[subj] || '';
                 const currentRoom = locInfo.room || '';
                 
                 window.appState.tempZoomSubj = subj;
@@ -3213,36 +2897,25 @@
             _doRestoreHidden: (id) => { removeFromCloud('hidden_schedule', id, () => {}); }
         };
 
-        const initApp = async () => {
-            initParticles();
+        const initRemoteServices = () => {
+            // Firebase/auth is deliberately non-blocking: the portal UI must work even when
+            // Firebase is slow/offline. Local storage provides the immediate first paint.
+            let authReady = false;
+            const bindSnapshots = () => {
+                if (authReady) return;
+                authReady = true;
+                onAuthStateChanged(auth, (user) => {
+                    window.appState.firebaseUser = user;
+                    if (!user) return;
 
-            if (window.appState.isDark) document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
-
-            window.app.setColorTheme(window.appState.colorTheme, true);
-            applyBackgroundTheme();
-
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (err) {
-                console.error(err);
-                showToast("Помилка підключення до бази", true);
-            }
-
-            onAuthStateChanged(auth, (user) => {
-                window.appState.firebaseUser = user;
-                if(user) {
                     onSnapshot(
                         collection(db, 'artifacts', appId, 'public', 'data', 'zoom_links'),
                         (snap) => {
-                            let links = {}; snap.forEach(doc => links[doc.id] = doc.data());
+                            const links = {};
+                            snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
-                            if (['schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Locations error:', error)
                     );
@@ -3250,29 +2923,21 @@
                     onSnapshot(
                         collection(db, 'artifacts', appId, 'public', 'data', 'homeworks'),
                         (snap) => {
-                            let newHwList = []; snap.forEach(doc => newHwList.push({ id: doc.id, ...doc.data() }));
-                            newHwList.sort((a, b) => b.id - a.id);
-
+                            const newHwList = [];
+                            snap.forEach(doc => newHwList.push({ id: doc.id, ...doc.data() }));
+                            newHwList.sort((a, b) => Number(b.id) - Number(a.id));
                             if (window.appState.homeworks.length > 0 && window.appState.selectedStudent) {
                                 const oldIds = new Set(window.appState.homeworks.map(h => h.id));
-                                const addedHw = newHwList.filter(h => !oldIds.has(h.id));
-
-                                addedHw.forEach(newDoc => {
+                                newHwList.filter(h => !oldIds.has(h.id)).forEach(newDoc => {
                                     if (newDoc.author !== window.appState.selectedStudent.name && isHwRelevant(newDoc.subj, window.appState.selectedStudent)) {
-                                        showToast(`📚 Нове Д/з: ${newDoc.subj.split(' ')[0]}`, false);
                                         window.appState.unreadHwCount++;
                                     }
                                 });
                             }
-
                             window.appState.homeworks = newHwList;
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
-                            
-                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) {
-                                window.app.renderActiveView();
-                            } else if (window.appState.selectedStudent) {
-                                renderNav(); 
-                            }
+                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                            else if (window.appState.selectedStudent) renderNav();
                         },
                         (error) => console.error('Homeworks error:', error)
                     );
@@ -3280,8 +2945,9 @@
                     onSnapshot(
                         collection(db, 'artifacts', appId, 'public', 'data', 'materials'),
                         (snap) => {
-                            let mat = []; snap.forEach(doc => mat.push(doc.data()));
-                            mat.sort((a, b) => b.id - a.id);
+                            const mat = [];
+                            snap.forEach(doc => mat.push(doc.data()));
+                            mat.sort((a, b) => Number(b.id) - Number(a.id));
                             window.appState.materials = mat;
                             localStorage.setItem('portal-materials', JSON.stringify(mat));
                             if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
@@ -3292,7 +2958,8 @@
                     onSnapshot(
                         collection(db, 'artifacts', appId, 'public', 'data', 'extra_schedule'),
                         (snap) => {
-                            let extra = []; snap.forEach(doc => extra.push({id: doc.id, ...doc.data()}));
+                            const extra = [];
+                            snap.forEach(doc => extra.push({ id: doc.id, ...doc.data() }));
                             window.appState.extraSchedule = extra;
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
                             if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
@@ -3303,36 +2970,66 @@
                     onSnapshot(
                         collection(db, 'artifacts', appId, 'public', 'data', 'hidden_schedule'),
                         (snap) => {
-                            let hidden = []; snap.forEach(doc => hidden.push({id: doc.id, ...doc.data()}));
+                            const hidden = [];
+                            snap.forEach(doc => hidden.push({ id: doc.id, ...doc.data() }));
                             window.appState.hiddenSchedule = hidden;
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
                             if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Hidden schedule error:', error)
                     );
-                    
+
                     window.app.initAnalyticsListener();
+                });
+            };
+
+            const connect = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (err) {
+                    console.warn('Firebase unavailable; continuing in offline/local mode.', err);
+                } finally {
+                    bindSnapshots();
                 }
-            });
+            };
+
+            // Never let authentication block the page for more than 3500 ms.
+            const timeoutId = window.setTimeout(() => bindSnapshots(), 3500);
+            connect().finally(() => window.clearTimeout(timeoutId));
+        };
+
+        const initApp = () => {
+            // Paint local UI first. Remote services are started afterwards.
+            try { initParticles(); } catch (e) { console.warn('Background animation disabled:', e); }
+
+            if (window.appState.isDark) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+
+            try { window.app.setColorTheme(window.appState.colorTheme, true); } catch (e) { console.warn('Theme init warning:', e); }
+            try { applyBackgroundTheme(); } catch (e) { console.warn('Background init warning:', e); }
 
             const savedId = localStorage.getItem('selectedStudentId');
             if (savedId) {
-                const s = students.find(x => x.id === parseInt(savedId));
+                const s = students.find(x => x.id === parseInt(savedId, 10));
                 if (s) {
                     window.appState.selectedStudent = s;
-                    document.getElementById('app').classList.remove('hidden');
-                    window.app.renderActiveView();
-                    
-                    initMultiplayer();
-                    window.app.startAnalyticsSession();
-
-                    return;
+                    document.getElementById('auth-screen')?.classList.add('hidden');
+                    document.getElementById('app')?.classList.remove('hidden');
+                    try { window.app.renderActiveView(); } catch (e) { console.error('Initial render failed:', e); }
+                    try { window.app.startAnalyticsSession(); } catch (e) {}
                 }
+            } else {
+                document.getElementById('auth-screen')?.classList.remove('hidden');
+                try { window.app.renderAuthList(); } catch (e) { console.error('Auth render failed:', e); }
+                try { if (window.lucide?.createIcons) lucide.createIcons(); } catch (e) {}
             }
-            
-            document.getElementById('auth-screen').classList.remove('hidden');
-            window.app.renderAuthList();
-            lucide.createIcons();
+
+            // Start Firebase after first paint.
+            try { initRemoteServices(); } catch (e) { console.warn('Remote services unavailable:', e); }
         };
 
         // Premium pointer spotlight — disabled on touch/reduced-motion devices.
