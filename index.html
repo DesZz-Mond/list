@@ -1188,6 +1188,45 @@
             .appearance-sheet-header{margin-bottom:18px}
         }
         @media (prefers-reduced-motion:reduce){.appearance-sheet-backdrop,.appearance-sheet{animation:none}}
+
+        /* =========================================================
+           PERFORMANCE CORE — adaptive rendering / zero-jank policy
+           ========================================================= */
+        html, body { overscroll-behavior-y: none; }
+        #app, #main-content, #ambient-background { contain: layout paint style; }
+        #main-content > div { content-visibility: auto; contain-intrinsic-size: 700px; }
+        .glass-panel, .glass-card, #mobile-dock nav, header > div {
+            will-change: auto;
+            transform: translateZ(0);
+        }
+        .geometry-field, .portal-bg-layer, .premium-shine::after { contain: paint; }
+        .nav-liquid-indicator, .view-enter, .view-leave { will-change: transform, opacity; }
+        @media (max-width: 767px) {
+            .glass-panel, .glass-card, #mobile-dock nav, header > div {
+                backdrop-filter: blur(18px) saturate(145%) !important;
+                -webkit-backdrop-filter: blur(18px) saturate(145%) !important;
+            }
+            .geometry-field { opacity: .60 !important; }
+            .premium-shine::after { display:none !important; }
+        }
+        .perf-lite .ambient-noise,
+        .perf-lite #pointer-glow,
+        .perf-lite .premium-shine::after { display:none !important; }
+        .perf-lite .animate-float,
+        .perf-lite .animate-pulse-slow,
+        .perf-lite .geometry-field * { animation-play-state: paused !important; }
+        .perf-lite .glass-panel, .perf-lite .glass-card,
+        .perf-lite #mobile-dock nav, .perf-lite header > div {
+            backdrop-filter: blur(12px) saturate(135%) !important;
+            -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
+        }
+        .perf-lite .geometry-field { opacity: .28 !important; }
+        .perf-hidden-animations .animate-float,
+        .perf-hidden-animations .animate-pulse-slow,
+        .perf-hidden-animations .geometry-field * { animation-play-state: paused !important; }
+        @media (prefers-reduced-motion: reduce) {
+            .geometry-field { display:none !important; }
+        }
     </style>
 </head>
 <body class="text-zinc-200 bg-zinc-950 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -1563,6 +1602,38 @@
             statusInterval: null,
             regFilter: 'all',
             matFilter: 'Всі'
+        };
+
+
+        // Adaptive performance manager: keeps visual quality high on capable devices
+        // while reducing expensive effects on constrained/mobile hardware.
+        const perf = (() => {
+            const root = document.documentElement;
+            const nav = navigator;
+            const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+            const cores = Number(nav.hardwareConcurrency || 4);
+            const memory = Number(nav.deviceMemory || 4);
+            const coarse = window.matchMedia?.('(pointer: coarse)').matches;
+            const narrow = window.matchMedia?.('(max-width: 767px)').matches;
+            const lowEnd = reduceMotion || cores <= 4 || memory <= 4 || (coarse && narrow);
+            const state = { lowEnd, hidden: document.hidden };
+            root.classList.toggle('perf-lite', lowEnd);
+            root.classList.toggle('perf-hidden-animations', document.hidden);
+            document.addEventListener('visibilitychange', () => {
+                state.hidden = document.hidden;
+                root.classList.toggle('perf-hidden-animations', state.hidden);
+            }, { passive: true });
+            return state;
+        })();
+
+        // Coalesce remote-data driven UI renders into the next animation frame.
+        let scheduledRenderRaf = 0;
+        const scheduleRenderActiveView = () => {
+            if (scheduledRenderRaf || !window.appState.selectedStudent) return;
+            scheduledRenderRaf = requestAnimationFrame(() => {
+                scheduledRenderRaf = 0;
+                if (!document.hidden) window.app.renderActiveView();
+            });
         };
 
         const getMergedSchedule = (weekType, weekNum) => {
@@ -1993,7 +2064,7 @@
             }
 
             try {
-                if (window.lucide?.createIcons) lucide.createIcons();
+                if (window.lucide?.createIcons) lucide.createIcons({ root: document.getElementById('app') || document });
             } catch (e) {
                 console.warn('Navigation icons skipped:', e);
             }
@@ -2096,8 +2167,8 @@
                 </div>`;
             window.app.updateLiveWidget();
             if (window.appState.statusInterval) clearInterval(window.appState.statusInterval);
-            window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 60000);
-            lucide.createIcons();
+            window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 90000);
+            lucide.createIcons({ root: document.getElementById('app') || document });
         };
 
         const renderSchedule = () => {
@@ -2291,7 +2362,7 @@
                 }, 300);
             }
 
-            lucide.createIcons();
+            lucide.createIcons({ root: document.getElementById('app') || document });
         };
 
         const renderMaterials = () => {
@@ -2834,7 +2905,7 @@
                         isDown = false;
                         el.style.cursor = '';
                         el.classList.add('cursor-grab');
-                        el.style.scrollBehavior = 'smooth';
+                        el.style.scrollBehavior = 'auto';
                         el.style.scrollSnapType = '';
                         setTimeout(() => { isDragging = false; }, 50);
                     };
@@ -2871,7 +2942,7 @@
                                 
                                 clearTimeout(el.wheelTimeout);
                                 el.wheelTimeout = setTimeout(() => {
-                                    el.style.scrollBehavior = 'smooth';
+                                    el.style.scrollBehavior = 'auto';
                                     el.style.scrollSnapType = '';
                                 }, 150);
                             }
@@ -2965,7 +3036,7 @@
                 else if(v === 'editor') renderEditor();
                 else if(v === 'analytics') renderAnalytics();
                 
-                lucide.createIcons();
+                lucide.createIcons({ root: document.getElementById('app') || document });
                 window.app.attachScrollDrag();
             },
 
@@ -3118,7 +3189,7 @@
                 };
                 
                 updateSession(); 
-                window.appState.analyticsInterval = setInterval(updateSession, 5000); 
+                window.appState.analyticsInterval = setInterval(() => { if (!document.hidden) updateSession(); }, 30000); 
             },
 
             stopAnalyticsSession: () => {
@@ -3171,7 +3242,7 @@
                         </div>
                     `;
                     document.getElementById('modals').innerHTML = html;
-                    lucide.createIcons();
+                    lucide.createIcons({ root: document.getElementById('app') || document });
                     setTimeout(() => document.getElementById('admin-pwd-input')?.focus(), 100);
                 } else {
                     window.app.login(studentId);
@@ -3246,7 +3317,7 @@
                     `).join('');
                     el.classList.remove('hidden');
                     document.querySelector(`[onclick="window.app.toggleThemeDropdown('${context}')"]`)?.setAttribute('aria-expanded','true');
-                    lucide.createIcons();
+                    lucide.createIcons({ root: document.getElementById('app') || document });
                 } else {
                     el.classList.add('hidden');
                     document.querySelector(`[onclick="window.app.toggleThemeDropdown('${context}')"]`)?.setAttribute('aria-expanded','false');
@@ -3486,7 +3557,7 @@
                 const menu = document.getElementById('mobile-menu');
                 menu.classList.remove('hidden');
                 setTimeout(() => menu.classList.add('opacity-100'), 10);
-                lucide.createIcons();
+                lucide.createIcons({ root: document.getElementById('app') || document });
             },
             closeMobileMenu: () => {
                 const menu = document.getElementById('mobile-menu');
@@ -3514,7 +3585,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons();
+                lucide.createIcons({ root: document.getElementById('app') || document });
             },
 
             openHwModal: (subj, weekType, day, num, weekNum) => {
@@ -3557,7 +3628,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons();
+                lucide.createIcons({ root: document.getElementById('app') || document });
             },
 
             saveHomework: () => {
@@ -3608,7 +3679,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons();
+                lucide.createIcons({ root: document.getElementById('app') || document });
             },
 
             saveMaterial: () => {
@@ -3680,7 +3751,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons();
+                lucide.createIcons({ root: document.getElementById('app') || document });
             },
 
             saveLocation: () => {
@@ -3767,7 +3838,7 @@
                             snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
-                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
                         },
                         (error) => console.error('Locations error:', error)
                     );
@@ -3788,7 +3859,7 @@
                             }
                             window.appState.homeworks = newHwList;
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
-                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) scheduleRenderActiveView();
                             else if (window.appState.selectedStudent) renderNav();
                         },
                         (error) => console.error('Homeworks error:', error)
@@ -3802,7 +3873,7 @@
                             mat.sort((a, b) => Number(b.id) - Number(a.id));
                             window.appState.materials = mat;
                             localStorage.setItem('portal-materials', JSON.stringify(mat));
-                            if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['materials', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
                         },
                         (error) => console.error('Materials error:', error)
                     );
@@ -3814,7 +3885,7 @@
                             snap.forEach(doc => extra.push({ id: doc.id, ...doc.data() }));
                             window.appState.extraSchedule = extra;
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
                         },
                         (error) => console.error('Extra schedule error:', error)
                     );
@@ -3826,7 +3897,7 @@
                             snap.forEach(doc => hidden.push({ id: doc.id, ...doc.data() }));
                             window.appState.hiddenSchedule = hidden;
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
                         },
                         (error) => console.error('Hidden schedule error:', error)
                     );
@@ -3891,7 +3962,7 @@
             } else {
                 document.getElementById('auth-screen')?.classList.remove('hidden');
                 try { window.app.renderAuthList(); } catch (e) { console.error('Auth render failed:', e); }
-                try { if (window.lucide?.createIcons) lucide.createIcons(); } catch (e) {}
+                try { if (window.lucide?.createIcons) lucide.createIcons({ root: document.getElementById('app') || document }); } catch (e) {}
             }
 
             // Start Firebase after first paint.
