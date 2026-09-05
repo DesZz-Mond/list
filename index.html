@@ -69,6 +69,9 @@
     </script>
 
     <style>
+        html, body { background:#07080c; }
+        body { min-height:100vh; }
+
         /* Modern Scrollbar for Desktop */
         @media (min-width: 768px) {
             ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -1134,6 +1137,57 @@
             50% { opacity:.68; transform: rotate(27deg) translate3d(-22px,-8px,0); }
         }
 
+
+        /* v11 appearance sheet */
+        .appearance-sheet-backdrop{position:fixed;inset:0;z-index:260;display:flex;align-items:flex-end;justify-content:center;padding:0 0 env(safe-area-inset-bottom);background:rgba(4,5,9,.72);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%);animation:appearanceFadeIn .24s ease both}
+        .appearance-sheet{width:min(1100px,100%);max-height:min(88vh,860px);overflow:auto;border:1px solid rgba(255,255,255,.10);border-bottom:0;border-radius:32px 32px 0 0;background:linear-gradient(180deg,rgba(20,20,27,.92),rgba(9,10,14,.96));box-shadow:0 -30px 100px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06);padding:14px 24px calc(28px + env(safe-area-inset-bottom));animation:appearanceSheetIn .34s cubic-bezier(.16,1,.3,1) both}
+        .appearance-sheet-handle{width:54px;height:5px;border-radius:999px;background:rgba(255,255,255,.18);margin:0 auto 18px}
+        .appearance-sheet-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+        .appearance-sheet-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.18em;font-weight:900;color:#71717a;margin-bottom:4px}
+        .appearance-sheet-title{font-size:20px;line-height:1.15;font-weight:900;color:#fff}
+        .appearance-sheet-subtitle{font-size:11px;line-height:1.45;color:#71717a;margin-top:5px;max-width:640px}
+        .appearance-close{width:46px;height:46px;flex:0 0 46px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.055);color:#a1a1aa;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:transform .2s ease,background .2s ease,color .2s ease}
+        .appearance-close:hover{background:rgba(255,255,255,.10);color:#fff;transform:scale(1.04)}
+        .appearance-close:active{transform:scale(.94)}
+        .appearance-close svg{width:21px;height:21px;stroke-width:2}
+        .appearance-section{margin-top:18px}
+        .appearance-section-head{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 10px}
+        .appearance-section-title{display:block;font-size:13px;font-weight:900;color:#f4f4f5}
+        .appearance-section-note{display:block;font-size:10px;color:#71717a;margin-top:3px}
+        .appearance-background-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+        .appearance-option{min-width:0;text-align:left;border:1px solid rgba(255,255,255,.075);border-radius:20px;padding:10px;background:rgba(255,255,255,.025);color:#e4e4e7;transition:transform .24s cubic-bezier(.2,.75,.2,1),border-color .24s ease,background .24s ease,box-shadow .24s ease}
+        .appearance-option:hover{transform:translateY(-2px);background:rgba(255,255,255,.05)}
+        .appearance-option.is-selected{border-color:rgba(167,139,250,.72);background:rgba(139,92,246,.08);box-shadow:0 0 0 2px rgba(139,92,246,.12),0 16px 32px rgba(0,0,0,.18)}
+        .appearance-preview{height:96px;border-radius:14px;border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);background-size:cover}
+        .appearance-option-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;font-size:12px;font-weight:900}
+        .appearance-option-row svg{width:17px;height:17px;color:#c4b5fd;flex:0 0 auto}
+        .appearance-color-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+        .appearance-color{position:relative;display:flex;align-items:center;gap:9px;min-height:58px;padding:10px 12px;border-radius:18px;border:1px solid rgba(255,255,255,.075);background:rgba(255,255,255,.025);color:#e4e4e7;font-size:11px;font-weight:900;text-align:left;transition:transform .22s ease,border-color .22s ease,background .22s ease}
+        .appearance-color:hover{transform:translateY(-1px);background:rgba(255,255,255,.05)}
+        .appearance-color.is-selected{border-color:rgba(167,139,250,.72);background:rgba(139,92,246,.08);box-shadow:0 0 0 2px rgba(139,92,246,.10)}
+        .appearance-color-dot{width:32px;height:32px;border-radius:999px;flex:0 0 32px;border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+        .appearance-color svg{width:16px;height:16px;color:#c4b5fd;margin-left:auto}
+        @keyframes appearanceFadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes appearanceSheetIn{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @media (max-width:767px){
+            .appearance-sheet-backdrop{align-items:flex-end;padding:0}
+            .appearance-sheet{max-height:92vh;border-radius:28px 28px 0 0;padding:12px 16px calc(22px + env(safe-area-inset-bottom))}
+            .appearance-sheet-title{font-size:18px}
+            .appearance-sheet-subtitle{font-size:10px;max-width:320px}
+            .appearance-close{width:42px;height:42px;flex-basis:42px;border-radius:14px}
+            .appearance-preview{height:82px}
+            .appearance-background-grid{grid-template-columns:1fr 1fr;gap:8px}
+            .appearance-color-grid{grid-template-columns:1fr 1fr;gap:8px}
+            .appearance-option{padding:8px;border-radius:17px}
+            .appearance-option-row{font-size:11px}
+        }
+        @media (max-width:430px){
+            .appearance-background-grid{grid-template-columns:1fr}
+            .appearance-preview{height:90px}
+            .appearance-color-grid{grid-template-columns:1fr 1fr}
+            .appearance-sheet-header{margin-bottom:18px}
+        }
+        @media (prefers-reduced-motion:reduce){.appearance-sheet-backdrop,.appearance-sheet{animation:none}}
     </style>
 </head>
 <body class="text-zinc-200 bg-zinc-950 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -1343,6 +1397,15 @@
             { id: 25, name: "Чуприна А.О.", fullName: "Чуприна Аріна Олексіївна", electives: ["Бренд менеджмент", "Світовий фінансовий ринок", "французька"] },
             { id: 26, name: "Шелепа М.В.", fullName: "Шелепа Михайло Владиславович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] }
         ];
+
+        // Display only the first name on personal UI. Danя keeps the custom preferred name.
+        const getDisplayFirstName = (student) => {
+            if (!student) return '';
+            if (student.preferredName) return student.preferredName;
+            const full = String(student.fullName || '').trim();
+            const parts = full ? full.split(/\s+/) : [];
+            return parts[1] || String(student.name || '').split(' ')[1]?.replace(/\./g, '') || parts[0] || '';
+        };
 
         const timeSlots = [
             { start: "08:30", end: "09:45" }, { start: "10:00", end: "11:15" },
@@ -1996,7 +2059,7 @@
             const personalToday = (todayObj?.pairs || []).filter(p => p.type === 'general' || p.type === 'lang' || (user.electives || []).some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
             const nextWeek = getRecommendedWeek(true);
             const isNextWeek = nextWeek.n !== currentWeek.n;
-            const firstName = user.preferredName || user.name.split(' ')[1]?.replace(/\./g,'') || user.name.split(' ')[0];
+            const firstName = getDisplayFirstName(user);
             const weekLabel = `${currentWeek.n} тиждень • ${currentWeek.t === 'upper' ? 'верхній' : 'нижній'}`;
 
             const pairRows = personalToday.map((p,i) => {
@@ -3249,34 +3312,73 @@
             openBackgroundSheet: () => window.app.openAppearanceSheet('background'),
 
             openAppearanceSheet: (mode = 'background') => {
-                const isColor = mode === 'color';
-                const current = isColor ? window.appState.colorTheme : window.appState.backgroundTheme;
+                const bgCurrent = window.appState.backgroundTheme || 'aurora';
+                const colorCurrent = window.appState.colorTheme || 'purple';
                 const previews = {
-                    aurora:'radial-gradient(circle at 25% 30%, #ffffff2b 0 2%, transparent 3%), radial-gradient(circle at 75% 65%, #ffffff16 0 18%, transparent 19%), linear-gradient(135deg,#11121a,#07080c)',
-                    prism:'linear-gradient(135deg,transparent 0 36%,#ffffff18 36% 37%,transparent 37% 61%,#ffffff10 61% 62%,transparent 62%), linear-gradient(45deg,#11121a 25%,transparent 25% 75%,#11121a 75%), #07080c',
-                    orbit:'radial-gradient(circle,#0000 0 21%,#ffffff16 22% 23%,#0000 24% 42%,#ffffff12 43% 44%,#0000 45% 62%,#ffffff0c 63% 64%,#07080c 65%)',
-                    mesh:'linear-gradient(#ffffff12 1px,transparent 1px),linear-gradient(90deg,#ffffff12 1px,transparent 1px),#07080c',
-                    wave:'repeating-linear-gradient(25deg,transparent 0 11px,#ffffff12 12px 13px,transparent 14px 25px),#07080c'
+                    aurora:'radial-gradient(circle at 25% 30%, rgba(255,255,255,.18) 0 2%, transparent 3%), radial-gradient(circle at 75% 65%, rgba(255,255,255,.09) 0 18%, transparent 19%), linear-gradient(135deg,#15101f,#07080c)',
+                    prism:'linear-gradient(135deg,transparent 0 36%,rgba(255,255,255,.11) 36% 37%,transparent 37% 61%,rgba(255,255,255,.07) 61% 62%,transparent 62%), linear-gradient(45deg,#11121a 25%,transparent 25% 75%,#11121a 75%), #07080c',
+                    orbit:'radial-gradient(circle,#0000 0 21%,rgba(255,255,255,.10) 22% 23%,#0000 24% 42%,rgba(255,255,255,.08) 43% 44%,#0000 45% 62%,rgba(255,255,255,.05) 63% 64%,#07080c 65%)',
+                    mesh:'linear-gradient(rgba(255,255,255,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.10) 1px,transparent 1px),#07080c',
+                    wave:'repeating-linear-gradient(25deg,transparent 0 11px,rgba(255,255,255,.10) 12px 13px,transparent 14px 25px),#07080c'
                 };
                 const colors = {
-                    purple:{label:'Ультрафіолет', dot:'linear-gradient(135deg,#8b5cf6,#d946ef)'},
-                    blue:{label:'Океан', dot:'linear-gradient(135deg,#3b82f6,#6366f1)'},
-                    teal:{label:'Смарагд', dot:'linear-gradient(135deg,#14b8a6,#10b981)'},
-                    rose:{label:'Вогонь', dot:'linear-gradient(135deg,#f43f5e,#ec4899)'},
-                    amber:{label:'Сонце', dot:'linear-gradient(135deg,#f59e0b,#f97316)'},
-                    zinc:{label:'Мінімалізм', dot:'linear-gradient(135deg,#71717a,#334155)'}
+                    purple:{label:'Ультрафіолет',dot:'linear-gradient(135deg,#8b5cf6,#d946ef)'},
+                    blue:{label:'Океан',dot:'linear-gradient(135deg,#3b82f6,#6366f1)'},
+                    teal:{label:'Смарагд',dot:'linear-gradient(135deg,#14b8a6,#10b981)'},
+                    rose:{label:'Вогонь',dot:'linear-gradient(135deg,#f43f5e,#ec4899)'},
+                    amber:{label:'Сонце',dot:'linear-gradient(135deg,#f59e0b,#f97316)'},
+                    zinc:{label:'Мінімалізм',dot:'linear-gradient(135deg,#71717a,#334155)'}
                 };
-                const items = isColor ? Object.entries(colors) : Object.entries(backgroundsConfig);
-                const html = `<div class="fixed inset-0 z-[260] bg-black/72 backdrop-blur-md flex items-end" onclick="window.app.closeModal()">
-                    <div class="w-full bg-zinc-950 border-t border-white/10 rounded-t-[30px] p-5 pb-safe shadow-2xl" onclick="event.stopPropagation()">
-                        <div class="w-12 h-1.5 rounded-full bg-white/15 mx-auto mb-5"></div>
-                        <div class="flex items-center justify-between mb-4"><div><div class="text-sm font-black text-white">${isColor?'Акцентний колір':'Фон порталу'}</div><div class="text-[11px] text-zinc-500">Зміни застосовуються миттєво.</div></div><button onclick="window.app.closeModal()" class="w-9 h-9 rounded-full bg-white/5 text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button></div>
-                        <div class="grid ${isColor?'grid-cols-3':'grid-cols-2'} gap-2 max-h-[58vh] overflow-y-auto hide-scrollbar">
-                            ${items.map(([key,item]) => isColor ? `<button type="button" aria-pressed="${current===key}" onclick="window.app.setColorTheme('${key}'); window.app.closeModal();" class="rounded-2xl p-3 text-left border ${current===key?'border-violet-400/70 ring-2 ring-violet-500/20':'border-white/10'} bg-white/[.03]"><div class="w-10 h-10 rounded-full mb-3 shadow-lg" style="background:${item.dot}"></div><div class="flex items-center justify-between gap-2"><span class="text-[12px] font-black text-zinc-100">${item.label}</span>${current===key?'<i data-lucide="check" class="w-4 h-4 text-violet-300"></i>':''}</div></button>` : `<button type="button" aria-pressed="${current===key}" onclick="window.app.setBackgroundTheme('${key}'); window.app.closeModal();" class="rounded-2xl p-3 text-left border ${current===key?'border-violet-400/70 ring-2 ring-violet-500/20':'border-white/10'} bg-white/[.03]"><div class="h-16 rounded-xl mb-3" style="background:${previews[key]}"></div><div class="flex items-center justify-between gap-2"><span class="text-[12px] font-black text-zinc-100">${item.label}</span>${current===key?'<i data-lucide="check-circle-2" class="w-4 h-4 text-violet-300"></i>':''}</div></button>`).join('')}
+
+                const backgroundCards = Object.entries(backgroundsConfig).map(([key,item]) => `
+                    <button type="button" aria-pressed="${bgCurrent===key}" onclick="window.app.setBackgroundTheme('${key}'); window.app.openAppearanceSheet('both');" class="appearance-option ${bgCurrent===key?'is-selected':''}">
+                        <div class="appearance-preview" style="background:${previews[key]}"></div>
+                        <div class="appearance-option-row">
+                            <span>${item.label}</span>
+                            ${bgCurrent===key ? '<i data-lucide="check-circle-2"></i>' : `<i data-lucide="${item.icon}"></i>`}
                         </div>
-                    </div></div>`;
+                    </button>`).join('');
+
+                const colorCards = Object.entries(colors).map(([key,item]) => `
+                    <button type="button" aria-pressed="${colorCurrent===key}" onclick="window.app.setColorTheme('${key}'); window.app.openAppearanceSheet('both');" class="appearance-color ${colorCurrent===key?'is-selected':''}">
+                        <span class="appearance-color-dot" style="background:${item.dot}"></span>
+                        <span>${item.label}</span>
+                        ${colorCurrent===key ? '<i data-lucide="check-circle-2"></i>' : ''}
+                    </button>`).join('');
+
+                const html = `
+                    <div id="appearance-sheet" class="appearance-sheet-backdrop" onclick="window.app.closeModal()" role="dialog" aria-modal="true" aria-label="Оформлення порталу">
+                        <div class="appearance-sheet" onclick="event.stopPropagation()">
+                            <div class="appearance-sheet-handle" aria-hidden="true"></div>
+                            <div class="appearance-sheet-header">
+                                <div>
+                                    <div class="appearance-sheet-kicker">Оформлення</div>
+                                    <div class="appearance-sheet-title">Фон і колір</div>
+                                    <div class="appearance-sheet-subtitle">Налаштуй стиль порталу незалежно, зміни застосовуються миттєво.</div>
+                                </div>
+                                <button type="button" class="appearance-close" aria-label="Закрити" onclick="window.app.closeModal(); event.stopPropagation();">
+                                    <i data-lucide="x"></i>
+                                </button>
+                            </div>
+
+                            <section class="appearance-section">
+                                <div class="appearance-section-head">
+                                    <div><span class="appearance-section-title">Фон порталу</span><span class="appearance-section-note">${backgroundsConfig[bgCurrent]?.label || 'М’яка аура'}</span></div>
+                                </div>
+                                <div class="appearance-background-grid">${backgroundCards}</div>
+                            </section>
+
+                            <section class="appearance-section appearance-section-color">
+                                <div class="appearance-section-head">
+                                    <div><span class="appearance-section-title">Кольорова тема</span><span class="appearance-section-note">Акцент інтерфейсу підлаштовує світло та скло</span></div>
+                                </div>
+                                <div class="appearance-color-grid">${colorCards}</div>
+                            </section>
+                        </div>
+                    </div>`;
+
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons();
+                lucide.createIcons({root: document.getElementById('appearance-sheet')});
             },
 
             setColorTheme: (themeKey, skipRender = false) => {
