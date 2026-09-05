@@ -12,7 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.468.0"></script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -388,7 +388,7 @@
                         radial-gradient(circle at 60% 86%, var(--portal-accent-c), transparent 34%),
                         var(--portal-base);
             transition: background 700ms cubic-bezier(.2,.75,.2,1);
-            will-change: background;
+            will-change: auto;
         }
 
         .portal-bg-layer::before {
@@ -645,8 +645,8 @@
             pointer-events: auto;
             background: linear-gradient(180deg, rgba(20,20,26,.68), rgba(9,9,13,.58)) !important;
             border: 1px solid rgba(255,255,255,.12) !important;
-            backdrop-filter: blur(34px) saturate(170%) !important;
-            -webkit-backdrop-filter: blur(34px) saturate(170%) !important;
+            backdrop-filter: blur(12px) saturate(120%) !important;
+            -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
             box-shadow: 0 24px 80px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.10), inset 0 0 0 1px rgba(255,255,255,.025) !important;
             position: relative;
             overflow: visible;
@@ -677,8 +677,8 @@
             position: relative; overflow: hidden;
             background: linear-gradient(180deg, rgba(24,24,31,.72), rgba(8,9,13,.64)) !important;
             border: 1px solid rgba(255,255,255,.13) !important;
-            backdrop-filter: blur(30px) saturate(175%) !important;
-            -webkit-backdrop-filter: blur(30px) saturate(175%) !important;
+            backdrop-filter: blur(10px) saturate(115%) !important;
+            -webkit-backdrop-filter: blur(10px) saturate(115%) !important;
             box-shadow: 0 26px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08) !important;
         }
         #mobile-nav > button { position: relative; z-index: 1; }
@@ -974,16 +974,16 @@
             background-position: 50% 50%;
             opacity: .78;
             will-change: background-position, transform;
-            animation: bgAmbientDrift 18s ease-in-out infinite alternate;
+            /* animation: bgAmbientDrift 18s ease-in-out infinite alternate */;
         }
         .portal-bg-layer::after { z-index: 0; }
         .geometry-field { z-index: 1; transform-style: preserve-3d; }
         .geometry-shape, .geometry-line { will-change: transform, opacity; }
-        .geometry-shape-a { animation: geoFloatA 13s ease-in-out infinite; }
-        .geometry-shape-b { animation: geoFloatB 16s ease-in-out infinite; animation-delay: -4s; }
-        .geometry-shape-c { animation: geoFloatC 11s ease-in-out infinite; animation-delay: -2s; }
-        .geometry-line-a { animation: geoLineA 19s ease-in-out infinite; }
-        .geometry-line-b { animation: geoLineB 23s ease-in-out infinite; animation-delay: -7s; }
+        .geometry-shape-a { /* animation: geoFloatA 13s ease-in-out infinite */; }
+        .geometry-shape-b { /* animation: geoFloatB 16s ease-in-out infinite */; animation-delay: -4s; }
+        .geometry-shape-c { /* animation: geoFloatC 11s ease-in-out infinite */; animation-delay: -2s; }
+        .geometry-line-a { /* animation: geoLineA 19s ease-in-out infinite */; }
+        .geometry-line-b { /* animation: geoLineB 23s ease-in-out infinite */; animation-delay: -7s; }
 
         @keyframes bgAmbientDrift {
             0% { background-position: 44% 46%; transform: scale(1.01) translate3d(0,0,0); }
@@ -1017,7 +1017,7 @@
                 radial-gradient(circle at 18% 26%, color-mix(in srgb,var(--portal-accent-a) 72%, transparent), transparent 28%),
                 radial-gradient(circle at 80% 22%, color-mix(in srgb,var(--portal-accent-b) 58%, transparent), transparent 30%),
                 radial-gradient(circle at 55% 82%, color-mix(in srgb,var(--portal-accent-c) 52%, transparent), transparent 34%);
-            animation: auroraMove 16s ease-in-out infinite alternate;
+            /* animation: auroraMove 16s ease-in-out infinite alternate */;
         }
         @keyframes auroraMove {
             0% { transform: translate3d(-2%,-1%,0) scale(1.02); background-position: 20% 30%, 78% 20%, 52% 84%; }
@@ -1029,7 +1029,7 @@
                 linear-gradient(132deg, transparent 0 18%, color-mix(in srgb,var(--portal-accent-a) 34%,transparent) 18.2% 18.6%, transparent 19% 48%, color-mix(in srgb,var(--portal-accent-b) 32%,transparent) 48.2% 48.6%, transparent 49% 78%, color-mix(in srgb,var(--portal-accent-c) 27%,transparent) 78.2% 78.6%, transparent 79%),
                 linear-gradient(34deg, transparent 0 34%, rgba(255,255,255,.075) 34.3% 34.8%, transparent 35% 65%, rgba(255,255,255,.055) 65.3% 65.8%, transparent 66%);
             background-size: 150% 150%, 170% 170%;
-            animation: prismSweep 11s linear infinite;
+            /* animation: prismSweep 11s linear infinite */;
         }
         @keyframes prismSweep {
             from { background-position: 0% 0%, 30% 10%; transform: rotate(.001deg) scale(1.03); }
@@ -1041,7 +1041,7 @@
                 radial-gradient(ellipse at 72% 38%, transparent 0 10%, color-mix(in srgb,var(--portal-accent-a) 55%,transparent) 10.5% 11%, transparent 11.4% 22%, color-mix(in srgb,var(--portal-accent-b) 46%,transparent) 22.5% 23%, transparent 23.4% 36%, color-mix(in srgb,var(--portal-accent-c) 36%,transparent) 36.5% 37%, transparent 37.6%),
                 radial-gradient(ellipse at 30% 72%, transparent 0 7%, rgba(255,255,255,.075) 7.5% 8.1%, transparent 8.6% 19%, rgba(255,255,255,.04) 19.5% 20.2%, transparent 20.7%);
             background-size: 130% 130%, 120% 120%;
-            animation: orbitSpin 24s linear infinite;
+            /* animation: orbitSpin 24s linear infinite */;
         }
         @keyframes orbitSpin {
             from { transform: rotate(0deg) scale(1.02); background-position: 50% 50%, 50% 50%; }
@@ -1055,7 +1055,7 @@
                 linear-gradient(135deg,transparent 0 47%,rgba(255,255,255,.05) 47.4% 48%,transparent 48.4%);
             background-size: 58px 58px, 58px 58px, 100% 100%;
             mask-image: radial-gradient(ellipse at center, black 15%, transparent 84%);
-            animation: meshPan 15s linear infinite;
+            /* animation: meshPan 15s linear infinite */;
         }
         @keyframes meshPan {
             from { background-position: 0 0, 0 0, 0 0; }
@@ -1068,7 +1068,7 @@
                 repeating-linear-gradient(-18deg, transparent 0 46px, color-mix(in srgb,var(--portal-accent-b) 28%,transparent) 47px, transparent 49px 96px),
                 radial-gradient(circle at 50% 50%, color-mix(in srgb,var(--portal-accent-c) 22%,transparent), transparent 60%);
             background-size: 150% 150%, 160% 160%, 130% 130%;
-            animation: waveFlow 13s ease-in-out infinite alternate;
+            /* animation: waveFlow 13s ease-in-out infinite alternate */;
         }
         @keyframes waveFlow {
             0% { background-position: -12% 8%, 4% 0%, 50% 50%; transform: translate3d(-1%,0,0) scale(1.02); }
@@ -1110,11 +1110,11 @@
             }
             .geometry-field::before { opacity: .95 !important; }
             .geometry-field::after { opacity: .22 !important; }
-            .geometry-shape-a { animation: mobileGeoA 10s ease-in-out infinite !important; }
-            .geometry-shape-b { animation: mobileGeoB 13s ease-in-out infinite !important; }
-            .geometry-shape-c { animation: mobileGeoC 9s ease-in-out infinite !important; }
-            .geometry-line-a { animation: mobileGeoLineA 14s ease-in-out infinite !important; }
-            .geometry-line-b { animation: mobileGeoLineB 16s ease-in-out infinite !important; }
+            .geometry-shape-a { /* animation: mobileGeoA 10s ease-in-out infinite !important */; }
+            .geometry-shape-b { /* animation: mobileGeoB 13s ease-in-out infinite !important */; }
+            .geometry-shape-c { /* animation: mobileGeoC 9s ease-in-out infinite !important */; }
+            .geometry-line-a { /* animation: mobileGeoLineA 14s ease-in-out infinite !important */; }
+            .geometry-line-b { /* animation: mobileGeoLineB 16s ease-in-out infinite !important */; }
         }
         @keyframes mobileGeoA {
             0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(42deg) scale(1); }
@@ -1203,8 +1203,8 @@
         .nav-liquid-indicator, .view-enter, .view-leave { will-change: transform, opacity; }
         @media (max-width: 767px) {
             .glass-panel, .glass-card, #mobile-dock nav, header > div {
-                backdrop-filter: blur(18px) saturate(145%) !important;
-                -webkit-backdrop-filter: blur(18px) saturate(145%) !important;
+                backdrop-filter: blur(9px) saturate(115%) !important;
+                -webkit-backdrop-filter: blur(9px) saturate(115%) !important;
             }
             .geometry-field { opacity: .60 !important; }
             .premium-shine::after { display:none !important; }
@@ -1226,6 +1226,71 @@
         .perf-hidden-animations .geometry-field * { animation-play-state: paused !important; }
         @media (prefers-reduced-motion: reduce) {
             .geometry-field { display:none !important; }
+        }
+        /* ===== CONSOLIDATED PERFORMANCE OVERRIDES ===== */
+        html, body {
+            -webkit-text-size-adjust: 100%;
+        }
+        #ambient-background {
+            contain: strict;
+            isolation: isolate;
+        }
+        #mesh-1, #mesh-2 {
+            filter: blur(70px) !important;
+            animation: none !important;
+        }
+        #ambient-background > .animate-pulse-slow {
+            display: none !important;
+        }
+        .ambient-noise, #pointer-glow {
+            display: none !important;
+        }
+        .geometry-field {
+            mix-blend-mode: normal !important;
+            opacity: .24 !important;
+            filter: none !important;
+        }
+        .geometry-shape, .geometry-line,
+        .portal-bg-layer::before, .portal-bg-layer::after {
+            animation: none !important;
+            will-change: auto !important;
+        }
+        .geometry-shape {
+            box-shadow: 0 0 28px rgba(255,255,255,.012) inset !important;
+        }
+        .portal-bg-layer::before {
+            background-size: 120% 120% !important;
+            transform: none !important;
+        }
+        .glass-panel, .glass-card, header > div, #mobile-dock nav {
+            backdrop-filter: blur(8px) saturate(115%) !important;
+            -webkit-backdrop-filter: blur(8px) saturate(115%) !important;
+        }
+        .glass-card {
+            transition: transform .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease !important;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px) !important;
+        }
+        #main-content {
+            will-change: auto !important;
+        }
+        #main-content > div {
+            content-visibility: auto;
+        }
+        .register-student-item[hidden] { display: none !important; }
+        @media (max-width: 767px) {
+            .glass-panel, .glass-card, header > div, #mobile-dock nav {
+                backdrop-filter: blur(6px) saturate(110%) !important;
+                -webkit-backdrop-filter: blur(6px) saturate(110%) !important;
+            }
+            .geometry-field { opacity: .12 !important; }
+            .geometry-field .geometry-shape, .geometry-field .geometry-line {
+                display: none !important;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { scroll-behavior: auto !important; }
         }
     </style>
 </head>
@@ -1637,7 +1702,11 @@
         };
 
         const getMergedSchedule = (weekType, weekNum) => {
-            let base = (weekNum && Number(weekNum) >= 3) ? [] : (mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : []);
+            let base = (weekNum && Number(weekNum) >= 3)
+                ? []
+                : (mainScheduleData[weekType]
+                    ? mainScheduleData[weekType].map(d => ({ ...d, pairs: d.pairs.map(p => ({ ...p })) }))
+                    : []);
 
             // Поки у порталі є лише лекційна начитка: практичні/мовні пари не показуємо.
             base.forEach(d => {
@@ -1992,6 +2061,10 @@
             }, 850);
         };
 
+        let navInitialStabilized = false;
+        let navStabilizeScheduled = false;
+        let navStabilizeGeneration = 0;
+
         const renderNav = () => {
             const { pri } = getTheme();
             const student = window.appState.selectedStudent;
@@ -2051,8 +2124,33 @@
                 }).join('');
             }
 
+            // Keep the real tab-switch animation. Only the very first paint gets a
+            // delayed geometry correction, after fonts/icons have settled.
             animateActiveNav(deskNav, previousDeskIndicator);
             animateActiveNav(mobileContainer, previousMobileIndicator);
+
+            if (!navInitialStabilized && !navStabilizeScheduled) {
+                navStabilizeScheduled = true;
+                const generation = ++navStabilizeGeneration;
+                const expectedSignature = window.appState.navSignature;
+                const finishInitialNavStabilization = () => {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            // A tab switch happened while fonts were loading: do not
+                            // snap over the user's freshly-started navigation animation.
+                            if (generation !== navStabilizeGeneration || window.appState.navSignature !== expectedSignature) {
+                                navStabilizeScheduled = false;
+                                return;
+                            }
+                            syncAllNavIndicators();
+                            navInitialStabilized = true;
+                            navStabilizeScheduled = false;
+                        });
+                    });
+                };
+                if (document.fonts?.ready) document.fonts.ready.then(finishInitialNavStabilization).catch(finishInitialNavStabilization);
+                else finishInitialNavStabilization();
+            }
 
             if (student) {
                 const info = document.getElementById('header-user-info');
@@ -2063,11 +2161,6 @@
                 if (avatar) avatar.innerText = firstName.charAt(0).toUpperCase();
             }
 
-            try {
-                if (window.lucide?.createIcons) lucide.createIcons({ root: document.getElementById('app') || document });
-            } catch (e) {
-                console.warn('Navigation icons skipped:', e);
-            }
         };
 
         const renderMobileMenu = () => {
@@ -2167,8 +2260,7 @@
                 </div>`;
             window.app.updateLiveWidget();
             if (window.appState.statusInterval) clearInterval(window.appState.statusInterval);
-            window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 90000);
-            lucide.createIcons({ root: document.getElementById('app') || document });
+            window.appState.statusInterval = window.setInterval(window.app.updateLiveWidget, 90000);
         };
 
         const renderSchedule = () => {
@@ -2543,14 +2635,14 @@
                         <div class="p-4 md:p-6 border-b border-zinc-200/80 dark:border-white/10 relative z-10 bg-white/40 dark:bg-black/20">
                             <div class="relative group">
                                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
-                                <input type="text" id="reg-search" value="${searchStr}" oninput="window.app.renderActiveView()" placeholder="Знайти студента..." class="w-full pl-12 pr-4 py-4 md:py-4 bg-white/60 dark:bg-zinc-800/60 rounded-[16px] md:rounded-[20px] text-[15px] font-bold outline-none focus:ring-2 ring-zinc-900 dark:ring-white border border-zinc-200/80 dark:border-white/10 transition-all shadow-inner text-zinc-900 dark:text-white" />
+                                <input type="text" id="reg-search" value="${searchStr}" oninput="window.app.filterRegister(this.value)" placeholder="Знайти студента..." class="w-full pl-12 pr-4 py-4 md:py-4 bg-white/60 dark:bg-zinc-800/60 rounded-[16px] md:rounded-[20px] text-[15px] font-bold outline-none focus:ring-2 ring-zinc-900 dark:ring-white border border-zinc-200/80 dark:border-white/10 transition-all shadow-inner text-zinc-900 dark:text-white" />
                             </div>
                         </div>
                         <div class="md:hidden p-3 space-y-2.5 relative z-10">
                             ${filteredStudents.map((s, i) => {
                                 const isMe = user.id === s.id;
                                 return `
-                                    <article class="student-mobile-card ${isMe ? `is-me border-${pri}-500/25` : ''} animate-slide-in-right" style="animation-delay: ${80 + i * 18}ms;">
+                                    <article class="student-mobile-card register-student-item ${isMe ? `is-me border-${pri}-500/25` : ''} animate-slide-in-right" style="animation-delay: ${80 + i * 18}ms;">
                                         <div class="flex items-start gap-3 min-w-0">
                                             <div class="student-index">${String(i + 1).padStart(2,'0')}</div>
                                             <div class="min-w-0 flex-1">
@@ -2599,6 +2691,13 @@
                 searchEl.focus();
                 searchEl.setSelectionRange(searchStr.length, searchStr.length);
             }
+        };
+
+        const filterRegister = (value = '') => {
+            const query = String(value).trim().toLowerCase();
+            document.querySelectorAll('.register-student-item').forEach(el => {
+                el.hidden = query && !el.textContent.toLowerCase().includes(query);
+            });
         };
 
         const renderEditor = () => {
@@ -2880,7 +2979,7 @@
                     if(el.dataset.dragAttached) return; 
                     el.dataset.dragAttached = 'true';
                     
-                    if (!el.classList.contains('overflow-x-auto') && el.tagName !== 'TABLE') return;
+                    if (!el.classList.contains('overflow-x-auto')) return;
 
                     el.classList.add('cursor-grab');
 
@@ -3551,6 +3650,7 @@
             setMatFilter: (f) => { window.appState.matFilter = f; window.app.renderActiveView(); },
             setHwFilter: (f) => { window.appState.hwFilter = f; window.app.renderActiveView(); },
             setAnalyticsDate: (dateStr) => { window.appState.analyticsDate = dateStr; window.app.renderActiveView(); },
+            filterRegister,
 
             openMobileMenu: () => {
                 renderMobileMenu();
@@ -3925,15 +4025,39 @@
             connect().finally(() => window.clearTimeout(timeoutId));
         };
 
+        const syncNavIndicatorPosition = (container) => {
+            if (!container) return;
+            const active = container.querySelector('.nav-active');
+            const pill = container.querySelector('.nav-liquid-indicator');
+            if (!active || !pill) {
+                if (pill) pill.style.opacity = '0';
+                return;
+            }
+            const c = container.getBoundingClientRect();
+            const b = active.getBoundingClientRect();
+            positionNavIndicator(container, {
+                left: b.left - c.left,
+                top: b.top - c.top,
+                width: b.width,
+                height: b.height
+            }, true);
+            pill.classList.remove('is-moving');
+        };
+
+        const syncAllNavIndicators = () => {
+            syncNavIndicatorPosition(document.getElementById('desktop-nav'));
+            syncNavIndicatorPosition(document.getElementById('mobile-nav'));
+        };
+
         let navIndicatorResizeRaf = 0;
         const refreshNavIndicators = () => {
             if (navIndicatorResizeRaf) return;
             navIndicatorResizeRaf = requestAnimationFrame(() => {
                 navIndicatorResizeRaf = 0;
-                animateActiveNav(document.getElementById('desktop-nav'));
-                animateActiveNav(document.getElementById('mobile-nav'));
+                syncAllNavIndicators();
             });
         };
+
         window.addEventListener('resize', refreshNavIndicators, { passive: true });
         window.addEventListener('orientationchange', refreshNavIndicators, { passive: true });
 
@@ -3962,7 +4086,6 @@
             } else {
                 document.getElementById('auth-screen')?.classList.remove('hidden');
                 try { window.app.renderAuthList(); } catch (e) { console.error('Auth render failed:', e); }
-                try { if (window.lucide?.createIcons) lucide.createIcons({ root: document.getElementById('app') || document }); } catch (e) {}
             }
 
             // Start Firebase after first paint.
@@ -3990,7 +4113,7 @@
             const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
             const fine = window.matchMedia?.('(pointer: fine)').matches;
             const coarse = window.matchMedia?.('(pointer: coarse)').matches;
-            if (reduce) return;
+            if (reduce || coarse || perf.lowEnd) return;
 
             let targetX = 0, targetY = 0;
             let currentX = 0, currentY = 0;
