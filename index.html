@@ -12,7 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@0.468.0"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -388,7 +388,7 @@
                         radial-gradient(circle at 60% 86%, var(--portal-accent-c), transparent 34%),
                         var(--portal-base);
             transition: background 700ms cubic-bezier(.2,.75,.2,1);
-            will-change: auto;
+            will-change: background;
         }
 
         .portal-bg-layer::before {
@@ -645,8 +645,8 @@
             pointer-events: auto;
             background: linear-gradient(180deg, rgba(20,20,26,.68), rgba(9,9,13,.58)) !important;
             border: 1px solid rgba(255,255,255,.12) !important;
-            backdrop-filter: blur(12px) saturate(120%) !important;
-            -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+            backdrop-filter: blur(34px) saturate(170%) !important;
+            -webkit-backdrop-filter: blur(34px) saturate(170%) !important;
             box-shadow: 0 24px 80px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.10), inset 0 0 0 1px rgba(255,255,255,.025) !important;
             position: relative;
             overflow: visible;
@@ -677,8 +677,8 @@
             position: relative; overflow: hidden;
             background: linear-gradient(180deg, rgba(24,24,31,.72), rgba(8,9,13,.64)) !important;
             border: 1px solid rgba(255,255,255,.13) !important;
-            backdrop-filter: blur(10px) saturate(115%) !important;
-            -webkit-backdrop-filter: blur(10px) saturate(115%) !important;
+            backdrop-filter: blur(30px) saturate(175%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(175%) !important;
             box-shadow: 0 26px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08) !important;
         }
         #mobile-nav > button { position: relative; z-index: 1; }
@@ -915,226 +915,126 @@
 
 
         /* =========================================================
-           V6 INTERACTIVE BACKGROUND — silky pointer parallax
-           GPU-first: transform/opacity only, single RAF loop.
+           STABLE LIVE BACKGROUNDS
+           Only opacity/transform are animated; no background-position,
+           rotation of clipped layers, canvas or pointer-parallax math.
+           This keeps every background visually stable while moving.
            ========================================================= */
-        #ambient-background,
-        #mesh-1,
-        #mesh-2,
-        .geometry-field,
-        .geometry-field::before,
-        .geometry-field::after,
-        .ambient-grid {
-            --pointer-rx: 0;
-            --pointer-ry: 0;
-        }
-        #ambient-background { perspective: 900px; }
-        #mesh-1,
-        #mesh-2,
-        .geometry-field,
-        .ambient-grid {
-            will-change: transform;
-            transform: translate3d(0,0,0);
-        }
-        #mesh-1 { transform: translate3d(calc(var(--pointer-rx) * -14px), calc(var(--pointer-ry) * -10px), 0); }
-        #mesh-2 { transform: translate3d(calc(var(--pointer-rx) * 18px), calc(var(--pointer-ry) * 14px), 0); }
-        .geometry-field { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px), 0); }
-        .geometry-field::before { transform: translate3d(calc(var(--pointer-rx) * -18px), calc(var(--pointer-ry) * -14px), 0) scale(1.025); }
-        .geometry-field::after { transform: translate3d(calc(var(--pointer-rx) * 8px), calc(var(--pointer-ry) * 6px), 0); }
-        .ambient-grid { transform: translate3d(calc(var(--pointer-rx) * -5px), calc(var(--pointer-ry) * -4px), 0); }
-        #interactive-bg { display:none !important; }
-        @media (max-width:767px) {
-            #ambient-background { perspective:none; }
-            #mesh-1 { transform: translate3d(calc(var(--pointer-rx) * -7px), calc(var(--pointer-ry) * -5px), 0); }
-            #mesh-2 { transform: translate3d(calc(var(--pointer-rx) * 9px), calc(var(--pointer-ry) * 7px), 0); }
-            .geometry-field { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px), 0); }
-            .geometry-field::before { transform: translate3d(calc(var(--pointer-rx) * -7px), calc(var(--pointer-ry) * -5px), 0) scale(1.018); }
-            .geometry-field::after { transform: none; }
-            .ambient-grid { transform: none; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            #mesh-1,#mesh-2,.geometry-field,.geometry-field::before,.geometry-field::after,.ambient-grid { transform:none !important; }
-        }
-
-
-        /* =========================================================
-           V7 LIVE GEOMETRY BACKGROUNDS
-           Each background has its own visible motion. The same
-           low-cost GPU transforms are used on desktop and mobile.
-           ========================================================= */
-        .portal-bg-layer {
-            --bg-shift-x: 0px;
-            --bg-shift-y: 0px;
-            overflow: hidden;
+        #ambient-background {
             isolation: isolate;
-        }
-        .portal-bg-layer::before {
-            z-index: 0;
-            background-size: 180% 180%;
-            background-position: 50% 50%;
-            opacity: .78;
-            will-change: background-position, transform;
-            /* animation: bgAmbientDrift 18s ease-in-out infinite alternate */;
-        }
-        .portal-bg-layer::after { z-index: 0; }
-        .geometry-field { z-index: 1; transform-style: preserve-3d; }
-        .geometry-shape, .geometry-line { will-change: transform, opacity; }
-        .geometry-shape-a { /* animation: geoFloatA 13s ease-in-out infinite */; }
-        .geometry-shape-b { /* animation: geoFloatB 16s ease-in-out infinite */; animation-delay: -4s; }
-        .geometry-shape-c { /* animation: geoFloatC 11s ease-in-out infinite */; animation-delay: -2s; }
-        .geometry-line-a { /* animation: geoLineA 19s ease-in-out infinite */; }
-        .geometry-line-b { /* animation: geoLineB 23s ease-in-out infinite */; animation-delay: -7s; }
-
-        @keyframes bgAmbientDrift {
-            0% { background-position: 44% 46%; transform: scale(1.01) translate3d(0,0,0); }
-            50% { background-position: 57% 53%; transform: scale(1.035) translate3d(calc(var(--pointer-rx) * -4px), calc(var(--pointer-ry) * -3px), 0); }
-            100% { background-position: 48% 58%; transform: scale(1.015) translate3d(calc(var(--pointer-rx) * 4px), calc(var(--pointer-ry) * 3px), 0); }
-        }
-        @keyframes geoFloatA {
-            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(45deg) translate3d(0,0,0) scale(1); }
-            50% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(49deg) translate3d(-10px,12px,0) scale(1.025); }
-        }
-        @keyframes geoFloatB {
-            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(45deg) translate3d(0,0,0) scale(1); }
-            50% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(40deg) translate3d(14px,-9px,0) scale(1.035); }
-        }
-        @keyframes geoFloatC {
-            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(18deg) translate3d(0,0,0); }
-            50% { transform: translate3d(calc(var(--pointer-rx) * 28px), calc(var(--pointer-ry) * 22px),0) rotate(28deg) translate3d(-7px,8px,0); }
-        }
-        @keyframes geoLineA {
-            0%,100% { opacity:.48; transform: rotate(-13deg) translate3d(0,0,0); }
-            50% { opacity:.72; transform: rotate(-9deg) translate3d(20px,10px,0); }
-        }
-        @keyframes geoLineB {
-            0%,100% { opacity:.35; transform: rotate(19deg) translate3d(0,0,0); }
-            50% { opacity:.64; transform: rotate(24deg) translate3d(-18px,-6px,0); }
+            background: var(--portal-base);
         }
 
-        /* Distinct live textures for every selectable background. */
-        body[data-premium-background="aurora"] .portal-bg-layer::before {
+        .bg-orb,
+        .bg-pattern,
+        .bg-vignette {
+            position: absolute;
+            inset: -12%;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        .bg-orb { border-radius: 999px; filter: blur(90px); opacity: .62; }
+        .bg-orb-a {
+            inset: auto;
+            width: min(70vw, 900px);
+            height: min(70vw, 900px);
+            left: -16vw;
+            top: -22vw;
+            background: var(--portal-accent-a);
+            animation: stableOrbA 16s ease-in-out infinite alternate;
+        }
+        .bg-orb-b {
+            inset: auto;
+            width: min(62vw, 820px);
+            height: min(62vw, 820px);
+            right: -16vw;
+            top: -12vw;
+            background: var(--portal-accent-b);
+            animation: stableOrbB 19s ease-in-out infinite alternate;
+        }
+        .bg-orb-c {
+            inset: auto;
+            width: min(58vw, 760px);
+            height: min(58vw, 760px);
+            right: 12vw;
+            bottom: -28vw;
+            background: var(--portal-accent-c);
+            opacity: .38;
+            animation: stableOrbC 22s ease-in-out infinite alternate;
+        }
+
+        .bg-pattern {
+            inset: -10%;
+            opacity: .62;
+            transform: scale(1.08);
+            background-repeat: no-repeat;
+            background-size: 125% 125%;
+            animation: stablePattern 18s ease-in-out infinite alternate;
+        }
+
+        .bg-vignette {
+            inset: 0;
+            z-index: 2;
+            background: radial-gradient(circle at 50% 42%, transparent 25%, rgba(0,0,0,.08) 66%, rgba(0,0,0,.32) 100%), linear-gradient(180deg, rgba(255,255,255,.018), transparent 30%);
+        }
+
+        body[data-premium-background="aurora"] .bg-pattern {
             background:
-                radial-gradient(circle at 18% 26%, color-mix(in srgb,var(--portal-accent-a) 72%, transparent), transparent 28%),
-                radial-gradient(circle at 80% 22%, color-mix(in srgb,var(--portal-accent-b) 58%, transparent), transparent 30%),
-                radial-gradient(circle at 55% 82%, color-mix(in srgb,var(--portal-accent-c) 52%, transparent), transparent 34%);
-            /* animation: auroraMove 16s ease-in-out infinite alternate */;
+                radial-gradient(circle at 22% 25%, color-mix(in srgb,var(--portal-accent-a) 62%,transparent), transparent 25%),
+                radial-gradient(circle at 78% 22%, color-mix(in srgb,var(--portal-accent-b) 50%,transparent), transparent 27%),
+                radial-gradient(circle at 56% 78%, color-mix(in srgb,var(--portal-accent-c) 42%,transparent), transparent 32%);
         }
-        @keyframes auroraMove {
-            0% { transform: translate3d(-2%,-1%,0) scale(1.02); background-position: 20% 30%, 78% 20%, 52% 84%; }
-            100% { transform: translate3d(2%,2%,0) scale(1.06); background-position: 28% 24%, 68% 30%, 60% 72%; }
-        }
-
-        body[data-premium-background="prism"] .portal-bg-layer::before {
+        body[data-premium-background="prism"] .bg-pattern {
             background:
-                linear-gradient(132deg, transparent 0 18%, color-mix(in srgb,var(--portal-accent-a) 34%,transparent) 18.2% 18.6%, transparent 19% 48%, color-mix(in srgb,var(--portal-accent-b) 32%,transparent) 48.2% 48.6%, transparent 49% 78%, color-mix(in srgb,var(--portal-accent-c) 27%,transparent) 78.2% 78.6%, transparent 79%),
-                linear-gradient(34deg, transparent 0 34%, rgba(255,255,255,.075) 34.3% 34.8%, transparent 35% 65%, rgba(255,255,255,.055) 65.3% 65.8%, transparent 66%);
-            background-size: 150% 150%, 170% 170%;
-            /* animation: prismSweep 11s linear infinite */;
+                linear-gradient(135deg, transparent 0 21%, rgba(255,255,255,.055) 21% 21.4%, transparent 21.4% 49%, color-mix(in srgb,var(--portal-accent-a) 18%,transparent) 49% 49.5%, transparent 49.5% 75%, rgba(255,255,255,.045) 75% 75.4%, transparent 75.4%),
+                linear-gradient(45deg, transparent 0 35%, color-mix(in srgb,var(--portal-accent-b) 13%,transparent) 35% 35.5%, transparent 35.5% 65%, color-mix(in srgb,var(--portal-accent-c) 10%,transparent) 65% 65.5%, transparent 65.5%);
         }
-        @keyframes prismSweep {
-            from { background-position: 0% 0%, 30% 10%; transform: rotate(.001deg) scale(1.03); }
-            to { background-position: 100% 100%, 65% 85%; transform: rotate(.001deg) scale(1.09); }
-        }
-
-        body[data-premium-background="orbit"] .portal-bg-layer::before {
+        body[data-premium-background="orbit"] .bg-pattern {
             background:
-                radial-gradient(ellipse at 72% 38%, transparent 0 10%, color-mix(in srgb,var(--portal-accent-a) 55%,transparent) 10.5% 11%, transparent 11.4% 22%, color-mix(in srgb,var(--portal-accent-b) 46%,transparent) 22.5% 23%, transparent 23.4% 36%, color-mix(in srgb,var(--portal-accent-c) 36%,transparent) 36.5% 37%, transparent 37.6%),
-                radial-gradient(ellipse at 30% 72%, transparent 0 7%, rgba(255,255,255,.075) 7.5% 8.1%, transparent 8.6% 19%, rgba(255,255,255,.04) 19.5% 20.2%, transparent 20.7%);
-            background-size: 130% 130%, 120% 120%;
-            /* animation: orbitSpin 24s linear infinite */;
+                radial-gradient(circle at 74% 38%, transparent 0 13%, color-mix(in srgb,var(--portal-accent-a) 34%,transparent) 13.3% 13.8%, transparent 14.2% 25%, color-mix(in srgb,var(--portal-accent-b) 28%,transparent) 25.3% 25.8%, transparent 26.2% 39%, color-mix(in srgb,var(--portal-accent-c) 22%,transparent) 39.3% 39.8%, transparent 40.3%),
+                radial-gradient(circle at 28% 72%, transparent 0 8%, rgba(255,255,255,.045) 8.3% 8.8%, transparent 9.2% 21%);
         }
-        @keyframes orbitSpin {
-            from { transform: rotate(0deg) scale(1.02); background-position: 50% 50%, 50% 50%; }
-            to { transform: rotate(360deg) scale(1.08); background-position: 54% 48%, 46% 52%; }
-        }
-
-        body[data-premium-background="mesh"] .portal-bg-layer::before {
+        body[data-premium-background="mesh"] .bg-pattern {
             background-image:
-                linear-gradient(color-mix(in srgb,var(--portal-accent-a) 28%,transparent) 1px, transparent 1px),
-                linear-gradient(90deg,color-mix(in srgb,var(--portal-accent-b) 25%,transparent) 1px, transparent 1px),
-                linear-gradient(135deg,transparent 0 47%,rgba(255,255,255,.05) 47.4% 48%,transparent 48.4%);
-            background-size: 58px 58px, 58px 58px, 100% 100%;
-            mask-image: radial-gradient(ellipse at center, black 15%, transparent 84%);
-            /* animation: meshPan 15s linear infinite */;
+                linear-gradient(color-mix(in srgb,var(--portal-accent-a) 17%,transparent) 1px, transparent 1px),
+                linear-gradient(90deg,color-mix(in srgb,var(--portal-accent-b) 15%,transparent) 1px, transparent 1px),
+                linear-gradient(135deg, transparent 0 47%, rgba(255,255,255,.035) 47.5% 48%, transparent 48.5%);
+            background-size: 56px 56px, 56px 56px, 100% 100%;
+            mask-image: radial-gradient(ellipse at center, black 18%, transparent 88%);
         }
-        @keyframes meshPan {
-            from { background-position: 0 0, 0 0, 0 0; }
-            to { background-position: 58px 58px, -58px 58px, 24px -18px; }
-        }
-
-        body[data-premium-background="wave"] .portal-bg-layer::before {
+        body[data-premium-background="wave"] .bg-pattern {
             background:
-                repeating-linear-gradient(22deg, transparent 0 30px, color-mix(in srgb,var(--portal-accent-a) 34%,transparent) 31px, transparent 33px 62px),
-                repeating-linear-gradient(-18deg, transparent 0 46px, color-mix(in srgb,var(--portal-accent-b) 28%,transparent) 47px, transparent 49px 96px),
-                radial-gradient(circle at 50% 50%, color-mix(in srgb,var(--portal-accent-c) 22%,transparent), transparent 60%);
-            background-size: 150% 150%, 160% 160%, 130% 130%;
-            /* animation: waveFlow 13s ease-in-out infinite alternate */;
-        }
-        @keyframes waveFlow {
-            0% { background-position: -12% 8%, 4% 0%, 50% 50%; transform: translate3d(-1%,0,0) scale(1.02); }
-            100% { background-position: 12% -8%, -6% 10%, 54% 46%; transform: translate3d(1%,1%,0) scale(1.07); }
+                repeating-linear-gradient(22deg, transparent 0 34px, color-mix(in srgb,var(--portal-accent-a) 21%,transparent) 35px, transparent 36px 68px),
+                repeating-linear-gradient(-18deg, transparent 0 46px, color-mix(in srgb,var(--portal-accent-b) 17%,transparent) 47px, transparent 48px 96px),
+                radial-gradient(circle at 50% 50%, color-mix(in srgb,var(--portal-accent-c) 15%,transparent), transparent 60%);
         }
 
+        @keyframes stableOrbA {
+            from { transform: translate3d(0,0,0) scale(1); }
+            to   { transform: translate3d(34px,28px,0) scale(1.06); }
+        }
+        @keyframes stableOrbB {
+            from { transform: translate3d(0,0,0) scale(1); }
+            to   { transform: translate3d(-30px,24px,0) scale(1.07); }
+        }
+        @keyframes stableOrbC {
+            from { transform: translate3d(0,0,0) scale(1); }
+            to   { transform: translate3d(-24px,-18px,0) scale(1.05); }
+        }
+        @keyframes stablePattern {
+            from { transform: scale(1.08) translate3d(-10px,-7px,0); opacity: .54; }
+            to   { transform: scale(1.12) translate3d(10px,8px,0); opacity: .68; }
+        }
         @media (max-width: 767px) {
-            .portal-bg-layer::before { opacity:.64; animation-duration: 20s; }
-            .geometry-field { opacity:.58 !important; }
-            .geometry-shape-a { animation-duration: 16s; }
-            .geometry-shape-b { animation-duration: 18s; }
-            .geometry-shape-c { animation-duration: 14s; }
-            body[data-premium-background="orbit"] .portal-bg-layer::before { animation-duration: 30s; }
-            body[data-premium-background="mesh"] .portal-bg-layer::before { animation-duration: 20s; }
+            .bg-orb { filter: blur(72px); opacity: .52; }
+            .bg-orb-a { width: 78vw; height: 78vw; left: -23vw; top: -18vw; }
+            .bg-orb-b { width: 72vw; height: 72vw; right: -24vw; top: -8vw; }
+            .bg-orb-c { width: 66vw; height: 66vw; right: 6vw; bottom: -32vw; }
+            .bg-pattern { inset: -14%; opacity: .50; transform: scale(1.10); animation-duration: 22s; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .portal-bg-layer::before,.geometry-shape-a,.geometry-shape-b,.geometry-shape-c,.geometry-line-a,.geometry-line-b { animation:none !important; }
-        }
-
-
-        /* =========================================================
-           V8 MOBILE LIVE GEOMETRY — visible on touch devices
-           ========================================================= */
-        .geometry-field { pointer-events:none !important; }
-        .geometry-shape-a,
-        .geometry-shape-b,
-        .geometry-shape-c,
-        .geometry-line-a,
-        .geometry-line-b { will-change: transform, opacity; }
-
-        @media (max-width: 767px) {
-            .portal-bg-layer::before {
-                opacity: .88 !important;
-                background-size: 150% 150% !important;
-            }
-            .geometry-field {
-                opacity: .82 !important;
-                mix-blend-mode: screen !important;
-            }
-            .geometry-field::before { opacity: .95 !important; }
-            .geometry-field::after { opacity: .22 !important; }
-            .geometry-shape-a { /* animation: mobileGeoA 10s ease-in-out infinite !important */; }
-            .geometry-shape-b { /* animation: mobileGeoB 13s ease-in-out infinite !important */; }
-            .geometry-shape-c { /* animation: mobileGeoC 9s ease-in-out infinite !important */; }
-            .geometry-line-a { /* animation: mobileGeoLineA 14s ease-in-out infinite !important */; }
-            .geometry-line-b { /* animation: mobileGeoLineB 16s ease-in-out infinite !important */; }
-        }
-        @keyframes mobileGeoA {
-            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(42deg) scale(1); }
-            50% { transform: translate3d(calc(var(--pointer-rx) * 16px + 8px), calc(var(--pointer-ry) * 12px - 8px),0) rotate(50deg) scale(1.055); }
-        }
-        @keyframes mobileGeoB {
-            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(10deg) scale(1); }
-            50% { transform: translate3d(calc(var(--pointer-rx) * 7px - 12px), calc(var(--pointer-ry) * 6px + 10px),0) rotate(20deg) scale(1.07); }
-        }
-        @keyframes mobileGeoC {
-            0%,100% { transform: translate3d(calc(var(--pointer-rx) * 11px), calc(var(--pointer-ry) * 9px),0) rotate(12deg); }
-            50% { transform: translate3d(calc(var(--pointer-rx) * 14px + 10px), calc(var(--pointer-ry) * 10px - 6px),0) rotate(32deg); }
-        }
-        @keyframes mobileGeoLineA {
-            0%,100% { opacity:.38; transform: rotate(-15deg) translate3d(0,0,0); }
-            50% { opacity:.78; transform: rotate(-8deg) translate3d(24px,12px,0); }
-        }
-        @keyframes mobileGeoLineB {
-            0%,100% { opacity:.28; transform: rotate(17deg) translate3d(0,0,0); }
-            50% { opacity:.68; transform: rotate(27deg) translate3d(-22px,-8px,0); }
+            .bg-orb-a,.bg-orb-b,.bg-orb-c,.bg-pattern { animation: none !important; }
         }
 
 
@@ -1188,379 +1088,17 @@
             .appearance-sheet-header{margin-bottom:18px}
         }
         @media (prefers-reduced-motion:reduce){.appearance-sheet-backdrop,.appearance-sheet{animation:none}}
-
-        /* =========================================================
-           PERFORMANCE CORE — adaptive rendering / zero-jank policy
-           ========================================================= */
-        html, body { overscroll-behavior-y: none; }
-        #app, #main-content, #ambient-background { contain: layout paint style; }
-        #main-content > div { content-visibility: auto; contain-intrinsic-size: 700px; }
-        .glass-panel, .glass-card, #mobile-dock nav, header > div {
-            will-change: auto;
-            transform: translateZ(0);
-        }
-        .geometry-field, .portal-bg-layer, .premium-shine::after { contain: paint; }
-        .nav-liquid-indicator, .view-enter, .view-leave { will-change: transform, opacity; }
-        @media (max-width: 767px) {
-            .glass-panel, .glass-card, #mobile-dock nav, header > div {
-                backdrop-filter: blur(9px) saturate(115%) !important;
-                -webkit-backdrop-filter: blur(9px) saturate(115%) !important;
-            }
-            .geometry-field { opacity: .60 !important; }
-            .premium-shine::after { display:none !important; }
-        }
-        .perf-lite .ambient-noise,
-        .perf-lite #pointer-glow,
-        .perf-lite .premium-shine::after { display:none !important; }
-        .perf-lite .animate-float,
-        .perf-lite .animate-pulse-slow,
-        .perf-lite .geometry-field * { animation-play-state: paused !important; }
-        .perf-lite .glass-panel, .perf-lite .glass-card,
-        .perf-lite #mobile-dock nav, .perf-lite header > div {
-            backdrop-filter: blur(12px) saturate(135%) !important;
-            -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
-        }
-        .perf-lite .geometry-field { opacity: .28 !important; }
-        .perf-hidden-animations .animate-float,
-        .perf-hidden-animations .animate-pulse-slow,
-        .perf-hidden-animations .geometry-field * { animation-play-state: paused !important; }
-        @media (prefers-reduced-motion: reduce) {
-            .geometry-field { display:none !important; }
-        }
-        /* ===== CONSOLIDATED PERFORMANCE OVERRIDES ===== */
-        html, body {
-            -webkit-text-size-adjust: 100%;
-        }
-        #ambient-background {
-            contain: strict;
-            isolation: isolate;
-        }
-        #mesh-1, #mesh-2 {
-            filter: blur(70px) !important;
-            animation: none !important;
-        }
-        #ambient-background > .animate-pulse-slow {
-            display: none !important;
-        }
-        .ambient-noise, #pointer-glow {
-            display: none !important;
-        }
-        .geometry-field {
-            mix-blend-mode: normal !important;
-            opacity: .24 !important;
-            filter: none !important;
-        }
-        .geometry-shape, .geometry-line,
-        .portal-bg-layer::before, .portal-bg-layer::after {
-            animation: none !important;
-            will-change: auto !important;
-        }
-        .geometry-shape {
-            box-shadow: 0 0 28px rgba(255,255,255,.012) inset !important;
-        }
-        .portal-bg-layer::before {
-            background-size: 120% 120% !important;
-            transform: none !important;
-        }
-        .glass-panel, .glass-card, header > div, #mobile-dock nav {
-            backdrop-filter: blur(8px) saturate(115%) !important;
-            -webkit-backdrop-filter: blur(8px) saturate(115%) !important;
-        }
-        .glass-card {
-            transition: transform .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease !important;
-        }
-        .glass-card:hover {
-            transform: translateY(-2px) !important;
-        }
-        #main-content {
-            will-change: auto !important;
-        }
-        #main-content > div {
-            content-visibility: auto;
-        }
-        .register-student-item[hidden] { display: none !important; }
-        @media (max-width: 767px) {
-            .glass-panel, .glass-card, header > div, #mobile-dock nav {
-                backdrop-filter: blur(6px) saturate(110%) !important;
-                -webkit-backdrop-filter: blur(6px) saturate(110%) !important;
-            }
-            .geometry-field { opacity: .12 !important; }
-            .geometry-field .geometry-shape, .geometry-field .geometry-line {
-                display: none !important;
-            }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            * { scroll-behavior: auto !important; }
-        }
-
-        /* ===== MOBILE DOCK FIX: keep bottom navigation truly viewport-fixed ===== */
-        /* CSS containment on #app can turn fixed descendants into container-bound layers.
-           The app itself must not establish that containing block for the fixed header/dock. */
-        #app {
-            contain: none !important;
-            transform: none !important;
-        }
-        #mobile-dock {
-            position: fixed !important;
-            left: max(10px, env(safe-area-inset-left)) !important;
-            right: max(10px, env(safe-area-inset-right)) !important;
-            bottom: max(8px, env(safe-area-inset-bottom)) !important;
-            width: auto !important;
-            margin: 0 !important;
-            z-index: 9999 !important;
-            transform: translateZ(0) !important;
-        }
-        #mobile-dock nav {
-            width: 100%;
-            transform: translateZ(0);
-        }
-        @media (max-width: 767px) {
-            html, body {
-                min-height: 100%;
-                min-height: 100dvh;
-            }
-            #mobile-dock {
-                bottom: max(8px, env(safe-area-inset-bottom)) !important;
-            }
-        }
-
-
-        /* =========================================================
-           IOS LIQUID GLASS — unified component surface
-           ========================================================= */
-        :root {
-            --ios-glass-light: rgba(255,255,255,.56);
-            --ios-glass-light-strong: rgba(255,255,255,.68);
-            --ios-glass-dark: rgba(255,255,255,.075);
-            --ios-glass-dark-strong: rgba(255,255,255,.105);
-            --ios-glass-border-light: rgba(255,255,255,.62);
-            --ios-glass-border-dark: rgba(255,255,255,.13);
-            --ios-glass-highlight: rgba(255,255,255,.34);
-            --ios-glass-shadow-light: 0 14px 40px rgba(31,38,54,.10), 0 2px 10px rgba(31,38,54,.055);
-            --ios-glass-shadow-dark: 0 18px 50px rgba(0,0,0,.27), 0 2px 12px rgba(0,0,0,.18);
-        }
-
-        .glass-panel,
-        .glass-card,
-        .student-mobile-card,
-        .appearance-option,
-        .appearance-color,
-        .compact-live-widget,
-        .appearance-sheet,
-        #mobile-dock nav {
-            position: relative;
-            isolation: isolate;
-            overflow: hidden;
-            border: 1px solid var(--ios-glass-border-light) !important;
-            background:
-                linear-gradient(145deg, rgba(255,255,255,.64), rgba(255,255,255,.30) 45%, rgba(255,255,255,.44)) !important;
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,.72),
-                inset 0 -1px 0 rgba(255,255,255,.16),
-                var(--ios-glass-shadow-light) !important;
-            backdrop-filter: blur(12px) saturate(140%);
-            -webkit-backdrop-filter: blur(12px) saturate(140%);
-        }
-
-        .dark .glass-panel,
-        .dark .glass-card,
-        .dark .student-mobile-card,
-        .dark .appearance-option,
-        .dark .appearance-color,
-        .dark .compact-live-widget,
-        .dark .appearance-sheet,
-        .dark #mobile-dock nav {
-            border-color: var(--ios-glass-border-dark) !important;
-            background:
-                linear-gradient(145deg, rgba(255,255,255,.105), rgba(255,255,255,.035) 46%, rgba(255,255,255,.075)) !important;
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,.17),
-                inset 0 -1px 0 rgba(255,255,255,.025),
-                var(--ios-glass-shadow-dark) !important;
-            backdrop-filter: blur(12px) saturate(135%);
-            -webkit-backdrop-filter: blur(12px) saturate(135%);
-        }
-
-        .glass-panel::before,
-        .glass-card::before,
-        .student-mobile-card::before,
-        .appearance-option::before,
-        .appearance-color::before,
-        .compact-live-widget::before,
-        .appearance-sheet::before,
-        #mobile-dock nav::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: -1;
-            background:
-                linear-gradient(118deg,
-                    rgba(255,255,255,.30) 0%,
-                    rgba(255,255,255,.10) 18%,
-                    transparent 38%,
-                    transparent 72%,
-                    rgba(255,255,255,.08) 100%);
-            opacity: .72;
-        }
-
-        .dark .glass-panel::before,
-        .dark .glass-card::before,
-        .dark .student-mobile-card::before,
-        .dark .appearance-option::before,
-        .dark .appearance-color::before,
-        .dark .compact-live-widget::before,
-        .dark .appearance-sheet::before,
-        .dark #mobile-dock nav::before {
-            background:
-                linear-gradient(118deg,
-                    rgba(255,255,255,.17) 0%,
-                    rgba(255,255,255,.06) 18%,
-                    transparent 38%,
-                    transparent 72%,
-                    rgba(255,255,255,.035) 100%);
-            opacity: .9;
-        }
-
-        .glass-panel::after,
-        .glass-card::after,
-        .student-mobile-card::after,
-        .appearance-option::after,
-        .appearance-color::after,
-        .compact-live-widget::after,
-        #mobile-dock nav::after {
-            content: "";
-            position: absolute;
-            width: 42%;
-            height: 80%;
-            left: -16%;
-            top: -24%;
-            border-radius: 999px;
-            pointer-events: none;
-            background: rgba(255,255,255,.11);
-            filter: blur(24px);
-            opacity: .42;
-            z-index: -1;
-        }
-
-        .glass-card,
-        .student-mobile-card,
-        .appearance-option,
-        .appearance-color {
-            transition:
-                transform .22s var(--premium-ease),
-                background-color .22s ease,
-                border-color .22s ease,
-                box-shadow .22s ease;
-        }
-
-        @media (hover:hover) and (pointer:fine) {
-            .glass-card:hover,
-            .student-mobile-card:hover,
-            .appearance-option:hover,
-            .appearance-color:hover {
-                transform: translateY(-2px) !important;
-                border-color: rgba(255,255,255,.22) !important;
-                box-shadow:
-                    inset 0 1px 0 rgba(255,255,255,.24),
-                    0 18px 48px rgba(0,0,0,.14) !important;
-            }
-        }
-
-        .dark .glass-card:hover,
-        .dark .student-mobile-card:hover,
-        .dark .appearance-option:hover,
-        .dark .appearance-color:hover {
-            background:
-                linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 46%, rgba(255,255,255,.09)) !important;
-            border-color: rgba(255,255,255,.20) !important;
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,.21),
-                0 22px 56px rgba(0,0,0,.31) !important;
-        }
-
-        /* Smaller controls inherit the same optical material language. */
-        .appearance-close,
-        .student-index,
-        .student-tag,
-        .student-badge,
-        .appearance-color-dot {
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 6px 16px rgba(0,0,0,.10) !important;
-        }
-
-        .dark .appearance-close,
-        .dark .student-index,
-        .dark .student-tag,
-        .dark .student-badge,
-        .dark .appearance-color-dot {
-            background-color: rgba(255,255,255,.055) !important;
-            border-color: rgba(255,255,255,.10) !important;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 8px 18px rgba(0,0,0,.20) !important;
-        }
-
-        /* Native-feeling pressed state. */
-        .glass-card:active,
-        .student-mobile-card:active,
-        .appearance-option:active,
-        .appearance-color:active,
-        .appearance-close:active {
-            transform: scale(.985) !important;
-        }
-
-        @media (max-width: 767px) {
-            .glass-panel,
-            .glass-card,
-            .student-mobile-card,
-            .appearance-option,
-            .appearance-color,
-            .compact-live-widget,
-            .appearance-sheet,
-            #mobile-dock nav {
-                backdrop-filter: blur(9px) saturate(130%) !important;
-                -webkit-backdrop-filter: blur(9px) saturate(130%) !important;
-            }
-
-            .glass-panel::after,
-            .glass-card::after,
-            .student-mobile-card::after,
-            .appearance-option::after,
-            .appearance-color::after,
-            .compact-live-widget::after,
-            #mobile-dock nav::after {
-                opacity: .28;
-                filter: blur(20px);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .glass-card,
-            .student-mobile-card,
-            .appearance-option,
-            .appearance-color,
-            .appearance-close {
-                transition: none !important;
-            }
-        }
     </style>
 </head>
 <body class="text-zinc-200 bg-zinc-950 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
     <!-- Ambient Background -->
-    <div id="ambient-background" class="fixed inset-0 z-0 overflow-hidden pointer-events-none portal-bg-layer">
-        <div id="mesh-1" class="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[900px] max-h-[900px] rounded-full bg-violet-500/18 dark:bg-violet-600/15 blur-[120px] animate-float"></div>
-        <div id="mesh-2" class="absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-fuchsia-500/16 dark:bg-fuchsia-600/13 blur-[120px] animate-float" style="animation-delay: -4s;"></div>
-        <div class="absolute top-[35%] left-[55%] w-[40vw] h-[40vw] rounded-full bg-indigo-500/8 dark:bg-indigo-500/8 blur-[150px] animate-pulse-slow"></div>
-        <canvas id="interactive-bg" class="absolute inset-0 w-full h-full opacity-35 transition-opacity duration-1000"></canvas>
-        <div id="pointer-glow" aria-hidden="true"></div>
-        <div class="ambient-grid" aria-hidden="true"></div>
-        <div class="ambient-noise" aria-hidden="true"></div>
-        <div class="geometry-field" aria-hidden="true">
-            <span class="geometry-shape geometry-shape-a"></span>
-            <span class="geometry-shape geometry-shape-b"></span>
-            <span class="geometry-shape geometry-shape-c"></span>
-            <span class="geometry-line geometry-line-a"></span>
-            <span class="geometry-line geometry-line-b"></span>
-        </div>
+    <div id="ambient-background" class="fixed inset-0 z-0 overflow-hidden pointer-events-none portal-bg-layer" aria-hidden="true">
+        <div class="bg-orb bg-orb-a"></div>
+        <div class="bg-orb bg-orb-b"></div>
+        <div class="bg-orb bg-orb-c"></div>
+        <div class="bg-pattern"></div>
+        <div class="bg-vignette"></div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
@@ -1918,44 +1456,8 @@
             matFilter: 'Всі'
         };
 
-
-        // Adaptive performance manager: keeps visual quality high on capable devices
-        // while reducing expensive effects on constrained/mobile hardware.
-        const perf = (() => {
-            const root = document.documentElement;
-            const nav = navigator;
-            const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-            const cores = Number(nav.hardwareConcurrency || 4);
-            const memory = Number(nav.deviceMemory || 4);
-            const coarse = window.matchMedia?.('(pointer: coarse)').matches;
-            const narrow = window.matchMedia?.('(max-width: 767px)').matches;
-            const lowEnd = reduceMotion || cores <= 4 || memory <= 4 || (coarse && narrow);
-            const state = { lowEnd, hidden: document.hidden };
-            root.classList.toggle('perf-lite', lowEnd);
-            root.classList.toggle('perf-hidden-animations', document.hidden);
-            document.addEventListener('visibilitychange', () => {
-                state.hidden = document.hidden;
-                root.classList.toggle('perf-hidden-animations', state.hidden);
-            }, { passive: true });
-            return state;
-        })();
-
-        // Coalesce remote-data driven UI renders into the next animation frame.
-        let scheduledRenderRaf = 0;
-        const scheduleRenderActiveView = () => {
-            if (scheduledRenderRaf || !window.appState.selectedStudent) return;
-            scheduledRenderRaf = requestAnimationFrame(() => {
-                scheduledRenderRaf = 0;
-                if (!document.hidden) window.app.renderActiveView();
-            });
-        };
-
         const getMergedSchedule = (weekType, weekNum) => {
-            let base = (weekNum && Number(weekNum) >= 3)
-                ? []
-                : (mainScheduleData[weekType]
-                    ? mainScheduleData[weekType].map(d => ({ ...d, pairs: d.pairs.map(p => ({ ...p })) }))
-                    : []);
+            let base = (weekNum && Number(weekNum) >= 3) ? [] : (mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : []);
 
             // Поки у порталі є лише лекційна начитка: практичні/мовні пари не показуємо.
             base.forEach(d => {
@@ -2310,10 +1812,6 @@
             }, 850);
         };
 
-        let navInitialStabilized = false;
-        let navStabilizeScheduled = false;
-        let navStabilizeGeneration = 0;
-
         const renderNav = () => {
             const { pri } = getTheme();
             const student = window.appState.selectedStudent;
@@ -2373,33 +1871,19 @@
                 }).join('');
             }
 
-            // Keep the real tab-switch animation. Only the very first paint gets a
-            // delayed geometry correction, after fonts/icons have settled.
-            animateActiveNav(deskNav, previousDeskIndicator);
-            animateActiveNav(mobileContainer, previousMobileIndicator);
+            // Measure the active tab only after Lucide has replaced its icons with SVGs.
+            // This prevents the indicator from being visibly misplaced on first load.
+            try {
+                if (window.lucide?.createIcons) {
+                    if (deskNav) lucide.createIcons({ root: deskNav });
+                    if (mobileContainer) lucide.createIcons({ root: mobileContainer });
+                }
+            } catch (e) {}
 
-            if (!navInitialStabilized && !navStabilizeScheduled) {
-                navStabilizeScheduled = true;
-                const generation = ++navStabilizeGeneration;
-                const expectedSignature = window.appState.navSignature;
-                const finishInitialNavStabilization = () => {
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            // A tab switch happened while fonts were loading: do not
-                            // snap over the user's freshly-started navigation animation.
-                            if (generation !== navStabilizeGeneration || window.appState.navSignature !== expectedSignature) {
-                                navStabilizeScheduled = false;
-                                return;
-                            }
-                            syncAllNavIndicators();
-                            navInitialStabilized = true;
-                            navStabilizeScheduled = false;
-                        });
-                    });
-                };
-                if (document.fonts?.ready) document.fonts.ready.then(finishInitialNavStabilization).catch(finishInitialNavStabilization);
-                else finishInitialNavStabilization();
-            }
+            requestAnimationFrame(() => {
+                animateActiveNav(deskNav, previousDeskIndicator);
+                animateActiveNav(mobileContainer, previousMobileIndicator);
+            });
 
             if (student) {
                 const info = document.getElementById('header-user-info');
@@ -2410,6 +1894,11 @@
                 if (avatar) avatar.innerText = firstName.charAt(0).toUpperCase();
             }
 
+            try {
+                if (window.lucide?.createIcons) lucide.createIcons();
+            } catch (e) {
+                console.warn('Navigation icons skipped:', e);
+            }
         };
 
         const renderMobileMenu = () => {
@@ -2443,14 +1932,6 @@
                             <div class="w-12 h-12 rounded-[18px] bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="bar-chart-2" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-bold text-indigo-700 dark:text-indigo-400">Аналітика сайту</span>
                         </button>` : ''}
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 mb-4 animate-slide-up" style="animation-delay: 300ms;">
-                        <button onclick="window.app.openAppearanceSheet('background');" class="h-14 rounded-2xl font-bold text-sm glass-card text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-all border border-white/10">
-                            <i data-lucide="image" class="w-5 h-5"></i> Фон
-                        </button>
-                        <button onclick="window.app.openAppearanceSheet('color');" class="h-14 rounded-2xl font-bold text-sm glass-card text-zinc-200 flex justify-center items-center gap-2 active:scale-95 transition-all border border-white/10">
-                            <i data-lucide="palette" class="w-5 h-5"></i> Акцент
-                        </button>
                     </div>
                     <button onclick="window.app.logout(); window.app.closeMobileMenu();" class="w-full h-14 rounded-2xl font-bold text-sm bg-rose-500/10 text-rose-400 border border-rose-500/20 flex justify-center items-center gap-2 active:scale-95 transition-all mb-1">
                             <i data-lucide="log-out" class="w-5 h-5"></i> Вихід
@@ -2509,7 +1990,8 @@
                 </div>`;
             window.app.updateLiveWidget();
             if (window.appState.statusInterval) clearInterval(window.appState.statusInterval);
-            window.appState.statusInterval = window.setInterval(window.app.updateLiveWidget, 90000);
+            window.appState.statusInterval = setInterval(window.app.updateLiveWidget, 60000);
+            lucide.createIcons();
         };
 
         const renderSchedule = () => {
@@ -2703,7 +2185,7 @@
                 }, 300);
             }
 
-            lucide.createIcons({ root: document.getElementById('app') || document });
+            lucide.createIcons();
         };
 
         const renderMaterials = () => {
@@ -2884,14 +2366,14 @@
                         <div class="p-4 md:p-6 border-b border-zinc-200/80 dark:border-white/10 relative z-10 bg-white/40 dark:bg-black/20">
                             <div class="relative group">
                                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 group-focus-within:text-zinc-900 dark:group-focus-within:text-white transition-colors"></i>
-                                <input type="text" id="reg-search" value="${searchStr}" oninput="window.app.filterRegister(this.value)" placeholder="Знайти студента..." class="w-full pl-12 pr-4 py-4 md:py-4 bg-white/60 dark:bg-zinc-800/60 rounded-[16px] md:rounded-[20px] text-[15px] font-bold outline-none focus:ring-2 ring-zinc-900 dark:ring-white border border-zinc-200/80 dark:border-white/10 transition-all shadow-inner text-zinc-900 dark:text-white" />
+                                <input type="text" id="reg-search" value="${searchStr}" oninput="window.app.renderActiveView()" placeholder="Знайти студента..." class="w-full pl-12 pr-4 py-4 md:py-4 bg-white/60 dark:bg-zinc-800/60 rounded-[16px] md:rounded-[20px] text-[15px] font-bold outline-none focus:ring-2 ring-zinc-900 dark:ring-white border border-zinc-200/80 dark:border-white/10 transition-all shadow-inner text-zinc-900 dark:text-white" />
                             </div>
                         </div>
                         <div class="md:hidden p-3 space-y-2.5 relative z-10">
                             ${filteredStudents.map((s, i) => {
                                 const isMe = user.id === s.id;
                                 return `
-                                    <article class="student-mobile-card register-student-item ${isMe ? `is-me border-${pri}-500/25` : ''} animate-slide-in-right" style="animation-delay: ${80 + i * 18}ms;">
+                                    <article class="student-mobile-card ${isMe ? `is-me border-${pri}-500/25` : ''} animate-slide-in-right" style="animation-delay: ${80 + i * 18}ms;">
                                         <div class="flex items-start gap-3 min-w-0">
                                             <div class="student-index">${String(i + 1).padStart(2,'0')}</div>
                                             <div class="min-w-0 flex-1">
@@ -2940,13 +2422,6 @@
                 searchEl.focus();
                 searchEl.setSelectionRange(searchStr.length, searchStr.length);
             }
-        };
-
-        const filterRegister = (value = '') => {
-            const query = String(value).trim().toLowerCase();
-            document.querySelectorAll('.register-student-item').forEach(el => {
-                el.hidden = query && !el.textContent.toLowerCase().includes(query);
-            });
         };
 
         const renderEditor = () => {
@@ -3228,7 +2703,7 @@
                     if(el.dataset.dragAttached) return; 
                     el.dataset.dragAttached = 'true';
                     
-                    if (!el.classList.contains('overflow-x-auto')) return;
+                    if (!el.classList.contains('overflow-x-auto') && el.tagName !== 'TABLE') return;
 
                     el.classList.add('cursor-grab');
 
@@ -3253,7 +2728,7 @@
                         isDown = false;
                         el.style.cursor = '';
                         el.classList.add('cursor-grab');
-                        el.style.scrollBehavior = 'auto';
+                        el.style.scrollBehavior = 'smooth';
                         el.style.scrollSnapType = '';
                         setTimeout(() => { isDragging = false; }, 50);
                     };
@@ -3290,7 +2765,7 @@
                                 
                                 clearTimeout(el.wheelTimeout);
                                 el.wheelTimeout = setTimeout(() => {
-                                    el.style.scrollBehavior = 'auto';
+                                    el.style.scrollBehavior = 'smooth';
                                     el.style.scrollSnapType = '';
                                 }, 150);
                             }
@@ -3384,7 +2859,7 @@
                 else if(v === 'editor') renderEditor();
                 else if(v === 'analytics') renderAnalytics();
                 
-                lucide.createIcons({ root: document.getElementById('app') || document });
+                lucide.createIcons();
                 window.app.attachScrollDrag();
             },
 
@@ -3537,7 +3012,7 @@
                 };
                 
                 updateSession(); 
-                window.appState.analyticsInterval = setInterval(() => { if (!document.hidden) updateSession(); }, 30000); 
+                window.appState.analyticsInterval = setInterval(updateSession, 5000); 
             },
 
             stopAnalyticsSession: () => {
@@ -3590,7 +3065,7 @@
                         </div>
                     `;
                     document.getElementById('modals').innerHTML = html;
-                    lucide.createIcons({ root: document.getElementById('app') || document });
+                    lucide.createIcons();
                     setTimeout(() => document.getElementById('admin-pwd-input')?.focus(), 100);
                 } else {
                     window.app.login(studentId);
@@ -3665,7 +3140,7 @@
                     `).join('');
                     el.classList.remove('hidden');
                     document.querySelector(`[onclick="window.app.toggleThemeDropdown('${context}')"]`)?.setAttribute('aria-expanded','true');
-                    lucide.createIcons({ root: document.getElementById('app') || document });
+                    lucide.createIcons();
                 } else {
                     el.classList.add('hidden');
                     document.querySelector(`[onclick="window.app.toggleThemeDropdown('${context}')"]`)?.setAttribute('aria-expanded','false');
@@ -3809,8 +3284,6 @@
                 const { pri, sec } = themesConfig[themeKey];
                 const setCls = (id, cls) => { const el = document.getElementById(id); if(el) el.className = cls; };
                 
-                setCls('mesh-1', `absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] max-w-[900px] max-h-[900px] rounded-full bg-${pri}-500/20 dark:bg-${pri}-600/15 blur-[120px] animate-float`);
-                setCls('mesh-2', `absolute bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-${sec}-500/20 dark:bg-${sec}-600/15 blur-[120px] animate-float`);
                 setCls('auth-mesh-1', `absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-${pri}-500/20 blur-[120px] animate-float`);
                 setCls('auth-mesh-2', `absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-${sec}-600/20 blur-[120px] animate-float`);
                 
@@ -3899,14 +3372,13 @@
             setMatFilter: (f) => { window.appState.matFilter = f; window.app.renderActiveView(); },
             setHwFilter: (f) => { window.appState.hwFilter = f; window.app.renderActiveView(); },
             setAnalyticsDate: (dateStr) => { window.appState.analyticsDate = dateStr; window.app.renderActiveView(); },
-            filterRegister,
 
             openMobileMenu: () => {
                 renderMobileMenu();
                 const menu = document.getElementById('mobile-menu');
                 menu.classList.remove('hidden');
                 setTimeout(() => menu.classList.add('opacity-100'), 10);
-                lucide.createIcons({ root: document.getElementById('app') || document });
+                lucide.createIcons();
             },
             closeMobileMenu: () => {
                 const menu = document.getElementById('mobile-menu');
@@ -3934,7 +3406,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons({ root: document.getElementById('app') || document });
+                lucide.createIcons();
             },
 
             openHwModal: (subj, weekType, day, num, weekNum) => {
@@ -3977,7 +3449,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons({ root: document.getElementById('app') || document });
+                lucide.createIcons();
             },
 
             saveHomework: () => {
@@ -4028,7 +3500,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons({ root: document.getElementById('app') || document });
+                lucide.createIcons();
             },
 
             saveMaterial: () => {
@@ -4100,7 +3572,7 @@
                     </div>
                 `;
                 document.getElementById('modals').innerHTML = html;
-                lucide.createIcons({ root: document.getElementById('app') || document });
+                lucide.createIcons();
             },
 
             saveLocation: () => {
@@ -4187,7 +3659,7 @@
                             snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
-                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
+                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Locations error:', error)
                     );
@@ -4208,7 +3680,7 @@
                             }
                             window.appState.homeworks = newHwList;
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
-                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) scheduleRenderActiveView();
+                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
                             else if (window.appState.selectedStudent) renderNav();
                         },
                         (error) => console.error('Homeworks error:', error)
@@ -4222,7 +3694,7 @@
                             mat.sort((a, b) => Number(b.id) - Number(a.id));
                             window.appState.materials = mat;
                             localStorage.setItem('portal-materials', JSON.stringify(mat));
-                            if (['materials', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
+                            if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Materials error:', error)
                     );
@@ -4234,7 +3706,7 @@
                             snap.forEach(doc => extra.push({ id: doc.id, ...doc.data() }));
                             window.appState.extraSchedule = extra;
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Extra schedule error:', error)
                     );
@@ -4246,7 +3718,7 @@
                             snap.forEach(doc => hidden.push({ id: doc.id, ...doc.data() }));
                             window.appState.hiddenSchedule = hidden;
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleRenderActiveView();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
                         },
                         (error) => console.error('Hidden schedule error:', error)
                     );
@@ -4274,39 +3746,15 @@
             connect().finally(() => window.clearTimeout(timeoutId));
         };
 
-        const syncNavIndicatorPosition = (container) => {
-            if (!container) return;
-            const active = container.querySelector('.nav-active');
-            const pill = container.querySelector('.nav-liquid-indicator');
-            if (!active || !pill) {
-                if (pill) pill.style.opacity = '0';
-                return;
-            }
-            const c = container.getBoundingClientRect();
-            const b = active.getBoundingClientRect();
-            positionNavIndicator(container, {
-                left: b.left - c.left,
-                top: b.top - c.top,
-                width: b.width,
-                height: b.height
-            }, true);
-            pill.classList.remove('is-moving');
-        };
-
-        const syncAllNavIndicators = () => {
-            syncNavIndicatorPosition(document.getElementById('desktop-nav'));
-            syncNavIndicatorPosition(document.getElementById('mobile-nav'));
-        };
-
         let navIndicatorResizeRaf = 0;
         const refreshNavIndicators = () => {
             if (navIndicatorResizeRaf) return;
             navIndicatorResizeRaf = requestAnimationFrame(() => {
                 navIndicatorResizeRaf = 0;
-                syncAllNavIndicators();
+                animateActiveNav(document.getElementById('desktop-nav'));
+                animateActiveNav(document.getElementById('mobile-nav'));
             });
         };
-
         window.addEventListener('resize', refreshNavIndicators, { passive: true });
         window.addEventListener('orientationchange', refreshNavIndicators, { passive: true });
 
@@ -4335,6 +3783,7 @@
             } else {
                 document.getElementById('auth-screen')?.classList.remove('hidden');
                 try { window.app.renderAuthList(); } catch (e) { console.error('Auth render failed:', e); }
+                try { if (window.lucide?.createIcons) lucide.createIcons(); } catch (e) {}
             }
 
             // Start Firebase after first paint.
@@ -4362,7 +3811,7 @@
             const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
             const fine = window.matchMedia?.('(pointer: fine)').matches;
             const coarse = window.matchMedia?.('(pointer: coarse)').matches;
-            if (reduce || coarse || perf.lowEnd) return;
+            if (reduce) return;
 
             let targetX = 0, targetY = 0;
             let currentX = 0, currentY = 0;
