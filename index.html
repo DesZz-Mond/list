@@ -773,6 +773,174 @@
         @media (prefers-reduced-motion: reduce) {
             #main-content.view-enter, #main-content.view-leave { animation: none !important; transition: none !important; filter:none !important; transform:none !important; }
         }
+    
+        /* Ultra-premium liquid navigation: persistent DOM capsule + soft internal refraction. */
+        #desktop-nav, #mobile-nav {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            --nav-ease: cubic-bezier(.16, 1, .3, 1);
+        }
+        .nav-liquid-indicator {
+            position: absolute;
+            left: 0; top: 0;
+            width: 0; height: 0;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transform: translate3d(0,0,0) scale(1);
+            transform-origin: center;
+            will-change: left, top, width, height, transform, filter;
+            background:
+                linear-gradient(135deg,
+                    rgba(255,255,255,.17),
+                    rgba(255,255,255,.065) 46%,
+                    rgba(255,255,255,.12));
+            border: 1px solid rgba(255,255,255,.11);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.20),
+                inset 0 -1px 0 rgba(255,255,255,.025),
+                0 12px 34px rgba(0,0,0,.18),
+                0 0 22px rgba(255,255,255,.035);
+            backdrop-filter: blur(18px) saturate(155%);
+            -webkit-backdrop-filter: blur(18px) saturate(155%);
+            transition:
+                left .66s var(--nav-ease),
+                top .66s var(--nav-ease),
+                width .66s var(--nav-ease),
+                height .66s var(--nav-ease),
+                border-radius .45s var(--nav-ease),
+                opacity .2s ease,
+                box-shadow .42s ease;
+        }
+        .nav-liquid-indicator::before {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            border-radius: inherit;
+            background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0) 34%, rgba(255,255,255,.34) 48%, rgba(255,255,255,.05) 57%, transparent 76%);
+            transform: translate3d(-135%,0,0) skewX(-12deg);
+            opacity: 0;
+        }
+        .nav-liquid-indicator.is-moving::before {
+            animation: navLiquidRefraction .72s cubic-bezier(.22,.72,.2,1) both;
+        }
+        .nav-liquid-indicator::after {
+            content: "";
+            position: absolute;
+            width: 34%;
+            height: 70%;
+            left: 10%;
+            top: 15%;
+            border-radius: 999px;
+            background: rgba(255,255,255,.10);
+            filter: blur(9px);
+            opacity: .32;
+            transform: translate3d(0,0,0);
+        }
+        #desktop-nav .nav-item-premium, #mobile-nav .nav-item-premium {
+            position: relative;
+            z-index: 1;
+            background: transparent !important;
+            box-shadow: none !important;
+            transition:
+                transform .42s var(--nav-ease),
+                color .30s ease,
+                filter .30s ease;
+        }
+        #desktop-nav .nav-item-premium::before,
+        #mobile-nav .nav-item-premium::before {
+            content: "";
+            position: absolute;
+            inset: -55% -80%;
+            pointer-events: none;
+            background: linear-gradient(108deg, transparent 38%, rgba(255,255,255,.035) 44%, rgba(255,255,255,.25) 50%, rgba(255,255,255,.05) 56%, transparent 63%);
+            transform: translate3d(-70%,0,0) rotate(8deg);
+            opacity: 0;
+        }
+        #desktop-nav .nav-item-premium.nav-just-activated::before,
+        #mobile-nav .nav-item-premium.nav-just-activated::before {
+            animation: navLiquidShine .78s cubic-bezier(.22,.72,.2,1) both;
+        }
+        #desktop-nav .nav-item-premium.nav-active,
+        #mobile-nav .nav-item-premium.nav-active {
+            background: transparent !important;
+            filter: drop-shadow(0 4px 16px rgba(255,255,255,.055));
+        }
+        #desktop-nav button, #mobile-nav button {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+        #desktop-nav button.nav-active { transform: translate3d(0,-.5px,0) scale(1.015); }
+        #mobile-nav button.nav-active { transform: translate3d(0,-.8px,0) scale(1.025); }
+        @keyframes navLiquidShine {
+            0%   { transform: translate3d(-70%,0,0) rotate(8deg); opacity:0; }
+            12%  { opacity:1; }
+            100% { transform: translate3d(70%,0,0) rotate(8deg); opacity:0; }
+        }
+        @keyframes navLiquidRefraction {
+            0%   { transform: translate3d(-135%,0,0) skewX(-12deg); opacity:0; }
+            16%  { opacity:1; }
+            100% { transform: translate3d(255%,0,0) skewX(-12deg); opacity:0; }
+        }
+        @media (hover:hover) and (pointer:fine) {
+            #desktop-nav button:not(.nav-active):hover {
+                transform: translateY(-1px);
+                background: rgba(255,255,255,.045);
+            }
+        }
+        @media (max-width:767px) {
+        }
+
+        /* Keep heavy visual effects out of the compositor on touch devices */
+        @media (max-width:767px), (prefers-reduced-motion: reduce) {
+            .ambient-noise,
+            #pointer-glow {
+                display:none !important;
+            }
+        }
+        @media (max-width:767px) {
+            .geometry-field { opacity:.44 !important; }
+            .geometry-field::before { filter:none !important; }
+            .portal-bg-layer { contain: paint; }
+        }
+
+
+        /* ===== PERFORMANCE CORE ===== */
+        html { overflow-x:hidden; }
+        body { overscroll-behavior-x:none; }
+        #ambient-background { contain: strict; }
+        #ambient-background > .animate-float,
+        #ambient-background > .animate-pulse-slow { will-change: transform, opacity; transform: translateZ(0); }
+        .glass-panel, .glass-card, #mobile-dock, header > div {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+        .nav-item-premium, .nav-active, #mobile-nav > button { will-change: transform, opacity; }
+        #main-content { contain: layout paint style; }
+        #main-content > div { contain: layout style; }
+        .view-enter, .view-leave { will-change: transform, opacity; }
+        @media (max-width: 767px) {
+            .glass-panel, .glass-card { backdrop-filter: blur(16px) saturate(125%) !important; -webkit-backdrop-filter: blur(16px) saturate(125%) !important; }
+            .geometry-field { opacity:.34 !important; }
+            .ambient-noise, .ambient-grid { opacity:.08 !important; }
+            #interactive-bg { display:none !important; }
+            #pointer-glow { display:none !important; }
+            .glass-card { box-shadow: 0 8px 26px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.03) !important; }
+        }
+        @media (prefers-reduced-motion: reduce), (update: slow) {
+            *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
+        }
+        .portal-paused .animate-float, .portal-paused .animate-pulse-slow { animation-play-state: paused !important; }
+        .portal-paused #pointer-glow { opacity:0 !important; }
+        @media (max-width: 767px) and (max-height: 800px) {
+            .geometry-field { display:none !important; }
+        }
     </style>
 </head>
 <body class="text-zinc-200 bg-zinc-950 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -861,7 +1029,7 @@
     </div>
 
     <!-- AUTH SCREEN -->
-    <div id="auth-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 bg-zinc-950/82 backdrop-blur-2xl">
+    <div id="auth-screen" class="hidden fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 bg-zinc-950/82 backdrop-blur-2xl">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div id="auth-mesh-1" class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-violet-500/20 blur-[120px] animate-float"></div>
             <div id="auth-mesh-2" class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-fuchsia-600/20 blur-[120px] animate-float" style="animation-delay: -2s;"></div>
@@ -899,6 +1067,7 @@
 
             <div id="auth-list" class="mt-4 max-h-[35vh] overflow-y-auto hide-scrollbar flex flex-col gap-2.5 z-10 hidden">
             </div>
+            <button type="button" id="clear-remembered-profile" onclick="window.app.clearRememberedProfile()" class="hidden mt-3 text-[11px] font-bold text-zinc-500 hover:text-zinc-200 transition-colors mx-auto">Змінити збережений профіль</button>
         </div>
     </div>
 
@@ -914,12 +1083,14 @@
             try {
                 document.documentElement.classList.add('dark');
                 const auth = document.getElementById('auth-screen');
-                if (auth) auth.classList.remove('hidden');
+                const saved = localStorage.getItem('portal-device-profile') || localStorage.getItem('selectedStudentId');
+                if (auth && !saved) auth.classList.remove('hidden');
             } catch (e) {}
             window.setTimeout(() => {
                 try {
                     const auth = document.getElementById('auth-screen');
-                    if (auth) auth.classList.remove('hidden');
+                    const saved = localStorage.getItem('portal-device-profile') || localStorage.getItem('selectedStudentId');
+                    if (auth && !saved) auth.classList.remove('hidden');
                 } catch (e) {}
             }, 1200);
         })();
@@ -952,32 +1123,32 @@
         ];
 
         const students = [
-            { id: 1, name: "Бєльтюкова А.Д.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
-            { id: 2, name: "Великоконь Д.А.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"], isStarosta: true },
-            { id: 3, name: "Галабудська С.К.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 4, name: "Гіткіс І.М.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
-            { id: 5, name: "Гордієнко К.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
-            { id: 6, name: "Гуменюк А.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
-            { id: 7, name: "Жидченко А.К.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 8, name: "Кельвич К.К.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "Світовий фінансовий ринок"] },
-            { id: 9, name: "Кисленко Н.І.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
-            { id: 10, name: "Клічук М.В.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
-            { id: 11, name: "Колодій Ю.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 12, name: "Кохан О.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "Світовий фінансовий ринок"] },
-            { id: 13, name: "Май Д.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 14, name: "Мартин М.А.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
-            { id: 15, name: "Масяєв Я.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 16, name: "Могилянська С.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "китайська"] },
-            { id: 17, name: "Мурін А.О.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
-            { id: 18, name: "Петричка В.С.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
-            { id: 19, name: "Пилипенко Д.О.", preferredName: "Даня", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
-            { id: 20, name: "Поправка А.Ю.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 21, name: "Солярик В.Я.", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
-            { id: 22, name: "Степаненко М.Ю.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
-            { id: 23, name: "Троцька Д.Р.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
-            { id: 24, name: "Устименко Д.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
-            { id: 25, name: "Чуприна А.О.", electives: ["Бренд менеджмент", "Світовий фінансовий ринок", "французька"] },
-            { id: 26, name: "Шелепа М.В.", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] }
+            { id: 1, name: "Бєльтюкова А.Д.", fullName: "Бєльтюкова Анастасія Дмитрівна", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
+            { id: 2, name: "Великоконь Д.А.", fullName: "Великоконь Дар'я Андріївна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"], isStarosta: true },
+            { id: 3, name: "Галабудська С.К.", fullName: "Галабудська Софія Костянтинівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 4, name: "Гіткіс І.М.", fullName: "Гіткіс Ілля Михайлович", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "іспанська"] },
+            { id: 5, name: "Гордієнко К.В.", fullName: "Гордієнко Катерина Володимирівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 6, name: "Гуменюк А.В.", fullName: "Гуменюк Анна Володимирівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 7, name: "Жидченко А.К.", fullName: "Жидченко Анастасія Костянтинівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 8, name: "Кельвич К.К.", fullName: "Кельвич Катерина Костянтинівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "Світовий фінансовий ринок"] },
+            { id: 9, name: "Кисленко Н.І.", fullName: "Кисленко Наталія Іванівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 10, name: "Клічук М.В.", fullName: "Клічук Михайло Васильович", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 11, name: "Колодій Ю.В.", fullName: "Колодій Юлія Василівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 12, name: "Кохан О.В.", fullName: "Кохан Олексій Віталійович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "Світовий фінансовий ринок"] },
+            { id: 13, name: "Май Д.В.", fullName: "Май Денис Вікторович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 14, name: "Мартин М.А.", fullName: "Мартин Максим Андрійович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
+            { id: 15, name: "Масяєв Я.О.", fullName: "Масяєв Ярослав Олександрович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 16, name: "Могилянська С.О.", fullName: "Могилянська Софія Олегівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "китайська"] },
+            { id: 17, name: "Мурін А.О.", fullName: "Мурін Андрій Олексійович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
+            { id: 18, name: "Петричка В.С.", fullName: "Петричка Валерія Сергіївна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"] },
+            { id: 19, name: "Пилипенко Д.О.", fullName: "Пилипенко Даніїл Олександрович", preferredName: "Даня", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 20, name: "Поправка А.Ю.", fullName: "Поправка Анастасія Юріївна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 21, name: "Солярик В.Я.", fullName: "Солярик Владислав Ярославович", electives: ["Міжнародна торгівля", "Світовий фінансовий ринок", "німецька"] },
+            { id: 22, name: "Степаненко М.Ю.", fullName: "Степаненко Максим Юрійович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 23, name: "Троцька Д.Р.", fullName: "Троцька Діана Русланівна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "німецька"] },
+            { id: 24, name: "Устименко Д.В.", fullName: "Устименко Даяна Віталіївна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] },
+            { id: 25, name: "Чуприна А.О.", fullName: "Чуприна Аріна Олексіївна", electives: ["Бренд менеджмент", "Світовий фінансовий ринок", "французька"] },
+            { id: 26, name: "Шелепа М.В.", fullName: "Шелепа Михайло Владиславович", electives: ["Бренд менеджмент", "Міжнародна торгівля", "іспанська"] }
         ];
 
         const timeSlots = [
@@ -1045,30 +1216,56 @@
             }
         };
 
+        const DEVICE_PROFILE_KEY = 'portal-device-profile';
+        const DEVICE_PROFILE_COOKIE = 'portal_device_profile';
+
         const readRememberedStudentId = () => {
+            // Primary storage: localStorage. It survives tab/browser restarts for the same browser profile.
             try {
-                const remembered = safeStorageJson('portal-device-profile', null);
-                if (remembered && Number.isFinite(Number(remembered.studentId))) return Number(remembered.studentId);
+                const remembered = safeStorageJson(DEVICE_PROFILE_KEY, null);
+                const id = remembered?.studentId;
+                if (Number.isFinite(Number(id)) && Number(id) > 0) return Number(id);
             } catch (e) {}
-            const legacy = Number(localStorage.getItem('selectedStudentId'));
-            return Number.isFinite(legacy) && legacy > 0 ? legacy : null;
+
+            try {
+                const legacy = Number(localStorage.getItem('selectedStudentId'));
+                if (Number.isFinite(legacy) && legacy > 0) return legacy;
+            } catch (e) {}
+
+            // Small cookie fallback for environments where localStorage is unavailable.
+            try {
+                const match = document.cookie.split('; ').find(row => row.startsWith(DEVICE_PROFILE_COOKIE + '='));
+                const id = match ? decodeURIComponent(match.split('=').slice(1).join('=')) : '';
+                const parsed = Number(id);
+                return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+            } catch (e) {
+                return null;
+            }
         };
 
         const rememberStudentOnDevice = (student) => {
             if (!student) return;
-            const payload = { studentId: Number(student.id), savedAt: Date.now(), version: 1 };
+            const id = Number(student.id);
+            const payload = { studentId: id, savedAt: Date.now(), version: 2 };
             try {
-                localStorage.setItem('selectedStudentId', String(student.id));
-                localStorage.setItem('portal-device-profile', JSON.stringify(payload));
+                localStorage.setItem('selectedStudentId', String(id));
+                localStorage.setItem(DEVICE_PROFILE_KEY, JSON.stringify(payload));
             } catch (e) {
-                console.warn('Device profile could not be persisted.', e);
+                console.warn('Local device profile storage unavailable.', e);
             }
+            // 1-year cookie fallback; this is only a local profile preference, not authentication.
+            try {
+                document.cookie = `${DEVICE_PROFILE_COOKIE}=${encodeURIComponent(String(id))}; Max-Age=31536000; Path=/; SameSite=Lax`;
+            } catch (e) {}
         };
 
         const forgetStudentOnDevice = () => {
             try {
                 localStorage.removeItem('selectedStudentId');
-                localStorage.removeItem('portal-device-profile');
+                localStorage.removeItem(DEVICE_PROFILE_KEY);
+            } catch (e) {}
+            try {
+                document.cookie = `${DEVICE_PROFILE_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax`;
             } catch (e) {}
         };
         
@@ -1103,6 +1300,9 @@
             currentSessionId: null,
             analyticsUnsubscribe: null,
             analyticsDate: null,
+            navSignature: '',
+            viewTransitionToken: 0,
+            navIconsReady: false,
 
             statusInterval: null,
             regFilter: 'all',
@@ -1382,9 +1582,93 @@
         };
 
         // --- RENDERING ENGINES ---
+        const captureNavIndicator = (container) => {
+            if (!container) return null;
+            const pill = container.querySelector('.nav-liquid-indicator');
+            const active = container.querySelector('.nav-active');
+            if (!pill || !active) return null;
+            const c = container.getBoundingClientRect();
+            const b = active.getBoundingClientRect();
+            return {
+                left: b.left - c.left,
+                top: b.top - c.top,
+                width: b.width,
+                height: b.height
+            };
+        };
+
+        const ensureNavIndicator = (container) => {
+            if (!container) return null;
+            let pill = container.querySelector('.nav-liquid-indicator');
+            if (!pill) {
+                pill = document.createElement('span');
+                pill.className = 'nav-liquid-indicator';
+                pill.setAttribute('aria-hidden', 'true');
+                container.appendChild(pill);
+            }
+            return pill;
+        };
+
+        const positionNavIndicator = (container, box, immediate = false) => {
+            if (!container || !box) return;
+            const pill = ensureNavIndicator(container);
+            if (!pill) return;
+            if (immediate) pill.style.transition = 'none';
+            else pill.style.removeProperty('transition');
+            pill.style.left = `${box.left}px`;
+            pill.style.top = `${box.top}px`;
+            pill.style.width = `${box.width}px`;
+            pill.style.height = `${box.height}px`;
+            pill.style.borderRadius = `${Math.min(22, box.height / 2)}px`;
+            pill.style.opacity = '1';
+            if (immediate) {
+                void pill.offsetWidth;
+                pill.style.removeProperty('transition');
+            }
+        };
+
+        const animateActiveNav = (container, fromBox = null) => {
+            if (!container) return;
+            const active = container.querySelector('.nav-active');
+            const pill = ensureNavIndicator(container);
+            if (!active || !pill) {
+                if (pill) pill.style.opacity = '0';
+                return;
+            }
+            const c = container.getBoundingClientRect();
+            const b = active.getBoundingClientRect();
+            const target = { left: b.left - c.left, top: b.top - c.top, width: b.width, height: b.height };
+
+            if (!fromBox) {
+                positionNavIndicator(container, target, true);
+            } else {
+                positionNavIndicator(container, fromBox, true);
+                requestAnimationFrame(() => {
+                    pill.style.removeProperty('transition');
+                    pill.classList.remove('is-moving');
+                    void pill.offsetWidth;
+                    pill.classList.add('is-moving');
+                    pill.style.left = `${target.left}px`;
+                    pill.style.top = `${target.top}px`;
+                    pill.style.width = `${target.width}px`;
+                    pill.style.height = `${target.height}px`;
+                    pill.style.borderRadius = `${Math.min(22, target.height / 2)}px`;
+                });
+            }
+
+            active.classList.remove('nav-just-activated');
+            void active.offsetWidth;
+            active.classList.add('nav-just-activated');
+            window.setTimeout(() => {
+                active.classList.remove('nav-just-activated');
+                pill.classList.remove('is-moving');
+            }, 850);
+        };
+
         const renderNav = () => {
             const { pri } = getTheme();
-            const isPilipenko = window.appState.selectedStudent?.id === 19;
+            const student = window.appState.selectedStudent;
+            const isPilipenko = student?.id === 19;
             const navItems = [
                 { id: 'dashboard', icon: 'home', label: 'Головна' },
                 { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
@@ -1393,11 +1677,34 @@
             ];
             if (isPilipenko) navItems.push({ id: 'analytics', icon: 'bar-chart-2', label: 'Аналітика' });
 
+            const firstName = student
+                ? (student.preferredName || student.name.split(' ')[1]?.replace(/\./g,'') || student.name.split(' ')[0])
+                : '';
+            const signature = [
+                window.appState.view,
+                student?.id || 0,
+                window.appState.unreadHwCount,
+                window.appState.colorTheme,
+                isPilipenko ? 1 : 0
+            ].join('|');
+
+            if (window.appState.navSignature === signature) return;
+            window.appState.navSignature = signature;
+
             const deskNav = document.getElementById('desktop-nav');
+            const previousDeskIndicator = captureNavIndicator(deskNav);
+            const previousMobileIndicator = captureNavIndicator(document.getElementById('mobile-nav'));
             if (deskNav) {
                 deskNav.innerHTML = navItems.map(item => {
                     const active = window.appState.view === item.id;
-                    return `<button id="nav-btn-${item.id}" onclick="window.app.setView('${item.id}')" class="relative flex items-center gap-2 h-9 rounded-full px-3.5 text-[13px] font-bold transition-all ${active ? `bg-white dark:bg-zinc-800 text-${pri}-600 dark:text-${pri}-400 shadow-sm` : 'text-zinc-500 hover:text-zinc-100'}">${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-rose-500"></span>' : ''}<i data-lucide="${item.icon}" class="w-[17px] h-[17px]"></i><span>${item.label}</span></button>`;
+                    return `<button id="nav-btn-${item.id}"
+                        onclick="window.app.setView('${item.id}')"
+                        class="nav-item-premium ${active ? 'nav-active text-' + pri + '-400' : 'text-zinc-500 hover:text-zinc-100'} relative flex items-center gap-2 h-9 rounded-full px-3.5 text-[13px] font-bold"
+                        aria-current="${active ? 'page' : 'false'}">
+                        ${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-rose-500"></span>' : ''}
+                        <i data-lucide="${item.icon}" class="w-[17px] h-[17px]"></i>
+                        <span>${item.label}</span>
+                    </button>`;
                 }).join('');
             }
 
@@ -1405,19 +1712,35 @@
             if (mobileContainer) {
                 mobileContainer.innerHTML = navItems.slice(0,5).map(item => {
                     const active = window.appState.view === item.id;
-                    return `<button id="mob-btn-${item.id}" onclick="window.app.setView('${item.id}')" aria-current="${active ? 'page' : 'false'}" class="relative flex-1 h-[58px] rounded-[18px] flex flex-col items-center justify-center gap-1 transition-all ${active ? `bg-white/[.09] text-${pri}-400 shadow-inner` : 'text-zinc-500 hover:text-zinc-200'}"><span class="absolute top-1.5 h-0.5 w-5 rounded-full ${active ? `bg-${pri}-400` : 'bg-transparent'}"></span><i data-lucide="${item.icon}" class="w-5 h-5 ${active ? 'scale-110' : ''} transition-transform"></i><span class="text-[9px] font-black tracking-wide">${item.label}</span>${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-2 right-[22%] w-2 h-2 rounded-full bg-rose-500 border border-zinc-950"></span>' : ''}</button>`;
+                    return `<button id="mob-btn-${item.id}"
+                        onclick="window.app.setView('${item.id}')"
+                        aria-current="${active ? 'page' : 'false'}"
+                        class="nav-item-premium ${active ? 'nav-active text-' + pri + '-400' : 'text-zinc-500 hover:text-zinc-200'} relative flex-1 h-[58px] rounded-[18px] flex flex-col items-center justify-center gap-1"
+                        title="${item.label}">
+                        <i data-lucide="${item.icon}" class="w-5 h-5 ${active ? 'scale-110' : ''} transition-transform"></i>
+                        <span class="text-[9px] font-black tracking-wide">${item.label}</span>
+                        ${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-2 right-[22%] w-2 h-2 rounded-full bg-rose-500 border border-zinc-950"></span>' : ''}
+                    </button>`;
                 }).join('');
             }
 
-            if (window.appState.selectedStudent) {
-                const s = window.appState.selectedStudent;
-                const firstName = s.preferredName || s.name.split(' ')[1]?.replace(/\./g,'') || s.name.split(' ')[0];
+            animateActiveNav(deskNav, previousDeskIndicator);
+            animateActiveNav(mobileContainer, previousMobileIndicator);
+
+            if (student) {
                 const info = document.getElementById('header-user-info');
-                if (info) info.innerHTML = `<div class="text-[13px] font-bold text-zinc-100 leading-tight">${firstName}</div><div class="text-[10px] text-zinc-500 font-semibold">${s.isStarosta ? 'Староста' : 'Студент'} • 3 курс</div>`;
+                if (info) info.innerHTML =
+                    `<div class="text-[13px] font-bold text-zinc-100 leading-tight">${firstName}</div>` +
+                    `<div class="text-[10px] text-zinc-500 font-semibold">${student.isStarosta ? 'Староста' : 'Студент'} • 3 курс</div>`;
                 const avatar = document.getElementById('header-user-avatar');
                 if (avatar) avatar.innerText = firstName.charAt(0).toUpperCase();
             }
-            lucide.createIcons();
+
+            try {
+                if (window.lucide?.createIcons) lucide.createIcons();
+            } catch (e) {
+                console.warn('Navigation icons skipped:', e);
+            }
         };
 
         const renderMobileMenu = () => {
@@ -1495,7 +1818,7 @@
             document.getElementById('main-content').innerHTML = `
                 <div class="space-y-4 md:space-y-5">
                     <section class="flex items-end justify-between gap-4">
-                        <div><div class="text-[11px] font-black uppercase tracking-[.18em] text-zinc-500 mb-2">${getGreeting()}</div><h1 class="text-3xl md:text-5xl font-black tracking-tight text-white">${firstName} <span class="opacity-50">✦</span></h1><p class="text-xs md:text-sm font-semibold text-zinc-500 mt-2">МБ-302 • ${weekLabel}</p></div>
+                        <div><div class="text-[11px] font-black uppercase tracking-[.18em] text-zinc-500 mb-2">Привіт, ${firstName}</div><h1 class="text-3xl md:text-5xl font-black tracking-tight text-white">${firstName} <span class="opacity-50">✦</span></h1><p class="text-xs md:text-sm font-semibold text-zinc-500 mt-2">МБ-302 • ${weekLabel}</p></div>
                         <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-white/[.04] border border-white/5 text-[11px] font-bold text-zinc-400"><i data-lucide="calendar-days" class="w-4 h-4"></i>${now.toLocaleDateString('uk-UA',{day:'2-digit',month:'long'})}</div>
                     </section>
 
@@ -1872,7 +2195,7 @@
             const activeFilterClass = "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md border-transparent scale-[1.02]";
             const inactiveFilterClass = "glass-card text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700";
 
-            const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchStr) && (filter === 'all' || s.electives.includes(filter)));
+            const filteredStudents = students.filter(s => (s.fullName || s.name).toLowerCase().includes(searchStr) && (filter === 'all' || s.electives.includes(filter)));
 
             let html = `
                 <div>
@@ -1905,7 +2228,7 @@
                                             <div class="student-index">${String(i + 1).padStart(2,'0')}</div>
                                             <div class="min-w-0 flex-1">
                                                 <div class="flex items-start justify-between gap-2">
-                                                    <div class="student-mobile-name ${isMe ? `text-${pri}-300` : 'text-white'}">${s.name}</div>
+                                                    <div class="student-mobile-name ${isMe ? `text-${pri}-300` : 'text-white'}">${s.fullName || s.name}</div>
                                                     <div class="flex shrink-0 items-center gap-1.5">
                                                         ${s.isStarosta ? '<span class="student-badge student-badge-dark">Староста</span>' : ''}
                                                         ${isMe ? `<span class="student-badge student-badge-accent">Ви</span>` : ''}
@@ -1928,7 +2251,7 @@
                                             <tr class="transition-colors hover:bg-white/80 dark:hover:bg-white/10 group animate-slide-in-right ${isMe ? `bg-${pri}-50/60 dark:bg-${pri}-900/10` : ''}" style="animation-delay: ${120 + i * 15}ms;">
                                                 <td class="py-4 md:py-5 px-4 text-[12px] md:text-[13px] font-black text-zinc-400 w-12 text-center group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">${i+1}</td>
                                                 <td class="py-4 md:py-5 px-2 md:px-4 font-bold text-[14px] md:text-[15px] ${isMe ? `text-${pri}-600 dark:text-${pri}-400` : 'text-zinc-900 dark:text-zinc-100'} whitespace-nowrap">
-                                                    ${s.name}
+                                                    ${s.fullName || s.name}
                                                     ${s.isStarosta ? `<span class="ml-2 px-2 md:px-2.5 py-0.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] md:text-[10px] font-bold uppercase tracking-wide rounded-md shadow-sm">Староста</span>` : ''}
                                                     ${isMe ? `<span class="ml-1.5 md:ml-2 px-2 md:px-2.5 py-0.5 text-${pri}-600 dark:text-${pri}-400 text-[9px] md:text-[10px] font-bold uppercase tracking-wide rounded-md border border-${pri}-200 dark:border-${pri}-500/30">(Ви)</span>` : ''}
                                                 </td>
@@ -2170,8 +2493,11 @@
 
         window.app = {
             setView: (viewId) => {
-                if (!viewId || !document.getElementById('main-content')) return;
-                if (window.appState.view === viewId) {
+                const content = document.getElementById('main-content');
+                if (!viewId || !content) return;
+
+                const currentView = window.appState.view;
+                if (currentView === viewId) {
                     if (viewId === 'schedule' || viewId === 'main') {
                         const isPers = viewId === 'schedule';
                         const activeWeekType = isPers ? window.appState.persMainWeek : window.appState.mainViewWeek;
@@ -2181,34 +2507,46 @@
                     return;
                 }
 
-                if (viewId === 'schedule' || viewId === 'main') window.appState.shouldScrollToPair = true;
+                if (viewId === 'schedule' || viewId === 'main') {
+                    window.appState.shouldScrollToPair = true;
+                }
                 if (viewId === 'homework') {
                     window.appState.unreadHwCount = 0;
-                    renderNav();
                 }
 
-                const content = document.getElementById('main-content');
                 const order = ['dashboard','schedule','homework','register','analytics','materials','editor'];
-                const from = Math.max(0, order.indexOf(window.appState.view));
+                const from = Math.max(0, order.indexOf(currentView));
                 const to = Math.max(0, order.indexOf(viewId));
                 const direction = to >= from ? 1 : -1;
+                const token = ++window.appState.viewTransitionToken;
+
                 content.dataset.transitionDirection = direction > 0 ? 'forward' : 'back';
-                content.classList.remove('view-enter','view-leave');
-                void content.offsetWidth;
+                window.clearTimeout(window.appState.viewTransitionTimer);
+
+                content.classList.remove('view-enter');
                 content.classList.add('view-leave');
 
-                window.clearTimeout(window.appState.viewTransitionTimer);
                 window.appState.viewTransitionTimer = window.setTimeout(() => {
+                    if (token !== window.appState.viewTransitionToken) return;
+
                     window.appState.view = viewId;
+                    window.appState.navSignature = '';
                     window.app.renderActiveView();
-                    window.scrollTo({ top: 0, behavior: 'auto' });
-                    content.classList.remove('view-leave');
-                    void content.offsetWidth;
-                    content.classList.add('view-enter');
-                    window.setTimeout(() => content.classList.remove('view-enter'), 520);
-                }, 190);
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+
+                    requestAnimationFrame(() => {
+                        if (token !== window.appState.viewTransitionToken) return;
+                        content.classList.remove('view-leave');
+                        content.classList.add('view-enter');
+                        window.setTimeout(() => {
+                            if (token === window.appState.viewTransitionToken) {
+                                content.classList.remove('view-enter');
+                            }
+                        }, 520);
+                    });
+                }, 175);
             },
-            
+
             attachScrollDrag: () => {
                 const containers = document.querySelectorAll('.hide-scrollbar');
                 containers.forEach(el => {
@@ -2510,6 +2848,7 @@
                 const devInfo = getDeviceInfo();
                 
                 const updateSession = async () => {
+                    if(document.hidden) return;
                     if(!window.appState.currentSessionId || !window.appState.firebaseUser) return;
                     try {
                         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'analytics_logs', window.appState.currentSessionId), {
@@ -2523,7 +2862,7 @@
                 };
                 
                 updateSession(); 
-                window.appState.analyticsInterval = setInterval(updateSession, 5000); 
+                window.appState.analyticsInterval = setInterval(updateSession, 15000); 
             },
 
             stopAnalyticsSession: () => {
@@ -2609,17 +2948,27 @@
             },
 
             logout: () => {
-                window.app.stopAnalyticsSession(); 
+                window.app.stopAnalyticsSession();
                 
                 if (window.appState.analyticsUnsubscribe) {
                     window.appState.analyticsUnsubscribe();
                     window.appState.analyticsUnsubscribe = null;
                 }
 
+                // Keep the remembered profile so reopening the site on this browser
+                // returns to the same student automatically. A separate profile-switch
+                // action can clear it when needed.
                 window.appState.selectedStudent = null;
-                forgetStudentOnDevice();
                 document.getElementById('app').classList.add('hidden');
                 document.getElementById('auth-screen').classList.remove('hidden');
+                window.app.renderAuthList();
+            },
+
+            clearRememberedProfile: () => {
+                forgetStudentOnDevice();
+                window.appState.selectedStudent = null;
+                document.getElementById('app')?.classList.add('hidden');
+                document.getElementById('auth-screen')?.classList.remove('hidden');
                 window.app.renderAuthList();
             },
 
@@ -2770,7 +3119,9 @@
             renderAuthList: () => {
                 const search = document.getElementById('auth-search')?.value.toLowerCase() || '';
                 const listEl = document.getElementById('auth-list');
-                const filtered = search ? students.filter(s => s.name.toLowerCase().includes(search)) : [];
+                const filtered = search ? students.filter(s => (s.fullName || s.name).toLowerCase().includes(search) || s.name.toLowerCase().includes(search)) : [];
+                const switchBtn = document.getElementById('clear-remembered-profile');
+                if (switchBtn) switchBtn.classList.toggle('hidden', !readRememberedStudentId());
                 
                 if(filtered.length > 0) {
                     listEl.classList.remove('hidden');
@@ -3103,6 +3454,17 @@
             _doRestoreHidden: (id) => { removeFromCloud('hidden_schedule', id, () => {}); }
         };
 
+
+        // Coalesce bursts of remote updates into a single paint per frame.
+        let scheduledRenderFrame = 0;
+        const scheduleActiveRender = () => {
+            if (scheduledRenderFrame) return;
+            scheduledRenderFrame = requestAnimationFrame(() => {
+                scheduledRenderFrame = 0;
+                if (window.appState.selectedStudent) window.app.renderActiveView();
+            });
+        };
+
         const initRemoteServices = () => {
             // Firebase/auth is deliberately non-blocking: the portal UI must work even when
             // Firebase is slow/offline. Local storage provides the immediate first paint.
@@ -3121,7 +3483,7 @@
                             snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
-                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
                         },
                         (error) => console.error('Locations error:', error)
                     );
@@ -3142,7 +3504,7 @@
                             }
                             window.appState.homeworks = newHwList;
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
-                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) scheduleActiveRender();
                             else if (window.appState.selectedStudent) renderNav();
                         },
                         (error) => console.error('Homeworks error:', error)
@@ -3156,7 +3518,7 @@
                             mat.sort((a, b) => Number(b.id) - Number(a.id));
                             window.appState.materials = mat;
                             localStorage.setItem('portal-materials', JSON.stringify(mat));
-                            if (['materials', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['materials', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
                         },
                         (error) => console.error('Materials error:', error)
                     );
@@ -3168,7 +3530,7 @@
                             snap.forEach(doc => extra.push({ id: doc.id, ...doc.data() }));
                             window.appState.extraSchedule = extra;
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
                         },
                         (error) => console.error('Extra schedule error:', error)
                     );
@@ -3180,7 +3542,7 @@
                             snap.forEach(doc => hidden.push({ id: doc.id, ...doc.data() }));
                             window.appState.hiddenSchedule = hidden;
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
-                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.renderActiveView();
+                            if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) scheduleActiveRender();
                         },
                         (error) => console.error('Hidden schedule error:', error)
                     );
@@ -3208,9 +3570,21 @@
             connect().finally(() => window.clearTimeout(timeoutId));
         };
 
+        let navIndicatorResizeRaf = 0;
+        const refreshNavIndicators = () => {
+            if (navIndicatorResizeRaf) return;
+            navIndicatorResizeRaf = requestAnimationFrame(() => {
+                navIndicatorResizeRaf = 0;
+                animateActiveNav(document.getElementById('desktop-nav'));
+                animateActiveNav(document.getElementById('mobile-nav'));
+            });
+        };
+        window.addEventListener('resize', refreshNavIndicators, { passive: true });
+        window.addEventListener('orientationchange', refreshNavIndicators, { passive: true });
+
         const initApp = () => {
             // Paint local UI first. Remote services are started afterwards.
-            try { initParticles(); } catch (e) { console.warn('Background animation disabled:', e); }
+            try { if (!window.matchMedia?.('(pointer: coarse)').matches && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) initParticles(); } catch (e) { console.warn('Background animation disabled:', e); }
 
             if (window.appState.isDark) document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
@@ -3220,6 +3594,7 @@
 
             const savedId = readRememberedStudentId();
             if (savedId) {
+                document.getElementById('auth-screen')?.classList.add('hidden');
                 const s = students.find(x => x.id === Number(savedId));
                 if (s) {
                     window.appState.selectedStudent = s;
@@ -3238,6 +3613,19 @@
             // Start Firebase after first paint.
             try { initRemoteServices(); } catch (e) { console.warn('Remote services unavailable:', e); }
         };
+
+
+        // Pause non-essential analytics traffic while the tab is hidden.
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (window.appState.analyticsInterval) {
+                    clearInterval(window.appState.analyticsInterval);
+                    window.appState.analyticsInterval = null;
+                }
+            } else if (window.appState.selectedStudent && window.appState.firebaseUser) {
+                try { window.app.startAnalyticsSession(); } catch (e) {}
+            }
+        });
 
         // Premium pointer spotlight — disabled on touch/reduced-motion devices.
         (() => {
@@ -3266,6 +3654,18 @@
             document.addEventListener('pointerenter', () => {
                 glow.style.opacity = '';
             });
+        })();
+
+
+        // Browser lifecycle tuning: pause non-essential visual motion when hidden/backgrounded.
+        (() => {
+            const root = document.documentElement;
+            const setPassiveMode = (paused) => {
+                root.classList.toggle('portal-paused', paused);
+            };
+            document.addEventListener('visibilitychange', () => setPassiveMode(document.hidden));
+            window.addEventListener('pagehide', () => setPassiveMode(true), { passive:true });
+            window.addEventListener('pageshow', () => setPassiveMode(false), { passive:true });
         })();
 
         // Run Init
