@@ -1302,22 +1302,122 @@
             { start: "08:30", end: "09:45" }, { start: "10:00", end: "11:15" },
             { start: "11:30", end: "12:45" }, { start: "13:00", end: "14:15" },
             { start: "14:30", end: "15:45" }, { start: "16:00", end: "17:15" },
-            { start: "17:30", end: "18:45" }
+            { start: "17:30", end: "18:45" }, { start: "19:00", end: "20:15" }
         ];
 
         const mainScheduleData = {
+            // Тиждень 1 (Верхній) та тиждень 2 (Нижній): ТІЛЬКИ начитка лекцій.
             upper: [
-                { day: "Вівторок", pairs: [{ num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Менеджмент персоналу Л", type: "general" }]},
-                { day: "Середа", pairs: [{ num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В Л", type: "elective" }, { num: 3, time: "11:30-12:45", subj: "Міжнародна торгівля В Л", type: "elective" }, { num: 5, time: "14:30-15:45", subj: "Світовий фінансовий ринок В Л", type: "elective" }, { num: 6, time: "16:00-17:15", subj: "Світовий фінансовий ринок В Л", type: "elective" }, { num: 7, time: "17:30-18:45", subj: "Міжнародна торгівля В Л", type: "elective" }]},
-                { day: "Четвер", pairs: [{ num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Міжнародний маркетинг Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Бренд менеджмент В Л", type: "elective" }]},
-                { day: "П'ятниця", pairs: [{ num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 3, time: "11:30-12:45", subj: "Друга іноз мова В п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Друга іноз мова В п", type: "lang" }]}
+                { day: "Вівторок", pairs: [
+                    { num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" },
+                    { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" },
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" },
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }
+                ]},
+                { day: "Середа", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В Л", type: "elective" },
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародна торгівля В Л", type: "elective" },
+                    { num: 5, time: "14:30-15:45", subj: "Світовий фондовий ринок В Л", type: "elective" },
+                    { num: 6, time: "16:00-17:15", subj: "Світовий фондовий ринок В Л", type: "elective" },
+                    { num: 7, time: "17:30-18:45", subj: "Міжнародна торгівля В Л", type: "elective" }
+                ]},
+                { day: "Четвер", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "lang" },
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" },
+                    { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" },
+                    { num: 6, time: "16:00-17:15", subj: "Міжнародний маркетинг Л", type: "general" },
+                    { num: 7, time: "17:30-18:45", subj: "Бренд менеджмент В Л", type: "elective" }
+                ]},
+                { day: "П'ятниця", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "lang" },
+                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang" },
+                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang" }
+                ]}
             ],
             lower: [
-                { day: "Понеділок", pairs: [{ num: 4, time: "13:00-14:15", subj: "Бренд менеджмент В Л", type: "elective" }, { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В Л", type: "elective" }, { num: 6, time: "16:00-17:15", subj: "Менеджмент персоналу Л", type: "general" }, { num: 7, time: "17:30-18:45", subj: "Менеджмент персоналу Л", type: "general" }]},
-                { day: "Вівторок", pairs: [{ num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" }, { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }]},
-                { day: "Середа", pairs: [{ num: 4, time: "13:00-14:15", subj: "Стартап-менеджмент Л", type: "general" }, { num: 5, time: "14:30-15:45", subj: "Стартап-менеджмент Л", type: "general" }, { num: 6, time: "16:00-17:15", subj: "Світовий фінансовий ринок В Л", type: "elective" }]},
-                { day: "Четвер", pairs: [{ num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }]},
-                { day: "П'ятниця", pairs: [{ num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "lang" }, { num: 3, time: "11:30-12:45", subj: "Друга іноз мова В п", type: "lang" }, { num: 4, time: "13:00-14:15", subj: "Друга іноз мова В п", type: "lang" }]}
+                { day: "Понеділок", pairs: [
+                    { num: 4, time: "13:00-14:15", subj: "Бренд менеджмент В Л", type: "elective" },
+                    { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В Л", type: "elective" },
+                    { num: 6, time: "16:00-17:15", subj: "Менеджмент персоналу Л", type: "general" },
+                    { num: 7, time: "17:30-18:45", subj: "Менеджмент персоналу Л", type: "general" }
+                ]},
+                { day: "Вівторок", pairs: [
+                    { num: 1, time: "08:30-09:45", subj: "Міжнародний бізнес Л", type: "general" },
+                    { num: 2, time: "10:00-11:15", subj: "Міжнародний бізнес Л", type: "general" },
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес Л", type: "general" },
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" }
+                ]},
+                { day: "Середа", pairs: [
+                    { num: 4, time: "13:00-14:15", subj: "Стартап-менеджмент Л", type: "general" },
+                    { num: 5, time: "14:30-15:45", subj: "Стартап-менеджмент Л", type: "general" },
+                    { num: 6, time: "16:00-17:15", subj: "Світовий фондовий ринок В Л", type: "elective" }
+                ]},
+                { day: "Четвер", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Ділова іноземна мова п", type: "lang" },
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang" },
+                    { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }
+                ]},
+                { day: "П'ятниця", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Ділова іноземна мова п", type: "lang" },
+                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang" },
+                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang" }
+                ]}
+            ]
+        };
+
+        // З 3-го тижня: тільки основне практичне/аудиторне розкладне ядро.
+        const practiceScheduleData = {
+            upper: [
+                { day: "Понеділок", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Менеджмент персоналу Л", type: "general", teacher: "доц. Вонберг Т.В" },
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародна торгівля В Л", type: "elective", teacher: "доц. Іринчина І.Б" },
+                    { num: 4, time: "13:00-14:15", subj: "Бренд менеджмент В Л", type: "elective", teacher: "доц. Шевченко О.Л" },
+                    { num: 8, time: "19:00-20:15", subj: "Стартап-менеджмент Л", type: "general", teacher: "доц. Євдоченко О.О" }
+                ]},
+                { day: "Вівторок", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес п", type: "general", teacher: "проф. Білошапка В.А" },
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang", teacher: "" },
+                    { num: 5, time: "14:30-15:45", subj: "Менеджмент персоналу п", type: "general", teacher: "доц. Вонберг Т.В" },
+                    { num: 6, time: "16:00-17:15", subj: "Світовий фондовий ринок В п", type: "elective", teacher: "доц. Баторшина А.Ф" }
+                ]},
+                { day: "Середа", pairs: [
+                    { num: 4, time: "13:00-14:15", subj: "Стартап-менеджмент п", type: "general", teacher: "доц. Євдоченко О.О" },
+                    { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг п", type: "general", teacher: "доц. Гордєєва Т.Ф" }
+                ]},
+                { day: "Четвер", pairs: [
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang", teacher: "" },
+                    { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В п", type: "elective", teacher: "доц. Шевченко О.Л" },
+                    { num: 6, time: "16:00-17:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
+                ]},
+                { day: "П'ятниця", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang", teacher: "" },
+                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang", teacher: "" }
+                ]}
+            ],
+            lower: [
+                { day: "Понеділок", pairs: [
+                    { num: 4, time: "13:00-14:15", subj: "Світовий фондовий ринок В Л", type: "elective", teacher: "доц. Баторшина А.Ф" },
+                    { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general", teacher: "доц. Гордєєва Т.Ф" }
+                ]},
+                { day: "Вівторок", pairs: [
+                    { num: 2, time: "10:00-11:15", subj: "Менеджмент персоналу п", type: "general", teacher: "доц. Вонберг Т.В" },
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародний бізнес п", type: "general", teacher: "проф. Білошапка В.А" },
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang", teacher: "" },
+                    { num: 6, time: "16:00-17:15", subj: "Світовий фондовий ринок В п", type: "elective", teacher: "доц. Баторшина А.Ф" }
+                ]},
+                { day: "Середа", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Міжнародний маркетинг п", type: "general", teacher: "доц. Гордєєва Т.Ф" },
+                    { num: 4, time: "13:00-14:15", subj: "Стартап-менеджмент п", type: "general", teacher: "доц. Євдоченко О.О" }
+                ]},
+                { day: "Четвер", pairs: [
+                    { num: 4, time: "13:00-14:15", subj: "Ділова іноземна мова п", type: "lang", teacher: "" },
+                    { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В п", type: "elective", teacher: "доц. Шевченко О.Л" },
+                    { num: 6, time: "16:00-17:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
+                ]},
+                { day: "П'ятниця", pairs: [
+                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang", teacher: "" },
+                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang", teacher: "" }
+                ]}
             ]
         };
 
@@ -1457,17 +1557,18 @@
         };
 
         const getMergedSchedule = (weekType, weekNum) => {
-            let base = (weekNum && Number(weekNum) >= 3) ? [] : (mainScheduleData[weekType] ? JSON.parse(JSON.stringify(mainScheduleData[weekType])) : []);
+            const type = weekType === 'upper' || weekType === 'lower' ? weekType : 'upper';
+            const num = Number(weekNum) || null;
 
-            // Поки у порталі є лише лекційна начитка: практичні/мовні пари не показуємо.
-            base.forEach(d => {
-                d.pairs = d.pairs.filter(p => /\sЛ(?:$|\s)/i.test(p.subj));
-            });
+            // 1-2 тиждень: тільки начитка.
+            // З 3-го тижня: тільки практика.
+            const source = num && num >= 3 ? practiceScheduleData : mainScheduleData;
+            let base = JSON.parse(JSON.stringify(source[type] || []));
 
             const extras = window.appState.extraSchedule.filter(ep => {
-                if (ep.weekType !== weekType) return false;
+                if (ep.weekType !== type) return false;
                 if (ep.targetWeekNum) {
-                    if (!weekNum || parseInt(ep.targetWeekNum) !== parseInt(weekNum)) return false;
+                    if (!num || parseInt(ep.targetWeekNum) !== num) return false;
                 }
                 return true;
             });
@@ -1475,17 +1576,18 @@
             extras.forEach(ep => {
                 let dayObj = base.find(d => d.day === ep.day);
                 if (!dayObj) { dayObj = { day: ep.day, pairs: [] }; base.push(dayObj); }
+                const slot = timeSlots[parseInt(ep.num)-1];
                 dayObj.pairs.push({
                     id: ep.id, num: parseInt(ep.num),
-                    time: timeSlots[parseInt(ep.num)-1].start + '-' + timeSlots[parseInt(ep.num)-1].end,
-                    subj: ep.subj, type: ep.type, map: ep.map, isCustom: true
+                    time: slot ? slot.start + '-' + slot.end : '—',
+                    subj: ep.subj, type: ep.type, map: ep.map, isCustom: true, teacher: ep.teacher || ''
                 });
             });
 
             base.forEach(d => {
                 d.pairs = d.pairs.filter(p => !window.appState.hiddenSchedule.some(hp => {
-                    if (hp.weekType !== weekType || hp.day !== d.day || hp.num != p.num || hp.subj !== p.subj) return false;
-                    return !hp.targetWeekNum || (weekNum && parseInt(hp.targetWeekNum) === parseInt(weekNum));
+                    if (hp.weekType !== type || hp.day !== d.day || hp.num != p.num || hp.subj !== p.subj) return false;
+                    return !hp.targetWeekNum || (num && parseInt(hp.targetWeekNum) === num);
                 }));
             });
 
@@ -1501,7 +1603,7 @@
             let pairs = getMergedSchedule(w.t, w.n).flatMap(d => d.pairs.map(p => ({...p, day: d.day})));
             if (isPersonal && window.appState.selectedStudent) {
                 const electives = window.appState.selectedStudent.electives || [];
-                pairs = pairs.filter(p => p.type === 'general' || p.type === 'lang' || electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                pairs = pairs.filter(p => p.type === 'general' || p.type === 'lang' || electives.some(el => { const s = p.subj.toLowerCase(); const e = String(el).toLowerCase(); return s.includes(e) || ((s.includes('світовий фондовий ринок') || s.includes('світовий фінансовий ринок')) && e.includes('світовий фінансовий ринок')); }));
             }
             return pairs;
         };
@@ -1566,13 +1668,34 @@
         };
 
 
+        // Один Zoom для всіх появ одного предмета в усьому розкладі.
         const defaultZoomLinks = {
             "Міжнародний бізнес Л": "https://us02web.zoom.us/j/83901723856?pwd=CMo5YplgP7abg9clDTRMlegmaa4ye3.1",
+            "Міжнародний бізнес п": "https://us02web.zoom.us/j/83901723856?pwd=CMo5YplgP7abg9clDTRMlegmaa4ye3.1",
             "Менеджмент персоналу Л": "https://us02web.zoom.us/j/4985041677?pwd=aXcybTROU2IzTFlDSGNuVVFCR2xnZz09",
+            "Менеджмент персоналу п": "https://us02web.zoom.us/j/4985041677?pwd=aXcybTROU2IzTFlDSGNuVVFCR2xnZz09",
             "Міжнародна торгівля В Л": "https://us04web.zoom.us/j/73168331234?pwd=hgdrVQSKTHbFWYixTWW81u30awJJzO.1",
+            "Міжнародна торгівля В п": "https://us04web.zoom.us/j/73168331234?pwd=hgdrVQSKTHbFWYixTWW81u30awJJzO.1",
             "Світовий фінансовий ринок В Л": "https://us02web.zoom.us/j/89787082194?pwd=YnRSRU1vblFxVGNMMStIWjZudDJYdz09",
+            "Світовий фондовий ринок В Л": "https://us02web.zoom.us/j/89787082194?pwd=YnRSRU1vblFxVGNMMStIWjZudDJYdz09",
+            "Світовий фондовий ринок В п": "https://us02web.zoom.us/j/89787082194?pwd=YnRSRU1vblFxVGNMMStIWjZudDJYdz09",
             "Міжнародний маркетинг Л": "https://us02web.zoom.us/j/4568239364?pwd=aWpZRWtHbWhpN0hyck1LaG5pMmNLQT09",
-            "Світовий фондовий ринок В Л": "https://us02web.zoom.us/j/89787082194?pwd=YnRSRU1vblFxVGNMMStIWjZudDJYdz09"
+            "Міжнародний маркетинг п": "https://us02web.zoom.us/j/4568239364?pwd=aWpZRWtHbWhpN0hyck1LaG5pMmNLQT09",
+            "Бренд менеджмент В Л": "https://us02web.zoom.us/j/89795364028?pwd=E8AZBtcVZBaXkXyeeutGSUJtyYEq3c.1",
+            "Бренд менеджмент В п": "https://us02web.zoom.us/j/89795364028?pwd=E8AZBtcVZBaXkXyeeutGSUJtyYEq3c.1"
+        };
+
+        const getZoomLink = (subject) => {
+            const exact = defaultZoomLinks[subject];
+            if (exact) return exact;
+            const s = String(subject || '').toLowerCase();
+            if (s.includes('міжнародний бізнес')) return defaultZoomLinks['Міжнародний бізнес Л'];
+            if (s.includes('менеджмент персоналу')) return defaultZoomLinks['Менеджмент персоналу Л'];
+            if (s.includes('міжнародна торгівля')) return defaultZoomLinks['Міжнародна торгівля В Л'];
+            if (s.includes('світовий фондовий ринок') || s.includes('світовий фінансовий ринок')) return defaultZoomLinks['Світовий фондовий ринок В Л'];
+            if (s.includes('міжнародний маркетинг')) return defaultZoomLinks['Міжнародний маркетинг Л'];
+            if (s.includes('бренд менеджмент') || s.includes('бренд-менеджмент')) return defaultZoomLinks['Бренд менеджмент В Л'];
+            return null;
         };
 
         const backgroundsConfig = {
@@ -1957,10 +2080,10 @@
             const weekLabel = `${currentWeek.n} тиждень • ${currentWeek.t === 'upper' ? 'верхній' : 'нижній'}`;
 
             const pairRows = personalToday.map((p,i) => {
-                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url || window.appState.locationsData?.[p.subj]?.url || defaultZoomLinks[p.subj] || null;
+                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url || window.appState.locationsData?.[p.subj]?.url || getZoomLink(p.subj) || null;
                 return `<div class="flex items-center gap-3 p-3.5 md:p-4 rounded-[20px] border ${i === 0 ? `border-${pri}-500/20 bg-${pri}-500/[.05]` : 'border-white/5 bg-white/[.025]'}">
                     <div class="w-9 h-9 rounded-[12px] bg-white/[.06] flex items-center justify-center text-xs font-black text-zinc-300">${p.num}</div>
-                    <div class="min-w-0 flex-1"><div class="text-[13px] md:text-[14px] font-black text-white truncate">${p.subj.replace(' (Начитка)','')}</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${p.time}</div></div>
+                    <div class="min-w-0 flex-1"><div class="text-[13px] md:text-[14px] font-black text-white truncate">${p.subj.replace(' (Начитка)','')}</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${p.time}${p.teacher ? ` • ${p.teacher}` : ''}</div></div>
                     ${zoom ? `<a href="${zoom}" target="_blank" rel="noopener noreferrer" class="shrink-0 w-10 h-10 rounded-[13px] bg-blue-500/10 text-blue-400 border border-blue-500/15 flex items-center justify-center" aria-label="Відкрити Zoom"><i data-lucide="video" class="w-4 h-4"></i></a>` : ''}
                 </div>`;
             }).join('');
@@ -2100,7 +2223,7 @@
                         
                         const locKey = `${activeWeekType}_${p.subj}`;
                         const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[p.subj] || {};
-                        let zoomUrl = locInfo.url || defaultZoomLinks[p.subj] || null;
+                        let zoomUrl = locInfo.url || getZoomLink(p.subj) || null;
                         let roomNum = locInfo.room || null;
 
                         const classHws = activeWeekNum ? window.appState.homeworks.filter(h => h.subj === p.subj && h.weekNum === activeWeekNum && h.day === day.day && h.num == p.num) : [];
@@ -2124,7 +2247,7 @@
                                 <!-- Права частина -->
                                 <div class="flex-1 flex flex-col min-w-0">
                                     <div class="flex items-start justify-between gap-3 mb-3 md:mb-4">
-                                        <h4 class="text-[15px] md:text-[18px] font-black text-zinc-900 dark:text-white leading-tight">${displaySubj}</h4>
+                                        <div><h4 class="text-[15px] md:text-[18px] font-black text-zinc-900 dark:text-white leading-tight">${displaySubj}</h4>${p.teacher ? `<div class="text-[10px] md:text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mt-1">${p.teacher}</div>` : ''}</div>
                                         ${roomNum ? `<div class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 rounded-lg text-[10px] md:text-[11px] font-bold border border-amber-200/50 dark:border-amber-500/20 shadow-sm"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Ауд. ${roomNum}</div>` : ''}
                                     </div>
                                     
@@ -2454,7 +2577,7 @@
                             <div>
                                 <label class="block text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2 ml-1">Номер</label>
                                 <select id="ed-num" class="w-full p-4 md:p-4 bg-white/50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-white/10 rounded-[16px] md:rounded-[18px] text-[14px] md:text-[15px] font-bold outline-none focus:ring-2 ring-zinc-900 dark:ring-white text-zinc-900 dark:text-white">
-                                    ${[1,2,3,4,5,6,7].map(n => `<option value="${n}">${n} пара (${timeSlots[n-1].start})</option>`).join('')}
+                                    ${[1,2,3,4,5,6,7,8].map(n => `<option value="${n}">${n} пара (${timeSlots[n-1].start})</option>`).join('')}
                                 </select>
                             </div>
                             <div>
@@ -3351,12 +3474,12 @@
                     const start = new Date(now); start.setHours(sh,sm,0,0);
                     const end = new Date(now); end.setHours(eh,em,0,0);
                     const progress = Math.min(100, Math.max(0, ((Date.now()-start.getTime())/(end.getTime()-start.getTime()))*100));
-                    status = {label:'Зараз триває', title:`${cur.num} пара`, subtitle:cur.subj.replace(' (Начитка)',''), progress, isLive:true, zoom:defaultZoomLinks[cur.subj] || null};
+                    status = {label:'Зараз триває', title:`${cur.num} пара`, subtitle:cur.subj.replace(' (Начитка)',''), progress, isLive:true, zoom:getZoomLink(cur.subj) || null};
                 } else if (nxt) {
-                    status = {label:nxt.day === curDay ? 'Наступна пара' : `Далі • ${nxt.day}`, title:`${nxt.num} пара • ${nxt.time.split('-')[0]}`, subtitle:nxt.subj.replace(' (Начитка)',''), progress:0, isLive:false, zoom:defaultZoomLinks[nxt.subj] || null};
+                    status = {label:nxt.day === curDay ? 'Наступна пара' : `Далі • ${nxt.day}`, title:`${nxt.num} пара • ${nxt.time.split('-')[0]}`, subtitle:nxt.subj.replace(' (Начитка)',''), progress:0, isLive:false, zoom:getZoomLink(nxt.subj) || null};
                 } else {
                     const rw = getRecommendedWeek(true);
-                    status = {label:'Пари завершено', title:rw.n !== week.n ? `Далі — ${rw.n} тиждень` : 'На сьогодні все', subtitle:rw.n !== week.n ? 'Наступні лекції почнуться з понеділка.' : 'Можна відпочити ☕', progress:100, isLive:false};
+                    status = {label:'Пари завершено', title:rw.n !== week.n ? `Далі — ${rw.n} тиждень` : 'На сьогодні все', subtitle:rw.n !== week.n ? 'Наступні пари почнуться з понеділка.' : 'Можна відпочити ☕', progress:100, isLive:false};
                 }
                 widget.innerHTML = `<div class="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-${pri}-500/10 blur-[80px]"></div><div class="relative z-10 flex items-center justify-between gap-4"><div class="min-w-0"><div class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500 mb-3">${status.label}</div><h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">${status.title}</h2><p class="text-[12px] md:text-sm font-semibold text-zinc-500 mt-2 line-clamp-2">${status.subtitle}</p>${status.zoom ? `<a href="${status.zoom}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3.5 h-10 rounded-xl bg-blue-500/10 border border-blue-500/15 text-blue-300 text-[11px] font-black"><i data-lucide="video" class="w-4 h-4"></i> Відкрити Zoom</a>` : ''}</div><div class="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-[22px] bg-white/[.04] border border-white/10 flex items-center justify-center">${status.isLive ? `<span class="text-sm md:text-base font-black text-${pri}-400">${Math.round(status.progress)}%</span>` : `<i data-lucide="coffee" class="w-6 h-6 text-zinc-500"></i>`}</div></div>`;
                 lucide.createIcons({root:widget});
@@ -3524,7 +3647,7 @@
                 
                 const locKey = `${weekType}_${subj}`;
                 const locInfo = window.appState.locationsData[locKey] || window.appState.locationsData[subj] || {};
-                const currentLink = locInfo.url || defaultZoomLinks[subj] || '';
+                const currentLink = locInfo.url || getZoomLink(subj) || '';
                 const currentRoom = locInfo.room || '';
                 
                 window.appState.tempZoomSubj = subj;
