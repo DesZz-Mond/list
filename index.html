@@ -1772,12 +1772,23 @@
 
             statusInterval: null,
             regFilter: 'all',
-            matFilter: 'Всі'
+            matFilter: 'Всі',
+
+            // Render caches: avoid rebuilding identical schedule data on every view update.
+            _mergedScheduleCache: new Map(),
+            _renderQueueTimer: null,
+            _renderQueueRaf: 0,
+            _lastRenderedView: '',
+            _lastRenderedStateVersion: 0
         };
 
         const getMergedSchedule = (weekType, weekNum) => {
             const type = weekType === 'upper' || weekType === 'lower' ? weekType : 'upper';
             const num = Number(weekNum) || null;
+            const cache = window.appState._mergedScheduleCache;
+            const cacheKey = `${type}:${num || 0}:${window.appState.extraSchedule.length}:${window.appState.hiddenSchedule.length}`;
+            const cached = cache.get(cacheKey);
+            if (cached) return cached;
 
             // 1-2 тиждень: тільки начитка.
             // З 3-го тижня: тільки практика.
@@ -1813,6 +1824,9 @@
             base = base.filter(d => d.pairs.length > 0);
             base.forEach(d => d.pairs.sort((a,b) => a.num - b.num));
             base.sort((a,b) => dayOffsets[a.day] - dayOffsets[b.day]);
+            cache.set(cacheKey, base);
+            // Keep cache bounded; schedule datasets are tiny, so four entries are enough.
+            if (cache.size > 8) cache.delete(cache.keys().next().value);
             return base;
         };
 
@@ -3258,13 +3272,14 @@
                 let raf = 0;
                 let timer = 0;
                 return () => {
-                    cancelAnimationFrame(raf);
-                    clearTimeout(timer);
+                    if (document.hidden) return;
+                    if (raf || timer) return;
                     raf = requestAnimationFrame(() => {
-                        const delay = document.body.classList.contains('is-scrolling') ? 140 : 24;
+                        raf = 0;
+                        const delay = document.body.classList.contains('is-scrolling') ? 180 : 45;
                         timer = window.setTimeout(() => {
-                            if (document.hidden) return;
-                            window.app.renderActiveView();
+                            timer = 0;
+                            if (!document.hidden) window.app.renderActiveView();
                         }, delay);
                     });
                 };
@@ -3789,6 +3804,9 @@
                     const rw = getRecommendedWeek(true);
                     status = {label:'Пари завершено', title:rw.n !== week.n ? `Далі — ${rw.n} тиждень` : 'На сьогодні все', subtitle:rw.n !== week.n ? 'Наступні пари почнуться з понеділка.' : 'Можна відпочити ☕', progress:100, isLive:false};
                 }
+                const liveSignature = `${status.label}|${status.title}|${status.subtitle}|${status.zoom || ''}|${Math.round(status.progress)}|${status.isLive ? 1 : 0}|${pri}`;
+                if (widget.dataset.liveSignature === liveSignature) return;
+                widget.dataset.liveSignature = liveSignature;
                 widget.innerHTML = `<div class="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-${pri}-500/10 blur-[80px]"></div><div class="relative z-10 flex items-center justify-between gap-4"><div class="min-w-0"><div class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500 mb-3">${status.label}</div><h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">${status.title}</h2><p class="text-[12px] md:text-sm font-semibold text-zinc-500 mt-2 line-clamp-2">${status.subtitle}</p>${status.zoom ? `<a href="${status.zoom}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3.5 h-10 rounded-xl bg-blue-500/10 border border-blue-500/15 text-blue-300 text-[11px] font-black"><i data-lucide="video" class="w-4 h-4"></i> Відкрити Zoom</a>` : ''}</div><div class="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-[22px] bg-white/[.04] border border-white/10 flex items-center justify-center">${status.isLive ? `<span class="text-sm md:text-base font-black text-${pri}-400">${Math.round(status.progress)}%</span>` : `<i data-lucide="coffee" class="w-6 h-6 text-zinc-500"></i>`}</div></div>`;
                 renderIconsIn(widget);
             },
@@ -4090,6 +4108,7 @@
                             const links = {};
                             snap.forEach(doc => links[doc.id] = doc.data());
                             window.appState.locationsData = links;
+                            window.appState._mergedScheduleCache.clear();
                             localStorage.setItem('portal-custom-locations', JSON.stringify(links));
                             if (['schedule', 'main', 'dashboard'].includes(window.appState.view)) window.app.queueRenderActiveView();
                         },
@@ -4111,6 +4130,7 @@
                                 });
                             }
                             window.appState.homeworks = newHwList;
+                            window.appState._mergedScheduleCache.clear();
                             localStorage.setItem('portal-homeworks', JSON.stringify(newHwList));
                             if (['homework', 'dashboard', 'schedule', 'main'].includes(window.appState.view)) window.app.queueRenderActiveView();
                             else if (window.appState.selectedStudent) renderNav();
@@ -4137,6 +4157,7 @@
                             const extra = [];
                             snap.forEach(doc => extra.push({ id: doc.id, ...doc.data() }));
                             window.appState.extraSchedule = extra;
+                            window.appState._mergedScheduleCache.clear();
                             localStorage.setItem('portal-extra-schedule', JSON.stringify(extra));
                             if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.queueRenderActiveView();
                         },
@@ -4149,6 +4170,7 @@
                             const hidden = [];
                             snap.forEach(doc => hidden.push({ id: doc.id, ...doc.data() }));
                             window.appState.hiddenSchedule = hidden;
+                            window.appState._mergedScheduleCache.clear();
                             localStorage.setItem('portal-hidden-schedule', JSON.stringify(hidden));
                             if (['schedule', 'main', 'editor', 'dashboard'].includes(window.appState.view)) window.app.queueRenderActiveView();
                         },
@@ -4270,6 +4292,20 @@
                 clearTimeout(stopTimer);
                 stopTimer = window.setTimeout(() => document.body.classList.remove('is-scrolling'), 140);
             }, { passive: true });
+        })();
+
+
+        // Scroll performance governor: keep the compositor quiet while the finger is moving.
+        (() => {
+            let scrollTimer = 0;
+            const body = document.body;
+            const onScroll = () => {
+                if (!body.classList.contains('is-scrolling')) body.classList.add('is-scrolling');
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(() => body.classList.remove('is-scrolling'), 110);
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('touchmove', onScroll, { passive: true });
         })();
 
         // Run Init
