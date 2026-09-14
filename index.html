@@ -1049,6 +1049,51 @@
         }
         @media (prefers-reduced-motion:reduce){.appearance-sheet-backdrop,.appearance-sheet{animation:none}}
 
+
+        /* КР / Міжнародний бізнес */
+        .kr-hero { box-shadow: 0 22px 80px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04); }
+        .kr-stat { min-width:72px; padding:10px 12px; border-radius:16px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.035); display:flex; flex-direction:column; align-items:flex-start; }
+        .kr-stat strong { font-size:18px; line-height:1; font-weight:900; color:#fff; }
+        .kr-stat span { margin-top:4px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:#71717a; }
+        .kr-search-wrap { min-height:48px; display:flex; align-items:center; gap:10px; padding:0 12px 0 15px; border-radius:17px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.035); box-shadow:inset 0 1px 0 rgba(255,255,255,.035); }
+        .kr-search-wrap:focus-within { border-color:rgba(139,92,246,.45); box-shadow:0 0 0 4px rgba(139,92,246,.07), inset 0 1px 0 rgba(255,255,255,.05); }
+        .kr-search-wrap input { width:100%; min-width:0; background:transparent; outline:none; color:#fff; font-size:13px; font-weight:700; }
+        .kr-search-wrap input::placeholder { color:#52525b; }
+        .kr-clear { width:30px; height:30px; flex:0 0 30px; display:grid; place-items:center; border-radius:10px; color:#71717a; background:rgba(255,255,255,.045); }
+        .kr-clear:hover { color:#fff; background:rgba(255,255,255,.08); }
+        .kr-filter-btn { min-height:48px; padding:0 14px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:#a1a1aa; font-size:11px; font-weight:900; white-space:nowrap; }
+        .kr-filter-btn:hover { background:rgba(255,255,255,.06); color:#fff; }
+        .kr-filter-active { color:#ddd6fe; border-color:rgba(139,92,246,.30); background:rgba(139,92,246,.12); }
+        .kr-resource-card { min-width:0; flex:1 1 0; display:flex; align-items:center; gap:12px; padding:14px; border-radius:20px; border:1px solid rgba(255,255,255,.075); background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.022)); box-shadow:inset 0 1px 0 rgba(255,255,255,.035); }
+        .kr-resource-method:hover { border-color:rgba(139,92,246,.32); background:linear-gradient(180deg,rgba(139,92,246,.09),rgba(255,255,255,.02)); }
+        .kr-resource-icon { width:40px; height:40px; flex:0 0 40px; border-radius:13px; display:grid; place-items:center; background:rgba(139,92,246,.10); color:#c4b5fd; border:1px solid rgba(139,92,246,.16); }
+        .kr-resource-kicker { font-size:9px; text-transform:uppercase; letter-spacing:.15em; font-weight:900; color:#71717a; }
+        .kr-resource-title { margin-top:3px; font-size:12px; line-height:1.25; font-weight:900; color:#fff; }
+        .kr-resource-note { margin-top:4px; font-size:9px; line-height:1.35; font-weight:700; color:#71717a; }
+        .kr-alt-badge { padding:6px 8px; border-radius:9px; border:1px solid rgba(52,211,153,.16); background:rgba(16,185,129,.08); color:#6ee7b7; font-size:8px; line-height:1; font-weight:900; letter-spacing:.08em; white-space:nowrap; }
+        .kr-topic-number { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center; border-radius:11px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.07); color:#a1a1aa; font-size:11px; font-weight:900; }
+        .kr-topic-number-mine { color:#ddd6fe; background:rgba(139,92,246,.12); border-color:rgba(139,92,246,.25); box-shadow:0 8px 24px rgba(139,92,246,.10); }
+        .kr-student-avatar { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:13px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.07); color:#a1a1aa; font-size:10px; font-weight:900; }
+        .kr-student-avatar-mine { color:#ddd6fe; background:rgba(139,92,246,.11); border-color:rgba(139,92,246,.22); }
+        .kr-mine-pill { display:inline-flex; align-items:center; padding:4px 7px; border-radius:999px; background:rgba(139,92,246,.12); border:1px solid rgba(139,92,246,.18); color:#c4b5fd; font-size:8px; line-height:1; font-weight:900; letter-spacing:.05em; text-transform:uppercase; vertical-align:2px; }
+        .kr-topic-title { max-width:920px; font-size:12px; line-height:1.55; font-weight:750; color:#d4d4d8; }
+        .kr-row-mine td { background:linear-gradient(90deg,rgba(139,92,246,.045),rgba(139,92,246,.015)); }
+        .kr-mobile-card { padding:14px; border-radius:20px; border:1px solid rgba(255,255,255,.075); background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.022)); box-shadow:inset 0 1px 0 rgba(255,255,255,.035); }
+        .kr-card-mine { border-color:rgba(139,92,246,.28); background:linear-gradient(180deg,rgba(139,92,246,.09),rgba(255,255,255,.022)); }
+        .kr-mobile-topic { margin-top:12px; padding:12px; border-radius:15px; background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.05); color:#d4d4d8; font-size:12px; line-height:1.48; font-weight:750; }
+        @media (max-width: 767px) {
+            .kr-resource-card { border-radius:18px; }
+            .kr-filter-btn { flex:1; min-width:0; padding-left:10px; padding-right:10px; }
+            .kr-topic-title { font-size:11px; }
+        }
+        @media (max-width: 430px) {
+            .kr-resource-card { padding:12px; gap:10px; }
+            .kr-resource-title { font-size:11px; }
+            .kr-resource-note { font-size:8.5px; }
+            .kr-alt-badge { display:none; }
+            .kr-stat { min-width:66px; }
+        }
+
         /* Production mobile rendering profile: same visual language, less continuous GPU work. */
         @media (max-width: 767px) and (pointer: coarse) {
             html { text-rendering: optimizeSpeed; }
@@ -1787,6 +1832,8 @@
             statusInterval: null,
             regFilter: 'all',
             matFilter: 'Всі',
+            krSearch: '',
+            krFilter: 'all',
 
             // Render caches: avoid rebuilding identical schedule data on every view update.
             _mergedScheduleCache: new Map(),
@@ -2226,6 +2273,185 @@
             }, 850);
         };
 
+
+        // Курсові роботи з дисципліни «Міжнародний бізнес».
+        const internationalBusinessCoursework = [
+            { no: 1, title: "Winning Leadership в управлінні створенням цінності в міжнародному бізнесі", student: "Гордієнко" },
+            { no: 2, title: "Принцип Clarity у формуванні стратегій для міжнародної конкуренції", student: "Троцька" },
+            { no: 3, title: "Принцип Alignment у формуванні організаційного дизайну в управлінні міжнародним бізнесом", student: "Кохан" },
+            { no: 4, title: "Принцип Intensity для ефективного управління зростанням компанії у міжнародному бізнесі", student: "Колодій" },
+            { no: 5, title: "Принцип Co-Creation для ефективного управління зростанням компанії у міжнародному бізнесі", student: "Чупріна" },
+            { no: 6, title: "Принцип Learning для управління успіхом в міжнародному бізнесі", student: "Кисленко" },
+            { no: 7, title: "Лідерські компетенції управління створенням цінності у міжнародному бізнесі", student: "Петричка" },
+            { no: 8, title: "Матриця цінності та умови збереження позиції міжнародної компанії у статусі «Переможець»", student: "Солярик" },
+            { no: 9, title: "Модель BFMD для ефективного управління створенням цінності у міжнародній компанії", student: "Мартин" },
+            { no: 10, title: "Управління зростанням на основі можливостей (OGM) для міжнародної компанії", student: "Степаненко" },
+            { no: 11, title: "Стратегічна опціональність для сучасної міжнародної компанії", student: "Могилянська" },
+            { no: 12, title: "Логіка SVEO для забезпечення ефективного порядку денного міжнародної компанії", student: "—" },
+            { no: 13, title: "DIRS-метод для управління ростом у міжнародних компаніях", student: "Гуменюк" },
+            { no: 14, title: "Цифрові платформи у міжнародному бізнесі", student: "Пилипенко" },
+            { no: 15, title: "Корпоративна культура як джерело конкурентної переваги у міжнародному бізнесі", student: "Великоконь" },
+            { no: 16, title: "Переможна (Winner) бізнес-модель і умови її утримання у міжнародній компанії", student: "Шелепа" },
+            { no: 17, title: "Каталізатори професійного росту менеджерів у міжнародних компаніях", student: "Клічук" },
+            { no: 18, title: "Лідерство як створення нових лідерів у розвитку міжнародних компаній", student: "Масяєв" },
+            { no: 19, title: "Управління монетизацією і драйвери прибутковості міжнародних компаній", student: "—" },
+            { no: 20, title: "Корпоративне управління для захисту створення цінності у міжнародних компаніях", student: "Май" }
+        ];
+
+        const normalizeKrSearch = (value) => String(value || '')
+            .toLocaleLowerCase('uk-UA')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+
+        const getKrStudentRecord = (surname) => {
+            const key = normalizeKrSearch(surname);
+            return students.find(s => {
+                const first = normalizeKrSearch(String(s.fullName || s.name || '').split(/\s+/)[0]);
+                return first === key;
+            }) || null;
+        };
+
+        const renderCoursework = () => {
+            const { pri } = getTheme();
+            const user = window.appState.selectedStudent;
+            const search = normalizeKrSearch(window.appState.krSearch);
+            const filter = window.appState.krFilter || 'all';
+            const currentSurname = normalizeKrSearch(user?.fullName || user?.name || '').split(/\s+/)[0];
+
+            const rows = internationalBusinessCoursework.filter(item => {
+                const haystack = normalizeKrSearch(`${item.no} ${item.title} ${item.student}`);
+                const isMine = currentSurname && normalizeKrSearch(item.student) === currentSurname;
+                return (!search || haystack.includes(search)) && (filter !== 'mine' || isMine);
+            });
+
+            const courseRow = (item) => {
+                const isMine = item.student !== '—' && currentSurname && normalizeKrSearch(item.student) === currentSurname;
+                const isUnassigned = item.student === '—';
+                const record = getKrStudentRecord(item.student);
+                const initials = isUnassigned ? '—' : String(item.student || '').slice(0, 2).toUpperCase();
+                return `
+                    <tr class="${isMine ? 'kr-row-mine' : ''}">
+                        <td class="py-4 px-4 md:px-5 align-top"><span class="kr-topic-number ${isMine ? 'kr-topic-number-mine' : ''}">${item.no}</span></td>
+                        <td class="py-4 px-4 md:px-5 align-top">
+                            <div class="flex items-start gap-3.5">
+                                <div class="kr-student-avatar ${isMine ? 'kr-student-avatar-mine' : ''}">${initials}</div>
+                                <div class="min-w-0">
+                                    <div class="font-black text-[13px] md:text-[14px] leading-tight ${isUnassigned ? 'text-zinc-500' : 'text-white'}">${isUnassigned ? 'Не обрана' : item.student}${isMine ? `<span class="ml-2 kr-mine-pill">Ваша тема</span>` : ''}</div>
+                                    ${record?.fullName ? `<div class="mt-1 text-[10px] md:text-[11px] text-zinc-500 font-semibold">${record.fullName}</div>` : (isUnassigned ? `<div class="mt-1 text-[10px] text-zinc-600 font-semibold">Тема поки вільна</div>` : '')}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4 md:px-5 align-top"><div class="kr-topic-title">${item.title}</div></td>
+                    </tr>`;
+            };
+
+            const mobileCard = (item) => {
+                const isMine = item.student !== '—' && currentSurname && normalizeKrSearch(item.student) === currentSurname;
+                const isUnassigned = item.student === '—';
+                const record = getKrStudentRecord(item.student);
+                return `
+                    <article class="kr-mobile-card ${isMine ? 'kr-card-mine' : ''}">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start gap-3 min-w-0">
+                                <div class="kr-topic-number ${isMine ? 'kr-topic-number-mine' : ''}">${item.no}</div>
+                                <div class="min-w-0">
+                                    <div class="font-black text-[13px] leading-tight ${isUnassigned ? 'text-zinc-500' : 'text-white'}">${isUnassigned ? 'Не обрана' : item.student}</div>
+                                    ${record?.fullName ? `<div class="mt-1 text-[9px] text-zinc-500 font-semibold">${record.fullName}</div>` : (isUnassigned ? `<div class="mt-1 text-[9px] text-zinc-600 font-semibold">Тема поки вільна</div>` : '')}
+                                </div>
+                            </div>
+                            ${isMine ? `<span class="kr-mine-pill shrink-0">Ваша</span>` : ''}
+                        </div>
+                        <div class="kr-mobile-topic">${item.title}</div>
+                    </article>`;
+            };
+
+            const resultLabel = rows.length === internationalBusinessCoursework.length
+                ? 'Усі 20 тем'
+                : `Знайдено ${rows.length} ${rows.length === 1 ? 'тему' : 'теми'}`;
+
+            const searchValue = String(window.appState.krSearch || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+            document.getElementById('main-content').innerHTML = `
+                <div class="space-y-5 md:space-y-7">
+                    <section class="kr-hero glass-panel rounded-[28px] md:rounded-[36px] p-5 md:p-7 overflow-hidden relative">
+                        <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-${pri}-500/10 blur-3xl pointer-events-none"></div>
+                        <div class="absolute -bottom-28 -left-24 w-80 h-80 rounded-full bg-fuchsia-500/10 blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5">
+                                <div class="min-w-0">
+                                    <div class="text-[10px] md:text-[11px] font-black uppercase tracking-[.2em] text-${pri}-400/80 mb-2">Міжнародний бізнес • КР</div>
+                                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">Курсові роботи</h1>
+                                    <p class="text-xs md:text-sm text-zinc-500 font-semibold mt-2 max-w-3xl leading-relaxed">Єдиний список тем і розподіл між студентами. Тут швидко можна знайти свою тему, перевірити розподіл і відкрити методичку.</p>
+                                </div>
+                                <div class="flex gap-2 shrink-0">
+                                    <div class="kr-stat"><strong>20</strong><span>тем</span></div>
+                                    <div class="kr-stat"><strong>20</strong><span>позицій</span></div>
+                                </div>
+                            </div>
+                            <div class="mt-5 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-3">
+                                <label class="kr-search-wrap">
+                                    <i data-lucide="search" class="w-4 h-4 shrink-0 text-zinc-500"></i>
+                                    <input id="kr-search" value="${searchValue}" type="search" inputmode="search" autocomplete="off" placeholder="Пошук за прізвищем, номером або назвою теми..." oninput="window.app.filterCoursework(this.value)">
+                                    <button type="button" class="kr-clear ${window.appState.krSearch ? '' : 'hidden'}" onclick="window.app.filterCoursework('')" aria-label="Очистити пошук"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                </label>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="window.app.setKrFilter('all')" class="kr-filter-btn ${filter === 'all' ? 'kr-filter-active' : ''}"><i data-lucide="list" class="w-4 h-4"></i> Усі теми</button>
+                                    <button type="button" onclick="window.app.setKrFilter('mine')" class="kr-filter-btn ${filter === 'mine' ? 'kr-filter-active' : ''}"><i data-lucide="user-round" class="w-4 h-4"></i> Моя тема</button>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                                <a href="https://t.me/c/2167439732/2379/2381" target="_blank" rel="noopener noreferrer" class="kr-resource-card kr-resource-method">
+                                    <div class="kr-resource-icon"><i data-lucide="book-open-check" class="w-5 h-5"></i></div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="kr-resource-kicker">Матеріал до курсової</div>
+                                        <div class="kr-resource-title">Методичка для курсової роботи</div>
+                                        <div class="kr-resource-note">Посилання на методичні матеріали в Telegram</div>
+                                    </div>
+                                    <i data-lucide="external-link" class="w-4 h-4 shrink-0 text-zinc-500"></i>
+                                </a>
+                                <a href="https://t.me/c/2167439732/2379/2381" target="_blank" rel="noopener noreferrer" class="kr-resource-card kr-resource-slides">
+                                    <div class="kr-resource-icon"><i data-lucide="presentation" class="w-5 h-5"></i></div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="kr-resource-kicker">Альтернатива курсовій</div>
+                                        <div class="kr-resource-title">Слайди / презентація</div>
+                                        <div class="kr-resource-note">Альтернативний формат виконання; наявні матеріали порталу не видаляються</div>
+                                    </div>
+                                    <span class="kr-alt-badge">АЛЬТЕРНАТИВА</span>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="glass-panel rounded-[28px] md:rounded-[34px] overflow-hidden">
+                        <div class="px-4 md:px-6 py-4 border-b border-white/8 flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-[10px] uppercase tracking-[.18em] font-black text-zinc-500">Розподіл</div>
+                                <h2 class="mt-1 text-lg md:text-xl font-black text-white">Хто яку тему обрав</h2>
+                            </div>
+                            <div class="text-[11px] font-bold text-zinc-500">${resultLabel}</div>
+                        </div>
+                        <div class="hidden md:block overflow-x-auto">
+                            <table class="w-full min-w-[780px] border-collapse">
+                                <thead class="bg-black/25 border-b border-white/8">
+                                    <tr class="text-[10px] uppercase tracking-[.16em] font-black text-zinc-500">
+                                        <th class="py-3.5 px-4 md:px-5 text-left w-20">№</th>
+                                        <th class="py-3.5 px-4 md:px-5 text-left w-[22%]">Студент</th>
+                                        <th class="py-3.5 px-4 md:px-5 text-left">Тема курсової роботи</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/6">${rows.length ? rows.map(courseRow).join('') : `
+                                    <tr><td colspan="3" class="py-14 px-6 text-center"><div class="text-sm font-black text-white">Нічого не знайдено</div><div class="text-xs text-zinc-500 mt-1">Спробуйте інше прізвище або номер теми.</div></td></tr>`}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="md:hidden p-3 space-y-2.5">
+                            ${rows.length ? rows.map(mobileCard).join('') : `<div class="py-12 text-center px-5"><div class="text-sm font-black text-white">Нічого не знайдено</div><div class="text-xs text-zinc-500 mt-1">Спробуйте інше прізвище або номер теми.</div></div>`}
+                        </div>
+                    </section>
+                </div>`;
+            renderIconsIn(document.getElementById('main-content'));
+        };
+
         const renderNav = () => {
             const { pri } = getTheme();
             const student = window.appState.selectedStudent;
@@ -2234,7 +2460,8 @@
                 { id: 'dashboard', icon: 'home', label: 'Головна' },
                 { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
                 { id: 'homework', icon: 'check-square', label: 'Д/з' },
-                { id: 'register', icon: 'users', label: 'Група' }
+                { id: 'register', icon: 'users', label: 'Група' },
+                { id: 'coursework', icon: 'graduation-cap', label: 'КР' }
             ];
             if (isPilipenko) navItems.push({ id: 'analytics', icon: 'bar-chart-2', label: 'Аналітика' });
 
@@ -2246,7 +2473,8 @@
                 student?.id || 0,
                 window.appState.unreadHwCount,
                 window.appState.colorTheme,
-                isPilipenko ? 1 : 0
+                isPilipenko ? 1 : 0,
+                window.appState.krFilter
             ].join('|');
 
             if (window.appState.navSignature === signature) return;
@@ -2335,6 +2563,10 @@
                         <button onclick="window.app.setView('register'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 150ms;">
                             <div class="w-12 h-12 rounded-[18px] bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-6 h-6"></i></div>
                             <span class="text-[16px] font-bold text-zinc-900 dark:text-white">Реєстр групи</span>
+                        </button>
+                        <button onclick="window.app.setView('coursework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 200ms;">
+                            <div class="w-12 h-12 rounded-[18px] bg-violet-500/10 text-violet-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="w-6 h-6"></i></div>
+                            <div class="flex flex-col"><span class="text-[16px] font-bold text-zinc-900 dark:text-white">Курсові роботи</span><span class="text-[11px] font-bold text-zinc-500 mt-0.5">Міжнародний бізнес</span></div>
                         </button>
                         ${isPilipenko ? `
                         <button onclick="window.app.setView('analytics'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/10 text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 250ms;">
@@ -3118,7 +3350,7 @@
                     window.appState.unreadHwCount = 0;
                 }
 
-                const order = ['dashboard','schedule','homework','register','analytics','materials','editor'];
+                const order = ['dashboard','schedule','homework','register','coursework','analytics','materials','editor'];
                 const from = Math.max(0, order.indexOf(currentView));
                 const to = Math.max(0, order.indexOf(viewId));
                 const direction = to >= from ? 1 : -1;
@@ -3327,6 +3559,7 @@
                 else if(v === 'materials') renderMaterials();
                 else if(v === 'homework') renderHomework();
                 else if(v === 'register') renderRegister();
+                else if(v === 'coursework') renderCoursework();
                 else if(v === 'editor') renderEditor();
                 else if(v === 'analytics') renderAnalytics();
                 
@@ -3853,6 +4086,24 @@
             setMatFilter: (f) => { window.appState.matFilter = f; window.app.queueRenderActiveView(); },
             setHwFilter: (f) => { window.appState.hwFilter = f; window.app.queueRenderActiveView(); },
             setAnalyticsDate: (dateStr) => { window.appState.analyticsDate = dateStr; window.app.queueRenderActiveView(); },
+
+            setKrFilter: (filter) => {
+                window.appState.krFilter = filter === 'mine' ? 'mine' : 'all';
+                window.app.queueRenderActiveView();
+            },
+
+            filterCoursework: (value) => {
+                window.appState.krSearch = String(value ?? '');
+                window.app.renderActiveView();
+                requestAnimationFrame(() => {
+                    const input = document.getElementById('kr-search');
+                    if (input) {
+                        input.focus();
+                        try { input.setSelectionRange(input.value.length, input.value.length); } catch (e) {}
+                    }
+                });
+            },
+
             filterRegister: (value) => { updateRegisterResults(value); },
 
             openMobileMenu: () => {
