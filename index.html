@@ -1909,13 +1909,41 @@
             return base;
         };
 
+        // Unified relevance check: general for all; electives by student list (aliases);
+        // business foreign language for all; second language only for matching elective.
+        const isPairRelevantForStudent = (p, student) => {
+            if (!p) return false;
+            if (!student) return true;
+            const s = String(p.subj || '').toLowerCase();
+            const electives = (student.electives || []).map(el => String(el).toLowerCase());
+            const hasElective = (needle) => electives.some(el => el === needle || el.includes(needle) || needle.includes(el));
+
+            if (p.type === 'general') return true;
+
+            if (p.type === 'lang') {
+                if (s.includes('ділова')) return true;
+                if (s.includes('нім') || s.includes('німецьк')) return hasElective('німецька');
+                if (s.includes('іспан')) return hasElective('іспанська');
+                if (s.includes('франц')) return hasElective('французька');
+                if (s.includes('китай')) return hasElective('китайська');
+                if (s.includes('польськ')) return hasElective('польська');
+                if (s.includes('друга')) return false;
+                return true;
+            }
+
+            if (s.includes('міжнародна торгівля')) return hasElective('міжнародна торгівля');
+            if (s.includes('світовий фінансовий') || s.includes('світовий фондовий')) return hasElective('світовий фінансовий');
+            if (s.includes('бренд менеджмент') || s.includes('бренд-менеджмент')) return hasElective('бренд менеджмент');
+
+            return electives.some(el => el && s.includes(el));
+        };
+
         const getSchedulePairsForStudent = (weekNum, isPersonal) => {
             const w = weeksConfig.find(x => x.n === Number(weekNum));
             if (!w) return [];
             let pairs = getMergedSchedule(w.t, w.n).flatMap(d => d.pairs.map(p => ({...p, day: d.day})));
             if (isPersonal && window.appState.selectedStudent) {
-                const electives = window.appState.selectedStudent.electives || [];
-                pairs = pairs.filter(p => p.type === 'general' || p.type === 'lang' || electives.some(el => { const s = p.subj.toLowerCase(); const e = String(el).toLowerCase(); return s.includes(e) || ((s.includes('світовий фондовий ринок') || s.includes('світовий фінансовий ринок')) && e.includes('світовий фінансовий ринок')); }));
+                pairs = pairs.filter(p => isPairRelevantForStudent(p, window.appState.selectedStudent));
             }
             return pairs;
         };
@@ -2591,7 +2619,7 @@
             const dayNames = ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'];
             const todayDay = dayNames[now.getDay()];
             const todayObj = getMergedSchedule(currentWeek.t, currentWeek.n).find(d => d.day === todayDay);
-            const personalToday = (todayObj?.pairs || []).filter(p => p.type === 'general' || p.type === 'lang' || (user.electives || []).some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+            const personalToday = (todayObj?.pairs || []).filter(p => isPairRelevantForStudent(p, user));
             const nextWeek = getRecommendedWeek(true);
             const isNextWeek = nextWeek.n !== currentWeek.n;
             const firstName = getDisplayFirstName(user);
@@ -2715,7 +2743,7 @@
                 scheduleList.forEach((day, dayIdx) => {
                     let pairsToRender = day.pairs;
                     if (isPersonal) {
-                        pairsToRender = pairsToRender.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                        pairsToRender = pairsToRender.filter(p => isPairRelevantForStudent(p, user));
                     }
                     if (pairsToRender.length === 0) return;
 
@@ -2813,6 +2841,9 @@
             }
 
             html += `</div>`;
+            // Preserve scroll when Firebase/state re-renders schedule after we already jumped to the active pair.
+            const preserveScroll = !window.appState.shouldScrollToPair;
+            const savedScrollY = preserveScroll ? window.scrollY : 0;
             document.getElementById('main-content').innerHTML = html;
             
             if (window.appState.shouldScrollToPair) {
@@ -2820,6 +2851,8 @@
                     window.app.scrollToActivePair(scheduleList, isPersonal);
                     window.appState.shouldScrollToPair = false;
                 }, 300);
+            } else if (preserveScroll && savedScrollY > 0) {
+                window.scrollTo({ top: savedScrollY, behavior: 'auto' });
             }
 
             lucide.createIcons({ root: document.getElementById('main-content') });
@@ -3474,7 +3507,7 @@
 
                 let todayPairs = scheduleList.find(d => d.day === todayStr)?.pairs || [];
                 if (isPersonal) {
-                    todayPairs = todayPairs.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                    todayPairs = todayPairs.filter(p => isPairRelevantForStudent(p, user));
                 }
 
                 if (todayPairs.length > 0) {
@@ -3500,7 +3533,7 @@
                         const nextDay = sortedDays[0];
                         let nextPairs = nextDay.pairs;
                         if (isPersonal) {
-                            nextPairs = nextPairs.filter(p => ['general', 'lang'].includes(p.type) || user.electives.some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                            nextPairs = nextPairs.filter(p => isPairRelevantForStudent(p, user));
                         }
                         
                         if (nextPairs.length > 0) {
@@ -4046,7 +4079,7 @@
                 const week = getClosestMainWeek();
                 let pairs = getMergedSchedule(week.t, week.n).flatMap(d => d.pairs.map(p => ({...p, day:d.day})));
                 const user = window.appState.selectedStudent;
-                pairs = pairs.filter(p => p.type === 'general' || p.type === 'lang' || (user?.electives || []).some(el => p.subj.toLowerCase().includes(el.toLowerCase())));
+                pairs = pairs.filter(p => isPairRelevantForStudent(p, user));
                 const todayPairs = pairs.filter(p => p.day === curDay).sort((a,b) => a.num-b.num);
                 let cur = todayPairs.find(p => currentTime >= p.time.split('-')[0] && currentTime <= p.time.split('-')[1]);
                 let nxt = todayPairs.find(p => currentTime < p.time.split('-')[0]);
