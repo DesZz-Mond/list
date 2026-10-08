@@ -1567,6 +1567,16 @@
             { start: "17:30", end: "18:45" }, { start: "19:00", end: "20:15" }
         ];
 
+        // Друга іноземна (п'ятниця, 3-4 пари): запис для кожної мови, у «Моєму розкладі» студент бачить свою (за списком студентів).
+        const secondLangVariants = [
+            { key: 'de', lang: 'німецька', label: 'нім мова' },
+            { key: 'es', lang: 'іспанська', label: 'іспанська мова' },
+            { key: 'fr', lang: 'французька', label: 'французька мова' },
+            { key: 'zh', lang: 'китайська', label: 'китайська мова' }
+        ];
+        const fridaySecondLang = [{ num: 3, time: "11:30-12:45" }, { num: 4, time: "13:00-14:15" }].flatMap(slot =>
+            secondLangVariants.map(v => ({ num: slot.num, time: slot.time, subj: `Друга іноз мова (${v.label}) В п`, type: "lang", secondLang: v.lang, lang2Key: v.key })));
+
         const mainScheduleData = {
             // Тиждень 1 (Верхній) та тиждень 2 (Нижній): ТІЛЬКИ начитка лекцій.
             // Ділова іноземна має окремі групи та окремі слоти.
@@ -1593,8 +1603,7 @@
                     { num: 7, time: "17:30-18:45", subj: "Бренд менеджмент В Л", type: "elective" }
                 ]},
                 { day: "П'ятниця", pairs: [
-                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang" },
-                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang" }
+                    ...fridaySecondLang
                 ]}
             ],
             lower: [
@@ -1622,8 +1631,7 @@
                     { num: 5, time: "14:30-15:45", subj: "Міжнародний маркетинг Л", type: "general" }
                 ]},
                 { day: "П'ятниця", pairs: [
-                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang" },
-                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang" }
+                    ...fridaySecondLang
                 ]}
             ]
         };
@@ -1655,8 +1663,7 @@
                     { num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
                 ]},
                 { day: "П'ятниця", pairs: [
-                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang" },
-                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang" }
+                    ...fridaySecondLang
                 ]}
             ],
             lower: [
@@ -1682,8 +1689,7 @@
                     { num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
                 ]},
                 { day: "П'ятниця", pairs: [
-                    { num: 3, time: "11:30-12:45", subj: "Друга іноз мова (нім мова) В п", type: "lang" },
-                    { num: 4, time: "13:00-14:15", subj: "Друга іноз мова (нім мова) В п", type: "lang" }
+                    ...fridaySecondLang
                 ]}
             ]
         };
@@ -1925,6 +1931,7 @@
             const hasElective = (needle) => electives.some(el => el === needle || el.includes(needle) || needle.includes(el));
 
             if (p.langGroup) return student.englishGroup === p.langGroup;
+            if (p.secondLang) return hasElective(p.secondLang);
             if (p.type === 'general') return true;
 
             if (p.type === 'lang') {
@@ -1934,12 +1941,12 @@
                 if (s.includes('франц')) return hasElective('французька');
                 if (s.includes('китай')) return hasElective('китайська');
                 if (s.includes('польськ')) return hasElective('польська');
-                if (s.includes('друга')) return false;
+                if (s.includes('друга')) return ['німецька','іспанська','французька','китайська','польська'].some(l => hasElective(l));
                 return true;
             }
 
             if (s.includes('міжнародна торгівля')) return hasElective('міжнародна торгівля');
-            if (s.includes('світовий фінансовий') || s.includes('світовий фондовий')) return hasElective('світовий фінансовий');
+            if (s.includes('світовий фінансовий') || s.includes('світовий фондовий')) return hasElective('світовий фондовий') || hasElective('світовий фінансовий');
             if (s.includes('бренд менеджмент') || s.includes('бренд-менеджмент')) return hasElective('бренд менеджмент');
 
             return electives.some(el => el && s.includes(el));
@@ -1975,6 +1982,12 @@
                 }
             }
             return current;
+        };
+
+        const getWeekNumForType = (type, isPersonal) => {
+            const base = getRecommendedWeek(isPersonal);
+            const sameType = weeksConfig.filter(w => w.t === type);
+            return (sameType.find(w => w.n >= base.n) || sameType[sameType.length - 1]).n;
         };
 
         const applyAutomaticWeekSelection = () => {
@@ -2031,6 +2044,10 @@
                 return Boolean(hwGroup) && student.englishGroup === hwGroup;
             }
 
+            if (sSubj.includes('друга іноз')) {
+                const l2 = [['нім','німецька'],['іспан','іспанська'],['франц','французька'],['китай','китайська'],['польськ','польська']].find(([k]) => sSubj.includes(k));
+                return l2 ? electives.includes(l2[1]) : electives.some(el => ['німецька','польська','французька','китайська','іспанська'].includes(el));
+            }
             if (sSubj.includes('начитка')) return true;
             if (sSubj.includes('language_pair')) return electives.some(el => ['німецька','польська','французька','китайська','іспанська'].includes(el));
             if (sSubj.includes('іноземна') && sSubj.includes('нім')) return electives.includes('німецька');
@@ -2351,29 +2368,32 @@
         };
 
 
-        // Курсові роботи з дисципліни «Міжнародний бізнес».
-        const internationalBusinessCoursework = [
-            { no: 1, title: "Winning Leadership в управлінні створенням цінності в міжнародному бізнесі", student: "Гордієнко" },
-            { no: 2, title: "Принцип Clarity у формуванні стратегій для міжнародної конкуренції", student: "Троцька" },
-            { no: 3, title: "Принцип Alignment у формуванні організаційного дизайну в управлінні міжнародним бізнесом", student: "Кохан" },
-            { no: 4, title: "Принцип Intensity для ефективного управління зростанням компанії у міжнародному бізнесі", student: "Колодій" },
-            { no: 5, title: "Принцип Co-Creation для ефективного управління зростанням компанії у міжнародному бізнесі", student: "Чупріна" },
-            { no: 6, title: "Принцип Learning для управління успіхом в міжнародному бізнесі", student: "Кисленко" },
-            { no: 7, title: "Лідерські компетенції управління створенням цінності у міжнародному бізнесі", student: "Петричка" },
-            { no: 8, title: "Матриця цінності та умови збереження позиції міжнародної компанії у статусі «Переможець»", student: "Солярик" },
-            { no: 9, title: "Модель BFMD для ефективного управління створенням цінності у міжнародній компанії", student: "Мартин" },
-            { no: 10, title: "Управління зростанням на основі можливостей (OGM) для міжнародної компанії", student: "Степаненко" },
-            { no: 11, title: "Стратегічна опціональність для сучасної міжнародної компанії", student: "Могилянська" },
-            { no: 12, title: "Логіка SVEO для забезпечення ефективного порядку денного міжнародної компанії", student: "—" },
-            { no: 13, title: "DIRS-метод для управління ростом у міжнародних компаніях", student: "Гуменюк" },
-            { no: 14, title: "Цифрові платформи у міжнародному бізнесі", student: "Пилипенко" },
-            { no: 15, title: "Корпоративна культура як джерело конкурентної переваги у міжнародному бізнесі", student: "Великоконь" },
-            { no: 16, title: "Переможна (Winner) бізнес-модель і умови її утримання у міжнародній компанії", student: "Шелепа" },
-            { no: 17, title: "Каталізатори професійного росту менеджерів у міжнародних компаніях", student: "Клічук" },
-            { no: 18, title: "Лідерство як створення нових лідерів у розвитку міжнародних компаній", student: "Масяєв" },
-            { no: 19, title: "Управління монетизацією і драйвери прибутковості міжнародних компаній", student: "—" },
-            { no: 20, title: "Корпоративне управління для захисту створення цінності у міжнародних компаніях", student: "Май" }
-        ];
+        // Курсові роботи (МБ-302): теми й компанії з файлу «теми КР». Рядки йдуть за списком студентів, а не за номерами тем.
+        // Студенти без запису (Бєльтюкова, Гіткіс) поки не мають теми.
+        const courseworkByStudentId = {
+            2: { no: 8, title: "Матриця цінності та умови збереження позиції міжнародної компанії у статусі «Переможець»", company: "МХП" }, // Великоконь
+            5: { no: 1, title: "Winning Leadership в управлінні створенням цінності в міжнародному бізнесі", pending: true }, // Гордієнко
+            6: { no: 13, title: "DIRS-метод для управління ростом у міжнародних компаніях", pending: true }, // Гуменюк
+            7: { title: "Управління якістю", company: "Apple" }, // Жидченко
+            8: { no: 19, title: "Управління монетизацією і драйвери прибутковості міжнародних компаній", pending: true }, // Кельвич
+            9: { no: 6, title: "Принцип Learning для управління успіхом в міжнародному бізнесі", company: "SoftServe" }, // Кисленко
+            10: { no: 17, title: "Каталізатори професійного росту менеджерів у міжнародних компаніях", company: "Нова пошта" }, // Клічук
+            11: { no: 4, title: "Принцип Intensity для ефективного управління зростанням компанії у міжнародному бізнесі", company: "Coca Cola" }, // Колодій
+            12: { no: 3, title: "Принцип Alignment у формуванні організаційного дизайну в управлінні міжнародним бізнесом", company: "MD Fashion (напрям Tommy Hilfiger)" }, // Кохан
+            13: { title: "Інноваційна діяльність", company: "Meta" }, // Май
+            14: { no: 9, title: "Модель BFMD для ефективного управління створенням цінності у міжнародній компанії", company: "Tesla" }, // Мартин
+            15: { title: "Корпоративна культура", company: "Netflix" }, // Масяєв
+            16: { no: 14, title: "Цифрові платформи у міжнародному бізнесі", company: "UPC" }, // Могилянська
+            17: { title: "Маркетинговий менеджмент", company: "Netflix" }, // Мурін
+            18: { no: 7, title: "Лідерські компетенції управління створенням цінності у міжнародному бізнесі", company: "IKEA" }, // Петричка
+            19: { no: 14, title: "Цифрові платформи у міжнародному бізнесі", company: "GSC Game World" }, // Пилипенко
+            21: { title: "Фінансовий менеджмент", company: "The Procter & Gamble Company" }, // Солярик
+            22: { no: 10, title: "Управління зростанням на основі можливостей (OGM) для міжнародної компанії", company: "Revolut" }, // Степаненко
+            23: { no: 2, title: "Принцип Clarity у формуванні стратегій для міжнародної конкуренції", company: "Nike" }, // Троцька
+            24: { title: "Управління якістю", company: "Netflix" }, // Устименко
+            25: { no: 5, title: "Принцип Co-Creation для ефективного управління зростанням компанії у міжнародному бізнесі", company: "Netflix" }, // Чуприна
+            26: { no: 16, title: "Переможна (Winner) бізнес-модель і умови її утримання у міжнародній компанії", company: "КиївХліб" }, // Шелепа
+        };
 
         const normalizeKrSearch = (value) => String(value || '')
             .toLocaleLowerCase('uk-UA')
@@ -2381,71 +2401,72 @@
             .replace(/[\u0300-\u036f]/g, '')
             .trim();
 
-        const getKrStudentRecord = (surname) => {
-            const key = normalizeKrSearch(surname);
-            return students.find(s => {
-                const first = normalizeKrSearch(String(s.fullName || s.name || '').split(/\s+/)[0]);
-                return first === key;
-            }) || null;
-        };
+        const krEsc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const krSurname = (st) => String(st.fullName || st.name || '').split(/\s+/)[0];
 
         const renderCoursework = () => {
             const { pri } = getTheme();
             const user = window.appState.selectedStudent;
             const search = normalizeKrSearch(window.appState.krSearch);
             const filter = window.appState.krFilter || 'all';
-            const currentSurname = normalizeKrSearch(user?.fullName || user?.name || '').split(/\s+/)[0];
 
-            const rows = internationalBusinessCoursework.filter(item => {
-                const haystack = normalizeKrSearch(`${item.no} ${item.title} ${item.student}`);
-                const isMine = currentSurname && normalizeKrSearch(item.student) === currentSurname;
-                return (!search || haystack.includes(search)) && (filter !== 'mine' || isMine);
+            // Рядки йдуть за списком студентів, а не за номерами тем.
+            const allRows = students.map((st, i) => ({ n: i + 1, st, ...(courseworkByStudentId[st.id] || {}) }));
+            const isMineRow = (item) => Boolean(user && item.st.id === user.id);
+            const rows = allRows.filter(item => {
+                const haystack = normalizeKrSearch(`${item.st.fullName} ${item.no ? 'тема ' + item.no : ''} ${item.title || ''} ${item.company || ''}`);
+                return (!search || haystack.includes(search)) && (filter !== 'mine' || isMineRow(item));
             });
+            const assignedCount = allRows.filter(item => item.title).length;
+
+            const topicHtml = (item, cls) => item.title
+                ? `<div class="${cls}">${item.no ? `<span class="block mb-1 text-[10px] font-black uppercase tracking-[.16em] text-${pri}-400/80">Тема ${item.no}</span>` : ''}${krEsc(item.title)}</div>`
+                : `<div class="${cls} !text-zinc-500">Тему ще не обрано</div>`;
+            const companyHtml = (item) => item.pending
+                ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide bg-amber-500/10 text-amber-400 border border-amber-500/20">Очікує на консультацію</span>`
+                : (item.company ? `<span class="text-[12px] md:text-[13px] font-bold text-zinc-300">${krEsc(item.company)}</span>` : `<span class="text-zinc-600">—</span>`);
 
             const courseRow = (item) => {
-                const isMine = item.student !== '—' && currentSurname && normalizeKrSearch(item.student) === currentSurname;
-                const isUnassigned = item.student === '—';
-                const record = getKrStudentRecord(item.student);
-                const initials = isUnassigned ? '—' : String(item.student || '').slice(0, 2).toUpperCase();
+                const isMine = isMineRow(item);
                 return `
                     <tr class="${isMine ? 'kr-row-mine' : ''}">
-                        <td class="py-4 px-4 md:px-5 align-top"><span class="kr-topic-number ${isMine ? 'kr-topic-number-mine' : ''}">${item.no}</span></td>
+                        <td class="py-4 px-4 md:px-5 align-top"><span class="kr-topic-number ${isMine ? 'kr-topic-number-mine' : ''}">${item.n}</span></td>
                         <td class="py-4 px-4 md:px-5 align-top">
                             <div class="flex items-start gap-3.5">
-                                <div class="kr-student-avatar ${isMine ? 'kr-student-avatar-mine' : ''}">${initials}</div>
+                                <div class="kr-student-avatar ${isMine ? 'kr-student-avatar-mine' : ''}">${krEsc(krSurname(item.st).slice(0, 2).toUpperCase())}</div>
                                 <div class="min-w-0">
-                                    <div class="font-black text-[13px] md:text-[14px] leading-tight ${isUnassigned ? 'text-zinc-500' : 'text-white'}">${isUnassigned ? 'Не обрана' : item.student}${isMine ? `<span class="ml-2 kr-mine-pill">Ваша тема</span>` : ''}</div>
-                                    ${record?.fullName ? `<div class="mt-1 text-[10px] md:text-[11px] text-zinc-500 font-semibold">${record.fullName}</div>` : (isUnassigned ? `<div class="mt-1 text-[10px] text-zinc-600 font-semibold">Тема поки вільна</div>` : '')}
+                                    <div class="font-black text-[13px] md:text-[14px] leading-tight text-white">${krEsc(krSurname(item.st))}${isMine ? `<span class="ml-2 kr-mine-pill">${item.title ? 'Ваша тема' : 'Це ви'}</span>` : ''}</div>
+                                    <div class="mt-1 text-[10px] md:text-[11px] text-zinc-500 font-semibold">${krEsc(item.st.fullName)}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="py-4 px-4 md:px-5 align-top"><div class="kr-topic-title">${item.title}</div></td>
+                        <td class="py-4 px-4 md:px-5 align-top">${topicHtml(item, 'kr-topic-title')}</td>
+                        <td class="py-4 px-4 md:px-5 align-top">${companyHtml(item)}</td>
                     </tr>`;
             };
 
             const mobileCard = (item) => {
-                const isMine = item.student !== '—' && currentSurname && normalizeKrSearch(item.student) === currentSurname;
-                const isUnassigned = item.student === '—';
-                const record = getKrStudentRecord(item.student);
+                const isMine = isMineRow(item);
                 return `
                     <article class="kr-mobile-card ${isMine ? 'kr-card-mine' : ''}">
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-start gap-3 min-w-0">
-                                <div class="kr-topic-number ${isMine ? 'kr-topic-number-mine' : ''}">${item.no}</div>
+                                <div class="kr-topic-number ${isMine ? 'kr-topic-number-mine' : ''}">${item.n}</div>
                                 <div class="min-w-0">
-                                    <div class="font-black text-[13px] leading-tight ${isUnassigned ? 'text-zinc-500' : 'text-white'}">${isUnassigned ? 'Не обрана' : item.student}</div>
-                                    ${record?.fullName ? `<div class="mt-1 text-[9px] text-zinc-500 font-semibold">${record.fullName}</div>` : (isUnassigned ? `<div class="mt-1 text-[9px] text-zinc-600 font-semibold">Тема поки вільна</div>` : '')}
+                                    <div class="font-black text-[13px] leading-tight text-white">${krEsc(krSurname(item.st))}</div>
+                                    <div class="mt-1 text-[9px] text-zinc-500 font-semibold">${krEsc(item.st.fullName)}</div>
                                 </div>
                             </div>
-                            ${isMine ? `<span class="kr-mine-pill shrink-0">Ваша</span>` : ''}
+                            ${isMine ? `<span class="kr-mine-pill shrink-0">${item.title ? 'Ваша' : 'Це ви'}</span>` : ''}
                         </div>
-                        <div class="kr-mobile-topic">${item.title}</div>
+                        ${topicHtml(item, 'kr-mobile-topic')}
+                        ${item.title ? `<div class="mt-2.5">${companyHtml(item)}</div>` : ''}
                     </article>`;
             };
 
-            const resultLabel = rows.length === internationalBusinessCoursework.length
-                ? 'Усі 20 тем'
-                : `Знайдено ${rows.length} ${rows.length === 1 ? 'тему' : 'теми'}`;
+            const resultLabel = rows.length === allRows.length
+                ? `Усі ${allRows.length} студентів`
+                : `Знайдено ${rows.length}`;
 
             const searchValue = String(window.appState.krSearch || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
             document.getElementById('main-content').innerHTML = `
@@ -2458,17 +2479,17 @@
                                 <div class="min-w-0">
                                     <div class="text-[10px] md:text-[11px] font-black uppercase tracking-[.2em] text-${pri}-400/80 mb-2">Міжнародний бізнес • КР</div>
                                     <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">Курсові роботи</h1>
-                                    <p class="text-xs md:text-sm text-zinc-500 font-semibold mt-2 max-w-3xl leading-relaxed">Єдиний список тем і розподіл між студентами. Тут швидко можна знайти свою тему, перевірити розподіл і відкрити методичку.</p>
+                                    <p class="text-xs md:text-sm text-zinc-500 font-semibold mt-2 max-w-3xl leading-relaxed">Єдиний список студентів, їхніх тем і компаній для курсових. Тут швидко можна знайти свою тему, перевірити розподіл і відкрити методичку.</p>
                                 </div>
                                 <div class="flex gap-2 shrink-0">
-                                    <div class="kr-stat"><strong>20</strong><span>тем</span></div>
-                                    <div class="kr-stat"><strong>20</strong><span>позицій</span></div>
+                                    <div class="kr-stat"><strong>${students.length}</strong><span>студентів</span></div>
+                                    <div class="kr-stat"><strong>${assignedCount}</strong><span>з темою</span></div>
                                 </div>
                             </div>
                             <div class="mt-5 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-3">
                                 <label class="kr-search-wrap">
                                     <i data-lucide="search" class="w-4 h-4 shrink-0 text-zinc-500"></i>
-                                    <input id="kr-search" value="${searchValue}" type="search" inputmode="search" autocomplete="off" placeholder="Пошук за прізвищем, номером або назвою теми..." oninput="window.app.filterCoursework(this.value)">
+                                    <input id="kr-search" value="${searchValue}" type="search" inputmode="search" autocomplete="off" placeholder="Пошук за прізвищем, темою або компанією..." oninput="window.app.filterCoursework(this.value)">
                                     <button type="button" class="kr-clear ${window.appState.krSearch ? '' : 'hidden'}" onclick="window.app.filterCoursework('')" aria-label="Очистити пошук"><i data-lucide="x" class="w-4 h-4"></i></button>
                                 </label>
                                 <div class="flex gap-2">
@@ -2514,15 +2535,16 @@
                                         <th class="py-3.5 px-4 md:px-5 text-left w-20">№</th>
                                         <th class="py-3.5 px-4 md:px-5 text-left w-[22%]">Студент</th>
                                         <th class="py-3.5 px-4 md:px-5 text-left">Тема курсової роботи</th>
+                                        <th class="py-3.5 px-4 md:px-5 text-left w-[24%]">Компанія</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-white/6">${rows.length ? rows.map(courseRow).join('') : `
-                                    <tr><td colspan="3" class="py-14 px-6 text-center"><div class="text-sm font-black text-white">Нічого не знайдено</div><div class="text-xs text-zinc-500 mt-1">Спробуйте інше прізвище або номер теми.</div></td></tr>`}
+                                    <tr><td colspan="4" class="py-14 px-6 text-center"><div class="text-sm font-black text-white">Нічого не знайдено</div><div class="text-xs text-zinc-500 mt-1">Спробуйте інше прізвище, тему або компанію.</div></td></tr>`}
                                 </tbody>
                             </table>
                         </div>
                         <div class="md:hidden p-3 space-y-2.5">
-                            ${rows.length ? rows.map(mobileCard).join('') : `<div class="py-12 text-center px-5"><div class="text-sm font-black text-white">Нічого не знайдено</div><div class="text-xs text-zinc-500 mt-1">Спробуйте інше прізвище або номер теми.</div></div>`}
+                            ${rows.length ? rows.map(mobileCard).join('') : `<div class="py-12 text-center px-5"><div class="text-sm font-black text-white">Нічого не знайдено</div><div class="text-xs text-zinc-500 mt-1">Спробуйте інше прізвище, тему або компанію.</div></div>`}
                         </div>
                     </section>
                 </div>`;
@@ -2714,7 +2736,7 @@
 
         const getPairDomId = (dayName, pair) => {
             const base = `pair-${dayOffsets[dayName]}-${pair.num}`;
-            const group = pair?.langGroup ? String(pair.langGroup).replace(/[^a-z0-9_-]/gi, '-') : '';
+            const group = pair?.langGroup ? String(pair.langGroup).replace(/[^a-z0-9_-]/gi, '-') : (pair?.lang2Key || '');
             return group ? `${base}-${group}` : base;
         };
 
@@ -2732,9 +2754,9 @@
             
             const setWeekFn = isPersonal ? 'window.app.setPersWeek' : 'window.app.setMainWeek';
 
-            const isUpper = activeWeekType === 'upper' && !activeWeekNum;
-            const isLower = activeWeekType === 'lower' && !activeWeekNum;
-            const pillOpacity = (!activeWeekNum) ? '1' : '0';
+            const isUpper = activeWeekType === 'upper';
+            const isLower = activeWeekType === 'lower';
+            const pillOpacity = '1';
             const pillTranslate = isUpper ? '0' : (isLower ? '100%' : '-100%');
 
             let html = `
@@ -2752,8 +2774,8 @@
                         <div class="flex w-full sm:w-64 glass-card p-1.5 rounded-[16px] md:rounded-[20px] relative overflow-hidden z-10 shadow-inner mt-2 sm:mt-0">
                             <div class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-6px)] bg-white dark:bg-zinc-800 rounded-[12px] md:rounded-[14px] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-0" style="transform: translateX(${pillTranslate}); opacity: ${pillOpacity};"></div>
                             
-                            <button onclick="${setWeekFn}('upper', ${(() => { const w = weeksConfig.find(x => x.t === 'upper' && x.n <= (activeWeekNum || 14)); return (w || weeksConfig.find(x => x.t === 'upper')).n; })()})" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isUpper ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Верхній</button>
-                            <button onclick="${setWeekFn}('lower', ${(() => { const w = weeksConfig.find(x => x.t === 'lower' && x.n <= (activeWeekNum || 14)); return (w || weeksConfig.find(x => x.t === 'lower')).n; })()})" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isLower ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Нижній</button>
+                            <button onclick="${setWeekFn}('upper', ${getWeekNumForType('upper', isPersonal)})" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isUpper ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Верхній</button>
+                            <button onclick="${setWeekFn}('lower', ${getWeekNumForType('lower', isPersonal)})" class="relative z-10 flex-1 px-4 py-2.5 md:py-3 rounded-[12px] md:rounded-[14px] text-xs font-bold uppercase tracking-wide transition-colors duration-300 ${isLower ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400'}">Нижній</button>
                         </div>
                     </div>
 
