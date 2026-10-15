@@ -1660,7 +1660,7 @@
                     { num: 4, time: "13:00-14:15", subj: "Ділова іноземна (Мельник)", type: "lang", langGroup: "melnyk-chirik", onlineUrl: "https://us02web.zoom.us/j/86899540509?pwd=3tJ37G0HpLvwsq9DcE3CtoZde84Xek.1" },
                     { num: 4, time: "13:00-14:15", subj: "Ділова іноземна (Маркова)", type: "lang", langGroup: "markova-shmatok", onlineUrl: "https://us04web.zoom.us/j/74588707903?pwd=wxCZgVlOau4GZVnhF0dKyCh9Q8z1rh.1" },
                     { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В п", type: "elective", teacher: "доц. Шевченко О.Л" },
-                    { num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
+                    { num: 6, time: "16:00-17:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
                 ]},
                 { day: "П'ятниця", pairs: [
                     ...fridaySecondLang
@@ -1686,7 +1686,7 @@
                     { num: 4, time: "13:00-14:15", subj: "Ділова іноземна (Мельник)", type: "lang", langGroup: "melnyk-chirik", onlineUrl: "https://us02web.zoom.us/j/86899540509?pwd=3tJ37G0HpLvwsq9DcE3CtoZde84Xek.1" },
                     { num: 4, time: "13:00-14:15", subj: "Ділова іноземна (Маркова)", type: "lang", langGroup: "markova-shmatok", onlineUrl: "https://us04web.zoom.us/j/74588707903?pwd=wxCZgVlOau4GZVnhF0dKyCh9Q8z1rh.1" },
                     { num: 5, time: "14:30-15:45", subj: "Бренд менеджмент В п", type: "elective", teacher: "доц. Шевченко О.Л" },
-                    { num: 2, time: "10:00-11:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
+                    { num: 6, time: "16:00-17:15", subj: "Міжнародна торгівля В п", type: "elective", teacher: "доц. Іринчина І.Б" }
                 ]},
                 { day: "П'ятниця", pairs: [
                     ...fridaySecondLang
@@ -2697,7 +2697,7 @@
             const weekLabel = `${currentWeek.n} тиждень • ${currentWeek.t === 'upper' ? 'верхній' : 'нижній'}`;
 
             const pairRows = personalToday.map((p,i) => {
-                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url || window.appState.locationsData?.[p.subj]?.url || getZoomLink(p.subj) || null;
+                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url || window.appState.locationsData?.[p.subj]?.url || p.onlineUrl || getZoomLink(p.subj) || null;
                 return `<div class="flex items-center gap-3 p-3.5 md:p-4 rounded-[20px] border ${i === 0 ? `border-${pri}-500/20 bg-${pri}-500/[.05]` : 'border-white/5 bg-white/[.025]'}">
                     <div class="w-9 h-9 rounded-[12px] bg-white/[.06] flex items-center justify-center text-xs font-black text-zinc-300">${p.num}</div>
                     <div class="min-w-0 flex-1"><div class="text-[13px] md:text-[14px] font-black text-white truncate">${p.subj.replace(' (Начитка)','')}</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${p.time}${(p.teacher || getTeacher(p.subj)) ? ` • ${p.teacher || getTeacher(p.subj)}` : ''}</div></div>
@@ -4176,9 +4176,9 @@
                     const start = new Date(now); start.setHours(sh,sm,0,0);
                     const end = new Date(now); end.setHours(eh,em,0,0);
                     const progress = Math.min(100, Math.max(0, ((Date.now()-start.getTime())/(end.getTime()-start.getTime()))*100));
-                    status = {label:'Зараз триває', title:`${cur.num} пара`, subtitle:cur.subj.replace(' (Начитка)',''), progress, isLive:true, zoom:getZoomLink(cur.subj) || null};
+                    status = {label:'Зараз триває', title:`${cur.num} пара`, subtitle:cur.subj.replace(' (Начитка)',''), progress, isLive:true, zoom:cur.onlineUrl || getZoomLink(cur.subj) || null};
                 } else if (nxt) {
-                    status = {label:nxt.day === curDay ? 'Наступна пара' : `Далі • ${nxt.day}`, title:`${nxt.num} пара • ${nxt.time.split('-')[0]}`, subtitle:nxt.subj.replace(' (Начитка)',''), progress:0, isLive:false, zoom:getZoomLink(nxt.subj) || null};
+                    status = {label:nxt.day === curDay ? 'Наступна пара' : `Далі • ${nxt.day}`, title:`${nxt.num} пара • ${nxt.time.split('-')[0]}`, subtitle:nxt.subj.replace(' (Начитка)',''), progress:0, isLive:false, zoom:nxt.onlineUrl || getZoomLink(nxt.subj) || null};
                 } else {
                     const rw = getRecommendedWeek(true);
                     status = {label:'Пари завершено', title:rw.n !== week.n ? `Далі — ${rw.n} тиждень` : 'На сьогодні все', subtitle:rw.n !== week.n ? 'Наступні пари почнуться з понеділка.' : 'Можна відпочити ☕', progress:100, isLive:false};
