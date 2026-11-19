@@ -353,7 +353,6 @@
         .dark .bg-white\/60, .dark .bg-white\/70, .dark .bg-white\/80, .dark .bg-white\/90 {
             background-color: rgba(12,12,16,.56) !important;
         }
-        .compact-live-widget { min-height: 0 !important; }
         @media (max-width: 767px) {
             #app { transform: none !important; }
             .portal-bg-layer {
@@ -370,10 +369,17 @@
             #main-content { padding-left: clamp(1rem,2vw,2rem) !important; padding-right: clamp(1rem,2vw,2rem) !important; }
         }
         @media (max-width: 767px) {
-            #mobile-nav { gap: .15rem; }
-            #mobile-nav > button { min-width: 0; }
+            #mobile-nav {
+                gap: .1rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            #mobile-nav > button {
+                min-width: 52px;
+                flex: 1 1 0;
+            }
             #mobile-nav .lucide { flex: 0 0 auto; }
-            #mobile-nav span { line-height: 1; }
+            #mobile-nav span { line-height: 1.05; }
         }
         .schedule-day-grid {
             align-items: stretch;
@@ -529,55 +535,6 @@
             background:
                 radial-gradient(circle at 50% 10%, rgba(255,255,255,.10), transparent 28%),
                 linear-gradient(145deg, #171717, #080808 62%);
-        }
-        .compact-live-widget {
-            min-height: 0 !important;
-            height: auto !important;
-        }
-        .compact-live-widget .live-widget-inner {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .compact-live-widget .live-widget-copy {
-            min-width: 0;
-            flex: 1;
-        }
-        .compact-live-widget .live-widget-title {
-            font-size: clamp(1.35rem, 2.4vw, 2.15rem) !important;
-            line-height: 1.05 !important;
-            margin-bottom: .4rem !important;
-        }
-        .compact-live-widget .live-widget-subtitle {
-            font-size: clamp(.78rem, 1vw, .95rem) !important;
-            line-height: 1.35 !important;
-        }
-        .compact-live-widget .live-widget-progress {
-            flex: 0 0 auto;
-        }
-        .deadline-card {
-            transition:
-                transform .25s cubic-bezier(.2,.75,.2,1),
-                box-shadow .25s ease,
-                border-color .25s ease;
-        }
-        .deadline-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 18px 42px rgba(15,23,42,.10);
-        }
-        .dark .deadline-card:hover {
-            box-shadow: 0 20px 48px rgba(0,0,0,.32);
-        }
-        @media (max-width: 767px) {
-            .compact-live-widget {
-                border-radius: 26px !important;
-            }
-            .compact-live-widget .live-widget-inner {
-                gap: .75rem;
-            }
-            .compact-live-widget .live-widget-title {
-                font-size: 1.35rem !important;
-            }
         }
         body.premium-bg-aurora,
         body.premium-bg-sunset,
@@ -1130,8 +1087,7 @@
             /* Long lists paint only when approaching the viewport. */
             #auth-list,
             #main-content .schedule-day-card,
-            #main-content .student-mobile-card,
-            #main-content .deadline-card {
+            #main-content .student-mobile-card {
                 content-visibility: auto;
                 contain-intrinsic-size: 1px 160px;
             }
@@ -1234,8 +1190,7 @@
             }
 
             /* Mobile interactions: transform only, avoid filter-heavy hover effects. */
-            .glass-card:hover,
-            .deadline-card:hover { transform: none !important; }
+            .glass-card:hover { transform: none !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1333,7 +1288,6 @@
                 /* Let the browser skip offscreen work in long lists. */
                 #main-content .schedule-pair-card,
                 #main-content .student-mobile-card,
-                #main-content .deadline-card,
                 #auth-list > * {
                     content-visibility: auto;
                     contain-intrinsic-size: 1px 110px;
@@ -1433,7 +1387,7 @@
         </main>
 
         <div id="mobile-dock" class="md:hidden fixed left-3 right-3 bottom-2 z-[100] pointer-events-none">
-            <nav id="mobile-nav" aria-label="Основна навігація" class="pointer-events-auto flex items-center h-[68px] px-1.5 rounded-[24px] border border-white/10 bg-zinc-950/88 backdrop-blur-2xl shadow-[0_18px_55px_rgba(0,0,0,.35),0_2px_10px_rgba(0,0,0,.18)]">
+            <nav id="mobile-nav" aria-label="Основна навігація" class="pointer-events-auto flex items-center h-[68px] px-1 rounded-[24px] border border-white/10 bg-zinc-950/88 backdrop-blur-2xl shadow-[0_18px_55px_rgba(0,0,0,.35),0_2px_10px_rgba(0,0,0,.18)] overflow-x-auto hide-scrollbar">
             </nav>
         </div>
 
@@ -2421,28 +2375,19 @@
 
         // Курсові роботи (МБ-302): теми й компанії з файлу «теми КР». Рядки йдуть за списком студентів, а не за номерами тем.
         // Студенти без запису (Бєльтюкова, Гіткіс) поки не мають теми.
+        // Офіційний список курсових МБ-302 (оновлено з таблиці групи)
         const courseworkByStudentId = {
-            2: { no: 8, title: "Матриця цінності та умови збереження позиції міжнародної компанії у статусі «Переможець»", company: "МХП" }, // Великоконь
-            5: { no: 1, title: "Winning Leadership в управлінні створенням цінності в міжнародному бізнесі", pending: true }, // Гордієнко
-            6: { no: 13, title: "DIRS-метод для управління ростом у міжнародних компаніях", pending: true }, // Гуменюк
-            7: { title: "Управління якістю", company: "Apple" }, // Жидченко
-            8: { no: 19, title: "Управління монетизацією і драйвери прибутковості міжнародних компаній", pending: true }, // Кельвич
-            9: { no: 6, title: "Принцип Learning для управління успіхом в міжнародному бізнесі", company: "SoftServe" }, // Кисленко
-            10: { no: 17, title: "Каталізатори професійного росту менеджерів у міжнародних компаніях", company: "Нова пошта" }, // Клічук
-            11: { no: 4, title: "Принцип Intensity для ефективного управління зростанням компанії у міжнародному бізнесі", company: "Coca Cola" }, // Колодій
-            12: { no: 3, title: "Принцип Alignment у формуванні організаційного дизайну в управлінні міжнародним бізнесом", company: "MD Fashion (напрям Tommy Hilfiger)" }, // Кохан
-            13: { title: "Інноваційна діяльність", company: "Meta" }, // Май
-            14: { no: 9, title: "Модель BFMD для ефективного управління створенням цінності у міжнародній компанії", company: "Tesla" }, // Мартин
-            15: { title: "Корпоративна культура", company: "Netflix" }, // Масяєв
+            2:  { no: 8,  title: "Матриця цінності та умови збереження позиції міжнародної компанії у статусі «Переможець»", company: "МХП" }, // Великоконь
+            8:  { no: 19, title: "Управління монетизацією і драйвери прибутковості міжнародних компаній", company: "LEGO Group" }, // Кельвич
+            9:  { no: 6,  title: "Принцип Learning для управління успіхом в міжнародному бізнесі", company: "SoftServe" }, // Кисленко
+            10: { no: 17, title: "Каталізатори професійного росту менеджерів у міжнародних компаніях", company: "Nova Group" }, // Клічук
+            11: { no: 4,  title: "Принцип Intensity для ефективного управління зростанням компанії у міжнародному бізнесі", company: "Coca Cola" }, // Колодій
+            14: { no: 9,  title: "Модель BFMD для ефективного управління створенням цінності у міжнародній компанії", company: "Zenmarket" }, // Мартин
             16: { no: 14, title: "Цифрові платформи у міжнародному бізнесі", company: "UPC" }, // Могилянська
-            17: { title: "Маркетинговий менеджмент", company: "Netflix" }, // Мурін
-            18: { no: 7, title: "Лідерські компетенції управління створенням цінності у міжнародному бізнесі", company: "IKEA" }, // Петричка
-            19: { no: 14, title: "Цифрові платформи у міжнародному бізнесі", company: "GSC Game World" }, // Пилипенко
-            21: { title: "Фінансовий менеджмент", company: "The Procter & Gamble Company" }, // Солярик
+            18: { no: 7,  title: "Лідерські компетенції управління створенням цінності у міжнародному бізнесі", company: "IKEA" }, // Петричка
+            19: { no: 14, title: "Цифрові платформи у міжнародному бізнесі", company: "Grammarly" }, // Пилипенко
             22: { no: 10, title: "Управління зростанням на основі можливостей (OGM) для міжнародної компанії", company: "Revolut" }, // Степаненко
-            23: { no: 2, title: "Принцип Clarity у формуванні стратегій для міжнародної конкуренції", company: "Nike" }, // Троцька
-            24: { title: "Управління якістю", company: "Netflix" }, // Устименко
-            25: { no: 5, title: "Принцип Co-Creation для ефективного управління зростанням компанії у міжнародному бізнесі", company: "Netflix" }, // Чуприна
+            25: { no: 5,  title: "Принцип Co-Creation для ефективного управління зростанням компанії у міжнародному бізнесі", company: "Fozzy Group" }, // Чуприна
             26: { no: 16, title: "Переможна (Winner) бізнес-модель і умови її утримання у міжнародній компанії", company: "КиївХліб" }, // Шелепа
         };
 
@@ -2650,16 +2595,18 @@
 
             const mobileContainer = document.getElementById('mobile-nav');
             if (mobileContainer) {
-                mobileContainer.innerHTML = navItems.slice(0,5).map(item => {
+                // Show all primary tabs on mobile (scrollable). Analytics stays for starosta/Pilipenko only via navItems.
+                const mobileItems = navItems.filter(item => item.id !== 'analytics' || isPilipenko);
+                mobileContainer.innerHTML = mobileItems.map(item => {
                     const active = window.appState.view === item.id;
                     return `<button id="mob-btn-${item.id}"
                         onclick="window.app.setView('${item.id}')"
                         aria-current="${active ? 'page' : 'false'}"
-                        class="nav-item-premium ${active ? 'nav-active text-' + pri + '-400' : 'text-zinc-500 hover:text-zinc-200'} relative flex-1 h-[58px] rounded-[18px] flex flex-col items-center justify-center gap-1"
+                        class="nav-item-premium ${active ? 'nav-active text-' + pri + '-400' : 'text-zinc-500 hover:text-zinc-200'} relative shrink-0 min-w-[56px] flex-1 h-[58px] rounded-[18px] flex flex-col items-center justify-center gap-0.5 px-1"
                         title="${item.label}">
-                        <i data-lucide="${item.icon}" class="w-5 h-5 ${active ? 'scale-110' : ''} transition-transform"></i>
-                        <span class="text-[9px] font-black tracking-wide">${item.label}</span>
-                        ${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-2 right-[22%] w-2 h-2 rounded-full bg-rose-500 border border-zinc-950"></span>' : ''}
+                        <i data-lucide="${item.icon}" class="w-[18px] h-[18px] ${active ? 'scale-110' : ''} transition-transform"></i>
+                        <span class="text-[8px] sm:text-[9px] font-black tracking-wide leading-tight text-center max-w-[64px] truncate">${item.label}</span>
+                        ${item.id === 'homework' && window.appState.unreadHwCount > 0 ? '<span class="absolute top-2 right-[18%] w-2 h-2 rounded-full bg-rose-500 border border-zinc-950"></span>' : ''}
                     </button>`;
                 }).join('');
             }
@@ -2749,43 +2696,193 @@
             const now = new Date();
             const dayNames = ['Неділя','Понеділок','Вівторок','Середа','Четвер',"П'ятниця",'Субота'];
             const todayDay = dayNames[now.getDay()];
+            const currentTime = now.toTimeString().slice(0, 5);
             const todayObj = getMergedSchedule(currentWeek.t, currentWeek.n).find(d => d.day === todayDay);
-            const personalToday = (todayObj?.pairs || []).filter(p => isPairRelevantForStudent(p, user));
+            const personalToday = (todayObj?.pairs || [])
+                .filter(p => isPairRelevantForStudent(p, user))
+                .sort((a, b) => a.num - b.num);
             const nextWeek = getRecommendedWeek(true);
             const isNextWeek = nextWeek.n !== currentWeek.n;
             const firstName = getDisplayFirstName(user);
-            const weekLabel = `${currentWeek.n} тиждень • ${currentWeek.t === 'upper' ? 'верхній' : 'нижній'}`;
+            const weekLabel = `${currentWeek.n} тиж. · ${currentWeek.t === 'upper' ? 'верхній' : 'нижній'}`;
+            const dateLabel = now.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
 
-            const pairRows = personalToday.map((p,i) => {
-                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url || window.appState.locationsData?.[p.subj]?.url || p.onlineUrl || getZoomLink(p.subj) || null;
-                return `<div class="flex items-center gap-3 p-3.5 md:p-4 rounded-[20px] border ${i === 0 ? `border-${pri}-500/20 bg-${pri}-500/[.05]` : 'border-white/5 bg-white/[.025]'}">
-                    <div class="w-9 h-9 rounded-[12px] bg-white/[.06] flex items-center justify-center text-xs font-black text-zinc-300">${p.num}</div>
-                    <div class="min-w-0 flex-1"><div class="text-[13px] md:text-[14px] font-black text-white truncate">${p.subj.replace(' (Начитка)','')}</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${p.time}${(p.teacher || getTeacher(p.subj)) ? ` • ${p.teacher || getTeacher(p.subj)}` : ''}</div></div>
-                    ${zoom ? `<a href="${zoom}" target="_blank" rel="noopener noreferrer" class="shrink-0 w-10 h-10 rounded-[13px] bg-blue-500/10 text-blue-400 border border-blue-500/15 flex items-center justify-center" aria-label="Відкрити Zoom"><i data-lucide="video" class="w-4 h-4"></i></a>` : ''}
-                </div>`;
+            const myHw = (window.appState.homeworks || []).filter(hw => isHwRelevant(hw.subj, user, hw));
+            const myKr = courseworkByStudentId[user?.id];
+
+            // Найближчі події сесії (до 3)
+            const sessionUpcoming = [];
+            (sessionScheduleData || []).forEach(week => {
+                week.days.forEach(day => {
+                    day.pairs.forEach(p => {
+                        const [dd, mm, yyyy] = day.date.split('.').map(Number);
+                        const dt = new Date(yyyy, mm - 1, dd, 23, 59, 59);
+                        if (dt >= now) sessionUpcoming.push({ ...p, day: day.day, date: day.date, weekNum: week.weekNum });
+                    });
+                });
+            });
+            sessionUpcoming.sort((a, b) => {
+                const pa = a.date.split('.').reverse().join('');
+                const pb = b.date.split('.').reverse().join('');
+                return pa === pb ? a.num - b.num : pa.localeCompare(pb);
+            });
+            const sessionPreview = sessionUpcoming.slice(0, 3);
+
+            const pairRows = personalToday.map((p) => {
+                const [start, end] = p.time.split('-');
+                const isLive = currentTime >= start && currentTime <= end;
+                const isDone = currentTime > end;
+                const zoom = window.appState.locationsData?.[`${currentWeek.t}_${p.subj}`]?.url
+                    || window.appState.locationsData?.[p.subj]?.url
+                    || p.onlineUrl
+                    || getZoomLink(p.subj)
+                    || null;
+                const teacher = p.teacher || getTeacher(p.subj);
+                return `
+                    <div class="group flex items-center gap-3 p-3 md:p-3.5 rounded-[18px] border transition-colors ${
+                        isLive
+                            ? `border-${pri}-400/30 bg-${pri}-500/[.08] shadow-[0_0_0_1px_rgba(139,92,246,.08)]`
+                            : isDone
+                                ? 'border-white/[.04] bg-white/[.015] opacity-55'
+                                : 'border-white/[.06] bg-white/[.03] hover:bg-white/[.05]'
+                    }">
+                        <div class="relative shrink-0">
+                            <div class="w-10 h-10 rounded-[14px] flex items-center justify-center text-[12px] font-black ${
+                                isLive ? `bg-${pri}-500/20 text-${pri}-300` : 'bg-white/[.06] text-zinc-400'
+                            }">${p.num}</div>
+                            ${isLive ? `<span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0b0b0f] animate-pulse"></span>` : ''}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <div class="text-[13px] md:text-[14px] font-black text-white truncate">${p.subj.replace(' (Начитка)', '')}</div>
+                                ${isLive ? `<span class="px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wide bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">Зараз</span>` : ''}
+                            </div>
+                            <div class="text-[11px] font-semibold text-zinc-500 mt-0.5 truncate">${p.time}${teacher ? ` · ${teacher}` : ''}</div>
+                        </div>
+                        ${zoom ? `<a href="${zoom}" target="_blank" rel="noopener noreferrer" class="shrink-0 w-10 h-10 rounded-[13px] bg-blue-500/10 text-blue-300 border border-blue-500/15 flex items-center justify-center active:scale-95" aria-label="Zoom"><i data-lucide="video" class="w-4 h-4"></i></a>` : ''}
+                    </div>`;
+            }).join('');
+
+            const sessionRows = sessionPreview.map(p => {
+                const isExam = p.kind === 'E';
+                return `
+                    <button onclick="window.app.setView('session')" class="w-full text-left flex items-center gap-3 p-3 rounded-[16px] border border-white/[.06] bg-white/[.03] hover:bg-white/[.05] transition-colors">
+                        <div class="w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0 ${isExam ? 'bg-rose-500/15 text-rose-300' : 'bg-emerald-500/15 text-emerald-300'}">
+                            <i data-lucide="${isExam ? 'file-check' : 'message-circle'}" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-[12px] font-black text-white truncate">${p.subj}</div>
+                            <div class="text-[10px] font-semibold text-zinc-500 mt-0.5">${p.date} · ${p.time.split('-')[0]} · ${p.kindLabel}</div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600 shrink-0"></i>
+                    </button>`;
             }).join('');
 
             document.getElementById('main-content').innerHTML = `
-                <div class="space-y-4 md:space-y-5">
-                    <section class="flex items-end justify-between gap-4">
-                        <div><div class="text-[11px] font-black uppercase tracking-[.18em] text-zinc-500 mb-2">Привіт, ${firstName}</div><h1 class="text-3xl md:text-5xl font-black tracking-tight text-white">${firstName} <span class="opacity-50">✦</span></h1><p class="text-xs md:text-sm font-semibold text-zinc-500 mt-2">МБ-302 • ${weekLabel}</p></div>
-                        <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-white/[.04] border border-white/5 text-[11px] font-bold text-zinc-400"><i data-lucide="calendar-days" class="w-4 h-4"></i>${now.toLocaleDateString('uk-UA',{day:'2-digit',month:'long'})}</div>
-                    </section>
-
-                    <section id="live-widget" class="rounded-[28px] md:rounded-[34px] border border-white/10 bg-gradient-to-br from-white/[.065] to-white/[.018] p-5 md:p-6 relative overflow-hidden shadow-[0_22px_70px_rgba(0,0,0,.24)]"></section>
-
-                    <section class="glass-card rounded-[28px] md:rounded-[32px] p-4 md:p-5">
-                        <div class="flex items-center justify-between gap-3 mb-4"><div><div class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500">Сьогодні</div><h2 class="text-lg md:text-xl font-black text-white mt-1">Пари на сьогодні</h2></div><button onclick="window.app.setView('schedule')" class="h-9 px-3 rounded-xl bg-white/[.06] border border-white/5 text-[11px] font-bold text-zinc-300">Увесь розклад</button></div>
-                        <div class="space-y-2.5">
-                        ${personalToday.length ? pairRows : `<div class="py-7 text-center rounded-[22px] border border-dashed border-white/10 bg-white/[.02]"><i data-lucide="coffee" class="w-7 h-7 mx-auto mb-2 text-zinc-600"></i><div class="text-sm font-black text-zinc-300">Сьогодні пар немає</div><div class="text-[11px] font-semibold text-zinc-500 mt-1">${isNextWeek ? `Наступні пари — з ${nextWeek.n} тижня, з понеділка.` : 'Можна відпочити або зайнятися завданнями.'}</div></div>`}
+                <div class="space-y-4 md:space-y-5 max-w-5xl mx-auto">
+                    <!-- Hero -->
+                    <section class="relative overflow-hidden rounded-[28px] md:rounded-[32px] border border-white/10 bg-gradient-to-br from-white/[.07] via-white/[.03] to-transparent p-5 md:p-6">
+                        <div class="absolute -right-16 -top-20 w-56 h-56 rounded-full bg-${pri}-500/15 blur-[70px] pointer-events-none"></div>
+                        <div class="absolute -left-10 -bottom-16 w-40 h-40 rounded-full bg-fuchsia-500/10 blur-[60px] pointer-events-none"></div>
+                        <div class="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                            <div class="min-w-0">
+                                <div class="inline-flex items-center gap-2 px-2.5 h-7 rounded-full bg-white/[.06] border border-white/10 text-[10px] font-black uppercase tracking-[.14em] text-zinc-400 mb-3">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    МБ-302
+                                </div>
+                                <h1 class="text-[1.85rem] md:text-4xl font-black tracking-tight text-white leading-none">Привіт, ${firstName}</h1>
+                                <p class="text-[12px] md:text-[13px] font-semibold text-zinc-500 mt-2.5 capitalize">${dateLabel}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <div class="px-3 h-9 rounded-xl bg-white/[.05] border border-white/10 flex items-center gap-2 text-[11px] font-bold text-zinc-300">
+                                    <i data-lucide="calendar-range" class="w-3.5 h-3.5 text-${pri}-400"></i>
+                                    ${weekLabel}
+                                </div>
+                                ${myHw.length ? `<button onclick="window.app.setView('homework')" class="px-3 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] font-black flex items-center gap-1.5">${myHw.length} д/з</button>` : ''}
+                            </div>
                         </div>
                     </section>
 
-                    <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <button onclick="window.app.setView('schedule')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-${pri}-500/10 text-${pri}-400 flex items-center justify-center mb-3"><i data-lucide="calendar-days" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Розклад</div><div class="text-[10px] text-zinc-500 mt-1">${isNextWeek ? `Далі: ${nextWeek.n} тиждень` : 'Поточний тиждень'}</div></button>
-                        <button onclick="window.app.setView('session')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center mb-3"><i data-lucide="clipboard-check" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Сесія</div><div class="text-[10px] text-zinc-500 mt-1">Екзамени · КЕ</div></button>
-                        <button onclick="window.app.setView('homework')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3"><i data-lucide="check-square" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Завдання</div><div class="text-[10px] text-zinc-500 mt-1">Д/з групи</div></button>
-                        <button onclick="window.app.setView('register')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-3"><i data-lucide="users" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Група</div><div class="text-[10px] text-zinc-500 mt-1">Студенти МБ-302</div></button>
+                    <!-- Live status -->
+                    <section id="live-widget" class="rounded-[26px] md:rounded-[30px] border border-white/10 bg-gradient-to-br from-white/[.06] to-white/[.015] p-4 md:p-5 relative overflow-hidden"></section>
+
+                    <!-- Main grid -->
+                    <section class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                        <div class="lg:col-span-3 glass-card rounded-[26px] p-4 md:p-5">
+                            <div class="flex items-center justify-between gap-3 mb-3.5">
+                                <div>
+                                    <div class="text-[10px] font-black uppercase tracking-[.16em] text-zinc-500">Сьогодні</div>
+                                    <h2 class="text-[16px] md:text-lg font-black text-white mt-0.5">Пари</h2>
+                                </div>
+                                <button onclick="window.app.setView('schedule')" class="h-8 px-3 rounded-xl bg-white/[.06] border border-white/10 text-[11px] font-bold text-zinc-300 hover:text-white">Увесь розклад</button>
+                            </div>
+                            <div class="space-y-2">
+                                ${personalToday.length
+                                    ? pairRows
+                                    : `<div class="py-8 text-center rounded-[20px] border border-dashed border-white/10 bg-white/[.02]">
+                                        <i data-lucide="coffee" class="w-7 h-7 mx-auto mb-2 text-zinc-600"></i>
+                                        <div class="text-sm font-black text-zinc-300">Сьогодні пар немає</div>
+                                        <div class="text-[11px] font-semibold text-zinc-500 mt-1 px-4">${isNextWeek ? `Наступні пари — з ${nextWeek.n} тижня` : 'Можна відпочити або зробити д/з'}</div>
+                                       </div>`}
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="glass-card rounded-[26px] p-4 md:p-5">
+                                <div class="flex items-center justify-between gap-2 mb-3.5">
+                                    <div>
+                                        <div class="text-[10px] font-black uppercase tracking-[.16em] text-zinc-500">Сесія</div>
+                                        <h2 class="text-[16px] font-black text-white mt-0.5">Найближче</h2>
+                                    </div>
+                                    <button onclick="window.app.setView('session')" class="text-[10px] font-black text-${pri}-400 uppercase tracking-wide">Усі →</button>
+                                </div>
+                                <div class="space-y-2">
+                                    ${sessionPreview.length
+                                        ? sessionRows
+                                        : `<div class="py-5 text-center text-[12px] font-semibold text-zinc-500">Подій сесії немає</div>`}
+                                </div>
+                            </div>
+
+                            ${myKr?.title ? `
+                            <button onclick="window.app.setView('coursework')" class="w-full glass-card rounded-[26px] p-4 md:p-5 text-left hover:bg-white/[.04] transition-colors">
+                                <div class="text-[10px] font-black uppercase tracking-[.16em] text-zinc-500 mb-2">Курсова</div>
+                                <div class="text-[13px] font-black text-white leading-snug line-clamp-2">${myKr.no ? `Тема ${myKr.no}. ` : ''}${myKr.title}</div>
+                                ${myKr.company ? `<div class="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-${pri}-500/10 border border-${pri}-500/15 text-[10px] font-bold text-${pri}-300">${myKr.company}</div>` : ''}
+                            </button>` : `
+                            <button onclick="window.app.setView('coursework')" class="w-full glass-card rounded-[26px] p-4 text-left">
+                                <div class="text-[10px] font-black uppercase tracking-[.16em] text-zinc-500 mb-1">Курсова</div>
+                                <div class="text-[13px] font-bold text-zinc-400">Тему ще не обрано</div>
+                            </button>`}
+                        </div>
+                    </section>
+
+                    <!-- Quick actions -->
+                    <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 md:gap-3">
+                        <button onclick="window.app.setView('schedule')" class="glass-card text-left p-3.5 md:p-4 rounded-[20px] active:scale-[.98]">
+                            <div class="w-9 h-9 rounded-xl bg-${pri}-500/12 text-${pri}-300 flex items-center justify-center mb-2.5"><i data-lucide="calendar-days" class="w-4 h-4"></i></div>
+                            <div class="text-[12px] font-black text-white">Розклад</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">${isNextWeek ? `${nextWeek.n} тиж.` : 'Поточний'}</div>
+                        </button>
+                        <button onclick="window.app.setView('session')" class="glass-card text-left p-3.5 md:p-4 rounded-[20px] active:scale-[.98]">
+                            <div class="w-9 h-9 rounded-xl bg-rose-500/12 text-rose-300 flex items-center justify-center mb-2.5"><i data-lucide="clipboard-check" class="w-4 h-4"></i></div>
+                            <div class="text-[12px] font-black text-white">Сесія</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">${sessionUpcoming.length ? `${sessionUpcoming.length} подій` : 'Екзамени'}</div>
+                        </button>
+                        <button onclick="window.app.setView('homework')" class="glass-card text-left p-3.5 md:p-4 rounded-[20px] active:scale-[.98]">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500/12 text-emerald-300 flex items-center justify-center mb-2.5"><i data-lucide="check-square" class="w-4 h-4"></i></div>
+                            <div class="text-[12px] font-black text-white">Д/з</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">${myHw.length ? `${myHw.length} актуальних` : 'Завдання'}</div>
+                        </button>
+                        <button onclick="window.app.setView('coursework')" class="glass-card text-left p-3.5 md:p-4 rounded-[20px] active:scale-[.98]">
+                            <div class="w-9 h-9 rounded-xl bg-violet-500/12 text-violet-300 flex items-center justify-center mb-2.5"><i data-lucide="graduation-cap" class="w-4 h-4"></i></div>
+                            <div class="text-[12px] font-black text-white">КР</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">Курсові</div>
+                        </button>
+                        <button onclick="window.app.setView('register')" class="glass-card text-left p-3.5 md:p-4 rounded-[20px] active:scale-[.98] col-span-2 sm:col-span-1">
+                            <div class="w-9 h-9 rounded-xl bg-sky-500/12 text-sky-300 flex items-center justify-center mb-2.5"><i data-lucide="users" class="w-4 h-4"></i></div>
+                            <div class="text-[12px] font-black text-white">Група</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">${students.length} студентів</div>
+                        </button>
                     </section>
                 </div>`;
             window.app.updateLiveWidget();
@@ -4353,7 +4450,27 @@
                 const liveSignature = `${status.label}|${status.title}|${status.subtitle}|${status.zoom || ''}|${Math.round(status.progress)}|${status.isLive ? 1 : 0}|${pri}`;
                 if (widget.dataset.liveSignature === liveSignature) return;
                 widget.dataset.liveSignature = liveSignature;
-                widget.innerHTML = `<div class="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-${pri}-500/10 blur-[80px]"></div><div class="relative z-10 flex items-center justify-between gap-4"><div class="min-w-0"><div class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500 mb-3">${status.label}</div><h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">${status.title}</h2><p class="text-[12px] md:text-sm font-semibold text-zinc-500 mt-2 line-clamp-2">${status.subtitle}</p>${status.zoom ? `<a href="${status.zoom}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3.5 h-10 rounded-xl bg-blue-500/10 border border-blue-500/15 text-blue-300 text-[11px] font-black"><i data-lucide="video" class="w-4 h-4"></i> Відкрити Zoom</a>` : ''}</div><div class="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-[22px] bg-white/[.04] border border-white/10 flex items-center justify-center">${status.isLive ? `<span class="text-sm md:text-base font-black text-${pri}-400">${Math.round(status.progress)}%</span>` : `<i data-lucide="coffee" class="w-6 h-6 text-zinc-500"></i>`}</div></div>`;
+                const pct = Math.round(status.progress);
+                widget.innerHTML = `
+                    <div class="absolute -right-16 -top-20 w-56 h-56 rounded-full bg-${pri}-500/12 blur-[70px] pointer-events-none"></div>
+                    <div class="relative z-10 flex items-center gap-4">
+                        <div class="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-[18px] md:rounded-[20px] border border-white/10 bg-white/[.04] flex items-center justify-center relative overflow-hidden">
+                            ${status.isLive
+                                ? `<div class="absolute inset-0 bg-${pri}-500/10" style="clip-path: inset(${100 - pct}% 0 0 0)"></div>
+                                   <span class="relative text-[13px] md:text-sm font-black text-${pri}-300">${pct}%</span>`
+                                : `<i data-lucide="${status.progress === 100 ? 'check-circle-2' : 'clock-3'}" class="w-6 h-6 text-zinc-500"></i>`}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-black uppercase tracking-[.16em] text-zinc-500">${status.label}</span>
+                                ${status.isLive ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>' : ''}
+                            </div>
+                            <h2 class="text-xl md:text-2xl font-black text-white tracking-tight leading-tight">${status.title}</h2>
+                            <p class="text-[12px] font-semibold text-zinc-500 mt-1 line-clamp-1">${status.subtitle}</p>
+                            ${status.isLive ? `<div class="mt-2.5 h-1.5 rounded-full bg-white/[.06] overflow-hidden max-w-[220px]"><div class="h-full rounded-full bg-${pri}-400/80 transition-all duration-500" style="width:${pct}%"></div></div>` : ''}
+                        </div>
+                        ${status.zoom ? `<a href="${status.zoom}" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-2 px-3 h-10 rounded-xl bg-blue-500/10 border border-blue-500/15 text-blue-300 text-[11px] font-black active:scale-95"><i data-lucide="video" class="w-4 h-4"></i><span class="hidden sm:inline">Zoom</span></a>` : ''}
+                    </div>`;
                 renderIconsIn(widget);
             },
 
