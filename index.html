@@ -1524,6 +1524,57 @@
             {n:13, t:'upper', d:'23.11-29.11'}, {n:14, t:'lower', d:'30.11-06.12'}
         ];
 
+        // Екзаменаційна сесія (загальна для всієї групи МБ-302)
+        // KE = консультація до екзамену, E = екзамен
+        const sessionScheduleData = [
+            {
+                weekNum: 15,
+                weekType: 'upper',
+                weekLabel: 'Верхній тиждень',
+                dateRange: '07.12–13.12.2026',
+                days: [
+                    {
+                        day: 'Вівторок',
+                        date: '08.12.2026',
+                        pairs: [
+                            { num: 5, time: '14:30-15:45', subj: 'Менеджмент персоналу', kind: 'KE', kindLabel: 'Консультація', teacher: 'доц. Вонберг Т.В' }
+                        ]
+                    },
+                    {
+                        day: 'Середа',
+                        date: '09.12.2026',
+                        pairs: [
+                            { num: 5, time: '14:30-15:45', subj: 'Менеджмент персоналу', kind: 'E', kindLabel: 'Екзамен', teacher: 'доц. Вонберг Т.В' },
+                            { num: 6, time: '16:00-17:15', subj: 'Менеджмент персоналу', kind: 'E', kindLabel: 'Екзамен', teacher: 'доц. Вонберг Т.В' }
+                        ]
+                    }
+                ]
+            },
+            {
+                weekNum: 16,
+                weekType: 'lower',
+                weekLabel: 'Нижній тиждень',
+                dateRange: '14.12–20.12.2026',
+                days: [
+                    {
+                        day: 'Понеділок',
+                        date: '14.12.2026',
+                        pairs: [
+                            { num: 3, time: '11:30-12:45', subj: 'Міжнародний маркетинг', kind: 'KE', kindLabel: 'Консультація', teacher: 'доц. Гордєєва Т.Ф' }
+                        ]
+                    },
+                    {
+                        day: 'Вівторок',
+                        date: '15.12.2026',
+                        pairs: [
+                            { num: 5, time: '14:30-15:45', subj: 'Міжнародний маркетинг', kind: 'E', kindLabel: 'Екзамен', teacher: 'доц. Гордєєва Т.Ф' },
+                            { num: 6, time: '16:00-17:15', subj: 'Міжнародний маркетинг', kind: 'E', kindLabel: 'Екзамен', teacher: 'доц. Гордєєва Т.Ф' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
         const students = [
             { id: 1, name: "Бєльтюкова А.Д.", fullName: "Бєльтюкова Анастасія Дмитрівна", electives: ["Міжнародна торгівля", "Світовий фондовий ринок", "іспанська"], englishGroup: "melnyk-chirik" },
             { id: 2, name: "Великоконь Д.А.", fullName: "Великоконь Дар'я Андріївна", electives: ["Бренд менеджмент", "Міжнародна торгівля", "французька"], isStarosta: true, englishGroup: "melnyk-chirik" },
@@ -2558,6 +2609,7 @@
             const navItems = [
                 { id: 'dashboard', icon: 'home', label: 'Головна' },
                 { id: 'schedule', icon: 'calendar-days', label: 'Розклад' },
+                { id: 'session', icon: 'clipboard-check', label: 'Сесія' },
                 { id: 'homework', icon: 'check-square', label: 'Д/з' },
                 { id: 'register', icon: 'users', label: 'Група' },
                 { id: 'coursework', icon: 'graduation-cap', label: 'КР' }
@@ -2648,6 +2700,14 @@
                     <div class="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-6"></div>
                     <div class="space-y-3 mb-6 max-h-[60vh] overflow-y-auto hide-scrollbar">
                         
+                        <button onclick="window.app.setView('session'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 80ms;">
+                            <div class="w-12 h-12 rounded-[18px] bg-rose-500/10 text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="clipboard-check" class="w-6 h-6"></i></div>
+                            <div class="flex flex-col">
+                                <span class="text-[16px] font-bold text-zinc-900 dark:text-white">Сесія</span>
+                                <span class="text-[11px] font-bold text-zinc-500 mt-0.5">Екзамени та консультації</span>
+                            </div>
+                        </button>
+
                         <button onclick="window.app.setView('homework'); window.app.closeMobileMenu();" class="w-full flex items-center gap-4 p-4 rounded-3xl glass-card text-left active:scale-[0.98] transition-all group animate-slide-in-right" style="animation-delay: 100ms;">
                             <div class="relative">
                                 <div class="w-12 h-12 rounded-[18px] bg-${sec}-50 dark:bg-${sec}-500/10 text-${sec}-600 dark:text-${sec}-400 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="check-square" class="w-6 h-6"></i></div>
@@ -2723,9 +2783,9 @@
 
                     <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
                         <button onclick="window.app.setView('schedule')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-${pri}-500/10 text-${pri}-400 flex items-center justify-center mb-3"><i data-lucide="calendar-days" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Розклад</div><div class="text-[10px] text-zinc-500 mt-1">${isNextWeek ? `Далі: ${nextWeek.n} тиждень` : 'Поточний тиждень'}</div></button>
+                        <button onclick="window.app.setView('session')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center mb-3"><i data-lucide="clipboard-check" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Сесія</div><div class="text-[10px] text-zinc-500 mt-1">Екзамени · КЕ</div></button>
                         <button onclick="window.app.setView('homework')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3"><i data-lucide="check-square" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Завдання</div><div class="text-[10px] text-zinc-500 mt-1">Д/з групи</div></button>
                         <button onclick="window.app.setView('register')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-3"><i data-lucide="users" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Група</div><div class="text-[10px] text-zinc-500 mt-1">Студенти МБ-302</div></button>
-                        <button onclick="window.app.openAppearanceSheet('background')" class="glass-card text-left p-4 rounded-[22px]"><div class="w-9 h-9 rounded-xl bg-fuchsia-500/10 text-fuchsia-400 flex items-center justify-center mb-3"><i data-lucide="sparkles" class="w-4 h-4"></i></div><div class="text-[12px] font-black text-white">Оформлення</div><div class="text-[10px] text-zinc-500 mt-1">Фон і акцент</div></button>
                     </section>
                 </div>`;
             window.app.updateLiveWidget();
@@ -3441,6 +3501,112 @@
             window.app.updateAnalyticsDOM(true);
         };
 
+        const renderSession = () => {
+            const { pri } = getTheme();
+            const now = new Date();
+
+            const isPastDate = (dateStr) => {
+                // dateStr: DD.MM.YYYY
+                const [dd, mm, yyyy] = dateStr.split('.').map(Number);
+                const d = new Date(yyyy, mm - 1, dd, 23, 59, 59);
+                return d < now;
+            };
+
+            const weeksHtml = sessionScheduleData.map((week, wi) => {
+                const headerBg = week.weekType === 'upper'
+                    ? 'from-sky-600/90 to-blue-700/80'
+                    : 'from-amber-600/90 to-orange-700/80';
+                const accentBorder = week.weekType === 'upper'
+                    ? 'border-sky-500/25'
+                    : 'border-amber-500/25';
+
+                const daysHtml = week.days.map((day, di) => {
+                    const past = isPastDate(day.date);
+                    const pairsHtml = day.pairs.map((p) => {
+                        const isExam = p.kind === 'E';
+                        const kindCls = isExam
+                            ? 'bg-rose-500/15 text-rose-300 border-rose-500/25'
+                            : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/25';
+                        const zoom = getZoomLink(p.subj) || getZoomLink(p.subj + ' Л') || getZoomLink(p.subj + ' п') || null;
+                        return `
+                            <div class="schedule-pair-card flex flex-col sm:flex-row gap-3 p-3.5 md:p-4 rounded-[18px] border ${past ? 'opacity-55' : ''}">
+                                <div class="schedule-pair-time flex sm:flex-col items-center sm:items-start gap-2 sm:gap-1 sm:w-[88px] sm:pr-3 sm:border-r border-white/5 shrink-0">
+                                    <span class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[11px] font-black text-zinc-300">${p.num}</span>
+                                    <span class="text-[12px] font-bold text-zinc-400 whitespace-nowrap">${p.time.replace('-', ' – ')}</span>
+                                </div>
+                                <div class="schedule-pair-body flex-1 min-w-0 flex flex-col gap-2">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <h4 class="text-[14px] md:text-[15px] font-black text-white leading-tight">${p.subj}</h4>
+                                        <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wide border ${kindCls}">${p.kindLabel} · ${p.kind}</span>
+                                    </div>
+                                    <div class="text-[11px] font-semibold text-zinc-500">${p.teacher}</div>
+                                    ${zoom ? `<a href="${zoom}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 mt-1 w-fit px-2.5 h-8 rounded-lg bg-blue-500/10 border border-blue-500/15 text-blue-300 text-[10px] font-black"><i data-lucide="video" class="w-3.5 h-3.5"></i> Zoom</a>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    return `
+                        <div class="schedule-day-card glass-card p-3.5 md:p-4 rounded-[22px] ${past ? 'opacity-70' : ''}" style="animation-delay: ${di * 40}ms">
+                            <div class="flex items-center justify-between gap-3 mb-3 pb-2.5 border-b border-white/5">
+                                <h3 class="text-[14px] md:text-[15px] font-black text-white">${day.day}</h3>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">${day.date}</span>
+                            </div>
+                            <div class="schedule-pairs flex flex-col gap-2.5">
+                                ${pairsHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <section class="mb-8 md:mb-10 animate-slide-up" style="animation-delay: ${wi * 60}ms">
+                        <div class="rounded-[24px] md:rounded-[28px] overflow-hidden border ${accentBorder} bg-white/[.03]">
+                            <div class="px-4 md:px-6 py-3.5 md:py-4 bg-gradient-to-r ${headerBg} flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[11px] font-black uppercase tracking-[.14em] text-white/80">Тиждень № ${week.weekNum}</span>
+                                    <span class="hidden sm:inline text-white/40">•</span>
+                                    <span class="text-[13px] md:text-[14px] font-black text-white">${week.weekLabel}</span>
+                                </div>
+                                <span class="text-[11px] font-bold text-white/75">${week.dateRange}</span>
+                            </div>
+                            <div class="p-3 md:p-4 schedule-day-grid grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                                ${daysHtml}
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }).join('');
+
+            const html = `
+                <div>
+                    <div class="mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 relative z-10 animate-slide-in-right">
+                        <div>
+                            <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-white">Сесія</h2>
+                            <p class="mt-2 text-[13px] md:text-[14px] font-semibold text-zinc-500 max-w-xl">Екзаменаційна сесія для всієї групи МБ-302. Консультації (КЕ) та екзамени (Е).</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] font-black"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> КЕ — консультація</span>
+                            <span class="inline-flex items-center gap-1.5 px-3 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[11px] font-black"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Е — екзамен</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 glass-card rounded-[22px] p-4 md:p-5 flex items-start gap-3 border border-white/5 animate-scale-in">
+                        <div class="w-10 h-10 rounded-xl bg-${pri}-500/15 text-${pri}-300 flex items-center justify-center shrink-0"><i data-lucide="info" class="w-5 h-5"></i></div>
+                        <div class="min-w-0">
+                            <div class="text-[13px] font-black text-white">Загальний розклад сесії</div>
+                            <div class="text-[12px] font-semibold text-zinc-500 mt-1 leading-relaxed">Показано для всіх студентів групи. Місце проведення (аудиторія / Zoom) можна уточнити у викладача або в картках дисциплін у звичайному розкладі.</div>
+                        </div>
+                    </div>
+
+                    ${weeksHtml || `<div class="glass-card rounded-[24px] p-8 text-center text-zinc-500 font-bold">Розклад сесії поки порожній.</div>`}
+                </div>
+            `;
+
+            document.getElementById('main-content').innerHTML = html;
+            renderIconsIn(document.getElementById('main-content'));
+        };
+
         window.app = {
             setView: (viewId) => {
                 const content = document.getElementById('main-content');
@@ -3464,7 +3630,7 @@
                     window.appState.unreadHwCount = 0;
                 }
 
-                const order = ['dashboard','schedule','homework','register','coursework','analytics','materials','editor'];
+                const order = ['dashboard','schedule','session','homework','register','coursework','analytics','materials','editor'];
                 const from = Math.max(0, order.indexOf(currentView));
                 const to = Math.max(0, order.indexOf(viewId));
                 const direction = to >= from ? 1 : -1;
@@ -3670,6 +3836,7 @@
                 if(v === 'dashboard') renderDashboard();
                 else if(v === 'schedule') renderSchedule(true);
                 else if(v === 'main') renderSchedule(false);
+                else if(v === 'session') renderSession();
                 else if(v === 'materials') renderMaterials();
                 else if(v === 'homework') renderHomework();
                 else if(v === 'register') renderRegister();
